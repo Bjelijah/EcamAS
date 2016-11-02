@@ -10,6 +10,16 @@ android {
         versionCode 29
         versionName "1.1.9"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        ndk{
+            abiFilters 'armeabi','armeabi-v7a'
+        }
+    }
+
+    externalNativeBuild{
+        ndkBuild{
+            path 'src/main/jni/Android.mk'
+        }
     }
 
     sourceSets{
