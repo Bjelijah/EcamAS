@@ -39,4 +39,18 @@
   	<color name="play_talk">#50333333</color>
   	<color name="play_ptz">#50333333</color>
   	<color name="play_ptz_clicked">#cbaaaaaa</color>
+
+    <!-- new ui -->
+    <color name="colorAccent">#FF4081</color>
+    <color name="login_bk">#346486</color>
+    <color name="register_bk">#497d46</color>
+
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+
+    <color name="alpha_white">#aaeeeeee</color>
+    <color name="test">#00ff00</color>
+
+
 </resources>

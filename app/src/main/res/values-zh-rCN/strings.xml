@@ -87,7 +87,7 @@
 	<string name="modify_phone_num_hint">绑定新手机号码</string>
 	<string name="original_password">原始密码</string>
 	<string name="new_password">新密码</string>
-	<string name="confirm_password">确认密码</string>
+	<string name="confirm_password">确认密码:</string>
 	<string name="modify_password_tips">6&#8211;32个字母数字，区分大小写</string>
 	<string name="wifi_intensity">设备wifi信号强度</string>
 	<string name="set_new_password">正在设置新密码</string>
@@ -209,4 +209,20 @@
 	
 	<string name="play_talk">按住说话</string>
 	<string name="device_set_no_permission">没有操作权限</string>
+
+	<!-- new ui -->
+	<string name="login_not_user">还不是e看用户?</string>
+	<string name="login_register">注册</string>
+	<string name="login_test_user">暂时跳过</string>
+	<string name="login_try">您将使用试用帐号登入e看，访问已经配置好的默认摄像机</string>
+
+	<string name="register">注册</string>
+	<string name="prompt_email">邮箱：</string>
+	<string name="reg_if_bind_finger">绑定指纹？</string>
+	<string name="reg_bind_finger">然后就可以用指纹登入了！当然您也能以后再绑定</string>
+	<string name="reg_finger_support_error">未录入或设备不支持指纹！</string>
+	<string name="reg_field_empty">不能为空</string>
+	<string name="reg_usename_not_valid">用户名长度：6-32</string>
+	<string name="reg_email_not_valid">邮箱地址无效</string>
+
 </resources>

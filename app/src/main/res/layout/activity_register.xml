@@ -1,0 +1,219 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_horizontal_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_login_horizontal_margin"
+    tools:context="com.howell.activity.LoginActivity"
+    android:background="@color/register_bk"
+    style="@style/MyAppThemeRegister"
+    android:id="@+id/root_ll"
+    >
+
+    <!-- Login progress -->
+
+
+    <ScrollView
+        android:id="@+id/reg_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+       >
+
+        <LinearLayout
+            android:id="@+id/reg_reg_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:weightSum="1"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/reg_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/register"
+
+                android:textSize="30sp"
+                android:textColor="@color/white"
+                android:layout_marginBottom="15dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                />
+
+            <!--android:background="@color/register_bk"-->
+
+
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+
+                app:hintTextAppearance="@style/FloatingStyle"
+                app:errorTextAppearance="@style/errorStyle"
+                >
+
+                <AutoCompleteTextView
+
+                    android:id="@+id/reg_et_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/username"
+
+                    android:inputType="textAutoComplete"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="@color/white"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+
+
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                app:hintTextAppearance="@style/FloatingStyle"
+                app:errorTextAppearance="@style/errorStyle"
+                >
+                <EditText
+                    android:id="@+id/reg_et_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/password"
+                    android:imeActionId="@+id/reg_pwd"
+                    android:imeActionLabel="@string/action_sign_in_short"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="@color/white"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                app:hintTextAppearance="@style/FloatingStyle"
+                app:errorTextAppearance="@style/errorStyle"
+                >
+                <EditText
+                    android:id="@+id/reg_et_confirm_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/confirm_password"
+                    android:imeActionId="@+id/reg_pwd"
+                    android:imeActionLabel="@string/action_sign_in_short"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="@color/white"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                app:hintTextAppearance="@style/FloatingStyle"
+                app:errorTextAppearance="@style/errorStyle"
+                >
+
+                <AutoCompleteTextView
+
+                    android:id="@+id/reg_et_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_email"
+
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="@color/white"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/group_vertical_margin_top">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:text="@string/reg_if_bind_finger"
+
+                    />
+
+                <ToggleButton
+                    android:id="@+id/reg_tb_bind"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:button="@drawable/toggle_button"
+                    android:text=""
+                    android:textOff=""
+                    android:textOn=""
+                    android:checked="false"
+                    android:layout_marginStart="@dimen/group_vertical_margin_top"
+
+                    />
+
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="190dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/alpha_white"
+                android:textSize="10sp"
+                android:text="@string/reg_bind_finger"
+                />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/group_vertical_margin_top">
+
+                <Button
+                    android:id="@+id/reg_btn_reg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:textAppearanceSmall"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/register"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:background="@drawable/reg_ll"
+                    />
+
+                <ProgressBar
+                    android:id="@+id/reg_progress"
+                    style="?android:attr/progressBarStyleInverse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:visibility="gone"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toEndOf="@id/reg_btn_reg"
+                    android:layout_marginStart="25dp" />
+
+
+            </RelativeLayout>
+
+
+
+
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

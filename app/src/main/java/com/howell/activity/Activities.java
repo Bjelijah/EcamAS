@@ -1,14 +1,16 @@
 package com.howell.activity;
 
+import android.app.Activity;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import android.app.Activity;
 
 public class Activities {
 	
     public Map<String,Activity> mActivityList = new HashMap<String,Activity>();
-    
+
+
+
     private static Activities sInstance = new Activities();
 
     public static Activities getInstance() {
