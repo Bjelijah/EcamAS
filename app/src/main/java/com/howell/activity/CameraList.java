@@ -347,7 +347,7 @@ public class CameraList extends ListActivity implements Observer{
         mPopupWindow = new PopupWindow(popupWindow, LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);  
         
         ColorDrawable dw = new ColorDrawable(0000000000);
-		// ��back�������ط�ʹ����ʧ,������������ܴ���OnDismisslistener ����������ؼ��仯�Ȳ���
+
         mPopupWindow.setBackgroundDrawable(dw);
         mPopupWindow.setFocusable(true);  
         mPopupWindow.setOutsideTouchable(true);  

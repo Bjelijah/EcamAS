@@ -44,13 +44,41 @@
     <color name="colorAccent">#FF4081</color>
     <color name="login_bk">#346486</color>
     <color name="register_bk">#497d46</color>
+    <color name="register_bk_dark">#497d46</color>
 
+    <color name="home_bk">#03a9f4</color>
+    <color name="home_bk_dark">#0288d1</color>
+    <color name="home_bk_light">#b3e5fc</color>
+    <color name="home_accent">#ff4081</color>
 
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <!--<color name="register_bk">#509688</color>-->
+    <!--<color name="register_bk_dark">#50796b</color>-->
+    <color name="colorPrimary">#13a9f4</color>
+    <color name="colorPrimaryDark">#0288d1</color>
+
+    <color name="pullrefresh_bk">#13a9f4</color>
+
+    <!--<color name="colorPrimary">#3F51B5</color>-->
+    <!--<color name="colorPrimaryDark">#303F9F</color>-->
 
     <color name="alpha_white">#aaeeeeee</color>
     <color name="test">#00ff00</color>
+
+    <color name="warning_color">#f4511e</color>
+    <color name="hint_color">#42000000</color>
+    <color name="success_color">#009688</color>
+
+
+    <color name="finger_green">#308b4e</color>
+    <color name="finger_fail">#a44853</color>
+    <color name="finger_orgeen">#fd6b0b</color>
+    <!--<color name="colorAccent">#4bc1ff</color>-->
+    <color name="colorPink">#FF4081</color>
+
+    <color name="dialogTitleColor">#2196f3</color>
+    <color name="dialog_orange">#ff5722</color>
+    <color name="phone_authenticated">#ff5252</color>
+
 
 
 </resources>

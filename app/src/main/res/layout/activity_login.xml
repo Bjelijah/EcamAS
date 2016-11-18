@@ -169,8 +169,20 @@
                         android:textColor="@color/white"
                         android:text="@string/login_test_user"
                         android:textSize="20sp"
+
                         />
                     <!-- add image -->
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+
+                        android:src="@mipmap/ic_action_launch"
+
+
+                        />
+
+
 
                 </LinearLayout>
 

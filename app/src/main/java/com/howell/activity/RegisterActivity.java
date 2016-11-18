@@ -17,8 +17,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.howell.action.RegisterAction;
 import com.howell.ecam.R;
@@ -53,7 +53,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText mPasswordView, mConfirmPasswordView;
     private View mProgressView,mRegFormView,mRoot;
     private Button mRegBtn;
-    private ToggleButton mBindTbn;
+//    private ToggleButton mBindTbn;
+    private Switch mBindTbn;
     private TextView mTitle;
 
     private boolean mIsBindFinger;
@@ -68,7 +69,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mUserNameView = (AutoCompleteTextView) findViewById(R.id.reg_et_username);
         mPasswordView = (EditText) findViewById(R.id.reg_et_password);
         mConfirmPasswordView = (EditText) findViewById(R.id.reg_et_confirm_password);
-        mBindTbn = (ToggleButton) findViewById(R.id.reg_tb_bind);
+//        mBindTbn = (ToggleButton) findViewById(R.id.reg_tb_bind);
+        mBindTbn = (Switch) findViewById(R.id.reg_tb_bind);
         mBindTbn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {

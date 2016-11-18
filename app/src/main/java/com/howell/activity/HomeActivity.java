@@ -66,7 +66,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void initDrawerLayout(){
-        View v = View.inflate(this,R.layout.layout_drawer,null);
+
         DrawerLayout dl = (DrawerLayout) findViewById(R.id.dl);
         ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(this,dl,mtoolbar,R.string.app_name,R.string.app_name){
             @Override

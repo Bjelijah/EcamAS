@@ -225,4 +225,47 @@
 	<string name="reg_usename_not_valid">用户名长度：6-32</string>
 	<string name="reg_email_not_valid">邮箱地址无效</string>
 
+
+
+
+	<string name="save_db">绑定当前帐号与指纹信息</string>
+	<string name="save_db_ok">绑定成功!</string>
+	<string name="save_db_error">绑定失败！</string>
+
+
+	<!-- 指纹识别 -->
+	<string name="finger_title">指纹识别</string>
+	<string name="finger_cancel">取消</string>
+	<string name="finger_login_with_password">使用密码登入</string>
+	<string name="fingerprint_description">通过识别指纹登入绑定的账号</string>
+	<string name="fingerprint_hint">请按下获取指纹</string>
+	<string name="fingerprint_failed">验证失败..请重新尝试!!</string>
+	<string name="fingerprint_error">失败 请等待片刻再尝试</string>
+	<string name="fingerprint_ok">验证成功!!  正在登入..</string>
+	<string name="fingerprint_sign_error">登入失败 请用密码登入 </string>
+
+	<!-- 唯一码发送 -->
+	<string name="phone_info_send_title">注册手机</string>
+	<string name="phone_info_send_description">手机信息未注册</string>
+	<string name="phone_info_sending">正在注册..</string>
+	<string name="phone_info_send_ok">注册成功</string>
+	<string name="phone_info_send_fail">注册失败&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;请稍后重新注册</string>
+	<string name="phone_info_send_again">重新发送</string>
+	<string name="phone_info_not_authenticated">设备尚未被授权，需要在服务器授权</string>
+
+	<string name="finger_save_title">保存指纹</string>
+	<string name="fingerprint_save_description">保存指纹与账号信息</string>
+
+
+	<string name="home_guest">访客</string>
+	<string name="home_guest_email">正在使用访客模式</string>
+	<string name="home_drawer_item_uid">UID</string>
+	<string name="home_drawer_logout">退出</string>
+	<string name="home_drawer_second_head">更多设置</string>
+	<string name="home_drawer_connect">通讯方式</string>
+	<string name="home_drawer_turn_server">流转</string>
+	<string name="home_drawer_encrypt">加密</string>
+	<string name="home_drawer_server_address">服务器地址</string>
+	<string name="home_drawer_server_bind">绑定手机</string>
+	<string name="drawer_item_help">帮助</string>
 </resources>

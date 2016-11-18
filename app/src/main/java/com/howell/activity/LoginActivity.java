@@ -14,6 +14,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -34,6 +36,7 @@ import android.widget.TextView;
 
 import com.howell.action.LoginAction;
 import com.howell.ecam.R;
+import com.howell.utils.IConst;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +46,9 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>,OnClickListener,LoginAction.IloginRes {
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>,OnClickListener,LoginAction.IloginRes,IConst {
+
+    private static final int MSG_LOGIN_SUCCESS = 0x01;
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -70,6 +75,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
     private Button mloginBtn,mRegBtn;
     LinearLayout mTryLl;
+    private boolean mIsGuest;
+    Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case LoginActivity.MSG_LOGIN_SUCCESS:
+                    break;
+            }
+
+
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +104,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    attemptLogin(false);
                     return true;
                 }
                 return false;
@@ -156,7 +175,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
+    private void attemptLogin(boolean isGuest) {
         if (mAuthTask != null) {
             return;
         }
@@ -168,6 +187,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Store values at the time of the login attempt.
         String username = mUserNameView.getText().toString();
         String password = mPasswordView.getText().toString();
+        if (isGuest){
+            username = GUEST_NAME;
+            password = GUEST_PASSWORD;
+        }
+        if (username.equals(GUEST_NAME)){
+            mIsGuest = true;
+        }
+
 
         boolean cancel = false;
         View focusView = null;
@@ -198,7 +225,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             //login
             mProgressView.setVisibility(View.VISIBLE);
-            LoginAction.getInstance().regLoginResCallback(this).Login(username,password);
+            LoginAction.getInstance().setContext(this).regLoginResCallback(this).Login(username,password);
         }
     }
 
@@ -206,7 +233,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         Activities.getInstance().addActivity(LoginActivity.class.getName(),this);
         Intent intent = new Intent(this,RegisterActivity.class);
         startActivity(intent);
-
     }
 
     /**
@@ -301,12 +327,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         closeInput(view);
         switch (view.getId()){
             case R.id.login_btn_login:
-                attemptLogin();
+                attemptLogin(false);
                 break;
             case R.id.login_btn_reg:
                 startRegisterActivity();
                 break;
             case R.id.login_ll_try:
+                attemptLogin(true);
                 break;
             default:
                 break;
@@ -316,9 +343,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     public void onLoginSuccess() {
         mProgressView.setVisibility(View.GONE);
-        LoginAction.getInstance().unRegLoginResCallback();
+        LoginAction.getInstance().setmIsGuest(mIsGuest).unRegLoginResCallback();
+        mHandler.sendEmptyMessage(LoginActivity.MSG_LOGIN_SUCCESS);
         //TODO:show camLIST activity
-
+        Intent intent = new Intent(this,HomeExActivity.class);
+        startActivity(intent);
         finish();
     }
 

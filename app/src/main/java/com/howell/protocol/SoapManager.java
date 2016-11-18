@@ -1,15 +1,6 @@
 package com.howell.protocol;
 
-import java.io.Serializable;
-import java.net.SocketTimeoutException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-
-import org.ksoap2.SoapEnvelope;
-import org.ksoap2.serialization.SoapObject;
-import org.ksoap2.serialization.SoapSerializationEnvelope;
-import org.ksoap2.transport.HttpTransportSE;
+import android.util.Log;
 
 import com.howell.entityclass.Device;
 import com.howell.entityclass.DeviceSharer;
@@ -17,7 +8,16 @@ import com.howell.entityclass.NodeDetails;
 import com.howell.entityclass.VODRecord;
 import com.howell.utils.AnalyzingDoNetOutput;
 
-import android.util.Log;
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
+import org.ksoap2.transport.HttpTransportSE;
+
+import java.io.Serializable;
+import java.net.SocketTimeoutException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 @SuppressWarnings("serial")
 public class SoapManager implements Serializable {
@@ -368,7 +368,7 @@ public class SoapManager implements Serializable {
 
         SoapObject object = initEnvelopAndTransport(rpc,"http://www.haoweis.com/HomeServices/MCU/getAccount");
         try{
-	        Log.e("-------------->>>>>", "object = " + object.toString());
+	        Log.e("123", "-------------->>>>>    object = " + object.toString());
 	        
 	        Object result = object.getProperty("result");
 	        if(result.toString().equals("SessionExpired")){

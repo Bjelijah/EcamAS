@@ -7,6 +7,7 @@
         android:protectionLevel="signature" />
 
     <!-- Required  一些系统要求的权限，如访问网络等 -->
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <uses-permission android:name="com.android.howell.webcam.permission.JPUSH_MESSAGE" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -163,9 +164,9 @@
         <!--android:name="com.howell.activity.LogoActivity"-->
 
         <activity
-            android:name="com.howell.activity.HomeActivity"
+            android:name="com.howell.activity.HomeExActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/MyAppThemeLogin"
+            android:theme="@style/MyAppThemeHome"
            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -174,10 +175,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.howell.activity.LoginActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/MyAppThemeLogin"
-            />
+        <!--<activity android:name="com.howell.activity.LoginActivity"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:theme="@style/MyAppThemeLogin"-->
+            <!--/>-->
 
 
 
@@ -187,7 +188,10 @@
             android:theme="@style/MyAppThemeRegister"/>
 
 
-        <!--<activity android:name="com.howell.activity.HomeActivity"    ></activity>-->
+        <!--<activity android:name="com.howell.activity.HomeExActivity"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:theme="@style/MyAppThemeHome"-->
+            <!--/>-->
 
 
 

@@ -8,6 +8,7 @@
     android:id="@+id/dl"
     tools:ignore="RtlHardcoded">
 
+    <!-- home-->
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -88,6 +89,16 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
+
+    <!-- 抽屉 -->
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="270dp"-->
+        <!--android:layout_height="match_parent">-->
+        <!---->
+    <!--</LinearLayout>-->
+
+
     <RelativeLayout
         android:layout_width="270dp"
         android:layout_height="match_parent"
@@ -95,6 +106,40 @@
         android:orientation="vertical"
         android:background="#66112233"
         >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="170dp"
+            android:background="@mipmap/background_poly"
+            >
+
+            <!-- 头像 -->
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/user_avatar"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
+
+
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+
+
+            </LinearLayout>
+
+
+
+
+        </LinearLayout>
+
+
+
+
 
         <TextView
             android:layout_width="wrap_content"

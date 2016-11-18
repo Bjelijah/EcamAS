@@ -56,6 +56,9 @@ public class PullRefreshLayout extends FlingLayout {
         super(context, attrs, defStyle);
     }
 
+
+
+
     @Override
     protected boolean onScroll(float y) {
         if (mHeader != null && hasHeader && y >= 0) {
@@ -70,7 +73,7 @@ public class PullRefreshLayout extends FlingLayout {
                 return intercept;
             }
         }
-        return false;
+        return true;
     }
 
     @Override

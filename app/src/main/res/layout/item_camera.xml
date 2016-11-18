@@ -1,23 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.howell.activity.view.SwipeLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="15dp"
-    style="?android:attr/buttonBarButtonStyle"
-    android:background="@drawable/item_btn_bk"
 
+    android:id="@+id/item_camera_sll"
+    android:orientation="vertical"
     >
 
-    <TextView
+    <!--style="?android:attr/buttonBarButtonStyle"-->
+    <!--android:background="@drawable/item_btn_bk"-->
 
-        android:id="@+id/item_tv"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:id="@+id/item_camera_ll_left"
+        android:orientation="horizontal"
+        android:background="@color/home_bk"
+        >
+
+        <TextView
+            android:id="@+id/tv_delete"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:listSelector="#000000"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:text="delete"/>
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:layout_width="500dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="15dp"
-        android:text="@string/app_name"
-        android:textSize="15sp"
-        />
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/item_camera_ll_right"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            >
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp">
+
+                <ImageView
+                    android:id="@+id/item_camera_iv_picture"
+                    android:layout_width="150dp"
+                    android:layout_height="100dp"
+                    android:contentDescription="@null"
+                    android:scaleType="fitXY" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="1.0"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:id="@+id/item_camera_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
 
 
-</RelativeLayout>
+                    android:text="@string/app_name"
+                    android:textColor="@color/material_drawer_dark_background"
+                    android:textSize="20sp"
+                    android:gravity="center|bottom"
+                    android:layout_weight="1.0"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="@string/camera_list_wifi_intensity"
+                        android:textSize="15sp" />
+
+                    <ImageView
+                        android:id="@+id/item_camera_iv_wifi_idensity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleType="fitCenter" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/item_camera_iv_offline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|top" />
+
+
+
+
+    </FrameLayout>
+</com.howell.activity.view.SwipeLinearLayout>
