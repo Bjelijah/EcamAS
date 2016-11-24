@@ -104,6 +104,20 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
+    <style name="MyAppThemeAdd" parent="MaterialDrawerTheme.TranslucentStatus">
+
+        <item name="colorPrimary">@color/home_bk</item>
+        <item name="colorPrimaryDark">@color/home_bk_dark</item>
+        <item name="colorAccent">@color/home_accent</item>
+
+        <item name="android:background">@color/transparent</item>
+    </style>
+
+    <style name="MyAppThemeHome.replay">
+        <item name="colorAccent">@color/register_bk</item>
+        <item name="android:clickable">true</item>
+    </style>
+
 
     <!--@style/MaterialDrawerTheme.Light.DarkToolbar.TranslucentStatus-->
     <!--<style name="MyAppThemeHome" parent="MaterialDrawerTheme.Light.DarkToolbar.TranslucentStatus">-->
@@ -111,6 +125,8 @@
         <item name="colorPrimary">@color/home_bk</item>
         <item name="colorPrimaryDark">@color/home_bk_dark</item>
         <item name="colorAccent">@color/home_accent</item>
+
+        <!--<item name="android:background">@color/material_drawer_dark_background</item>-->
 
 
         <item name="material_drawer_background">@color/material_drawer_dark_background</item>

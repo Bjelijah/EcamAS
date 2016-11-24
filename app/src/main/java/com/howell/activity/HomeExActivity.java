@@ -1,10 +1,18 @@
 package com.howell.activity;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityOptions;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -59,6 +67,7 @@ public class HomeExActivity extends AppCompatActivity {
     private AccountHeader headerResult;
     private Drawer result;
     ViewPager mViewPager;
+    private FloatingActionButton mAddbtn;
     private IProfile profile,profile2;
     private Toolbar toolbar;
     private int [] mUserIcon = {R.drawable.profile2,R.drawable.profile3,R.drawable.profile4,R.drawable.profile5,R.drawable.profile6};
@@ -67,6 +76,7 @@ public class HomeExActivity extends AppCompatActivity {
     private DrawerCheckedChangeListener onCheckedChangerListener = new DrawerCheckedChangeListener();
     private DrawerListener onDrawerListener = new DrawerListener();
     private DrawerItemClickListener onDrawerItemClickListener = new DrawerItemClickListener();
+    public static Bitmap sBkBitmap;
     @SuppressLint("NewApi")
     @Override
     protected void onCreate( Bundle savedInstanceState) {
@@ -76,7 +86,15 @@ public class HomeExActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle(getString(R.string.app_name));
-
+        final View rootView = findViewById(R.id.main_content);
+        mAddbtn = (FloatingActionButton) findViewById(R.id.floating_action_button);
+        mAddbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               BulrTask task = new BulrTask(rootView);
+                task.execute();
+            }
+        });
 //        profile = new ProfileDrawerItem().withName("test name").withEmail("test email")
 //                .withIcon(getResources().getDrawable(R.drawable.profile2));
 //        profile2 = new ProfileDrawerItem().withName("test name2").withEmail("test email2")
@@ -176,7 +194,7 @@ public class HomeExActivity extends AppCompatActivity {
                 .withToolbar(toolbar)
                 .withFullscreen(true)
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_home).withIcon(FontAwesome.Icon.faw_home).withIdentifier(1),
+                        new PrimaryDrawerItem().withName(R.string.home_drawer_item_home).withIcon(FontAwesome.Icon.faw_home).withIdentifier(1),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_free_play).withIcon(FontAwesome.Icon.faw_gamepad),
                         new PrimaryDrawerItem().withName(R.string.drawer_item_custom).withIcon(FontAwesome.Icon.faw_eye),
                         new SectionDrawerItem().withName(R.string.home_drawer_second_head),
@@ -227,6 +245,67 @@ public class HomeExActivity extends AppCompatActivity {
         mViewPager.setAdapter(myFragmentPagerAdatper);
     }
 
+    private Bitmap getViewBitmap(View v){
+        v.clearFocus();
+        v.setPressed(false);
+        boolean willNotCache = v.willNotCacheDrawing();
+        v.setWillNotCacheDrawing(false);
+        // Reset the drawing cache background color to fully transparent
+        // for the duration of this operation
+        int color = v.getDrawingCacheBackgroundColor();
+        v.setDrawingCacheBackgroundColor(0);
+
+        if (color != 0) {
+            v.destroyDrawingCache();
+        }
+        v.buildDrawingCache();
+        Bitmap cacheBitmap = v.getDrawingCache();
+        if (cacheBitmap == null) {
+            Log.e("123", "failed getViewBitmap(" + v + ")", new RuntimeException());
+            return null;
+        }
+        Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
+        // Restore the view
+        v.destroyDrawingCache();
+        v.setWillNotCacheDrawing(willNotCache);
+        v.setDrawingCacheBackgroundColor(color);
+        return bitmap;
+    }
+
+    private Bitmap bulrBitmap(Bitmap bitmap){
+        //Let's create an empty bitmap with the same size of the bitmap we want to blur
+        Bitmap outBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(),Bitmap.Config.ARGB_8888);
+        //Instantiate a new Renderscript
+        RenderScript rs = RenderScript.create(getApplicationContext());
+
+        //Create an Intrinsic Blur Script using the Renderscript
+        ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+
+        //Create the Allocations (in/out) with the Renderscript and the in/out bitmaps
+        Allocation allIn = Allocation.createFromBitmap(rs, bitmap);
+        Allocation allOut = Allocation.createFromBitmap(rs, outBitmap);
+
+        //Set the radius of the blur
+        blurScript.setRadius(25.f);
+
+        //Perform the Renderscript
+        blurScript.setInput(allIn);
+        blurScript.forEach(allOut);
+
+        //Copy the final bitmap created by the out Allocation to the outBitmap
+        allOut.copyTo(outBitmap);
+
+        //recycle the original bitmap
+        bitmap.recycle();
+
+        //After finishing everything, we destroy the Renderscript.
+        rs.destroy();
+
+        return outBitmap;
+
+
+    }
+
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
@@ -269,6 +348,16 @@ public class HomeExActivity extends AppCompatActivity {
         @Override
         public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
             if (drawerItem.getIdentifier()==ID_DRAWER_EXIT){
+
+                mViewPager.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(HomeExActivity.this,LoginActivity.class);
+                        HomeExActivity.this.startActivity(intent);
+                        finish();
+                    }
+                },300);
+
 
             }
 
@@ -317,5 +406,41 @@ public class HomeExActivity extends AppCompatActivity {
             return strings.get(position);
         }
     }
+
+    class BulrTask extends AsyncTask<Void,Void,Void>{
+        View v;
+        Bitmap bitmap;
+        BulrTask(View v){
+            this.v = v;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            bitmap = getViewBitmap(v);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Bitmap bulrBitmap = bulrBitmap(bitmap);
+            sBkBitmap = bulrBitmap;
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Intent intent = new Intent(HomeExActivity.this,AddNewCamera.class);
+            HomeExActivity.this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(HomeExActivity.this,mAddbtn,"mybtn").toBundle());
+            int cx = (mAddbtn.getLeft()+mAddbtn.getRight())/2;
+            int cy = (mAddbtn.getTop()+mAddbtn.getBottom())/2;
+            int startX = mAddbtn.getWidth()/2;
+            int startY = mAddbtn.getHeight()/2;
+
+//            ActivityOptions.makeScaleUpAnimation(mAddbtn,startX,startY,0,0);
+//            HomeExActivity.this.startActivity(intent, ActivityOptionsCompat.makeScaleUpAnimation(mAddbtn,startX,startY,0,0).toBundle());
+        }
+    }
+
 
 }

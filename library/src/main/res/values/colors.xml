@@ -22,7 +22,8 @@
     <color name="material_drawer_header_selection_text">#FFF</color>
 
     <!-- MaterialDrawer DEFAULT DARK colors -->
-    <color name="material_drawer_dark_background">@color/md_dark_background</color>
+    <!--<color name="material_drawer_dark_background">@color/md_dark_background</color>-->
+    <color name="material_drawer_dark_background">#202020</color>
     <!-- MaterialDrawer DEFAULT DARK text / items colors -->
     <color name="material_drawer_dark_primary_text">@color/md_dark_primary_text</color>
     <!-- is overwritten for all devices > 21 (fix that transparent colors are not possible for tinting on < 21) -->
@@ -32,7 +33,7 @@
     <color name="material_drawer_dark_hint_icon">@color/md_dark_disabled</color>
     <color name="material_drawer_dark_divider">@color/md_dark_dividers</color>
     <!-- MaterialDrawer DEFAULT DARK drawer colors -->
-    <color name="material_drawer_dark_selected">#202020</color>
+    <color name="material_drawer_dark_selected">#303030</color>
     <color name="material_drawer_dark_selected_text">@color/material_drawer_primary</color>
     <color name="material_drawer_dark_header_selection_text">#FFF</color>
 </resources>

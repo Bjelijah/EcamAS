@@ -175,10 +175,10 @@
             </intent-filter>
         </activity>
 
-        <!--<activity android:name="com.howell.activity.LoginActivity"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:theme="@style/MyAppThemeLogin"-->
-            <!--/>-->
+        <activity android:name="com.howell.activity.LoginActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/MyAppThemeLogin"
+            />
 
 
 
@@ -193,7 +193,9 @@
             <!--android:theme="@style/MyAppThemeHome"-->
             <!--/>-->
 
-
+        <activity android:name="com.howell.activity.AddNewCamera"
+            android:screenOrientation="portrait"
+            android:theme="@style/MyAppThemeAdd"/>
 
         <activity
             android:name="com.howell.activity.VideoList"

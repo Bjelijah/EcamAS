@@ -37,6 +37,7 @@ public class DeviceFragment extends Fragment implements BaseHeaderView.OnRefresh
     RecyclerView mRV;
     BaseHeaderView mbhv;
 //    BaseFooterView mbfv;
+
     List<CameraItemBean> mList = new ArrayList<CameraItemBean>();
     int page = 1;
     DeviceRecyclerViewAdapter adapter;
@@ -72,11 +73,11 @@ public class DeviceFragment extends Fragment implements BaseHeaderView.OnRefresh
 //        mbfv.setOnLoadListener(this);
 
 
+
         adapter = new DeviceRecyclerViewAdapter(getContext(),this);
         mRV.setLayoutManager(new LinearLayoutManager(getContext()));
         mRV.setAdapter(adapter);
         getData(5);
-
         return mView;
     }
 
@@ -97,11 +98,7 @@ public class DeviceFragment extends Fragment implements BaseHeaderView.OnRefresh
 
             mList.add(b);
         }
-
-
-
         mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);
-
     }
 
     private void getData(){
@@ -119,7 +116,6 @@ public class DeviceFragment extends Fragment implements BaseHeaderView.OnRefresh
 //                mbfv.stopLoad();
             }
         },3000);
-
     }
 
     @Override
@@ -133,12 +129,7 @@ public class DeviceFragment extends Fragment implements BaseHeaderView.OnRefresh
         },3000);
     }
 
-    @Override
-    public void onItemClickListener(View v, int pos) {
-        Log.i("123","onItemClickListener   pos="+pos);
-//        String ip = mList.get(pos);
 
-    }
 
 
     @Override
@@ -155,11 +146,35 @@ public class DeviceFragment extends Fragment implements BaseHeaderView.OnRefresh
             mList.add(b);
         }
         mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);
-
     }
 
     @Override
     public void onQueryDeviceError() {
+
+    }
+
+    @Override
+    public void onItemVideoClickListener(View v, int pos) {
+
+    }
+
+    @Override
+    public void onItemReplayClickListener(View v, int pos) {
+        Log.i("123","onItemClickListener   pos="+pos);
+    }
+
+    @Override
+    public void onItemSettingClickListener(View v, int pos) {
+
+    }
+
+    @Override
+    public void onItemInfoClickListener(View v, int pos) {
+
+    }
+
+    @Override
+    public void onItemDeleteClickListener(View v, int pos) {
 
     }
 }

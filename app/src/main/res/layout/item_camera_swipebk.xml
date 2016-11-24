@@ -2,7 +2,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="15dp"
+
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:paddingBottom="1dp"
+    android:paddingTop="15dp"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
     <!--style="?android:attr/buttonBarButtonStyle"-->
@@ -15,29 +21,126 @@
         android:orientation="horizontal"
         android:background="@color/home_bk"
         >
-
-        <TextView
-            android:id="@+id/tv_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:listSelector="#000000"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:background="@android:color/transparent"
+        <!--android:background="@drawable/item_camera_btn"-->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
             android:gravity="center"
-            android:layout_gravity="center_vertical"
-            android:text="delete"/>
+            >
+            <!-- 录像 -->
 
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textSize="16sp"
-          android:background="@android:color/transparent"
-          android:text="test"
-          android:gravity="center"
-          android:layout_gravity="center_vertical"
-          android:layout_marginLeft="20dp"
-          />
+
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/item_camera_iv_replay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                app:fabSize="mini"
+                app:backgroundTint="@color/item_camera_replay"
+                app:rippleColor="#ff0000"
+                app:elevation="6dp"
+                app:pressedTranslationZ="12dp"
+                />
+
+
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:clickable="true"
+            >
+            <!-- 设置 -->
+
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/item_camera_iv_setting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                app:fabSize="mini"
+                app:backgroundTint="@color/item_camera_setting"
+                app:rippleColor="#ff0000"
+                app:elevation="6dp"
+                app:pressedTranslationZ="12dp"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:clickable="true"
+            >
+            <!-- 属性 -->
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textSize="16sp"-->
+                <!--android:background="@android:color/transparent"-->
+                <!--android:text="属性"-->
+                <!--android:gravity="center"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--android:layout_marginLeft="20dp"-->
+                <!--/>-->
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/item_camera_iv_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                app:fabSize="mini"
+                app:backgroundTint="@color/item_camera_info"
+                app:rippleColor="#00ff00"
+                app:elevation="6dp"
+                app:pressedTranslationZ="12dp"
+                />
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            >
+            <!-- 删除 -->
+
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/item_camera_iv_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                app:fabSize="mini"
+                app:backgroundTint="@color/item_camera_detele"
+                app:rippleColor="#00ff00"
+                app:elevation="6dp"
+                app:pressedTranslationZ="12dp"
+                />
+
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            />
+
+
 
     </LinearLayout>
 
@@ -58,6 +161,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/item_camera_top"
+            android:background="@color/transparent"
             >
 
             <ImageView
@@ -74,10 +178,16 @@
                 android:orientation="horizontal"
                 >
 
+                <LinearLayout
+                    android:layout_width="15dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/home_bk"
+                    />
+
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="15dp">
+                    >
 
                     <ImageView
                         android:id="@+id/item_camera_iv_picture"
@@ -102,7 +212,7 @@
 
 
                         android:text="@string/app_name"
-                        android:textColor="@color/material_drawer_dark_background"
+                        android:textColor="@color/white"
                         android:textSize="20sp"
                         android:gravity="center|bottom"
                         android:layout_weight="1.0"
@@ -112,6 +222,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1.0"
+                        android:gravity="center"
                         >
                         <TextView
                             android:layout_width="wrap_content"

@@ -82,6 +82,10 @@ dependencies {
 
     compile 'com.zys:brokenview:1.0.3'
 
+    compile ('com.github.ozodrukh:CircularReveal:2.0.1@aar') {
+        transitive = true;
+    }
+
 //    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
 //    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
 //    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<io.codetail.widget.RevealFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/add_camera"
+        >
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_camera_fab_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginRight="@dimen/add_activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/add_activity_horizontal_margin"
+
+            android:clickable="true"
+            android:src="@mipmap/ic_launcher"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            app:layout_anchorGravity="bottom|right|end"
+            />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_camera_fab_ap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/add_activity_mini_horizontal_margin"
+
+            android:layout_marginBottom="@dimen/add_activity_vertical_margin"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_above="@id/add_camera_fab_back"
+            app:fabSize="mini"
+            android:clickable="true"
+            android:src="@mipmap/ic_launcher"
+            />
+
+        <Button
+            android:id="@+id/add_camera_btn_ap"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_toLeftOf="@id/add_camera_fab_ap"
+            android:text="@string/add_ap"
+            android:layout_alignBottom="@id/add_camera_fab_ap"
+            android:layout_alignTop="@id/add_camera_fab_ap"
+            android:layout_marginRight="@dimen/add_activity_horizontal_margin"
+            android:paddingLeft="@dimen/add_activity_btn_padding"
+            android:paddingRight="@dimen/add_activity_btn_padding"
+            />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_camera_fab_flash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/add_activity_mini_horizontal_margin"
+            android:layout_marginBottom="@dimen/add_activity_vertical_margin"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_above="@id/add_camera_fab_ap"
+            app:fabSize="mini"
+            android:clickable="true"
+            android:src="@mipmap/ic_launcher"
+            />
+
+        <Button
+            android:id="@+id/add_camera_btn_flash"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_toLeftOf="@id/add_camera_fab_flash"
+            android:text="@string/add_flash"
+            android:layout_alignBottom="@id/add_camera_fab_flash"
+            android:layout_alignTop="@id/add_camera_fab_flash"
+            android:layout_marginRight="@dimen/add_activity_horizontal_margin"
+            android:paddingLeft="@dimen/add_activity_btn_padding"
+            android:paddingRight="@dimen/add_activity_btn_padding"
+            />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_camera_fab_listen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/add_activity_mini_horizontal_margin"
+            android:layout_marginBottom="@dimen/add_activity_vertical_margin"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_above="@id/add_camera_fab_flash"
+            app:fabSize="mini"
+            android:clickable="true"
+            android:src="@mipmap/ic_launcher"
+            android:transitionName="mybtn"
+            />
+
+        <Button
+            android:id="@+id/add_camera_btn_listen"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_toLeftOf="@id/add_camera_fab_listen"
+            android:text="@string/add_listen"
+            android:layout_alignBottom="@id/add_camera_fab_listen"
+            android:layout_alignTop="@id/add_camera_fab_listen"
+            android:layout_marginRight="@dimen/add_activity_horizontal_margin"
+            android:paddingLeft="@dimen/add_activity_btn_padding"
+            android:paddingRight="@dimen/add_activity_btn_padding"
+            />
+
+
+
+    </RelativeLayout>
+
+</io.codetail.widget.RevealFrameLayout>

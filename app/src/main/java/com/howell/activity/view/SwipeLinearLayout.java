@@ -22,6 +22,9 @@ public class SwipeLinearLayout extends LinearLayout {
     boolean hasJudged = false;
     boolean ignore = false;
 
+
+
+
     public static final int DIRECTION_EXPAND = 0;
     public static final int DIRECTION_SHRINK = 1;
 
@@ -150,17 +153,20 @@ public class SwipeLinearLayout extends LinearLayout {
     public boolean onTouchEvent(MotionEvent event) {
        // Log.i("123","onTouch event");
 
-
+//        Log.e("123","event getAction="+event.getAction());
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN:
+                if (!isClose&&event.getX()<width_left){//打开 触发后面控件
+                    return false;
+                }
                 lastX = event.getX();
                 lastY = event.getY();
                 startScrollX = getScrollX();
 //                Log.e("123","startScrollx="+startScrollX);
                 break;
             case MotionEvent.ACTION_MOVE:
-//                Log.e("123","curScroll="+getScaleX());
+            //    Log.e("123","curScroll="+getScaleX());
                 if (ignore) {
                     ignore = false;
                     break;
@@ -187,13 +193,16 @@ public class SwipeLinearLayout extends LinearLayout {
                         Log.e("123","滑动");
                         scrollTo(targetScrollX, 0);//滑动
                     }
+
                 }
+
                 break;
             case MotionEvent.ACTION_UP:
                 float finalX = event.getX();
                 if (finalX < startX) {//左划  关闭
-                 //   Log.e("123","scroll  SHRINK");
+                    Log.e("123","scroll  SHRINK");
                     if (!isClose) {
+                        Log.e("123","action up DIRECTION_SHRINK");
                         scrollAuto(DIRECTION_SHRINK);
                     }
                 }  else if(finalX > startX){//右划 展开
@@ -204,6 +213,10 @@ public class SwipeLinearLayout extends LinearLayout {
             default:
                 break;
         }
+
+//        Log.e("123","bDone="+bDone+"   isClose="+isClose);
+
+//        return bDone;
         return true;
     }
 
@@ -215,14 +228,14 @@ public class SwipeLinearLayout extends LinearLayout {
         int curScrollX = getScrollX();
         if (direction == DIRECTION_EXPAND) {
             // 展开
-            Log.i("123","展开");
+//            Log.i("123","展开");
 //            mScroller.startScroll(curScrollX,0,-curScrollX,0,300);
             isClose = false;
        //     mScroller.startScroll(curScrollX, 0, -curScrollX, 0, 300);
             mScroller.startScroll(curScrollX,0,(-curScrollX-width_left),0,300);
         } else {
             // 缩回
-            Log.i("123","缩回");
+//            Log.i("123","缩回");
             mScroller.startScroll(curScrollX,0,-curScrollX,0,300);
 //            mScroller.startScroll(curScrollX,0,(width_left-curScrollX),0,300);
             isClose = true;
@@ -251,7 +264,5 @@ public class SwipeLinearLayout extends LinearLayout {
          * @param isHorizontal 滑动方向是否为水平
          */
         void onDirectionJudged(SwipeLinearLayout sll, boolean isHorizontal);
-
-
     }
 }

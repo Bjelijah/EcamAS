@@ -3,6 +3,8 @@ package com.howell.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,12 +14,15 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.howell.activity.view.SwipeFrameLayout;
+import com.howell.action.LoginAction;
 import com.howell.activity.view.SwipeLinearLayout;
 import com.howell.bean.CameraItemBean;
 import com.howell.ecam.R;
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.ScaleImageUtils;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -86,7 +91,8 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
             e.printStackTrace();
         }
         if(bm == null){
-            holder.ivCamera.setImageResource(R.mipmap.card_camera_default_image);
+//            holder.ivCamera.setImageResource(R.mipmap.card_camera_default_image);
+            holder.ivCamera.setBackgroundColor(mContext.getResources().getColor(R.color.item_camera_video));
         }else{
             holder.ivCamera.setImageBitmap(bm);
         }
@@ -109,9 +115,55 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
             holder.ivInOffLine.setImageResource(country==0?R.mipmap.card_offline_image_gray:R.mipmap.card_offline_image_gray_english);
         }
 
+        //back
+
+
+//        Octicons.Icon.oct_megaphone
+        holder.ivReplay.setImageDrawable(new IconicsDrawable(mContext,   GoogleMaterial.Icon.gmd_videocam).actionBar().color(Color.WHITE));
+        holder.ivSetting.setImageDrawable(new IconicsDrawable(mContext,    Octicons.Icon.oct_settings).actionBar().color(Color.WHITE));
+        holder.ivInfo.setImageDrawable(new IconicsDrawable(mContext,    Octicons.Icon.oct_info).actionBar().color(Color.WHITE));
+        holder.ivDelete.setImageDrawable(new IconicsDrawable(mContext,    Octicons.Icon.oct_trashcan).actionBar().color(Color.WHITE));
+        holder.ivDelete.setVisibility(LoginAction.getInstance().ismIsGuest()?View.GONE:View.VISIBLE);
+
+
+
     }
 
+    private void initClick(ViewHolder holder,final int pos,final CameraItemBean item){
 
+        holder.ivReplay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("123","ivReplay set onclick");
+                mClickListener.onItemReplayClickListener(view,pos);
+            }
+        });
+        holder.ivSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mClickListener.onItemSettingClickListener(view,pos);
+            }
+        });
+        holder.ivInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mClickListener.onItemInfoClickListener(view,pos);
+            }
+        });
+        holder.ivDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mClickListener.onItemDeleteClickListener(view,pos);
+            }
+        });
+        holder.ivCamera.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                mClickListener.onItemVideoClickListener(view,pos);
+                return false;
+            }
+        });
+    }
 
 
 
@@ -119,41 +171,8 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
     @Override
     public void onBindViewHolder(ViewHolder holder,final int position) {
         CameraItemBean item = mList.get(position);
-
         init(holder,item);
-
-
-
-        if (mClickListener!=null){
-//            holder.getItemView().setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    mClickListener.onItemClickListener(view,position);
-//                }
-//            });
-        }
-
-      //  Log.i("123","ll_left width="+holder.ll_left.getWidth());
-
-      //  holder.sll.scrollTo(holder.ll_left.getWidth(),0);
-        final ViewHolder finalHolder = holder;
-
-        holder.ll_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i("123","ll_left click");
-                finalHolder.sll.scrollAuto(SwipeFrameLayout.DIRECTION_SHRINK);
-            }
-        });
-        holder.tv_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i("123","delte item:"+position);
-                finalHolder.sll.scrollAuto(SwipeFrameLayout.DIRECTION_SHRINK);
-            }
-        });
-
-
+        initClick(holder,position,item);
     }
 
     @Override
@@ -172,7 +191,6 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
                 if (!sll.isClose()){
                     sll.scrollAuto(SwipeLinearLayout.DIRECTION_SHRINK);
                 }
-
             }
         }else{
             for (SwipeLinearLayout sll:mSllList){
@@ -191,8 +209,13 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
 
 
 
+
     public interface OnItemClickListener{
-        void onItemClickListener(View v,int pos);
+        void onItemVideoClickListener(View v,int pos);
+        void onItemReplayClickListener(View v,int pos);
+        void onItemSettingClickListener(View v,int pos);
+        void onItemInfoClickListener(View v,int pos);
+        void onItemDeleteClickListener(View v,int pos);
     }
 
 
@@ -208,7 +231,10 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
         ImageView ivWifi;
         ImageView ivInOffLine;
 
-        View tv_delete;//// FIXME: 2016/11/18
+
+
+        //back
+        FloatingActionButton ivReplay,ivSetting,ivInfo,ivDelete;
 
 
         public View getItemView(){
@@ -217,10 +243,14 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
 
         public ViewHolder(View itemView) {
             super(itemView);
+            ivReplay = (FloatingActionButton) itemView.findViewById(R.id.item_camera_iv_replay);
+            ivSetting = (FloatingActionButton) itemView.findViewById(R.id.item_camera_iv_setting);
+            ivInfo = (FloatingActionButton) itemView.findViewById(R.id.item_camera_iv_info);
+            ivDelete = (FloatingActionButton) itemView.findViewById(R.id.item_camera_iv_delete);
             sll = (SwipeLinearLayout) itemView.findViewById(R.id.item_camera_sll);
             ll_back = itemView.findViewById(R.id.item_camera_bk);
             ll_top = itemView.findViewById(R.id.item_camera_top);
-            tv_delete = itemView.findViewById(R.id.tv_delete);
+
             tvName = (TextView) itemView.findViewById(R.id.item_camera_name);
             this.itemView = itemView;
             sll.setOnSwipeListener(DeviceRecyclerViewAdapter.this);
