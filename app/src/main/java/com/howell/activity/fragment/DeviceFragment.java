@@ -72,12 +72,11 @@ public class DeviceFragment extends Fragment implements BaseHeaderView.OnRefresh
         mbhv.setOnRefreshListener(this);
 //        mbfv.setOnLoadListener(this);
 
-
-
         adapter = new DeviceRecyclerViewAdapter(getContext(),this);
         mRV.setLayoutManager(new LinearLayoutManager(getContext()));
         mRV.setAdapter(adapter);
         getData(5);
+//        getData();
         return mView;
     }
 
@@ -95,7 +94,6 @@ public class DeviceFragment extends Fragment implements BaseHeaderView.OnRefresh
                     .setPtz(true)
                     .setStore(true)
                     .setPicturePath(null);
-
             mList.add(b);
         }
         mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);
@@ -155,6 +153,7 @@ public class DeviceFragment extends Fragment implements BaseHeaderView.OnRefresh
 
     @Override
     public void onItemVideoClickListener(View v, int pos) {
+        CameraItemBean item = mList.get(pos);
 
     }
 

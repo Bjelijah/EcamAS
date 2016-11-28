@@ -8,6 +8,8 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.PersistableBundle;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
@@ -30,6 +32,7 @@ import com.bumptech.glide.Glide;
 import com.howell.action.LoginAction;
 import com.howell.activity.fragment.DeviceFragment;
 import com.howell.activity.fragment.MediaFragment;
+import com.howell.activity.fragment.NoticeFragment;
 import com.howell.bean.UserLoginDBBean;
 import com.howell.db.UserLoginDao;
 import com.howell.ecam.R;
@@ -60,10 +63,21 @@ import java.util.List;
 
 public class HomeExActivity extends AppCompatActivity {
 
-    private final static long ID_DRAWER_UID = 0x01;
-    private final static long ID_DRAWER_EXIT = 0x00;
+    private final static long ID_DRAWER_UID = 0x00;
+    private final static long ID_DRAWER_HOME = 0x01;
+
+    private final static long ID_DRAWER_EXIT = 0xe0;
     private final static long ID_DRAWER_SERVER_ADDRESS = 0x10;
     private final static long ID_DRAWER_SERVER_BIND = 0x11;
+    private final static long ID_DRAWER_SERVER_TURN = 0x11a;
+    private final static long ID_DRAWER_SERVER_ENCRYPT = 0x11b;
+    private final static long ID_DRAWER_HELP = 0x12;
+
+    private final static int MSG_HOME_EXIT = 0xf0;
+    private final static int MSG_HOME_HOME = 0xf1;
+    private final static int MSG_HOME_IP = 0xf2;
+    private final static int MSG_HOME_BIND = 0xf3;
+    private final static int MSG_HOME_HELP = 0xf4;
     private AccountHeader headerResult;
     private Drawer result;
     ViewPager mViewPager;
@@ -77,6 +91,34 @@ public class HomeExActivity extends AppCompatActivity {
     private DrawerListener onDrawerListener = new DrawerListener();
     private DrawerItemClickListener onDrawerItemClickListener = new DrawerItemClickListener();
     public static Bitmap sBkBitmap;
+
+
+    Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case MSG_HOME_EXIT:
+                    funExit();
+                    break;
+                case MSG_HOME_HOME:
+                    funHome();
+                    break;
+                case MSG_HOME_IP:
+                     break;
+                case MSG_HOME_BIND:
+                    break;
+                case MSG_HOME_HELP:
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+
+
+
     @SuppressLint("NewApi")
     @Override
     protected void onCreate( Bundle savedInstanceState) {
@@ -108,7 +150,6 @@ public class HomeExActivity extends AppCompatActivity {
 //                .build();
 //        mbGuest = getIntent().getBooleanExtra("isGuest",true);
         mbGuest = LoginAction.getInstance().ismIsGuest();
-
 
         buildHead(false,savedInstanceState);
         buildDrawer(savedInstanceState);
@@ -142,7 +183,6 @@ public class HomeExActivity extends AppCompatActivity {
                 IProfile profile = new ProfileDrawerItem().withName(b.getUserName()).withEmail(b.getUserEmail()).withIcon(getRamdomUserIcon());
                 mList.add(profile);
             }
-
         }
         dao.close();
         return mList;
@@ -184,29 +224,25 @@ public class HomeExActivity extends AppCompatActivity {
 
     @SuppressLint("NewApi")
     private void buildDrawer(Bundle savedInstanceState){
-
-
-
-
         result = new DrawerBuilder()
                 .withActivity(this)
                 .withAccountHeader(headerResult)
                 .withToolbar(toolbar)
                 .withFullscreen(true)
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.home_drawer_item_home).withIcon(FontAwesome.Icon.faw_home).withIdentifier(1),
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_free_play).withIcon(FontAwesome.Icon.faw_gamepad),
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_custom).withIcon(FontAwesome.Icon.faw_eye),
+                        new PrimaryDrawerItem().withName(R.string.home_drawer_item_home).withIcon(FontAwesome.Icon.faw_home).withIdentifier(ID_DRAWER_HOME),
+//                        new PrimaryDrawerItem().withName(R.string.drawer_item_free_play).withIcon(FontAwesome.Icon.faw_gamepad),
+//                        new PrimaryDrawerItem().withName(R.string.drawer_item_custom).withIcon(FontAwesome.Icon.faw_eye),
                         new SectionDrawerItem().withName(R.string.home_drawer_second_head),
                         new SecondaryDrawerItem().withName(R.string.home_drawer_server_address).withIcon(Octicons.Icon.oct_server).withIdentifier(ID_DRAWER_SERVER_ADDRESS),
                         new SecondaryDrawerItem().withName(R.string.home_drawer_server_bind).withIcon(GoogleMaterial.Icon.gmd_8tracks).withIdentifier(ID_DRAWER_SERVER_BIND),
                         new ExpandableDrawerItem().withName(R.string.home_drawer_connect).withIcon(FontAwesome.Icon.faw_connectdevelop).withSelectable(false)
                         .withSubItems(
-                                new SwitchDrawerItem().withName(R.string.home_drawer_turn_server).withLevel(2).withIcon(Octicons.Icon.oct_tools).withChecked(false).withOnCheckedChangeListener(onCheckedChangerListener).withSelectable(false),
-                                new SwitchDrawerItem().withName(R.string.home_drawer_encrypt).withLevel(2).withIcon(Octicons.Icon.oct_tools).withChecked(false).withOnCheckedChangeListener(onCheckedChangerListener).withSelectable(false)
+                                new SwitchDrawerItem().withName(R.string.home_drawer_turn_server).withLevel(2).withIcon(Octicons.Icon.oct_tools).withChecked(false).withOnCheckedChangeListener(onCheckedChangerListener).withSelectable(false).withIdentifier(ID_DRAWER_SERVER_TURN),
+                                new SwitchDrawerItem().withName(R.string.home_drawer_encrypt).withLevel(2).withIcon(Octicons.Icon.oct_tools).withChecked(false).withOnCheckedChangeListener(onCheckedChangerListener).withSelectable(false).withIdentifier(ID_DRAWER_SERVER_ENCRYPT)
                         ),
 //                        new SecondaryDrawerItem().withName(R.string.drawer_item_settings).withIcon(FontAwesome.Icon.faw_cog),
-                        new SecondaryDrawerItem().withName(R.string.drawer_item_help).withIcon(FontAwesome.Icon.faw_question).withEnabled(false)
+                        new SecondaryDrawerItem().withName(R.string.drawer_item_help).withIcon(FontAwesome.Icon.faw_question).withEnabled(false).withIdentifier(ID_DRAWER_HELP)
 //                        new SecondaryDrawerItem().withName(R.string.drawer_item_open_source).withIcon(FontAwesome.Icon.faw_github),
 //                        new SecondaryDrawerItem().withName(R.string.drawer_item_contact).withIcon(FontAwesome.Icon.faw_bullhorn)
                 )
@@ -238,7 +274,7 @@ public class HomeExActivity extends AppCompatActivity {
         List<Fragment> fragments = new ArrayList<>();
         fragments.add(new DeviceFragment());
         fragments.add(new MediaFragment());
-        fragments.add(new MediaFragment());
+        fragments.add(new NoticeFragment());
         MyFragmentPagerAdatper myFragmentPagerAdatper = new MyFragmentPagerAdatper(getSupportFragmentManager(),fragments);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mViewPager.setOffscreenPageLimit(3);
@@ -306,6 +342,14 @@ public class HomeExActivity extends AppCompatActivity {
 
     }
 
+    private void funExit(){
+        Intent intent = new Intent(HomeExActivity.this,LoginActivity.class);
+        HomeExActivity.this.startActivity(intent);
+        finish();
+    }
+    private void funHome(){
+        mViewPager.setCurrentItem(0);
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
@@ -317,10 +361,13 @@ public class HomeExActivity extends AppCompatActivity {
     }
 
     class DrawerCheckedChangeListener implements OnCheckedChangeListener {
-
         @Override
         public void onCheckedChanged(IDrawerItem drawerItem, CompoundButton buttonView, boolean isChecked) {
-
+            if (drawerItem.getIdentifier()==ID_DRAWER_SERVER_TURN){
+                //TODO isChecked:
+            }else if(drawerItem.getIdentifier()==ID_DRAWER_SERVER_ENCRYPT){
+                //TODO isChecked:
+            }
         }
     }
 
@@ -329,11 +376,13 @@ public class HomeExActivity extends AppCompatActivity {
         @Override
         public void onDrawerOpened(View drawerView) {
             Log.i("123","on drawerOpen");
+            //TODO: get Drawer param form sp
         }
 
         @Override
         public void onDrawerClosed(View drawerView) {
             Log.i("123","on drawer close");
+            //TODO:1 save to sp  2 do
         }
 
         @Override
@@ -344,29 +393,24 @@ public class HomeExActivity extends AppCompatActivity {
 
 
     class DrawerItemClickListener implements Drawer.OnDrawerItemClickListener{
-
         @Override
         public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+            Message msg = new Message();
             if (drawerItem.getIdentifier()==ID_DRAWER_EXIT){
-
-                mViewPager.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent(HomeExActivity.this,LoginActivity.class);
-                        HomeExActivity.this.startActivity(intent);
-                        finish();
-                    }
-                },300);
-
-
+                msg.what = MSG_HOME_EXIT;
+            } else if (drawerItem.getIdentifier()==ID_DRAWER_HOME){
+                msg.what = MSG_HOME_HOME;
+            } else if (drawerItem.getIdentifier() == ID_DRAWER_SERVER_ADDRESS){
+                msg.what = MSG_HOME_IP;
+            } else if (drawerItem.getIdentifier() == ID_DRAWER_SERVER_BIND){
+                msg.what = MSG_HOME_BIND;
+            } else if(drawerItem.getIdentifier() == ID_DRAWER_HELP){
+                msg.what = MSG_HOME_HELP;
             }
 
-
+            mHandler.sendMessageDelayed(msg,300);
             return false;
         }
-
-
-
     }
 
 
@@ -382,9 +426,9 @@ public class HomeExActivity extends AppCompatActivity {
             super(fm);
             mList = list;
             strings = new ArrayList<>();
-            strings.add("DeviceList");
-            strings.add("Others");
-            strings.add("Others2");
+            strings.add(getString(R.string.home_fragment_devices));
+            strings.add(getString(R.string.home_fragment_medias));
+            strings.add(getString(R.string.home_fragment_notice));
         }
 
 
@@ -432,11 +476,10 @@ public class HomeExActivity extends AppCompatActivity {
             super.onPostExecute(aVoid);
             Intent intent = new Intent(HomeExActivity.this,AddNewCamera.class);
             HomeExActivity.this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(HomeExActivity.this,mAddbtn,"mybtn").toBundle());
-            int cx = (mAddbtn.getLeft()+mAddbtn.getRight())/2;
-            int cy = (mAddbtn.getTop()+mAddbtn.getBottom())/2;
-            int startX = mAddbtn.getWidth()/2;
-            int startY = mAddbtn.getHeight()/2;
-
+//            int cx = (mAddbtn.getLeft()+mAddbtn.getRight())/2;
+//            int cy = (mAddbtn.getTop()+mAddbtn.getBottom())/2;
+//            int startX = mAddbtn.getWidth()/2;
+//            int startY = mAddbtn.getHeight()/2;
 //            ActivityOptions.makeScaleUpAnimation(mAddbtn,startX,startY,0,0);
 //            HomeExActivity.this.startActivity(intent, ActivityOptionsCompat.makeScaleUpAnimation(mAddbtn,startX,startY,0,0).toBundle());
         }

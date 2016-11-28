@@ -269,6 +269,10 @@
 	<string name="home_drawer_encrypt">加密</string>
 	<string name="home_drawer_server_address">服务器地址</string>
 	<string name="home_drawer_server_bind">绑定手机</string>
+	<string name="home_fragment_devices">DeviceList</string>
+	<string name="home_fragment_medias">Media</string>
+	<string name="home_fragment_notice">Notice</string>
+
 	<string name="drawer_item_help">帮助</string>
 
 	<string name="add_ap">添加AP摄像机</string>

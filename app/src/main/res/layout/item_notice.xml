@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:contentPaddingBottom="@dimen/item_notice_vertical_margin"
+    app:contentPaddingLeft="@dimen/item_notice_vertical_margin"
+    app:contentPaddingRight="@dimen/item_notice_vertical_margin"
+    app:cardCornerRadius="@dimen/item_notice_card_radius"
+    app:cardElevation="10dp"
+    android:layout_margin="@dimen/item_notice_layout_margin"
+    app:cardBackgroundColor="@color/home_bk_dark"
+
+    >
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_notice_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            />
+        <TextView
+            android:id="@+id/item_notice_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/item_notice_iv_1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@mipmap/empty_photo"
+                android:paddingLeft="@dimen/item_notice_image_margin"
+                android:paddingTop="@dimen/item_notice_image_margin"
+                android:paddingBottom="@dimen/item_notice_image_margin"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:id="@+id/item_notice_iv_2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@mipmap/empty_photo"
+                android:paddingLeft="@dimen/item_notice_image_margin"
+                android:paddingTop="@dimen/item_notice_image_margin"
+                android:paddingBottom="@dimen/item_notice_image_margin"
+                android:scaleType="fitXY"/>
+
+            <ImageView
+                android:id="@+id/item_notice_iv_3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@mipmap/empty_photo"
+                android:paddingLeft="@dimen/item_notice_image_margin"
+                android:paddingTop="@dimen/item_notice_image_margin"
+                android:paddingBottom="@dimen/item_notice_image_margin"
+                android:scaleType="fitXY"/>
+
+
+            <ImageView
+                android:id="@+id/item_notice_iv_4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@mipmap/empty_photo"
+                android:paddingLeft="@dimen/item_notice_image_margin"
+                android:paddingTop="@dimen/item_notice_image_margin"
+                android:paddingBottom="@dimen/item_notice_image_margin"
+                android:scaleType="fitXY"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/item_notice_time"
+            android:textSize="15sp"
+            />
+
+
+
+    </LinearLayout>
+
+
+
+</android.support.v7.widget.CardView>

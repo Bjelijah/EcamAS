@@ -104,10 +104,11 @@
             android:name="com.howell.activity.SetOrResetWifi"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" />
+        <!--android:theme="@android:style/Theme.Black.NoTitleBar"-->
         <activity
             android:name="com.howell.activity.BigImages"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
+            android:theme="@style/MyAppThemeHome.BigImage" />
         <activity
             android:name="com.howell.activity.ModifyPassword"
             android:screenOrientation="portrait"

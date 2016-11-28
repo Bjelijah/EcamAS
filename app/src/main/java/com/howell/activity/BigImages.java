@@ -1,6 +1,5 @@
 package com.howell.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -10,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,7 +36,7 @@ import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher.OnViewTapListener;
 
 
-public class BigImages extends Activity implements OnClickListener,OnPageChangeListener,OnViewTapListener{
+public class BigImages extends AppCompatActivity implements OnClickListener,OnPageChangeListener,OnViewTapListener{
 	//LocalFilesActivity传过来的照片集合下标，用于查找当前用户点击查看的是具体那张照片
 	//position根据onPageSelected方法监听用户滑动照片而改变
 	private int position;
@@ -232,7 +232,8 @@ public class BigImages extends Activity implements OnClickListener,OnPageChangeL
 			break;
 		}
 		case R.id.ib_bigimage_back:
-			BigImages.this.finish();
+//			BigImages.this.finish();
+			onBackPressed();
 			break;
 		case R.id.ib_delete:
 		{

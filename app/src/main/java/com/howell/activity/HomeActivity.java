@@ -109,7 +109,7 @@ public class HomeActivity extends AppCompatActivity {
             mList = list;
             strings = new ArrayList<>();
             strings.add("DeviceList");
-            strings.add("Others");
+            strings.add("Media");
             strings.add("Others2");
         }
 

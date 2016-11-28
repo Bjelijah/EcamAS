@@ -268,6 +268,7 @@
 
 
     <!-- home -->
+
     <string name="home_guest">Guest</string>
     <string name="home_guest_email">using guest mode</string>
     <string name="home_drawer_item_uid">UID</string>
@@ -280,7 +281,9 @@
     <string name="home_drawer_encrypt">encrypt</string>
     <string name="home_drawer_server_address">Server Address</string>
     <string name="home_drawer_server_bind">Bind My Phone</string>
-
+    <string name="home_fragment_devices">DeviceList</string>
+    <string name="home_fragment_medias">Media</string>
+    <string name="home_fragment_notice">Notice</string>
 
     <!-- add -->
     <string name="add_ap">Add Ap</string>
