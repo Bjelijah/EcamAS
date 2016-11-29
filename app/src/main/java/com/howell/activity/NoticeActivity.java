@@ -489,18 +489,10 @@ public class NoticeActivity extends Activity implements OnRefreshListener,OnClic
 			if(SDCardUtils.isBitmapExist(list.get(position).getPictureID().get(i)+HD))
 				pathList.add(SDCardUtils.getBitmapCachePath()+list.get(position).getPictureID().get(i)+HD);
 		}
-		
-	
-		
-		
 		return pathList;
 	}
 	
 	private void clickPiture(View v,int which){
-		
-		
-		
-		
 		Intent intent = new Intent(this, BigImages.class);
 		intent.putExtra("position", which);
 		System.out.println("arrayList size:"+getPictures(Integer.valueOf(v.getTag().toString())).size());

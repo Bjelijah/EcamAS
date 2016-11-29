@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,9 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.howell.action.NoticeAction;
 import com.howell.adapter.NoticeRecyclerViewAdapter;
 import com.howell.bean.NoticeItemBean;
 import com.howell.ecam.R;
+import com.howell.protocol.NoticeList;
+import com.howell.protocol.QueryNoticesRes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,25 +30,33 @@ import pullrefreshview.layout.BaseHeaderView;
  * Created by howell on 2016/11/25.
  */
 
-public class NoticeFragment extends Fragment implements BaseHeaderView.OnRefreshListener,BaseFooterView.OnLoadListener,NoticeRecyclerViewAdapter.OnItemClickListener {
-
-    private final static int MSG_NOTICE_UPDATA = 0x20;
+public class NoticeFragment extends Fragment implements BaseHeaderView.OnRefreshListener,BaseFooterView.OnLoadListener,NoticeRecyclerViewAdapter.OnItemClickListener,NoticeAction.OnNoticeRes {
+    private final static int MSG_NOTICE_ERROR = 0x20;
+    private final static int MSG_NOTICE_UPDATA = 0x21;
+    private final static int MSG_NOTICE_END    = 0x22;
     View mView;
     BaseHeaderView mHv;
     BaseFooterView mFv;
     List<NoticeItemBean>mlist = new ArrayList<NoticeItemBean>();
     NoticeRecyclerViewAdapter mAdapter;
     RecyclerView mRv;
+    NoticeAction mNoticeAction;
+
 
     Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what){
+                case MSG_NOTICE_ERROR:
+                    break;
                 case MSG_NOTICE_UPDATA:
                     Log.i("123","updata notice");
                     mAdapter.setData(mlist);
                     mAdapter.notifyDataSetChanged();
+                    break;
+                case MSG_NOTICE_END:
+                    Snackbar.make(mView,getString(R.string.notice_no_more),Snackbar.LENGTH_LONG).show();
                     break;
                 default:
                     break;
@@ -65,8 +77,8 @@ public class NoticeFragment extends Fragment implements BaseHeaderView.OnRefresh
         mAdapter = new NoticeRecyclerViewAdapter(getContext(),this);
         mRv.setLayoutManager(new LinearLayoutManager(getContext()));
         mRv.setAdapter(mAdapter);
-
-        getData(5);
+        mNoticeAction = NoticeAction.getInstance().setListener(this).init();
+        getData();
         return mView;
     }
 
@@ -82,16 +94,19 @@ public class NoticeFragment extends Fragment implements BaseHeaderView.OnRefresh
                 mFv.stopLoad();
             }
         },1500);
+        mNoticeAction.getNoticesTask();
     }
 
     @Override
     public void onRefresh(BaseHeaderView baseHeaderView) {
+        mlist.clear();
         mHv.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mHv.stopRefresh();
             }
         },1500);
+        mNoticeAction.reset().getNoticesTask();
     }
 
     @Override
@@ -110,4 +125,39 @@ public class NoticeFragment extends Fragment implements BaseHeaderView.OnRefresh
         mHandler.sendEmptyMessage(MSG_NOTICE_UPDATA);
     }
 
+    private void getData(){
+        mNoticeAction.getNoticesTask();
+    }
+
+
+
+    @Override
+    public void OnNoticeError() {
+        mHandler.sendEmptyMessage(MSG_NOTICE_ERROR);
+    }
+
+    @Override
+    public void OnNoticeRes(QueryNoticesRes res) {
+        if (res == null){
+            mHandler.sendEmptyMessage(MSG_NOTICE_END);
+        }
+        List<NoticeList>list = res.getNodeList();
+        for (NoticeList o:list){
+            NoticeItemBean bean = new NoticeItemBean();
+            bean.setTitle(o.getName())
+                    .setDescription(o.getMessage()).setTime(o.getTime().substring(0, 10)+" "+o.getTime().substring(11,19))
+                    .setPicID(o.getPictureID());
+            mlist.add(bean);
+
+
+
+//            holder.title.setText(notice.getName());
+//            holder.message.setText(notice.getMessage());
+//            holder.time.setText(notice.getTime().substring(0, 10)+" "+notice.getTime().substring(11,19));
+
+        }
+
+
+        mHandler.sendEmptyMessage(MSG_NOTICE_UPDATA);
+    }
 }

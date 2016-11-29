@@ -17,7 +17,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/item_notice_vertical_margin">
 
         <TextView
             android:id="@+id/item_notice_title"
@@ -36,7 +37,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:id="@+id/item_notice_ll_iv"
+            android:visibility="gone">
             <ImageView
                 android:id="@+id/item_notice_iv_1"
                 android:layout_width="0dp"

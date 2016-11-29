@@ -278,4 +278,7 @@
 	<string name="add_ap">添加AP摄像机</string>
 	<string name="add_flash">扫一扫</string>
 	<string name="add_listen">听一听</string>
+
+	<string name="notice_no_more">没有更多消息</string>
+
 </resources>
