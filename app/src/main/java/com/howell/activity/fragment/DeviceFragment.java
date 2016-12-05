@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,7 +29,7 @@ import pullrefreshview.layout.PullRefreshLayout;
  * Created by howell on 2016/11/11.
  */
 
-public class DeviceFragment extends Fragment implements BaseHeaderView.OnRefreshListener,BaseFooterView.OnLoadListener, DeviceRecyclerViewAdapter.OnItemClickListener,HomeAction.QueryDeviceCallback {
+public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.OnRefreshListener,BaseFooterView.OnLoadListener, DeviceRecyclerViewAdapter.OnItemClickListener,HomeAction.QueryDeviceCallback {
     public static final int MSG_RECEIVE_SIP = 0x0000;
     public static final int MSG_DEVICE_LIST_UPDATA = 0x0001;
     View mView;
@@ -51,6 +50,7 @@ public class DeviceFragment extends Fragment implements BaseHeaderView.OnRefresh
                 case MSG_RECEIVE_SIP:
                     break;
                 case MSG_DEVICE_LIST_UPDATA:
+                    mbhv.stopRefresh();
                     adapter.setData(mList);
                     break;
                 default:
@@ -75,7 +75,8 @@ public class DeviceFragment extends Fragment implements BaseHeaderView.OnRefresh
         adapter = new DeviceRecyclerViewAdapter(getContext(),this);
         mRV.setLayoutManager(new LinearLayoutManager(getContext()));
         mRV.setAdapter(adapter);
-        getData(5);
+        Log.i("123","on create get data");
+        getData();
 //        getData();
         return mView;
     }
@@ -99,7 +100,8 @@ public class DeviceFragment extends Fragment implements BaseHeaderView.OnRefresh
         mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);
     }
 
-    private void getData(){
+    @Override
+    public void getData(){
         LoginAction.UserInfo info = LoginAction.getInstance().getmInfo();
         HomeAction.getInstance().setContext(getContext()).registQueryDeviceCallback(this).queryDevice(info.getAccount(),info.getLr().getLoginSession());
     }
@@ -119,12 +121,13 @@ public class DeviceFragment extends Fragment implements BaseHeaderView.OnRefresh
     @Override
     public void onRefresh(BaseHeaderView baseHeaderView) {
         Log.i("123","onRefresh");
+        getData();
         baseHeaderView.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mbhv.stopRefresh();
             }
-        },3000);
+        },1500);
     }
 
 
@@ -133,6 +136,12 @@ public class DeviceFragment extends Fragment implements BaseHeaderView.OnRefresh
     @Override
     public void onQueryDeviceSuccess(ArrayList<NodeDetails> l) {
         mList.clear();
+        if (l==null){
+            mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);
+            return;
+        }
+
+
         for (NodeDetails n:l){
             CameraItemBean b = new CameraItemBean()
                     .setCameraName(n.getName())
@@ -154,6 +163,9 @@ public class DeviceFragment extends Fragment implements BaseHeaderView.OnRefresh
     @Override
     public void onItemVideoClickListener(View v, int pos) {
         CameraItemBean item = mList.get(pos);
+
+
+
 
     }
 

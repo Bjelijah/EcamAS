@@ -23,5 +23,9 @@ public class PhoneConfig {
 		int height = wm.getDefaultDisplay().getHeight();//��Ļ���
 		return height;
 	}
-	
+
+
+
+
+
 }

@@ -190,7 +190,7 @@ public class SwipeLinearLayout extends LinearLayout {
                     } else if (targetScrollX > 0) {
                         scrollTo(0, 0);//全关
                     } else {
-                        Log.e("123","滑动");
+//                        Log.e("123","滑动");
                         scrollTo(targetScrollX, 0);//滑动
                     }
 

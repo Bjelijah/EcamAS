@@ -284,11 +284,36 @@
     <string name="home_fragment_devices">DeviceList</string>
     <string name="home_fragment_medias">Media</string>
     <string name="home_fragment_notice">Notice</string>
+    <string name="home_drawer_changer_user_error">Changer user error</string>
+
 
     <!-- add -->
     <string name="add_ap">Add Ap</string>
     <string name="add_flash">Scanning</string>
     <string name="add_listen">Listening</string>
+
+    <string name="add_listen_subtitle">Name Device And Set WIFI</string>
+    <string name="add_listen_no_ssid">Please select wifi</string>
+    <string name="add_listen_no_name">Please style your new camera</string>
+    <string name="add_listen_no_pwd">Please input wifi password</string>
+    <string name="add_listen_open_location">Open Location</string>
+    <string name="add_listen_device_name_title">Style：</string>
+    <string name="add_listen_device_name">Style Your New Camera</string>
+    <string name="add_listen_device_password_title">Wifi Password:</string>
+    <string name="add_listen_device_password">Input Your WIFI Password</string>
+    <string name="add_listen_device_wifi_title">Select Your Wifi:</string>
+    <string name="add_listen_device_wifi_tip">No Wifi found? \nNeed Open Your GPS</string>
+    <string name="add_listen_device_next">NEXT</string>
+    <string name="add_listen_device_tb_title">Listen</string>
+    <string name="add_listen_device_error_wifi">Please select your WIFI</string>
+
+    <string name="add_ap_ip_title">IP:</string>
+    <string name="add_ap_ip">Input IP Address Of Your Camera</string>
+    <string name="add_ap_port_title">Port:</string>
+    <string name="add_ap_port">Input Port Of Your Camera</string>
+    <string name="add_ap_btn">Add</string>
+    <string name="add_ap_ip_error">This field need ip</string>
+    <string name="add_ap_port_error">This field need integer</string>
 
     <string name="drawer_item_home">Home</string>
     <string name="drawer_item_free_play">Free Play</string>

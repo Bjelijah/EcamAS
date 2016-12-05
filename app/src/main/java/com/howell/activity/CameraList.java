@@ -661,7 +661,7 @@ public class CameraList extends ListActivity implements Observer{
 //			        }
 //				}
 				else if(arg0.getId() == R.id.ib_add){
-					//Intent intent = new Intent(CameraList.this, SetDeviceWifi.class);
+//					Intent intent = new Intent(CameraList.this, SetDeviceWifi.class);
 		            //startActivity(intent);
 //					titlePopup.show(arg0);
 					getPopupWindowInstance();  

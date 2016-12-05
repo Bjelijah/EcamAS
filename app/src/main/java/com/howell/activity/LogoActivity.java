@@ -15,13 +15,9 @@ import android.os.StrictMode;
 import android.provider.Settings.Secure;
 import android.util.Log;
 
+import com.howell.action.LoginAction;
 import com.howell.ecam.R;
-import com.howell.protocol.GetNATServerReq;
-import com.howell.protocol.GetNATServerRes;
-import com.howell.protocol.LoginRequest;
-import com.howell.protocol.LoginResponse;
 import com.howell.protocol.SoapManager;
-import com.howell.utils.DecodeUtils;
 import com.howell.utils.NetWorkUtils;
 
 import java.util.Set;
@@ -29,7 +25,7 @@ import java.util.Set;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 
-public class LogoActivity extends Activity implements TagAliasCallback{
+public class LogoActivity extends Activity implements TagAliasCallback,LoginAction.IloginRes{
 	//与平台交互协议单例
 	private SoapManager mSoapManager;
 
@@ -47,12 +43,14 @@ public class LogoActivity extends Activity implements TagAliasCallback{
 		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectNetwork().build());
 
 		//推送服务初始化
-		JPushInterface.init(getApplicationContext());
-		setAlias();
-		if(JPushInterface.isPushStopped(getApplicationContext())) 
-			JPushInterface.resumePush(getApplicationContext());
+//		JPushInterface.init(getApplicationContext());
+//		setAlias();
+//		if(JPushInterface.isPushStopped(getApplicationContext()))
+//			JPushInterface.resumePush(getApplicationContext());
 
 		//判断手机是否连接网络
+
+
 		if (!NetWorkUtils.isNetworkConnected(this)) {
 			LoginThread myLoginThread = new LoginThread(3);
 			myLoginThread.start();
@@ -65,10 +63,12 @@ public class LogoActivity extends Activity implements TagAliasCallback{
 			mSoapManager = SoapManager.getInstance();
 
 			//从配置文件获取开场导航界面标志位不存在则为true，获取用户名和密码如果不存在则为空字符串
-			SharedPreferences sharedPreferences = getSharedPreferences("set",Context.MODE_PRIVATE);
+			SharedPreferences sharedPreferences = getSharedPreferences("set", Context.MODE_PRIVATE);
 			isFirstLogin = sharedPreferences.getBoolean("isFirstLogin", true);
 			account = sharedPreferences.getString("account", "");
 			password = sharedPreferences.getString("password", "");
+
+			Log.e("123","isFirstlogin="+isFirstLogin+"  account="+account+"   password="+password);
 
 			//如果用户以前登录过app（配置文件中用户名，密码不为空）则直接登录
 			if(!account.equals("") && !password.equals("")){
@@ -89,6 +89,22 @@ public class LogoActivity extends Activity implements TagAliasCallback{
 		this.finish();
 	}
 
+	@Override
+	public void onLoginSuccess() {
+		Intent intent = new Intent(LogoActivity.this, HomeExActivity.class);
+		startActivity(intent);
+		LoginAction.getInstance().unRegLoginResCallback();
+		finish();
+	}
+
+	@Override
+	public void onLoginError(int e) {
+		Intent intent = new Intent(LogoActivity.this, LoginActivity.class);
+		startActivity(intent);
+		LoginAction.getInstance().unRegLoginResCallback();
+		finish();
+	}
+
 	class LoginThread extends Thread{
 		private int flag;
 		public LoginThread(int flag) {
@@ -99,6 +115,7 @@ public class LogoActivity extends Activity implements TagAliasCallback{
 		public void run() {
 			// TODO Auto-generated method stub
 			super.run();
+			Log.e("123","flag="+flag);
 			try {
 				Thread.sleep(1 * 1000);
 				//第一次进入程序加载欢迎导航界面
@@ -108,37 +125,43 @@ public class LogoActivity extends Activity implements TagAliasCallback{
 				}else{
 					switch(flag){
 					case 1:
-						try{
-							//登录协议实现
-							String encodedPassword = DecodeUtils.getEncodedPassword(password);
-							LoginRequest loginReq = new LoginRequest(account, "Common",encodedPassword, "1.0.0.1");
-							LoginResponse loginRes = mSoapManager.getUserLoginRes(loginReq);
-							if(loginRes.getResult().equals("OK")){
-								//登录成功则进入摄像机列表界面
-								GetNATServerRes res = mSoapManager.getGetNATServerRes(new GetNATServerReq(account, loginRes.getLoginSession()));
-								Log.e("LogoActivity", res.toString());
-								Intent intent = new Intent(LogoActivity.this,CamTabActivity.class);
-								startActivity(intent);
-							}else{
-								//登录不成功则进入注册、登录、演示界面
-								Intent intent = new Intent(LogoActivity.this,RegisterOrLogin.class);
-								startActivity(intent);
-							}
-						}catch (Exception e) {
-							// TODO: handle exception
-							//若网络不好发生各种exception则进入注册、登录、演示界面
-							Intent intent = new Intent(LogoActivity.this,RegisterOrLogin.class);
-							intent.putExtra("intentFlag", 2);
-							startActivity(intent);
-						}
+//						try{
+//							//登录协议实现
+//							String encodedPassword = DecodeUtils.getEncodedPassword(password);
+//							LoginRequest loginReq = new LoginRequest(account, "Common",encodedPassword, "1.0.0.1");
+//							LoginResponse loginRes = mSoapManager.getUserLoginRes(loginReq);
+//							if(loginRes.getResult().equals("OK")){
+//								//登录成功则进入摄像机列表界面
+//								GetNATServerRes res = mSoapManager.getGetNATServerRes(new GetNATServerReq(account, loginRes.getLoginSession()));
+//								Log.e("LogoActivity", res.toString());
+//								Intent intent = new Intent(LogoActivity.this,CamTabActivity.class);
+//								startActivity(intent);
+//							}else{
+//								//登录不成功则进入注册、登录、演示界面
+//								Intent intent = new Intent(LogoActivity.this,RegisterOrLogin.class);
+//								startActivity(intent);
+//							}
+//						}catch (Exception e) {
+//							// TODO: handle exception
+//							//若网络不好发生各种exception则进入注册、登录、演示界面
+//							Intent intent = new Intent(LogoActivity.this,RegisterOrLogin.class);
+//							intent.putExtra("intentFlag", 2);
+//							startActivity(intent);
+//						}
+						LoginAction.getInstance().setContext(LogoActivity.this).regLoginResCallback(LogoActivity.this)
+								.Login(account,password);
+
+
 						break;
 					case 2:
 						//如果用户以前没有登陆过app（用户名，密码为空字符串）则进入注册、登录、演示界面
-						Intent intent = new Intent(LogoActivity.this,RegisterOrLogin.class);
+						Intent intent = new Intent(LogoActivity.this,LoginActivity.class);
+//						Intent intent = new Intent(LogoActivity.this,RegisterOrLogin.class);
 						startActivity(intent);
 						break;
 					case 3:
-						Intent intent2 = new Intent(LogoActivity.this,RegisterOrLogin.class);
+						Intent intent2 = new Intent(LogoActivity.this,LoginActivity.class);
+//						Intent intent = new Intent(LogoActivity.this,RegisterOrLogin.class);
 						intent2.putExtra("intentFlag", 1);
 						startActivity(intent2);
 					default:break;

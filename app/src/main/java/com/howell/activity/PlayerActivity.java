@@ -352,17 +352,9 @@ public class PlayerActivity extends FragmentActivity implements Callback, OnTouc
 					//Log.i("123", "default");
 					break;
 				}
-
-
 				return false;
 			}
 		});
-
-
-
-
-
-
 
 		mCatchPicture = (ImageButton)findViewById(R.id.catch_picture);
 		mCatchPicture.setOnClickListener(new OnClickListener() {
@@ -387,12 +379,7 @@ public class PlayerActivity extends FragmentActivity implements Callback, OnTouc
 		audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE); 
 		maxVolume = audiomanage.getStreamMaxVolume(AudioManager.STREAM_MUSIC);  
 		System.out.println("maxVolume:"+maxVolume);
-
-
 		mSound = (ImageButton)findViewById(R.id.sound);
-
-
-
 		if(soundMode){
 			System.out.println("soundMode:"+soundMode);
 			isAudioOpen = true;

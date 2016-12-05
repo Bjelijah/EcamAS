@@ -9,6 +9,7 @@ import android.net.wifi.WifiConfiguration.KeyMgmt;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
+import android.os.Build;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -97,27 +98,34 @@ public class NetWorkUtils {
 	/**
 	* 扫描周边网络
 	*/
-	public void scan() {
-		mWifiManager.startScan();
-		listResult = mWifiManager.getScanResults();
-		System.out.println("listResult size:"+listResult.size());
-		if (listResult != null) {
-			Log.i(TAG, "当前区域存在无线网络，请查看扫描结果");
-		} else {
-			Log.i(TAG, "当前区域没有无线网络");
+	public void scan(Context context) {
+
+		if (Build.VERSION.SDK_INT>=23){
+//			Settings.Secure.putInt(context.getContentResolver(),Settings.Secure.LOCATION_MODE,1);
 		}
+
+
+		mWifiManager.startScan();
+//		listResult = mWifiManager.getScanResults();
+//		System.out.println("listResult size:"+listResult.size());
+//		Log.e("123","listResult.size()="+listResult.size());
+//		if (listResult != null) {
+//			Log.i(TAG, "当前区域存在无线网络，请查看扫描结果");
+//		} else {
+//			Log.i(TAG, "当前区域没有无线网络");
+//		}
 	}
 
 	/**
 	* 得到扫描结果
 	*/
-	public String getScanResult() {
+	public String getScanResult(Context context) {
 		// 每次点击扫描之前清空上一次的扫描结果
 		if (mStringBuffer != null) {
 			mStringBuffer = new StringBuffer();
 		}
 		// 开始扫描网络
-		scan();
+		scan(context);
 		//listResult = mWifiManager.getScanResults();
 		if (listResult != null) {
 			for (int i = 0; i < listResult.size(); i++) {
@@ -137,9 +145,10 @@ public class NetWorkUtils {
 
 	public ArrayList<String> getSSIDResultList() {
 		ArrayList<String> SSIDList = new ArrayList<String>();
-		scan();
-		//listResult = mWifiManager.getScanResults();
+//		scan();
+		listResult = mWifiManager.getScanResults();
 		//System.out.println("listResult size:"+listResult.size());
+		Log.e("123","list result size="+listResult.size());
 		if (listResult != null) {
 			for (int i = 0; i < listResult.size(); i++) {
 				mScanResult = listResult.get(i);
@@ -149,7 +158,10 @@ public class NetWorkUtils {
 		}
 		return SSIDList;
 	}
-	
+
+
+
+
 	/**
 	* 连接指定网络
 	*/

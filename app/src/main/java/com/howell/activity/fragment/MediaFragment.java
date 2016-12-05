@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -30,7 +29,7 @@ import java.util.List;
  * Created by howell on 2016/11/11.
  */
 
-public class MediaFragment extends Fragment implements MediaRecyclerViewAdapter.OnItemClickListener,SwipeRefreshLayout.OnRefreshListener {
+public class MediaFragment extends HomeBaseFragment implements MediaRecyclerViewAdapter.OnItemClickListener,SwipeRefreshLayout.OnRefreshListener {
     private final static int MSG_MEDIA_UPDATA = 0x10;
     SwipeRefreshLayout mSrl;
     View mView;
@@ -86,7 +85,9 @@ public class MediaFragment extends Fragment implements MediaRecyclerViewAdapter.
         return list;
     }
 
-    private void getData(){
+    @Override
+    public void getData(){
+        mList.clear();
         File f = new File("/sdcard/eCamera");
         mPicPath = getFileName(f);
         noImageBg.setVisibility(mPicPath.size()==0?View.VISIBLE:View.GONE);

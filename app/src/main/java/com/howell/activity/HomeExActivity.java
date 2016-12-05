@@ -17,6 +17,7 @@ import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -29,13 +30,16 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.howell.action.HomeAction;
 import com.howell.action.LoginAction;
 import com.howell.activity.fragment.DeviceFragment;
+import com.howell.activity.fragment.HomeBaseFragment;
 import com.howell.activity.fragment.MediaFragment;
 import com.howell.activity.fragment.NoticeFragment;
 import com.howell.bean.UserLoginDBBean;
 import com.howell.db.UserLoginDao;
 import com.howell.ecam.R;
+import com.howell.utils.ServerConfigSp;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -61,7 +65,7 @@ import java.util.List;
  * Created by howell on 2016/11/15.
  */
 
-public class HomeExActivity extends AppCompatActivity {
+public class HomeExActivity extends AppCompatActivity implements HomeAction.ChangeUser {
 
     private final static long ID_DRAWER_UID = 0x00;
     private final static long ID_DRAWER_HOME = 0x01;
@@ -91,6 +95,7 @@ public class HomeExActivity extends AppCompatActivity {
     private DrawerListener onDrawerListener = new DrawerListener();
     private DrawerItemClickListener onDrawerItemClickListener = new DrawerItemClickListener();
     public static Bitmap sBkBitmap;
+    private List<HomeBaseFragment> mFragments;
 
 
     Handler mHandler = new Handler(){
@@ -150,7 +155,7 @@ public class HomeExActivity extends AppCompatActivity {
 //                .build();
 //        mbGuest = getIntent().getBooleanExtra("isGuest",true);
         mbGuest = LoginAction.getInstance().ismIsGuest();
-
+        HomeAction.getInstance().setContext(this).init();
         buildHead(false,savedInstanceState);
         buildDrawer(savedInstanceState);
         fillFab();
@@ -191,9 +196,13 @@ public class HomeExActivity extends AppCompatActivity {
 
     private void buildHead(boolean compact, Bundle savedInstanceState){
         List<IProfile> profileList = getProfile();
+
+//        com.mikepenz.materialdrawer.holder.ImageHolder imageHolder = new com.mikepenz.materialdrawer.holder.ImageHolder("https://unsplash.it/600/300/?random");
+
         headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.header)
+//                .withHeaderBackground(R.mipmap.background_poly)
                 .withCompactStyle(compact)
                 .addProfiles(profileList)
                 .withSavedInstance(savedInstanceState)
@@ -214,7 +223,14 @@ public class HomeExActivity extends AppCompatActivity {
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean current) {
-                        Log.i("123","on profile changed");
+                        if (current)return false;
+                        Log.i("123","on profile changed current="+current+" emal="+profile.getEmail()+" name="+profile.getName());
+                        //FIXME change to new user
+
+                        HomeAction.getInstance().changeUser(HomeExActivity.this,profile.getName()+"");
+
+
+
                         return false;
                     }
                 })
@@ -224,6 +240,9 @@ public class HomeExActivity extends AppCompatActivity {
 
     @SuppressLint("NewApi")
     private void buildDrawer(Bundle savedInstanceState){
+        final boolean isTurn = HomeAction.getInstance().isUseTurn();
+        final boolean isCrypto = HomeAction.getInstance().isUseCrypto();
+        HomeAction.getInstance().registChangerUserCallback(this);
         result = new DrawerBuilder()
                 .withActivity(this)
                 .withAccountHeader(headerResult)
@@ -238,8 +257,8 @@ public class HomeExActivity extends AppCompatActivity {
                         new SecondaryDrawerItem().withName(R.string.home_drawer_server_bind).withIcon(GoogleMaterial.Icon.gmd_8tracks).withIdentifier(ID_DRAWER_SERVER_BIND),
                         new ExpandableDrawerItem().withName(R.string.home_drawer_connect).withIcon(FontAwesome.Icon.faw_connectdevelop).withSelectable(false)
                         .withSubItems(
-                                new SwitchDrawerItem().withName(R.string.home_drawer_turn_server).withLevel(2).withIcon(Octicons.Icon.oct_tools).withChecked(false).withOnCheckedChangeListener(onCheckedChangerListener).withSelectable(false).withIdentifier(ID_DRAWER_SERVER_TURN),
-                                new SwitchDrawerItem().withName(R.string.home_drawer_encrypt).withLevel(2).withIcon(Octicons.Icon.oct_tools).withChecked(false).withOnCheckedChangeListener(onCheckedChangerListener).withSelectable(false).withIdentifier(ID_DRAWER_SERVER_ENCRYPT)
+                                new SwitchDrawerItem().withName(R.string.home_drawer_turn_server).withLevel(2).withIcon(Octicons.Icon.oct_tools).withChecked(isTurn).withOnCheckedChangeListener(onCheckedChangerListener).withSelectable(false).withIdentifier(ID_DRAWER_SERVER_TURN),
+                                new SwitchDrawerItem().withName(R.string.home_drawer_encrypt).withLevel(2).withIcon(Octicons.Icon.oct_tools).withChecked(isCrypto).withOnCheckedChangeListener(onCheckedChangerListener).withSelectable(false).withIdentifier(ID_DRAWER_SERVER_ENCRYPT)
                         ),
 //                        new SecondaryDrawerItem().withName(R.string.drawer_item_settings).withIcon(FontAwesome.Icon.faw_cog),
                         new SecondaryDrawerItem().withName(R.string.drawer_item_help).withIcon(FontAwesome.Icon.faw_question).withEnabled(false).withIdentifier(ID_DRAWER_HELP)
@@ -257,12 +276,16 @@ public class HomeExActivity extends AppCompatActivity {
 //                .withSliderBackgroundColor(getColor(R.color.about_libraries_card_dark))
 
                 .build();
+
     }
 
 
     private void loadBackdrop() {
         final ImageView imageView = (ImageView) findViewById(R.id.backdrop);
         Glide.with(this).load("https://unsplash.it/600/300/?random").centerCrop().into(imageView);
+
+
+
     }
 
     private void fillFab() {
@@ -271,11 +294,11 @@ public class HomeExActivity extends AppCompatActivity {
     }
 
     private void initFragment(){
-        List<Fragment> fragments = new ArrayList<>();
-        fragments.add(new DeviceFragment());
-        fragments.add(new MediaFragment());
-        fragments.add(new NoticeFragment());
-        MyFragmentPagerAdatper myFragmentPagerAdatper = new MyFragmentPagerAdatper(getSupportFragmentManager(),fragments);
+        mFragments = new ArrayList<>();
+        mFragments.add(new DeviceFragment());
+        mFragments.add(new MediaFragment());
+        mFragments.add(new NoticeFragment());
+        MyFragmentPagerAdatper myFragmentPagerAdatper = new MyFragmentPagerAdatper(getSupportFragmentManager(),mFragments);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mViewPager.setOffscreenPageLimit(3);
         mViewPager.setAdapter(myFragmentPagerAdatper);
@@ -360,13 +383,29 @@ public class HomeExActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState, outPersistentState);
     }
 
+    @Override
+    public void onChangeOk() {
+        Log.e("123","on changeOK");
+        for(HomeBaseFragment fragment:mFragments){
+            fragment.getData();
+        }
+    }
+
+    @Override
+    public void onChangeError() {
+        Snackbar.make(mViewPager,getString(R.string.home_drawer_changer_user_error),Snackbar.LENGTH_LONG).show();
+    }
+
     class DrawerCheckedChangeListener implements OnCheckedChangeListener {
         @Override
         public void onCheckedChanged(IDrawerItem drawerItem, CompoundButton buttonView, boolean isChecked) {
             if (drawerItem.getIdentifier()==ID_DRAWER_SERVER_TURN){
                 //TODO isChecked:
+                HomeAction.getInstance().setUseTurn(isChecked);
+
             }else if(drawerItem.getIdentifier()==ID_DRAWER_SERVER_ENCRYPT){
                 //TODO isChecked:
+                HomeAction.getInstance().setUseCrypto(isChecked);
             }
         }
     }
@@ -377,12 +416,15 @@ public class HomeExActivity extends AppCompatActivity {
         public void onDrawerOpened(View drawerView) {
             Log.i("123","on drawerOpen");
             //TODO: get Drawer param form sp
+
+
         }
 
         @Override
         public void onDrawerClosed(View drawerView) {
             Log.i("123","on drawer close");
             //TODO:1 save to sp  2 do
+            ServerConfigSp.saveCommunicationInfo(HomeExActivity.this, HomeAction.getInstance().isUseTurn(), HomeAction.getInstance().isUseCrypto());
         }
 
         @Override
@@ -416,13 +458,13 @@ public class HomeExActivity extends AppCompatActivity {
 
 
     class MyFragmentPagerAdatper extends FragmentPagerAdapter {
-        List<Fragment> mList;
+        List<HomeBaseFragment> mList;
         List<String> strings;
         public MyFragmentPagerAdatper(FragmentManager fm) {
             super(fm);
         }
 
-        public MyFragmentPagerAdatper(FragmentManager fm,List<Fragment> list){
+        public MyFragmentPagerAdatper(FragmentManager fm,List<HomeBaseFragment> list){
             super(fm);
             mList = list;
             strings = new ArrayList<>();
@@ -476,12 +518,6 @@ public class HomeExActivity extends AppCompatActivity {
             super.onPostExecute(aVoid);
             Intent intent = new Intent(HomeExActivity.this,AddNewCamera.class);
             HomeExActivity.this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(HomeExActivity.this,mAddbtn,"mybtn").toBundle());
-//            int cx = (mAddbtn.getLeft()+mAddbtn.getRight())/2;
-//            int cy = (mAddbtn.getTop()+mAddbtn.getBottom())/2;
-//            int startX = mAddbtn.getWidth()/2;
-//            int startY = mAddbtn.getHeight()/2;
-//            ActivityOptions.makeScaleUpAnimation(mAddbtn,startX,startY,0,0);
-//            HomeExActivity.this.startActivity(intent, ActivityOptionsCompat.makeScaleUpAnimation(mAddbtn,startX,startY,0,0).toBundle());
         }
     }
 

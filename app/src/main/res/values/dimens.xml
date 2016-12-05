@@ -20,11 +20,21 @@
     <dimen name="add_activity_vertical_margin">24dp</dimen>
     <dimen name="add_activity_mini_horizontal_margin">24dp</dimen>
     <dimen name="add_activity_btn_padding">16dp</dimen>
-
+    <!-- listen device and wifi -->
+    <dimen name="add_listen_device_padding_vertical">32dp</dimen>
+    <dimen name="add_listen_device_padding_horizontal">16dp</dimen>
+    <dimen name="add_listen_device_margin_vertcail_ctrl">30dp</dimen>
+    <dimen name="add_listen_device_margin_vertcail_fun">10dp</dimen>
+    <dimen name="add_listen_device_width">230dp</dimen>
+    <dimen name="add_listen_device_spinner_width">190dp</dimen>
     <!-- item notice -->
     <dimen name="item_notice_horizontal_margin">16dp</dimen>
     <dimen name="item_notice_vertical_margin">16dp</dimen>
     <dimen name="item_notice_image_margin">5dp</dimen>
     <dimen name="item_notice_card_radius">4dp</dimen>
     <dimen name="item_notice_layout_margin">8dp</dimen>
+
+
+
+
 </resources>

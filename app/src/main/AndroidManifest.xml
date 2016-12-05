@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.howell.ecam">
 
     <permission
@@ -25,6 +26,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <!-- Optional for location -->
+
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -53,10 +55,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:vmSafeMode="true">
+        <!--android:theme="@android:style/Theme.Black.NoTitleBar"-->
         <activity
             android:name="com.howell.activity.SetDeviceWifi"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
+            android:theme="@style/MyAppThemeListenDevice"
             android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
             android:name="com.howell.activity.SendWifi"
@@ -163,11 +166,11 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar" />
         <!--android:name="com.howell.activity.LogoActivity"-->
-
+        <!--@android:style/Theme.NoTitleBar-->
         <activity
-            android:name="com.howell.activity.HomeExActivity"
+            android:name="com.howell.activity.LogoActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/MyAppThemeHome"
+            android:theme="@android:style/Theme.NoTitleBar"
            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -175,6 +178,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name="com.howell.activity.DeviceWifiActivity"
+            android:theme="@style/MyAppThemeListenDevice"
+            />
+
+        <activity android:name="com.howell.activity.ApActivity"
+            android:theme="@style/MyAppThemeAp"
+            />
 
         <activity android:name="com.howell.activity.LoginActivity"
             android:screenOrientation="portrait"
@@ -189,10 +200,10 @@
             android:theme="@style/MyAppThemeRegister"/>
 
 
-        <!--<activity android:name="com.howell.activity.HomeExActivity"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:theme="@style/MyAppThemeHome"-->
-            <!--/>-->
+        <activity android:name="com.howell.activity.HomeExActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/MyAppThemeHome"
+            />
 
         <activity android:name="com.howell.activity.AddNewCamera"
             android:screenOrientation="portrait"

@@ -86,9 +86,17 @@
     <color name="add_bk">#42000000</color>
     <color name="add_btn_bk">#a0000000</color>
 
+    <color name="add_ap_bk">#8bc34a</color>
+    <color name="add_ap_bk_dark">#689f38</color>
+
     <color name="item_camera_replay">@color/register_bk</color>
     <color name="item_camera_setting">#ffc107</color>
     <color name="item_camera_info">#ff5722</color>
     <color name="item_camera_detele">#ff5252</color>
     <color name="item_camera_video">#51111111</color>
+
+    <!--  -->
+
+
+
 </resources>

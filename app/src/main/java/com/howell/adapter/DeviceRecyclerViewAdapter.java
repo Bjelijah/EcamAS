@@ -113,6 +113,7 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
             }
         }else{
             holder.ivInOffLine.setImageResource(country==0?R.mipmap.card_offline_image_gray:R.mipmap.card_offline_image_gray_english);
+            holder.ivWifi.setImageResource(R.mipmap.wifi_0);
         }
 
         //back

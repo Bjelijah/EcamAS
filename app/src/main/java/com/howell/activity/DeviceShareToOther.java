@@ -100,7 +100,6 @@ public class DeviceShareToOther extends Activity implements OnClickListener,OnIt
 			        deviceSharerListView.setOnItemClickListener(DeviceShareToOther.this);
 				}
 			}
-			
 		}.execute();
         
 //        QueryDeviceSharerReq req = new QueryDeviceSharerReq(mSoapManager.getLoginResponse().getAccount(),mSoapManager.getLoginResponse().getLoginSession(),dev.getDevID(),0);

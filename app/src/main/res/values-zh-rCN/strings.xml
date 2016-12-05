@@ -272,13 +272,34 @@
 	<string name="home_fragment_devices">DeviceList</string>
 	<string name="home_fragment_medias">Media</string>
 	<string name="home_fragment_notice">Notice</string>
-
+	<string name="home_drawer_changer_user_error">切换用户失败</string>
 	<string name="drawer_item_help">帮助</string>
 
 	<string name="add_ap">添加AP摄像机</string>
 	<string name="add_flash">扫一扫</string>
 	<string name="add_listen">听一听</string>
+	<string name="add_listen_subtitle">命名设备和设置wifi</string>
+	<string name="add_listen_no_ssid">请选择摄像机所在的wifi</string>
+	<string name="add_listen_no_name">请给您的新摄像机起个名吧</string>
+	<string name="add_listen_no_pwd">请输入wifi密码</string>
+	<string name="add_listen_open_location">打开定位</string>
+	<string name="add_listen_device_name_title">命名：</string>
+	<string name="add_listen_device_name">给您的新设备起个名字吧</string>
+	<string name="add_listen_device_password_title">WIFI 密码:</string>
+	<string name="add_listen_device_password">输入您的WIFI密码</string>
+	<string name="add_listen_device_wifi_title">选择您的Wifi:</string>
+	<string name="add_listen_device_wifi_tip">没有wifi? \n您需要打开您的定位</string>
+	<string name="add_listen_device_next">下一步</string>
+	<string name="add_listen_device_tb_title">听一听</string>
+	<string name="add_listen_device_error_wifi">请选择您的WIFI</string>
 
+	<string name="add_ap_ip_title">IP:</string>
+	<string name="add_ap_ip">请输入您摄像机的IP地址</string>
+	<string name="add_ap_port_title">端口:</string>
+	<string name="add_ap_port">请输入您摄像机的端口号</string>
+	<string name="add_ap_btn">添加</string>
+	<string name="add_ap_ip_error">输入不符合IP格式</string>
+	<string name="add_ap_port_error">需要输入数字</string>
 	<string name="notice_no_more">没有更多消息</string>
 
 </resources>

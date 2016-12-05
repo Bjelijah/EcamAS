@@ -3,11 +3,15 @@ package com.howell.action;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.howell.bean.UserLoginDBBean;
+import com.howell.db.UserLoginDao;
 import com.howell.entityclass.NodeDetails;
 import com.howell.protocol.QueryDeviceReq;
 import com.howell.protocol.SoapManager;
+import com.howell.utils.ServerConfigSp;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by howell on 2016/11/18.
@@ -22,6 +26,47 @@ public class HomeAction {
         return mInstance;
     }
     private Context mContext;
+    private String serviceIP;
+    private int servicePort;
+    private boolean isUseTurn;
+    private boolean isUseCrypto;
+    public HomeAction setServiceIPAndPort(String ip,int port){
+        this.serviceIP = ip;
+        this.servicePort = port;
+        return this;
+    }
+
+    public HomeAction init(){
+        isUseTurn = ServerConfigSp.loadServerIsTurn(mContext);
+        isUseCrypto = ServerConfigSp.loadServerIsCrypto(mContext);
+        serviceIP = ServerConfigSp.loadServerIP(mContext);
+        servicePort = ServerConfigSp.loadServerPort(mContext);
+        return this;
+    }
+
+    public boolean isUseTurn() {
+        return isUseTurn;
+    }
+
+    public void setUseTurn(boolean useTurn) {
+        isUseTurn = useTurn;
+    }
+
+    public boolean isUseCrypto() {
+        return isUseCrypto;
+    }
+
+    public void setUseCrypto(boolean useCrypto) {
+        isUseCrypto = useCrypto;
+    }
+
+    public String getServiceIP(){
+        return this.serviceIP;
+    }
+    public int getServicePort(){
+        return servicePort;
+    }
+
     public HomeAction setContext(Context c){
         this.mContext = c;
         return this;
@@ -29,8 +74,19 @@ public class HomeAction {
     private HomeAction(){}
 
     private QueryDeviceCallback mQueryDeviceCallback;
+    private ChangeUser mChangeUserCallback;
+
+    public HomeAction registChangerUserCallback(ChangeUser cb){
+        this.mChangeUserCallback = cb;
+        return this;
+    }
+
+    public void unregistChangerUserCallback(){
+        this.mChangeUserCallback = null;
+    }
 
     public QueryDeviceCallback unregistQueryDeviceCallback() {
+        mQueryDeviceCallback = null;
         return mQueryDeviceCallback;
     }
 
@@ -86,9 +142,51 @@ public class HomeAction {
         }.execute();
     }
 
+    public void changeUser(Context context, String userName){
+        String userPwd = getUserPwdByDB(userName);
+        LoginRes res = new LoginRes();
+        LoginAction.getInstance().setContext(context).regLoginResCallback(res).Login(userName,userPwd);
+    }
+
+    private String getUserPwdByDB(String name){
+        String pwd = null;
+        UserLoginDao dao = new UserLoginDao(mContext, "user.db", 1);
+        List<UserLoginDBBean> b = dao.queryByName(name);
+        dao.close();
+        if (b.size()>0){
+            pwd = b.get(0).getUserPassword();
+        }
+        return pwd;
+    }
+
+    class LoginRes implements LoginAction.IloginRes{
+
+        @Override
+        public void onLoginSuccess() {
+            if (mChangeUserCallback!=null){
+                mChangeUserCallback.onChangeOk();
+            }
+            LoginAction.getInstance().unRegLoginResCallback();
+        }
+
+        @Override
+        public void onLoginError(int e) {
+            if (mChangeUserCallback!=null){
+                mChangeUserCallback.onChangeError();
+            }
+            LoginAction.getInstance().unRegLoginResCallback();
+        }
+    }
+
+
     public interface QueryDeviceCallback{
         void onQueryDeviceSuccess(ArrayList<NodeDetails> l);
         void onQueryDeviceError();
+    }
+
+    public interface ChangeUser{
+        void onChangeOk();
+        void onChangeError();
     }
 
 }

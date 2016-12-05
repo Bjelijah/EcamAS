@@ -104,6 +104,22 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
+    <style name="MyAppThemeListenDevice" parent="MaterialDrawerTheme">
+        <item name="android:colorPrimary">@color/home_bk</item>
+        <item name="android:colorPrimaryDark">@color/home_bk_dark</item>
+        <item name="colorAccent">@color/white</item>
+
+    </style>
+
+    <style name="MyAppThemeAp" parent="MaterialDrawerTheme">
+        <item name="android:colorPrimary">@color/add_ap_bk</item>
+        <item name="android:colorPrimaryDark">@color/add_ap_bk_dark</item>
+        <item name="colorAccent">@color/white</item>
+
+    </style>
+
+
+
     <style name="MyAppThemeAdd" parent="MaterialDrawerTheme.TranslucentStatus">
 
         <item name="colorPrimary">@color/home_bk</item>
@@ -127,8 +143,6 @@
         <item name="colorAccent">@color/home_accent</item>
 
         <!--<item name="android:background">@color/material_drawer_dark_background</item>-->
-
-
         <item name="material_drawer_background">@color/material_drawer_dark_background</item>
         <item name="material_drawer_primary_text">@color/material_drawer_dark_primary_text</item>
         <item name="material_drawer_secondary_text">@color/material_drawer_dark_secondary_text
@@ -144,8 +158,12 @@
     </style>
 
 
-    <style name="MyAppThemeHome.BigImage" >
 
+
+    <style name="MyAppThemeHome.BigImage" >
+    </style>
+
+    <style name="MyAppThemeAdd.Scan">
 
     </style>
 

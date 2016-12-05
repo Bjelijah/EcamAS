@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/add_ap_bk"
+    style="@style/MyAppThemeAp"
+    >
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="55dip"
+        android:background="@color/add_ap_bk" >
+
+        <ImageButton
+            android:id="@+id/add_ap_ib_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00000000"
+            android:src="@drawable/back_btn_selector"
+            android:layout_gravity="left|center" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_ap"
+            android:textColor="@color/white"
+            android:textSize="23sp"
+            android:layout_gravity="center"
+            />
+
+    </FrameLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/ap_form"
+        android:paddingTop="@dimen/add_listen_device_padding_vertical"
+        android:paddingBottom="5dp"
+        android:paddingLeft="@dimen/add_listen_device_padding_horizontal"
+        android:paddingRight="@dimen/add_listen_device_padding_horizontal"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_listen_device_name_title"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="@dimen/add_listen_device_width"
+                android:layout_height="wrap_content"
+
+                app:hintTextAppearance="@style/FloatingStyle"
+                app:errorTextAppearance="@style/errorStyle"
+                android:layout_marginTop="@dimen/add_listen_device_margin_vertcail_fun"
+                >
+
+                <AutoCompleteTextView
+
+                    android:id="@+id/add_ap_et_deviceName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/add_listen_device_name"
+
+                    android:inputType="textAutoComplete"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textSize="15sp"
+                    android:textColor="@color/white"
+                    />
+
+            </android.support.design.widget.TextInputLayout>
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:text="@string/add_ap_ip_title"
+                android:layout_marginTop="@dimen/add_listen_device_margin_vertcail_ctrl"
+                />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="@dimen/add_listen_device_width"
+                android:layout_height="wrap_content"
+
+                app:hintTextAppearance="@style/FloatingStyle"
+                app:errorTextAppearance="@style/errorStyle"
+                android:layout_marginTop="@dimen/add_listen_device_margin_vertcail_fun"
+                >
+
+                <AutoCompleteTextView
+
+                    android:id="@+id/add_ap_et_ip"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/add_ap_ip"
+
+                    android:inputType="textAutoComplete"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textSize="15sp"
+                    android:textColor="@color/white"
+                    />
+
+            </android.support.design.widget.TextInputLayout>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:text="@string/add_ap_port_title"
+                android:layout_marginTop="@dimen/add_listen_device_margin_vertcail_ctrl"
+                />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="@dimen/add_listen_device_width"
+                android:layout_height="wrap_content"
+
+                app:hintTextAppearance="@style/FloatingStyle"
+                app:errorTextAppearance="@style/errorStyle"
+                android:layout_marginTop="@dimen/add_listen_device_margin_vertcail_fun"
+                >
+
+                <AutoCompleteTextView
+
+                    android:id="@+id/add_ap_et_port"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/add_ap_port"
+
+                    android:inputType="textAutoComplete"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textSize="15sp"
+                    android:textColor="@color/white"
+                    />
+
+            </android.support.design.widget.TextInputLayout>
+
+
+            <Button
+                android:id="@+id/add_ap_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_ap_btn"
+                style="?android:textAppearanceSmall"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:background="@drawable/ap_ll"
+                android:layout_marginTop="@dimen/add_listen_device_margin_vertcail_ctrl"
+                />
+
+
+
+        </LinearLayout>
+
+
+
+
+
+    </ScrollView>
+
+
+
+
+
+
+
+
+</LinearLayout>

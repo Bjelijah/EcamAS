@@ -5,7 +5,7 @@ package com.howell.bean;
  */
 
 public class CameraItemBean {
-
+    private PlayType type;
     private String cameraName;
     private String deviceId;
     private int channelNo;
@@ -16,6 +16,14 @@ public class CameraItemBean {
     private String model;
     private int indensity;
     private String picturePath;
+
+    public PlayType getType() {
+        return type;
+    }
+
+    public void setType(PlayType type) {
+        this.type = type;
+    }
 
     public String getPicturePath() {
         return picturePath;

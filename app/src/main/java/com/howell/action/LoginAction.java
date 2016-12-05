@@ -11,6 +11,7 @@ import com.howell.protocol.LoginRequest;
 import com.howell.protocol.LoginResponse;
 import com.howell.protocol.SoapManager;
 import com.howell.utils.DecodeUtils;
+import com.howell.utils.UserConfigSp;
 
 /**
  * Created by howell on 2016/11/9.
@@ -63,6 +64,7 @@ public class LoginAction {
 
     public void Login(final String account,final String password){
         mInfo.setAccount(account).setPassword(password);
+        setmIsGuest(account.equals("100868"));
         new AsyncTask<Void,Void,Boolean>(){
             int mError;
             LoginResponse mLoginRes = null;
@@ -91,7 +93,6 @@ public class LoginAction {
                 }else{
                     return false;
                 }
-
             }
             private boolean login(String account,String password){
                 String encodedPassword = DecodeUtils.getEncodedPassword(password);
@@ -116,7 +117,6 @@ public class LoginAction {
             @Override
             protected Boolean doInBackground(Void... voids) {
                 LoginRequest loginReq = null;
-
                 if (!login(account,password)){
                     mError = ERROR_LINK_ERROR;
                     return false;
@@ -133,10 +133,6 @@ public class LoginAction {
                     mInfo.setAr(mAccountResponse);
                     saveLogin2DB();
                 }
-
-
-
-
                 return true;
             }
             @Override
@@ -144,7 +140,7 @@ public class LoginAction {
                 super.onPostExecute(aBoolean);
                 if (mCallback==null)return;
                 if (aBoolean){
-
+                    saveLogin2Sp();
                     mCallback.onLoginSuccess();
                 }else{
                     mCallback.onLoginError(mError);
@@ -162,6 +158,9 @@ public class LoginAction {
         dao.close();
     }
 
+    private void saveLogin2Sp(){
+        UserConfigSp.saveUserInfo(mContext,mInfo.getAccount(),mInfo.getPassword());
+    }
 
 
     public  interface IloginRes{

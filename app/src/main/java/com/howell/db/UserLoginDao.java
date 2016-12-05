@@ -119,6 +119,25 @@ public class UserLoginDao {
 		}
 		return data;
 	}
+
+	public List<UserLoginDBBean> queryByName(String userName){
+		db = dbHelper.getWritableDatabase();
+		List<UserLoginDBBean> data = new ArrayList<UserLoginDBBean>();
+		String sql = "select * from userinfo where username=?;";
+		Cursor cursor = db.rawQuery(sql, new String[]{userName+""});
+		while (cursor.moveToNext()){
+			int id = cursor.getInt(cursor.getColumnIndex("id"));
+			int num = cursor.getInt(cursor.getColumnIndex("num"));
+			String name = cursor.getString(cursor.getColumnIndex("username"));
+			String pwd = cursor.getString(cursor.getColumnIndex("userpassword"));
+			String email = cursor.getString(cursor.getColumnIndex("useremail"));
+			UserLoginDBBean info = new UserLoginDBBean(num,name,pwd,email);
+			data.add(info);
+
+		}
+		return data;
+	}
+
 	
 	
 	public void close(){

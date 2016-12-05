@@ -67,7 +67,12 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
     }
 
     public void setData(List<NoticeItemBean> list){
+
         this.mList = list;
+        if (mList.size()>1){
+            Log.i("123","data0="+mList.get(0).getTitle());
+        }
+
     }
 
     private void init(ViewHoder holder,NoticeItemBean bean){
@@ -82,7 +87,7 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
 
     }
 
-    private void initClick(ViewHoder holder,final int pos){
+    private void initClick(final ViewHoder holder, final int pos){
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,6 +95,31 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
                 mListener.onItemClickListener(pos);
             }
         });
+        holder.iv1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onPicClickListener(pos,1,holder.picPath);
+            }
+        });
+        holder.iv2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onPicClickListener(pos,2,holder.picPath);
+            }
+        });
+        holder.iv3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onPicClickListener(pos,3,holder.picPath);
+            }
+        });
+        holder.iv4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onPicClickListener(pos,4,holder.picPath);
+            }
+        });
+
     }
 
     @Override
@@ -124,6 +154,8 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
                 SoapManager mSoapManager = SoapManager.getInstance();
                 GetPictureRes res = mSoapManager.getGetPictureRes(req);
                 final Bitmap bm = ScaleImageUtils.decodeByteArray(requiredWidthSize, requiredWidthSize, Base64.decode(res.getPicture()));
+                hoder.picPath.add(id+HD);
+
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
@@ -133,6 +165,9 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
                 SDCardUtils.saveBmpToSd(bm,id);
                 SDCardUtils.saveBmpToSd(BitmapFactory.decodeByteArray(Base64.decode(res.getPicture()), 0, Base64.decode(res.getPicture()).length),id+HD);
             }else{
+                hoder.picPath.add(id+HD);
+
+
               new Handler().post(new Runnable() {
                   @Override
                   public void run() {
@@ -247,7 +282,7 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
         TextView noticeTime;
         ImageView iv1,iv2,iv3,iv4;
         LinearLayout lliv;
-
+        ArrayList<String>picPath;
         public ViewHoder(View itemView) {
             super(itemView);
             mView = itemView;
@@ -259,10 +294,12 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
             iv3 = (ImageView) itemView.findViewById(R.id.item_notice_iv_3);
             iv4 = (ImageView) itemView.findViewById(R.id.item_notice_iv_4);
             lliv = (LinearLayout) itemView.findViewById(R.id.item_notice_ll_iv);
+            picPath = new ArrayList<String>();
         }
     }
 
     public interface OnItemClickListener{
         void onItemClickListener(int pos);
+        void onPicClickListener(int pos,int index,ArrayList<String> picPath);
     }
 }

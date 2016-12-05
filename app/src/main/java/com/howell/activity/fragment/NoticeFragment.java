@@ -1,11 +1,11 @@
 package com.howell.activity.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.howell.action.NoticeAction;
+import com.howell.activity.BigImages;
 import com.howell.adapter.NoticeRecyclerViewAdapter;
 import com.howell.bean.NoticeItemBean;
 import com.howell.ecam.R;
@@ -30,7 +31,7 @@ import pullrefreshview.layout.BaseHeaderView;
  * Created by howell on 2016/11/25.
  */
 
-public class NoticeFragment extends Fragment implements BaseHeaderView.OnRefreshListener,BaseFooterView.OnLoadListener,NoticeRecyclerViewAdapter.OnItemClickListener,NoticeAction.OnNoticeRes {
+public class NoticeFragment extends HomeBaseFragment implements BaseHeaderView.OnRefreshListener,BaseFooterView.OnLoadListener,NoticeRecyclerViewAdapter.OnItemClickListener,NoticeAction.OnNoticeRes {
     private final static int MSG_NOTICE_ERROR = 0x20;
     private final static int MSG_NOTICE_UPDATA = 0x21;
     private final static int MSG_NOTICE_END    = 0x22;
@@ -52,6 +53,8 @@ public class NoticeFragment extends Fragment implements BaseHeaderView.OnRefresh
                     break;
                 case MSG_NOTICE_UPDATA:
                     Log.i("123","updata notice");
+                    mFv.stopLoad();
+                    mHv.stopRefresh();
                     mAdapter.setData(mlist);
                     mAdapter.notifyDataSetChanged();
                     break;
@@ -93,7 +96,7 @@ public class NoticeFragment extends Fragment implements BaseHeaderView.OnRefresh
             public void run() {
                 mFv.stopLoad();
             }
-        },1500);
+        },1000);
         mNoticeAction.getNoticesTask();
     }
 
@@ -105,13 +108,25 @@ public class NoticeFragment extends Fragment implements BaseHeaderView.OnRefresh
             public void run() {
                 mHv.stopRefresh();
             }
-        },1500);
+        },1000);
         mNoticeAction.reset().getNoticesTask();
     }
 
     @Override
     public void onItemClickListener(int pos) {
 
+    }
+
+    @Override
+    public void onPicClickListener(int pos, int index,ArrayList<String>picPath) {
+       if (picPath==null||picPath.size()==0)return;
+        Intent intent = new Intent(getContext(), BigImages.class);
+        intent.putExtra("position", index);
+        intent.putStringArrayListExtra("arrayList", picPath);
+        getActivity().overridePendingTransition(R.anim.zoomin, R.anim.zoomout);
+
+        //startActivity(intent);
+//        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity(),view,"myImage").toBundle());
     }
 
     private void getData(int num){
@@ -125,7 +140,10 @@ public class NoticeFragment extends Fragment implements BaseHeaderView.OnRefresh
         mHandler.sendEmptyMessage(MSG_NOTICE_UPDATA);
     }
 
-    private void getData(){
+    @Override
+    public void getData(){
+        mlist.clear();
+        mNoticeAction.reset();
         mNoticeAction.getNoticesTask();
     }
 
@@ -133,15 +151,21 @@ public class NoticeFragment extends Fragment implements BaseHeaderView.OnRefresh
 
     @Override
     public void OnNoticeError() {
+        Log.e("123","on notice error");
         mHandler.sendEmptyMessage(MSG_NOTICE_ERROR);
     }
 
     @Override
     public void OnNoticeRes(QueryNoticesRes res) {
+        Log.e("123","on notice res");
         if (res == null){
             mHandler.sendEmptyMessage(MSG_NOTICE_END);
         }
         List<NoticeList>list = res.getNodeList();
+        if (list==null){
+            mHandler.sendEmptyMessage(MSG_NOTICE_UPDATA);
+            return;
+        }
         for (NoticeList o:list){
             NoticeItemBean bean = new NoticeItemBean();
             bean.setTitle(o.getName())
@@ -156,8 +180,8 @@ public class NoticeFragment extends Fragment implements BaseHeaderView.OnRefresh
 //            holder.time.setText(notice.getTime().substring(0, 10)+" "+notice.getTime().substring(11,19));
 
         }
-
-
         mHandler.sendEmptyMessage(MSG_NOTICE_UPDATA);
+
+
     }
 }

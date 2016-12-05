@@ -21,11 +21,19 @@ public class DBHelper extends SQLiteOpenHelper {
 		//创建表
 		String sqlUserInfo = "create table userinfo(id integer primary key autoincrement,"
 				+ "num integer,"
-				+ "username varchar(20),"
+				+ "username varchar(80),"
 				+ "useremail varchar(80),"
 				+ "userpassword varchar(20));";
 				
 		db.execSQL(sqlUserInfo);
+
+
+		String sqlAPCam = "create table apcam(id integer primary key autoincrement,"
+				+"username varchar(80),"
+				+"devicename varchar(80),"
+				+"ip varchar(30),"
+				+"port integer);";
+		db.execSQL(sqlAPCam);
 	}
 
 	@Override

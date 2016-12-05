@@ -4,11 +4,12 @@
     android:layout_height="match_parent"
     android:background="@color/bg"
     android:orientation="vertical" >
-    
+
+	<!--android:background="@color/title_blue" -->
     <FrameLayout
 	    android:layout_width="fill_parent"
 	    android:layout_height="55dip"
-	    android:background="@color/title_blue" >
+	    android:background="@color/home_bk" >
         <ImageButton
             android:id="@+id/ib_set_device_wifi_back"
             android:layout_width="wrap_content"
@@ -44,6 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dip"
         android:background="@drawable/list_item_bg_normal"
+		android:gravity="center_vertical"
          >
         
         <TextView
@@ -72,6 +74,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/list_item_bg_normal"
         android:layout_marginTop="10dip"
+		android:gravity="center_vertical"
          >
         
         <TextView
@@ -100,12 +103,40 @@
 	        android:gravity="center"
 	        android:background="@drawable/wifi_selector" />
 
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:id="@+id/ll_open_gps"
+			android:orientation="horizontal"
+			android:gravity="center_vertical"
+			android:layout_marginLeft="40dp"
+
+			>
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/add_listen_open_location"
+				/>
+
+			<ImageView
+				android:id="@+id/iv_location"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+
+
+		</LinearLayout>
+
+
+
     </LinearLayout>
     
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/list_item_bg_normal"
+		android:gravity="center_vertical"
          >
         
         <TextView

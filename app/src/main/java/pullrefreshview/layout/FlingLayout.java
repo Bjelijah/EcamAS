@@ -28,7 +28,6 @@ import android.support.v4.view.NestedScrollingParent;
 import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -139,7 +138,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
     private void moveTo(float y) {
         setMoveY(y);
         setScrollState(tempStateType);
-        Log.i("flingLayout", "moveY:" + y);
+//        Log.i("flingLayout", "moveY:" + y);
         boolean intercept = onScroll(y);
         if (mOnScrollListener != null) {
             mOnScrollListener.onScroll(this, y);
@@ -153,7 +152,7 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
         if (this.stateType != stateType) {
             this.stateType = stateType;
             this.tempStateType = stateType;
-            Log.i("flingLayout", "onScrollChange:" + stateType);
+//            Log.i("flingLayout", "onScrollChange:" + stateType);
             onScrollChange(stateType);
             if (mOnScrollListener != null) {
                 mOnScrollListener.onScrollChange(this, stateType);
