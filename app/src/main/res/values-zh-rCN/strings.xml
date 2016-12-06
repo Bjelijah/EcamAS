@@ -292,6 +292,7 @@
 	<string name="add_listen_device_next">下一步</string>
 	<string name="add_listen_device_tb_title">听一听</string>
 	<string name="add_listen_device_error_wifi">请选择您的WIFI</string>
+	<string name="add_ap_dialog_title">添加AP摄像机</string>
 
 	<string name="add_ap_ip_title">IP:</string>
 	<string name="add_ap_ip">请输入您摄像机的IP地址</string>
@@ -302,4 +303,7 @@
 	<string name="add_ap_port_error">需要输入数字</string>
 	<string name="notice_no_more">没有更多消息</string>
 
+	<string name="device_item_remove_title">删除设备</string>
+	<string name="device_item_remove_msg">您确定要删除设备？</string>
+	<string name="device_item_remove_fail">删除设备失败</string>
 </resources>

@@ -2,8 +2,10 @@ package com.howell.action;
 
 import android.content.Context;
 
-import com.howell.bean.APDeviceDBBean;
-import com.howell.db.ApDeviceDao;
+import com.howell.bean.CamFactory;
+import com.howell.bean.CameraItemBean;
+import com.howell.bean.ICam;
+import com.howell.bean.PlayType;
 
 /**
  * Created by howell on 2016/12/2.
@@ -22,7 +24,7 @@ public class ApAction {
 
 
 
-    public boolean addAP2DB(Context context,String userName, String deviceName, String ip, String port){
+    public boolean addAP2DB(Context context, String deviceName, String ip, String port){
         int portNum = 0;
         try {
             portNum  = Integer.valueOf(port);
@@ -30,15 +32,14 @@ public class ApAction {
             e.printStackTrace();
             return false;
         }
-        ApDeviceDao dao = new ApDeviceDao(context,"user.db",1);
-        APDeviceDBBean bean = new APDeviceDBBean(userName,deviceName,ip,portNum);
-        if (dao.findByName(userName,deviceName)){
-            dao.updataByName(bean,userName,deviceName);
-        }else{
-            dao.insert(bean);
-        }
-        dao.close();
-        return true;
+        CameraItemBean tmp = new CameraItemBean()
+                .setCameraName(deviceName)
+                .setUpnpIP(ip)
+                .setUpnpPort(portNum);
+
+        ICam cam = CamFactory.buildCam(PlayType.HW5198);
+        cam.init(context,tmp);
+        return cam.bind();
     }
 
 }

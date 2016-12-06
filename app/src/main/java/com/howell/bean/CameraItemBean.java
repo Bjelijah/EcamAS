@@ -16,13 +16,34 @@ public class CameraItemBean {
     private String model;
     private int indensity;
     private String picturePath;
+    private String upnpIP; // for ap
+    private int upnpPort;
 
     public PlayType getType() {
         return type;
     }
 
-    public void setType(PlayType type) {
+    public String getUpnpIP() {
+        return upnpIP;
+    }
+
+    public CameraItemBean setUpnpIP(String upnpIP) {
+        this.upnpIP = upnpIP;
+        return this;
+    }
+
+    public int getUpnpPort() {
+        return upnpPort;
+    }
+
+    public CameraItemBean setUpnpPort(int upnpPort) {
+        this.upnpPort = upnpPort;
+        return this;
+    }
+
+    public CameraItemBean setType(PlayType type) {
         this.type = type;
+        return this;
     }
 
     public String getPicturePath() {

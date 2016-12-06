@@ -685,6 +685,7 @@ public class DeviceSetActivity extends Activity implements
     }
     
     private void removeDevice(){
+
     	NullifyDeviceReq req = new NullifyDeviceReq(mSoapManager.getLoginResponse().getAccount(),mSoapManager.getLoginResponse().getLoginSession(),dev.getDevID(),dev.getDevID());
     	NullifyDeviceRes res = mSoapManager.getNullifyDeviceRes(req);
     	System.out.println("removeDevice:"+res.getResult());

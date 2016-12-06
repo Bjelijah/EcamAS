@@ -92,6 +92,7 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
         }
         if(bm == null){
 //            holder.ivCamera.setImageResource(R.mipmap.card_camera_default_image);
+            holder.ivCamera.setImageBitmap(null);
             holder.ivCamera.setBackgroundColor(mContext.getResources().getColor(R.color.item_camera_video));
         }else{
             holder.ivCamera.setImageBitmap(bm);
@@ -208,7 +209,16 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
         }
     }
 
-
+    public void closeAllSwipe(){
+        for (SwipeLinearLayout sll:mSllList){
+            if (null==sll){
+                continue;
+            }
+            if (!sll.isClose()){
+                sll.scrollAuto(SwipeLinearLayout.DIRECTION_SHRINK);
+            }
+        }
+    }
 
 
     public interface OnItemClickListener{

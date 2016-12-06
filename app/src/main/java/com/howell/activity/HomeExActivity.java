@@ -29,7 +29,6 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.howell.action.HomeAction;
 import com.howell.action.LoginAction;
 import com.howell.activity.fragment.DeviceFragment;
@@ -133,6 +132,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         setSupportActionBar(toolbar);
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle(getString(R.string.app_name));
+//        collapsingToolbarLayout.setTitle(" ");//FIXME : just for screen shoot
         final View rootView = findViewById(R.id.main_content);
         mAddbtn = (FloatingActionButton) findViewById(R.id.floating_action_button);
         mAddbtn.setOnClickListener(new View.OnClickListener() {
@@ -162,6 +162,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         loadBackdrop();
         initFragment();
     }
+
     private Drawable getRamdomUserIcon(){
         int id = (int)(Math.random()*5);
         Log.i("123","random = "+id);
@@ -176,6 +177,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
             mList.add(mine);
             return mList;
         }
+
         String userName = LoginAction.getInstance().getmInfo().getAccount();
         String usermail = LoginAction.getInstance().getmInfo().getAr().getEmail();
         IProfile mine = new ProfileDrawerItem().withName(userName).withEmail(usermail).withIcon(getRamdomUserIcon());
@@ -226,11 +228,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                         if (current)return false;
                         Log.i("123","on profile changed current="+current+" emal="+profile.getEmail()+" name="+profile.getName());
                         //FIXME change to new user
-
                         HomeAction.getInstance().changeUser(HomeExActivity.this,profile.getName()+"");
-
-
-
                         return false;
                     }
                 })
@@ -282,10 +280,8 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
 
     private void loadBackdrop() {
         final ImageView imageView = (ImageView) findViewById(R.id.backdrop);
-        Glide.with(this).load("https://unsplash.it/600/300/?random").centerCrop().into(imageView);
-
-
-
+//        Glide.with(this).load("https://unsplash.it/600/300/?random").centerCrop().into(imageView);
+        imageView.setImageDrawable(getDrawable(R.drawable.mm_bk));
     }
 
     private void fillFab() {
@@ -359,10 +355,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
 
         //After finishing everything, we destroy the Renderscript.
         rs.destroy();
-
         return outBitmap;
-
-
     }
 
     private void funExit(){
@@ -402,7 +395,6 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
             if (drawerItem.getIdentifier()==ID_DRAWER_SERVER_TURN){
                 //TODO isChecked:
                 HomeAction.getInstance().setUseTurn(isChecked);
-
             }else if(drawerItem.getIdentifier()==ID_DRAWER_SERVER_ENCRYPT){
                 //TODO isChecked:
                 HomeAction.getInstance().setUseCrypto(isChecked);
@@ -416,8 +408,6 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         public void onDrawerOpened(View drawerView) {
             Log.i("123","on drawerOpen");
             //TODO: get Drawer param form sp
-
-
         }
 
         @Override
@@ -449,7 +439,6 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
             } else if(drawerItem.getIdentifier() == ID_DRAWER_HELP){
                 msg.what = MSG_HOME_HELP;
             }
-
             mHandler.sendMessageDelayed(msg,300);
             return false;
         }
@@ -472,7 +461,6 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
             strings.add(getString(R.string.home_fragment_medias));
             strings.add(getString(R.string.home_fragment_notice));
         }
-
 
         @Override
         public Fragment getItem(int position) {
@@ -499,20 +487,17 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         BulrTask(View v){
             this.v = v;
         }
-
         @Override
         protected void onPreExecute() {
             bitmap = getViewBitmap(v);
             super.onPreExecute();
         }
-
         @Override
         protected Void doInBackground(Void... voids) {
             Bitmap bulrBitmap = bulrBitmap(bitmap);
             sBkBitmap = bulrBitmap;
             return null;
         }
-
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);

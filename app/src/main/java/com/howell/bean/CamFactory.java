@@ -1,19 +1,20 @@
 package com.howell.bean;
 
 /**
- * Created by howell on 2016/11/29.
+ * Created by howell on 2016/12/6.
  */
 
-public class PlayFactory {
-    private static IPlay mp;
-    public static IPlay buildPlay(PlayType type){
+public class CamFactory {
+    public static ICam mp=null;
+    public static ICam buildCam(PlayType type){
         switch (type){
             case ECAM:
-                mp = new EcamPlay();
+                mp = new ECamMgr();
                 break;
             case TURN:
                 break;
             case HW5198:
+                mp = new ApCamMgr();
                 break;
             default:
                 break;

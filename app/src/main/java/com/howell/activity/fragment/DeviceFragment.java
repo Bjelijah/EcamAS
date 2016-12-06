@@ -1,9 +1,11 @@
 package com.howell.activity.fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,8 +17,10 @@ import com.howell.action.HomeAction;
 import com.howell.action.LoginAction;
 import com.howell.adapter.DeviceRecyclerViewAdapter;
 import com.howell.bean.CameraItemBean;
+import com.howell.bean.PlayType;
 import com.howell.ecam.R;
 import com.howell.entityclass.NodeDetails;
+import com.howell.utils.AlerDialogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,6 +107,9 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
     @Override
     public void getData(){
         LoginAction.UserInfo info = LoginAction.getInstance().getmInfo();
+        //get ap list
+        HomeAction.getInstance().addApCam2List(getContext(),info.getAccount(),mList);
+
         HomeAction.getInstance().setContext(getContext()).registQueryDeviceCallback(this).queryDevice(info.getAccount(),info.getLr().getLoginSession());
     }
 
@@ -135,38 +142,40 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
 
     @Override
     public void onQueryDeviceSuccess(ArrayList<NodeDetails> l) {
-        mList.clear();
+//        mList.clear();
         if (l==null){
             mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);
             return;
         }
 
-
         for (NodeDetails n:l){
             CameraItemBean b = new CameraItemBean()
+                    .setType(HomeAction.getInstance().isUseTurn()?PlayType.TURN:PlayType.HW5198)
                     .setCameraName(n.getName())
                     .setIndensity(n.getIntensity())
+                    .setDeviceId(n.getDevID())
                     .setOnline(n.isOnLine())
                     .setPtz(n.isPtzFlag())
                     .setStore(n.iseStoreFlag())
+                    .setUpnpIP(n.getUpnpIP())
+                    .setUpnpPort(n.getUpnpPort())
                     .setPicturePath(n.getPicturePath());
+
             mList.add(b);
         }
-        mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);
+        //TODO 重新排列： 1ecam OnLine 2ap 3ecam Offline
+        HomeAction.getInstance().sort((ArrayList<CameraItemBean>) mList);//online 倒序添加
+        mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);//updata ecam list and ap list
     }
 
     @Override
     public void onQueryDeviceError() {
-
+        mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);//for updata ap list
     }
 
     @Override
     public void onItemVideoClickListener(View v, int pos) {
         CameraItemBean item = mList.get(pos);
-
-
-
-
     }
 
     @Override
@@ -185,7 +194,22 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
     }
 
     @Override
-    public void onItemDeleteClickListener(View v, int pos) {
-
+    public void onItemDeleteClickListener(View v,final int pos) {
+        //todo 关闭滑块  弹框
+        adapter.closeAllSwipe();
+        final CameraItemBean bean = mList.get(pos);
+//        MyRemoveCam removeCam = new MyRemoveCam(getContext(),bean,pos);
+        AlerDialogUtils.postDialogMsg(getContext(), getString(R.string.device_item_remove_title), getString(R.string.device_item_remove_msg), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if(HomeAction.getInstance().removeCam(getContext(),bean)){
+                    mList.remove(pos);
+                    mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);
+                }else{
+                    Snackbar.make(mView,getString(R.string.device_item_remove_fail),Snackbar.LENGTH_LONG).show();
+                }
+            }
+        }, null);
     }
+
 }

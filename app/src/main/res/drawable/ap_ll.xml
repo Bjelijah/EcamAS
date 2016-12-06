@@ -12,7 +12,7 @@
     <!-- 边框圆角 -->
     <item android:bottom="1dp" android:right="1dp" android:top="1dp" android:left="1dp">
         <shape android:shape="rectangle">
-            <solid android:color="@color/md_green_200" />
+            <solid android:color="@color/md_grey_700" />
             <corners android:radius="2.5dp"/>
             <padding android:bottom="1.8dp"
                 android:left="1dp"
@@ -27,7 +27,7 @@
         <ripple android:color="@color/white">
             <item>
                 <selector>
-                    <item android:drawable="@color/md_green_200"/>
+                    <item android:drawable="@color/md_grey_700"/>
                 </selector>
             </item>
         </ripple>

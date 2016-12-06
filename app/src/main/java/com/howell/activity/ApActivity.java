@@ -1,5 +1,6 @@
 package com.howell.activity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -9,8 +10,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.howell.action.ApAction;
-import com.howell.action.LoginAction;
 import com.howell.ecam.R;
+import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.Util;
 
 /**
@@ -22,7 +23,8 @@ public class ApActivity extends AppCompatActivity {
     ImageButton mBack;
     AutoCompleteTextView mName,mIP,mPort;
     Button mBtn;
-    
+    MyPostListener mMyPostListener = new MyPostListener();
+    boolean mSuccess = false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,17 +61,6 @@ public class ApActivity extends AppCompatActivity {
         mIP.setError(null);
         mPort.setError(null);
         View focusView = null;
-        if (name.equals("")){
-            mName.setError(getString(R.string.reg_field_empty));
-            focusView = mName;
-        }
-        if (!Util.isIP(ip)){
-            mIP.setError(getString(R.string.add_ap_ip_error));
-        }
-        if (ip.equals("")){
-            mIP.setError(getString(R.string.reg_field_empty));
-            focusView = mIP;
-        }
         if (!Util.isInteger(port)){
             mPort.setError(getString(R.string.add_ap_port_error));
             focusView = mPort;
@@ -78,16 +69,42 @@ public class ApActivity extends AppCompatActivity {
             mPort.setError(getString(R.string.reg_field_empty));
             focusView = mPort;
         }
-
+        if (!Util.isIP(ip)){
+            mIP.setError(getString(R.string.add_ap_ip_error));
+            focusView = mIP;
+        }
+        if (ip.equals("")){
+            mIP.setError(getString(R.string.reg_field_empty));
+            focusView = mIP;
+        }
+        if (name.equals("")){
+            mName.setError(getString(R.string.reg_field_empty));
+            focusView = mName;
+        }
 
         if (focusView!=null){
             focusView.requestFocus();
             return;
         }
         //// TODO: 2016/12/2
-        String curUserName = LoginAction.getInstance().getmInfo().getAccount();
 
-        ApAction.getInstance().addAP2DB(this,curUserName,name,ip,port);
-        
+        if ( ApAction.getInstance().addAP2DB(this,name,ip,port)){
+            mSuccess = true;
+        }else{
+            mSuccess = false;
+        }
+        AlerDialogUtils.postDialogMsg(this,getString(R.string.add_ap_dialog_title),getString(R.string.match_activity_success_dialog_title),mMyPostListener);
+    }
+
+    class MyPostListener implements DialogInterface.OnClickListener{
+
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            if (mSuccess){
+                finish();
+            }else{
+
+            }
+        }
     }
 }

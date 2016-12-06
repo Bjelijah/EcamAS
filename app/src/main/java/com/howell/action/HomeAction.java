@@ -2,8 +2,15 @@ package com.howell.action;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
+import com.howell.bean.APDeviceDBBean;
+import com.howell.bean.CamFactory;
+import com.howell.bean.CameraItemBean;
+import com.howell.bean.ICam;
+import com.howell.bean.PlayType;
 import com.howell.bean.UserLoginDBBean;
+import com.howell.db.ApDeviceDao;
 import com.howell.db.UserLoginDao;
 import com.howell.entityclass.NodeDetails;
 import com.howell.protocol.QueryDeviceReq;
@@ -98,6 +105,56 @@ public class HomeAction {
     private SoapManager mSoapManager = SoapManager.getInstance();
     private ArrayList<NodeDetails> mList;
 
+    private List<APDeviceDBBean> getAPCameraList(Context context,String userName){
+        ApDeviceDao dao = new ApDeviceDao(context,"user.db",1);
+        List<APDeviceDBBean> beanList =  dao.queryByName(userName);
+        dao.close();
+        return beanList;
+    }
+
+    public boolean addApCam2List(Context context,String userName,List<CameraItemBean> list){
+        list.clear();
+        if (list==null)return false;
+
+        List<APDeviceDBBean> apList = getAPCameraList(context,userName);
+        for (APDeviceDBBean apBean:apList){
+            CameraItemBean camBean = new CameraItemBean()
+                    .setType(PlayType.HW5198)
+                    .setCameraName(apBean.getDeviceName())
+                    .setOnline(true)
+                    .setIndensity(0)
+                    .setStore(true)
+                    .setPtz(true)
+                    .setUpnpIP(apBean.getDeviceIP())
+                    .setUpnpPort(apBean.getDevicePort())
+                    .setPicturePath(null);
+            list.add(camBean);
+        }
+        return true;
+    }
+
+    public boolean sort(ArrayList<CameraItemBean> list){
+        if (list==null)return false;
+        for (int i=0;i<list.size();i++){
+            if (list.get(i).isOnline() ){
+                list.add(0, list.get(i));
+                list.remove(i+1);
+            }
+        }
+        return true;
+    }
+
+    public boolean removeCam(Context context,CameraItemBean bean){
+        Log.e("123","type="+bean.getType());
+        ICam cam = CamFactory.buildCam(bean.getType());
+        if (null==cam)return false;
+        cam.init(context,bean);
+        return cam.unBind();
+    }
+
+
+
+
     public void queryDevice(final String account,final String session){
         new AsyncTask<Void,Void,Boolean>(){
             private void sort(ArrayList<NodeDetails> list){
@@ -117,7 +174,6 @@ public class HomeAction {
 
             @Override
             protected Boolean doInBackground(Void... voids) {
-
                 try {
                     mSoapManager.getQueryDeviceRes(new QueryDeviceReq(account,session));
                 } catch (Exception e) {

@@ -163,13 +163,7 @@
                 android:layout_marginTop="@dimen/add_listen_device_margin_vertcail_ctrl"
                 />
 
-
-
         </LinearLayout>
-
-
-
-
 
     </ScrollView>
 

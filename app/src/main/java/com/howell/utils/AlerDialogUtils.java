@@ -56,4 +56,23 @@ public class AlerDialogUtils {
 	    AlertDialog dialog = builer.create();    
 	    dialog.show();    
 	}
+
+	public static void postDialogMsg(Context context,String title,String msg,OnClickListener ob){
+		Builder builder = new Builder(context);
+		builder.setTitle(title).setMessage(msg)
+				.setPositiveButton(context.getResources().getString(R.string.ok),ob)
+				.create()
+				.show();
+	}
+
+	public static void postDialogMsg(Context context,String title,String msg,OnClickListener positiveBtn,OnClickListener negativeBtn){
+		Builder builder = new Builder(context);
+		builder.setTitle(title).setMessage(msg)
+				.setPositiveButton(context.getResources().getString(R.string.ok),positiveBtn)
+				.setNegativeButton(context.getResources().getString(R.string.cancel),negativeBtn)
+				.create()
+				.show();
+	}
+
+
 }

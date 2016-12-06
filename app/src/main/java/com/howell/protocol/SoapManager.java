@@ -1344,6 +1344,7 @@ public class SoapManager implements Serializable {
 	        }
     	}catch (Exception e) {
     		// TODO: handle exception
+			return null;
     	}
     	   	return res;
     }
