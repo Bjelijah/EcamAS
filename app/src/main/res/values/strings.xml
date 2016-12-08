@@ -331,5 +331,10 @@
     <string name="device_item_remove_msg">Sure To Remove It?</string>
     <string name="device_item_remove_fail">Fail To Remove Camera</string>
 
-
+    <string name="server_setting_title">Server Setting</string>
+    <string name="server_setting_ip_title">ServerIP:</string>
+    <string name="server_setting_ip">Input Server IP</string>
+    <string name="server_setting_port_title">ServerPort:</string>
+    <string name="server_setting_port">Input Server Port</string>
+    <string name="server_setting_btn">Save</string>
 </resources>

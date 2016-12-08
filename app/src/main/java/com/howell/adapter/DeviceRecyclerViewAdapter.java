@@ -1,5 +1,6 @@
 package com.howell.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,17 +13,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.howell.action.LoginAction;
 import com.howell.activity.view.SwipeLinearLayout;
 import com.howell.bean.CameraItemBean;
+import com.howell.bean.PlayType;
 import com.howell.ecam.R;
+import com.howell.utils.IConst;
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.ScaleImageUtils;
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
+import com.zys.brokenview.BrokenCallback;
+import com.zys.brokenview.BrokenTouchListener;
+import com.zys.brokenview.BrokenView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,15 +38,43 @@ import java.util.List;
  * Created by howell on 2016/11/11.
  */
 
-public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecyclerViewAdapter.ViewHolder> implements SwipeLinearLayout.OnSwipeListener {
+public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecyclerViewAdapter.ViewHolder> implements SwipeLinearLayout.OnSwipeListener,IConst {
 //    List<SwipeLinearLayout> mSllList = new ArrayList<>();
+    public static int VIEW_TAG = 0xff;
+
     List<SwipeLinearLayout> mSllList = new ArrayList<>();
     private OnItemClickListener mClickListener;
     List<CameraItemBean> mList;
     int imageWidth,imageHeight;
     Context mContext;
     private int country;//中国 0 ，别的国家 1
+    BrokenTouchListener mBrokenTouchListener;
+    Activity mActivity;
+
+    MyBrokenCallback mBrokenCallback = new MyBrokenCallback();
+
     public DeviceRecyclerViewAdapter(){}
+
+    public DeviceRecyclerViewAdapter(Context c, OnItemClickListener o, Activity a){
+        mActivity = a;
+        this.mClickListener = o;
+        mContext = c;
+        imageWidth = PhoneConfig.getPhoneWidth(c)/2;
+        imageHeight = imageWidth * 10 / 16;
+        country = mContext.getResources().getConfiguration().locale.getCountry().equals("CN")?0:1;
+    }
+
+
+
+    public DeviceRecyclerViewAdapter(Context c, OnItemClickListener o, BrokenTouchListener l){
+        mBrokenTouchListener = l;
+        this.mClickListener = o;
+        mContext = c;
+        imageWidth = PhoneConfig.getPhoneWidth(c)/2;
+        imageHeight = imageWidth * 10 / 16;
+        country = mContext.getResources().getConfiguration().locale.getCountry().equals("CN")?0:1;
+    }
+
 
     public DeviceRecyclerViewAdapter(Context c, OnItemClickListener o){
         this.mClickListener = o;
@@ -74,6 +108,7 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_camera_swipebk,parent,false);
+
         ViewHolder holder = new ViewHolder(v);
         mSllList.add(holder.sll);
         return holder;
@@ -110,28 +145,35 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
             }else if(item.getIndensity()>0){
                 holder.ivWifi.setImageResource(R.mipmap.wifi_1);
             }else{
-                holder.ivWifi.setImageResource(R.mipmap.wifi_0);
+                holder.ivWifi.setImageResource(item.getType()==PlayType.HW5198?R.mipmap.wifi_0:R.mipmap.wifi_1);
             }
         }else{
             holder.ivInOffLine.setImageResource(country==0?R.mipmap.card_offline_image_gray:R.mipmap.card_offline_image_gray_english);
             holder.ivWifi.setImageResource(R.mipmap.wifi_0);
         }
-
         //back
-
-
 //        Octicons.Icon.oct_megaphone
-        holder.ivReplay.setImageDrawable(new IconicsDrawable(mContext,   GoogleMaterial.Icon.gmd_videocam).actionBar().color(Color.WHITE));
+//         GoogleMaterial.Icon.gmd_videocam
+        //FontAwesome.Icon.faw_video_camera    FontAwesome.Icon.faw_film
+        holder.ivReplay.setImageDrawable(mContext.getDrawable(R.mipmap.ic_theaters_white_24dp));
+//        holder.ivReplay.setImageDrawable(new IconicsDrawable(mContext,      GoogleMaterial.Icon.gmd_thumb_up_down).actionBar().color(Color.WHITE));
         holder.ivSetting.setImageDrawable(new IconicsDrawable(mContext,    Octicons.Icon.oct_settings).actionBar().color(Color.WHITE));
         holder.ivInfo.setImageDrawable(new IconicsDrawable(mContext,    Octicons.Icon.oct_info).actionBar().color(Color.WHITE));
         holder.ivDelete.setImageDrawable(new IconicsDrawable(mContext,    Octicons.Icon.oct_trashcan).actionBar().color(Color.WHITE));
-        holder.ivDelete.setVisibility(LoginAction.getInstance().ismIsGuest()?View.GONE:View.VISIBLE);
+        holder.llDelete.setBackground(new IconicsDrawable(mContext,    Octicons.Icon.oct_trashcan).actionBar().colorRes(R.color.item_camera_detele_bk));
 
+        holder.ivDelete.setVisibility(View.GONE );
+        holder.llDelete.setVisibility(LoginAction.getInstance().ismIsGuest() ? View.GONE : View.VISIBLE);
 
+       // GoogleMaterial.Icon.
 
+        if (!IS_TEST) {
+         //   holder.ivDelete.setVisibility(LoginAction.getInstance().ismIsGuest() ? View.GONE : View.VISIBLE);
+        }else{
+        }
     }
 
-    private void initClick(ViewHolder holder,final int pos,final CameraItemBean item){
+    private void initClick(final ViewHolder holder, final int pos, final CameraItemBean item){
 
         holder.ivReplay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,13 +200,70 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
                 mClickListener.onItemDeleteClickListener(view,pos);
             }
         });
+
+//        holder.ivDelete.setClickable(false);
+
+
         holder.ivCamera.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                mClickListener.onItemVideoClickListener(view,pos);
+                mClickListener.onItemVideoClickListener(view,holder.getItemView(),pos);
                 return false;
             }
         });
+
+        if (!LoginAction.getInstance().ismIsGuest()){
+            holder.getItemView().setTag(pos);
+            holder.getItemView().setOnTouchListener(mBrokenTouchListener);
+        }
+
+
+
+//        holder.ivCamera.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                holder.getItemView().dispatchTouchEvent(motionEvent);
+//
+//                switch (motionEvent.getAction()){
+//                    case MotionEvent.ACTION_DOWN:
+//                        Log.i("123","ivcamera ACTION_DOWN pos="+pos);
+//                        break;
+//                    case MotionEvent.ACTION_CANCEL:
+//                        Log.i("123","ivcamera ACTION_CANCEL "+pos);
+//                        break;
+//                    case MotionEvent.ACTION_UP:
+//                        Log.i("123","ivcamera ACTION_UP  "+pos);
+//                        break;
+//                }
+//                return true;
+//            }
+//        });
+
+
+//        holder.ivCamera.setOnTouchListener(mBrokenTouchListener);
+
+
+
+//        holder.mBrokenView = BrokenView.add2Window(mActivity);
+//        holder.mColorfulListener = new BrokenTouchListener
+//                .Builder(holder.mBrokenView)
+//                .setComplexity(8)
+//                .setBreakDuration(500)
+//                .setFallDuration(1000)
+//                .setCircleRiftsRadius(20)
+////                .setEnableArea(holder.getItemView())
+//                .build();
+//        holder.mBrokenView.setEnable(true);
+//        holder.mBrokenView.setCallback(mBrokenCallback);
+//        holder.ivCamera.setOnTouchListener(holder.mColorfulListener);
+
+//        holder.ivCamera.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                mClickListener.onItemVideoTouchListener(view,holder.getItemView(),pos);
+//                return true;
+//            }
+//        });
     }
 
 
@@ -222,7 +321,8 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
 
 
     public interface OnItemClickListener{
-        void onItemVideoClickListener(View v,int pos);
+        void onItemVideoTouchListener(View v,View itemView,int pos);
+        void onItemVideoClickListener(View v,View itemView,int pos);
         void onItemReplayClickListener(View v,int pos);
         void onItemSettingClickListener(View v,int pos);
         void onItemInfoClickListener(View v,int pos);
@@ -244,9 +344,14 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
 
 
 
+        BrokenView mBrokenView;
+        BrokenTouchListener mColorfulListener;
+
+
+
         //back
         FloatingActionButton ivReplay,ivSetting,ivInfo,ivDelete;
-
+        LinearLayout llDelete;
 
         public View getItemView(){
             return  this.itemView;
@@ -258,6 +363,7 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
             ivSetting = (FloatingActionButton) itemView.findViewById(R.id.item_camera_iv_setting);
             ivInfo = (FloatingActionButton) itemView.findViewById(R.id.item_camera_iv_info);
             ivDelete = (FloatingActionButton) itemView.findViewById(R.id.item_camera_iv_delete);
+            llDelete = (LinearLayout) itemView.findViewById(R.id.item_camera_ll_delete);
             sll = (SwipeLinearLayout) itemView.findViewById(R.id.item_camera_sll);
             ll_back = itemView.findViewById(R.id.item_camera_bk);
             ll_top = itemView.findViewById(R.id.item_camera_top);
@@ -269,6 +375,56 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
             ivWifi = (ImageView) itemView.findViewById(R.id.item_camera_iv_wifi_idensity);
             ivInOffLine = (ImageView) itemView.findViewById(R.id.item_camera_iv_offline);
 
+
+
+
+
+        }
+    }
+
+
+
+    class MyBrokenCallback extends BrokenCallback {
+        @Override
+        public void onStart(View v) {
+
+            super.onStart(v);
+            Log.e("123","BrokenCallback onStart");
+        }
+
+        @Override
+        public void onCancel(View v) {
+            super.onCancel(v);
+            Log.e("123","BrokenCallback onCancel");
+        }
+
+        @Override
+        public void onRestart(View v) {
+            super.onRestart(v);
+        }
+
+        @Override
+        public void onFalling(View v) {
+            super.onFalling(v);
+            Log.e("123","BrokenCallback onFalling");
+            //开始删除
+            //FIXME no use
+
+        }
+
+        @Override
+        public void onFallingEnd(View v) {
+            super.onFallingEnd(v);
+            Log.e("123","BrokenCallback onFallingEnd");
+            //更新adapter
+            //FIXME no use
+
+        }
+
+        @Override
+        public void onCancelEnd(View v) {
+            super.onCancelEnd(v);
+            Log.e("123","BrokenCallback onCancelEnd");
         }
     }
 

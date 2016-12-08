@@ -21,6 +21,10 @@ import com.howell.bean.PlayType;
 import com.howell.ecam.R;
 import com.howell.entityclass.NodeDetails;
 import com.howell.utils.AlerDialogUtils;
+import com.howell.utils.IConst;
+import com.zys.brokenview.BrokenCallback;
+import com.zys.brokenview.BrokenTouchListener;
+import com.zys.brokenview.BrokenView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +37,12 @@ import pullrefreshview.layout.PullRefreshLayout;
  * Created by howell on 2016/11/11.
  */
 
-public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.OnRefreshListener,BaseFooterView.OnLoadListener, DeviceRecyclerViewAdapter.OnItemClickListener,HomeAction.QueryDeviceCallback {
+public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.OnRefreshListener,BaseFooterView.OnLoadListener, DeviceRecyclerViewAdapter.OnItemClickListener,HomeAction.QueryDeviceCallback,IConst {
     public static final int MSG_RECEIVE_SIP = 0x0000;
     public static final int MSG_DEVICE_LIST_UPDATA = 0x0001;
+
+
+
     View mView;
     RecyclerView mRV;
     BaseHeaderView mbhv;
@@ -44,6 +51,10 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
     List<CameraItemBean> mList = new ArrayList<CameraItemBean>();
     int page = 1;
     DeviceRecyclerViewAdapter adapter;
+
+    BrokenView mBrokenView;
+    MyBrokenCallback mBrokenCallback = new MyBrokenCallback();
+    private BrokenTouchListener mColorfulListener;
 
 
     Handler mHandler = new Handler(){
@@ -56,6 +67,7 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
                 case MSG_DEVICE_LIST_UPDATA:
                     mbhv.stopRefresh();
                     adapter.setData(mList);
+                    mBrokenView.reset();
                     break;
                 default:
                     break;
@@ -76,7 +88,21 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
         mbhv.setOnRefreshListener(this);
 //        mbfv.setOnLoadListener(this);
 
-        adapter = new DeviceRecyclerViewAdapter(getContext(),this);
+        mBrokenView = BrokenView.add2Window(getActivity());
+        mColorfulListener = new BrokenTouchListener
+                .Builder(mBrokenView)
+                .setComplexity(5)
+                .setBreakDuration(1500)
+                .setFallDuration(2000)
+                .setCircleRiftsRadius(33)
+                .build();
+        mBrokenView.setCallback(mBrokenCallback);
+        mBrokenView.setEnable(true);
+
+
+//        adapter = new DeviceRecyclerViewAdapter(getContext(),this,getActivity());
+        adapter = new DeviceRecyclerViewAdapter(getContext(),this,mColorfulListener);
+//        adapter = new DeviceRecyclerViewAdapter(getContext(),this);
         mRV.setLayoutManager(new LinearLayoutManager(getContext()));
         mRV.setAdapter(adapter);
         Log.i("123","on create get data");
@@ -84,6 +110,7 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
 //        getData();
         return mView;
     }
+
 
 
     private void getData(int n) {
@@ -106,12 +133,18 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
 
     @Override
     public void getData(){
+
+        if(IS_TEST){//FIXME TEST
+            getData(5);
+            return;
+        }
+
         LoginAction.UserInfo info = LoginAction.getInstance().getmInfo();
         //get ap list
         HomeAction.getInstance().addApCam2List(getContext(),info.getAccount(),mList);
-
         HomeAction.getInstance().setContext(getContext()).registQueryDeviceCallback(this).queryDevice(info.getAccount(),info.getLr().getLoginSession());
     }
+
 
 
     @Override
@@ -150,7 +183,7 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
 
         for (NodeDetails n:l){
             CameraItemBean b = new CameraItemBean()
-                    .setType(HomeAction.getInstance().isUseTurn()?PlayType.TURN:PlayType.HW5198)
+                    .setType(HomeAction.getInstance().isUseTurn()?PlayType.TURN:PlayType.ECAM)//FIXME ME  should be ecam when test ,is 5198
                     .setCameraName(n.getName())
                     .setIndensity(n.getIntensity())
                     .setDeviceId(n.getDevID())
@@ -173,10 +206,23 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
         mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);//for updata ap list
     }
 
+
     @Override
-    public void onItemVideoClickListener(View v, int pos) {
-        CameraItemBean item = mList.get(pos);
+    public void onItemVideoTouchListener(View v, View itemView, int pos) {
+
     }
+
+    @Override
+    public void onItemVideoClickListener(View v, View itemView, int pos) {
+        //long click
+        Log.i("123","on item vied long click");
+      //  itemView.setOnTouchListener(mColorfulListener);
+        //TODO play video
+
+
+
+    }
+
 
     @Override
     public void onItemReplayClickListener(View v, int pos) {
@@ -211,5 +257,57 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
             }
         }, null);
     }
+
+    class MyBrokenCallback extends BrokenCallback {
+        @Override
+        public void onStart(View v) {
+
+            super.onStart(v);
+            Log.e("123","BrokenCallback onStart");
+        }
+
+        @Override
+        public void onCancel(View v) {
+            super.onCancel(v);
+            Log.e("123","BrokenCallback onCancel");
+        }
+
+        @Override
+        public void onRestart(View v) {
+            super.onRestart(v);
+        }
+
+        @Override
+        public void onFalling(View v) {
+            super.onFalling(v);
+            Log.e("123","BrokenCallback onFalling");
+            //开始删除
+            int pos = (int) v.getTag();
+            Log.i("123","pos="+pos);
+            final CameraItemBean bean = mList.get(pos);
+            if(HomeAction.getInstance().removeCam(getContext(),bean)){
+                mList.remove(pos);
+            }else{
+                Snackbar.make(mView,getString(R.string.device_item_remove_fail),Snackbar.LENGTH_LONG).show();
+            }
+//            Snackbar.make(mView,getString(R.string.device_item_remove_fail),Snackbar.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onFallingEnd(View v) {
+            super.onFallingEnd(v);
+            Log.e("123","BrokenCallback onFallingEnd");
+            //更新
+
+            mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);
+        }
+
+        @Override
+        public void onCancelEnd(View v) {
+            super.onCancelEnd(v);
+            Log.e("123","BrokenCallback onCancelEnd");
+        }
+    }
+
 
 }

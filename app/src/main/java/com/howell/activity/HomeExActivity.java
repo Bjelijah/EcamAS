@@ -81,6 +81,9 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     private final static int MSG_HOME_IP = 0xf2;
     private final static int MSG_HOME_BIND = 0xf3;
     private final static int MSG_HOME_HELP = 0xf4;
+
+
+
     private AccountHeader headerResult;
     private Drawer result;
     ViewPager mViewPager;
@@ -109,7 +112,8 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                     funHome();
                     break;
                 case MSG_HOME_IP:
-                     break;
+                    funIP();
+                    break;
                 case MSG_HOME_BIND:
                     break;
                 case MSG_HOME_HELP:
@@ -365,6 +369,11 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     }
     private void funHome(){
         mViewPager.setCurrentItem(0);
+    }
+
+    private void funIP(){
+        Intent intent = new Intent(this,ServerSetActivity.class);
+        startActivity(intent);
     }
 
     @Override

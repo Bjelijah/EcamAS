@@ -1,6 +1,10 @@
 package com.howell.utils;
 
 public interface IConst {
+
+	final boolean IS_TEST = false;
+
+
 	final String GUEST_NAME = "100868";
 	final String GUEST_PASSWORD = "100868";
 	final int MSG_LOGIN_CAM_OK       = 0xf0;

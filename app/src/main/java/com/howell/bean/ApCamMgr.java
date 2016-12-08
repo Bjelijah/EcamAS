@@ -61,7 +61,4 @@ public class ApCamMgr implements ICam {
         dao.close();
         return true;
     }
-
-
-
 }
