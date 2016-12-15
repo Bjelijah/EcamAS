@@ -1,9 +1,9 @@
 package com.wyy.twodimcode;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -11,13 +11,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.widget.ImageView;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
@@ -25,6 +27,8 @@ import com.howell.activity.ChangeDeviceName;
 import com.howell.ecam.R;
 import com.howell.protocol.AddDeviceJsonString;
 import com.howell.utils.MessageUtiles;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.wyy.twodimcode.camera.CameraManager;
 import com.wyy.twodimcode.decoding.CaptureActivityHandler;
 import com.wyy.twodimcode.decoding.InactivityTimer;
@@ -37,8 +41,8 @@ import org.kobjects.base64.Base64;
 import java.io.IOException;
 import java.util.Vector;
 
-public class CaptureActivity extends Activity implements Callback,OnClickListener {
-
+public class CaptureActivity extends AppCompatActivity implements Callback,OnClickListener {
+	private Toolbar mTb;
 	private CaptureActivityHandler handler;
 	private ViewfinderView viewfinderView;
 	private boolean hasSurface;//surface��û�б�����
@@ -50,7 +54,7 @@ public class CaptureActivity extends Activity implements Callback,OnClickListene
 	private static final float BEEP_VOLUME = 0.10f;
 	private boolean vibrate;//���ɨ��ʱ�Ƿ�����ʾ
 	
-	private ImageView mBack;
+//	private ImageView mBack;
 
 	private static final int TEST = 1;
 	
@@ -62,9 +66,10 @@ public class CaptureActivity extends Activity implements Callback,OnClickListene
 		setContentView(R.layout.twodimcode);
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		
-		mBack = (ImageView)findViewById(R.id.iv_left);
-		mBack.setOnClickListener(this);
+
+		initToolBar();
+//		mBack = (ImageView)findViewById(R.id.iv_left);
+//		mBack.setOnClickListener(this);
 		
 		CameraManager.init(getApplication());
 		viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
@@ -74,6 +79,27 @@ public class CaptureActivity extends Activity implements Callback,OnClickListene
 		
 	}
 
+	private void initToolBar(){
+		mTb = (Toolbar) findViewById(R.id.camera_scan_toolbar);
+		mTb.setNavigationIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_chevron_left).actionBar().color(Color.WHITE));
+
+//        mTb.setNavigationIcon(getResources().getDrawable(R.mipmap.ic_theaters_white_24dp));
+		// mTb.showOverflowMenu();
+		mTb.setTitle(getString(R.string.add_camera_title));
+        mTb.setSubtitle(getString(R.string.QR_code));
+		setSupportActionBar(mTb);
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setDisplayShowTitleEnabled(true);
+		mTb.setNavigationOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				finish();
+			}
+		});
+
+
+	}
 	
 	@Override
 	protected void onResume() {
@@ -286,14 +312,14 @@ public class CaptureActivity extends Activity implements Callback,OnClickListene
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		switch (v.getId()) {
-		case R.id.iv_left:
-			finish();
-			break;
-
-		default:
-			break;
-		}
+//		switch (v.getId()) {
+//		case R.id.iv_left:
+//			finish();
+//			break;
+//
+//		default:
+//			break;
+//		}
 	}
 
 

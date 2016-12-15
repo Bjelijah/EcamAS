@@ -14,19 +14,20 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.howell.ecam.R;
 import com.howell.utils.NetWorkUtils;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -39,7 +40,7 @@ import java.util.ArrayList;
 public class DeviceWifiActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION= 0x1234;
     Toolbar mTb;
-    ImageButton mBack;
+//    ImageButton mBack;
     LinearLayout mTip;
     AutoCompleteTextView mDeviceName;
     AutoCompleteTextView mWifiPwd;
@@ -59,7 +60,7 @@ public class DeviceWifiActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_listen_device);
         initView();
-//        initToobar();
+        initToobar();
         initFun();
     }
 
@@ -84,13 +85,13 @@ public class DeviceWifiActivity extends AppCompatActivity {
     }
 
     private void initView(){
-        mBack = (ImageButton) findViewById(R.id.ib_set_device_wifi_back);
-        mBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+//        mBack = (ImageButton) findViewById(R.id.ib_set_device_wifi_back);
+//        mBack.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                finish();
+//            }
+//        });
         mTip = (LinearLayout) findViewById(R.id.add_listen_ll_wifi_tip);
         mTip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,14 +127,21 @@ public class DeviceWifiActivity extends AppCompatActivity {
     }
 
     private void initToobar(){
-//        mTb = (Toolbar) findViewById(R.id.listen_device_tb);
-        mTb.setNavigationIcon(new IconicsDrawable(this, Octicons.Icon.oct_chevron_left).actionBar().color(Color.WHITE));
+        mTb = (Toolbar) findViewById(R.id.listen_device_tb);
+        mTb.setNavigationIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_chevron_left).actionBar().color(Color.WHITE));
 
         mTb.showOverflowMenu();
-        mTb.setTitle(getString(R.string.add_listen));
-        mTb.setSubtitle(getString(R.string.add_listen_subtitle));
+        mTb.setTitle(getString(R.string.add_camera_title));
+        mTb.setSubtitle(getString(R.string.add_listen));
+
         setSupportActionBar(mTb);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(true);
+
+
+
         mTb.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

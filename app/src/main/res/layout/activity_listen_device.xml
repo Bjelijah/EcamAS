@@ -7,45 +7,45 @@
     style="@style/MyAppThemeListenDevice"
     >
 
-    <!--<android.support.design.widget.AppBarLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content">-->
-        <!--<android.support.v7.widget.Toolbar-->
-            <!--android:layout_width="match_parent"-->
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/listen_device_tb"
+
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            android:minHeight="@dimen/abc_action_bar_default_height_material"
+            android:background="@color/home_bk_dark">
+
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+
+
+    <!--<FrameLayout-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="55dip"-->
+        <!--android:background="@color/home_bk" >-->
+        <!--<ImageButton-->
+            <!--android:id="@+id/ib_set_device_wifi_back"-->
+            <!--android:layout_width="wrap_content"-->
             <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/listen_device_tb"-->
+            <!--android:background="#00000000"-->
+            <!--android:src="@drawable/back_btn_selector"-->
+            <!--android:layout_gravity="left|center" />-->
 
-            <!--android:theme="@style/ThemeOverlay.AppCompat.ActionBar"-->
-            <!--android:minHeight="@dimen/abc_action_bar_default_height_material"-->
-            <!--android:background="@color/home_bk_dark">-->
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/add_listen"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:textSize="23sp"-->
+            <!--android:layout_gravity="center"-->
+            <!--/>-->
 
-        <!--</android.support.v7.widget.Toolbar>-->
-    <!--</android.support.design.widget.AppBarLayout>-->
-
-
-
-    <FrameLayout
-        android:layout_width="fill_parent"
-        android:layout_height="55dip"
-        android:background="@color/home_bk" >
-        <ImageButton
-            android:id="@+id/ib_set_device_wifi_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#00000000"
-            android:src="@drawable/back_btn_selector"
-            android:layout_gravity="left|center" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add_listen"
-            android:textColor="@color/white"
-            android:textSize="23sp"
-            android:layout_gravity="center"
-            />
-
-    </FrameLayout>
+    <!--</FrameLayout>-->
 
 
 

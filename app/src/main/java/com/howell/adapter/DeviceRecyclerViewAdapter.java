@@ -216,54 +216,6 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
             holder.getItemView().setTag(pos);
             holder.getItemView().setOnTouchListener(mBrokenTouchListener);
         }
-
-
-
-//        holder.ivCamera.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                holder.getItemView().dispatchTouchEvent(motionEvent);
-//
-//                switch (motionEvent.getAction()){
-//                    case MotionEvent.ACTION_DOWN:
-//                        Log.i("123","ivcamera ACTION_DOWN pos="+pos);
-//                        break;
-//                    case MotionEvent.ACTION_CANCEL:
-//                        Log.i("123","ivcamera ACTION_CANCEL "+pos);
-//                        break;
-//                    case MotionEvent.ACTION_UP:
-//                        Log.i("123","ivcamera ACTION_UP  "+pos);
-//                        break;
-//                }
-//                return true;
-//            }
-//        });
-
-
-//        holder.ivCamera.setOnTouchListener(mBrokenTouchListener);
-
-
-
-//        holder.mBrokenView = BrokenView.add2Window(mActivity);
-//        holder.mColorfulListener = new BrokenTouchListener
-//                .Builder(holder.mBrokenView)
-//                .setComplexity(8)
-//                .setBreakDuration(500)
-//                .setFallDuration(1000)
-//                .setCircleRiftsRadius(20)
-////                .setEnableArea(holder.getItemView())
-//                .build();
-//        holder.mBrokenView.setEnable(true);
-//        holder.mBrokenView.setCallback(mBrokenCallback);
-//        holder.ivCamera.setOnTouchListener(holder.mColorfulListener);
-
-//        holder.ivCamera.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                mClickListener.onItemVideoTouchListener(view,holder.getItemView(),pos);
-//                return true;
-//            }
-//        });
     }
 
 

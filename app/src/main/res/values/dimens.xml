@@ -34,7 +34,14 @@
     <dimen name="item_notice_card_radius">4dp</dimen>
     <dimen name="item_notice_layout_margin">8dp</dimen>
 
-
+    <dimen name="camera_setting_margin_horizontal">20dp</dimen>
+    <dimen name="camera_setting_margin_vertcail">10dp</dimen>
+    <dimen name="camera_setting_margin_vertacil_ctrl">8dp</dimen>
+    <dimen name="camera_setting_padding">1dp</dimen>
+    <dimen name="camera_setting_title_size">20sp</dimen>
+    <dimen name="camera_setting_subtitle_size">15sp</dimen>
+    <dimen name="camera_setting_dec_size">12sp</dimen>
+    <dimen name="camera_setting_width_ctrl">100dp</dimen>
 
 
 </resources>

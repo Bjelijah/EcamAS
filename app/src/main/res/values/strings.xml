@@ -288,6 +288,7 @@
 
 
     <!-- add -->
+    <string name="add_camera_title">Add New Camera</string>
     <string name="add_ap">Add Ap</string>
     <string name="add_flash">Scanning</string>
     <string name="add_listen">Listening</string>
@@ -337,4 +338,10 @@
     <string name="server_setting_port_title">ServerPort:</string>
     <string name="server_setting_port">Input Server Port</string>
     <string name="server_setting_btn">Save</string>
+
+    <string name="camera_settting_title">Camera Setting</string>
+    <string name="camera_setting_title_name">Camera Name</string>
+    <string name="camera_setting_param">Parameters</string>
+    <string name="camera_setting_resolution_dec">The resolutiong of the video</string>
+    <string name="camera_setting_picture_dec">The Image quality which be taken </string>
 </resources>

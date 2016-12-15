@@ -3,13 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.howell.ecam">
 
+    <!--<permission-->
+        <!--android:name="com.android.howell.webcam.permission.JPUSH_MESSAGE"-->
+        <!--android:protectionLevel="signature" />-->
+
     <permission
-        android:name="com.android.howell.webcam.permission.JPUSH_MESSAGE"
+        android:name="com.howell.ecam.permission.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
+
+
 
     <!-- Required  一些系统要求的权限，如访问网络等 -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
-    <uses-permission android:name="com.android.howell.webcam.permission.JPUSH_MESSAGE" />
+    <!--<uses-permission android:name="com.android.howell.webcam.permission.JPUSH_MESSAGE" />-->
+    <uses-permission android:name="com.howell.ecam.permission.JPUSH_MESSAGE" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -179,6 +186,11 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="com.howell.activity.DeviceSettingActivity"
+            android:theme="@style/MyAppThemeDeviceSetting"
+            />
+
+
         <activity android:name="com.howell.activity.ServerSetActivity"
             android:theme="@style/MyAppThemeServerAddress"/>
 
@@ -217,10 +229,12 @@
             android:label="@string/video_list"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar" />
+
+        <!--android:theme="@android:style/Theme.NoTitleBar"-->
         <activity
             android:name="com.wyy.twodimcode.CaptureActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
+            android:theme="@style/MyAppThemeScan" />
 
         <!-- Required SDK核心功能 -->
         <activity

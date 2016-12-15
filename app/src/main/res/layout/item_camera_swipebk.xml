@@ -31,9 +31,6 @@
             android:gravity="center"
             >
             <!-- 录像 -->
-
-
-
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/item_camera_iv_replay"
                 android:layout_width="wrap_content"
@@ -45,10 +42,6 @@
                 app:elevation="6dp"
                 app:pressedTranslationZ="12dp"
                 />
-
-
-
-
         </LinearLayout>
 
 
@@ -118,6 +111,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:clickable="false"
+            android:layout_marginTop="35dp"
+            android:layout_marginBottom="35dp"
 
             >
             <!-- 删除 -->

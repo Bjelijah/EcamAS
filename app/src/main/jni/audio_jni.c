@@ -4,6 +4,7 @@
 #include <android/log.h>
 #include <semaphore.h>
 
+
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "audio_jni", __VA_ARGS__))   
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "audio_jni", __VA_ARGS__))   
 #define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, "audio_jni", __VA_ARGS__))  

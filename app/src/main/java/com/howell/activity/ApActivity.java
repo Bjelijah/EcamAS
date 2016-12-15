@@ -1,18 +1,22 @@
 package com.howell.activity;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.ImageButton;
 
 import com.howell.action.ApAction;
 import com.howell.ecam.R;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.Util;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 
 /**
  * Created by howell on 2016/12/2.
@@ -20,7 +24,8 @@ import com.howell.utils.Util;
 
 public class ApActivity extends AppCompatActivity {
 
-    ImageButton mBack;
+//    ImageButton mBack;
+    Toolbar mTb;
     AutoCompleteTextView mName,mIP,mPort;
     Button mBtn;
     MyPostListener mMyPostListener = new MyPostListener();
@@ -30,16 +35,17 @@ public class ApActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ap);
         initView();
+        initToolbar();
     }
     
     private void initView(){
-        mBack = (ImageButton) findViewById(R.id.add_ap_ib_back);
-        mBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+//        mBack = (ImageButton) findViewById(R.id.add_ap_ib_back);
+//        mBack.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                finish();
+//            }
+//        });
         mName = (AutoCompleteTextView) findViewById(R.id.add_ap_et_deviceName);
         mIP = (AutoCompleteTextView) findViewById(R.id.add_ap_et_ip);
         mPort = (AutoCompleteTextView) findViewById(R.id.add_ap_et_port);
@@ -51,7 +57,29 @@ public class ApActivity extends AppCompatActivity {
             }
         });
     }
-    
+
+    private void initToolbar(){
+        mTb = (Toolbar) findViewById(R.id.add_ap_toolbar);
+        mTb.setNavigationIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_chevron_left).actionBar().color(Color.WHITE));
+
+//        mTb.setNavigationIcon(getResources().getDrawable(R.mipmap.ic_theaters_white_24dp));
+        // mTb.showOverflowMenu();
+        mTb.setTitle(getString(R.string.add_camera_title));
+        mTb.setSubtitle(getString(R.string.add_ap));
+        setSupportActionBar(mTb);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(true);
+        mTb.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+    }
+
+
     private void addFun(){
         String name = mName.getText().toString();
         String ip = mIP.getText().toString();

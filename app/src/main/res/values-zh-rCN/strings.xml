@@ -275,6 +275,8 @@
 	<string name="home_drawer_changer_user_error">切换用户失败</string>
 	<string name="drawer_item_help">帮助</string>
 
+
+	<string name="add_camera_title">添加新的摄像机</string>
 	<string name="add_ap">添加AP摄像机</string>
 	<string name="add_flash">扫一扫</string>
 	<string name="add_listen">听一听</string>
@@ -312,4 +314,10 @@
 	<string name="server_setting_port_title">服务器端口:</string>
 	<string name="server_setting_port">输入服务器的端口</string>
 	<string name="server_setting_btn">保存</string>
+
+	<string name="camera_settting_title">摄像机设置</string>
+	<string name="camera_setting_title_name">摄像机名称</string>
+	<string name="camera_setting_param">参数</string>
+	<string name="camera_setting_resolution_dec">视频图像的分辨率</string>
+	<string name="camera_setting_picture_dec">获取的图片质量</string>
 </resources>

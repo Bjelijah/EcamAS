@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/home_bk_light"
+    style="@style/MyAppThemeDeviceSetting"
+    >
+
+    <!--<FrameLayout-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="55dip"-->
+    <!--android:background="@color/title_blue" >-->
+    <!--<ImageButton-->
+    <!--android:id="@+id/ib_device_set_back"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="#00000000"-->
+    <!--android:src="@drawable/back_btn_selector"-->
+    <!--android:layout_gravity="left|center" />-->
+    <!--</FrameLayout>-->
+
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/camera_setting_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            android:minHeight="@dimen/abc_action_bar_default_height_material"
+            android:background="@color/home_bk_dark"
+            >
+        </android.support.v7.widget.Toolbar>
+
+
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+
+
+
+
+
+
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/home_bk"
+                style="@style/MyStyleCameraSetting"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/camera_setting_margin_horizontal"
+                    android:layout_marginRight="@dimen/camera_setting_margin_horizontal"
+                    android:layout_marginTop="@dimen/camera_setting_margin_vertcail"
+                    android:layout_marginBottom="@dimen/camera_setting_margin_vertcail"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/camera_setting_title_size"
+                        android:textColor="@color/homeText"
+                        android:text="@string/camera_setting_title_name"
+                        android:layout_alignParentLeft="true"
+
+                        />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/camera_setting_name_tv"
+                        android:layout_marginTop="@dimen/camera_setting_margin_vertacil_ctrl"
+                        android:layout_alignParentRight="true"
+                        android:textSize="@dimen/camera_setting_subtitle_size"
+                        android:text="test"
+                        />
+
+                </LinearLayout>
+
+
+            </android.support.v7.widget.CardView>
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/MyStyleCameraSetting">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="@dimen/camera_setting_margin_horizontal"
+                    android:layout_marginRight="@dimen/camera_setting_margin_horizontal"
+                    android:layout_marginTop="@dimen/camera_setting_margin_vertcail"
+                    android:layout_marginBottom="@dimen/camera_setting_margin_vertcail"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/camera_setting_title_size"
+                        android:textColor="@color/homeText"
+                        android:text="@string/camera_setting_param"
+
+                        />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/camera_setting_margin_vertacil_ctrl">
+                       <LinearLayout
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:id="@+id/camera_setting_param_resolution_ll"
+                           android:orientation="vertical">
+                           <TextView
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:textSize="@dimen/camera_setting_subtitle_size"
+                               android:textColor="@color/white"
+                               android:text="@string/resolution"
+                               />
+                            <TextView
+                                android:layout_width="@dimen/camera_setting_width_ctrl"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/camera_setting_dec_size"
+                                android:text="@string/camera_setting_resolution_dec"
+
+                                />
+                       </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:layout_toEndOf="@+id/camera_setting_param_resolution_ll"
+                            android:layout_alignParentTop="true"
+                            >
+
+                            <SeekBar
+                                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="4"
+                                android:max="2"
+                                android:progress="2"
+                                android:id="@+id/camera_setting_resolution_sb" />
+
+                            <TextView
+                                android:id="@+id/camera_setting_resolution_tv"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textSize="@dimen/camera_setting_dec_size"
+                                android:text="@string/popup_window_sd"
+                                />
+                        </LinearLayout>
+                    </RelativeLayout>
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/camera_setting_margin_vertacil_ctrl"
+                        >
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:id="@+id/camera_setting_param_picture_ll">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/camera_setting_subtitle_size"
+                                android:text="@string/picture"/>
+
+                            <TextView
+                                android:layout_width="@dimen/camera_setting_width_ctrl"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/camera_setting_dec_size"
+                                android:text="@string/camera_setting_picture_dec"
+                                />
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:layout_toEndOf="@+id/camera_setting_param_picture_ll"
+                            android:layout_alignParentTop="true"
+                            >
+                            <SeekBar
+                                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="4"
+                                android:max="2"
+                                android:progress="2"
+                                android:id="@+id/camera_setting_picture_sb" />
+
+                            <TextView
+                                android:id="@+id/camera_setting_picture_tv"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textSize="@dimen/camera_setting_dec_size"
+                                android:text="@string/popup_window_sd"
+                                />
+
+
+
+                        </LinearLayout>
+
+
+
+
+                    </RelativeLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                </LinearLayout>
+
+
+
+
+
+            </android.support.v7.widget.CardView>
+
+
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+
+</LinearLayout>

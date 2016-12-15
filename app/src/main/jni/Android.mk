@@ -1,5 +1,6 @@
 LOCAL_PATH := $(call my-dir)
 
+
 include $(CLEAR_VARS)
 LOCAL_MODULE := osipparser2
 LOCAL_SRC_FILES := libosipparser2.a
@@ -114,7 +115,7 @@ LOCAL_SRC_FILES := yv12gl_jni.c streamreq_jni.c audio_jni.c g711.cpp g7.cpp
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_SHARED_LIBRARIES := hwplay jpush ecamstream
 #LOCAL_STATIC_LIBRARIES := ecamstream
-LOCAL_LDFLAGS := -LE:/Android/android-ndk-r10e/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi-v7a
+LOCAL_LDFLAGS := -LD:/Android/android-ndk-r10e/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi-v7a
 LOCAL_LDLIBS := -llog -lgnustl_static -lGLESv2 -lz -ldl -lgcc
 include $(BUILD_SHARED_LIBRARY)
 

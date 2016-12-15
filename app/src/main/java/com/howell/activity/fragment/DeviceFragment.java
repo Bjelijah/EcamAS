@@ -1,6 +1,7 @@
 package com.howell.activity.fragment;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 
 import com.howell.action.HomeAction;
 import com.howell.action.LoginAction;
+import com.howell.activity.DeviceSettingActivity;
 import com.howell.adapter.DeviceRecyclerViewAdapter;
 import com.howell.bean.CameraItemBean;
 import com.howell.bean.PlayType;
@@ -66,8 +68,9 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
                     break;
                 case MSG_DEVICE_LIST_UPDATA:
                     mbhv.stopRefresh();
+
                     adapter.setData(mList);
-                    mBrokenView.reset();
+//                    mBrokenView.reset();
                     break;
                 default:
                     break;
@@ -231,6 +234,9 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
 
     @Override
     public void onItemSettingClickListener(View v, int pos) {
+        //TODO: camera setting
+        Intent intent = new Intent(getContext(), DeviceSettingActivity.class);
+        startActivity(intent);
 
     }
 
