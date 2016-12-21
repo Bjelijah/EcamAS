@@ -1,5 +1,6 @@
 package com.howell.utils;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.os.StatFs;
@@ -9,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -17,7 +19,26 @@ import java.io.OutputStream;
  * 类说明
  */
 public class SDCardUtils {
-	
+
+
+	public static String getCachPath(Context context){
+		return context.getFilesDir().getAbsolutePath();//put to /data/data/com...H265/files FIXME by CBJ
+	}
+
+
+	public static void createCertificateDir(){
+		File eCameraDir = new File(getSDCardPath() + "/eCamera");
+		if (!eCameraDir.exists()) {
+			eCameraDir.mkdirs();
+		}
+		File CertificateDir = new File(getSDCardPath() + "/eCamera/CertificateCache");
+		if (!CertificateDir.exists()) {
+			CertificateDir.mkdirs();
+		}
+	}
+
+
+
 	public static String getSDCardPath(){
 		return Environment.getExternalStorageDirectory().getAbsolutePath();
 	}
@@ -135,9 +156,48 @@ public class SDCardUtils {
 		Log.e("isBitmapExist",f.exists()+"");
 		return f.exists();
 	}
-	
-	
-	
+
+	public static String createCertificateDir(Context context){
+		File eCameraDir = new File(getCachPath(context) + "/eCamera");
+		if (!eCameraDir.exists()) {
+			eCameraDir.mkdirs();
+		}
+		File CertificateDir = new File(getCachPath(context) + "/eCamera/CertificateCache");
+		if (!CertificateDir.exists()) {
+			CertificateDir.mkdirs();
+		}
+		return CertificateDir.getAbsolutePath();
+	}
+
+
+	public static String saveCreateCertificate(InputStream in, String filename, Context context){
+		if(in==null){
+			Log.e("123", "in==null");
+			return null;
+		}
+		String dir = createCertificateDir(context);
+		File file = new File(dir+ File.separator + filename);
+		try {
+
+			boolean ret = file.createNewFile();
+			if(!ret){
+				return file.getAbsolutePath();
+			}
+
+			OutputStream outStream = new FileOutputStream(file);
+
+			byte [] bs = new byte[2048];
+			while((in.read(bs))!=-1){
+				outStream.write(bs);
+			}
+			outStream.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return file.getAbsolutePath();
+	}
 	
 	
 }

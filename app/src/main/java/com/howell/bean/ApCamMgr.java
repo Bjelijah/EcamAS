@@ -1,6 +1,7 @@
 package com.howell.bean;
 
 import android.content.Context;
+import android.os.Handler;
 
 import com.howell.action.LoginAction;
 import com.howell.db.ApDeviceDao;
@@ -25,6 +26,16 @@ public class ApCamMgr implements ICam {
     }
 
     @Override
+    public void setHandler(Handler handler) {
+
+    }
+
+    @Override
+    public void setStreamBSub(int isSub) {
+
+    }
+
+    @Override
     public boolean bind() {
         if (!checkInit())return false;
         return addAP2DB(mContext
@@ -41,6 +52,37 @@ public class ApCamMgr implements ICam {
         dao.deleteByName(LoginAction.getInstance().getmInfo().getAccount(),mCamBean.getCameraName());
         dao.close();
         return true;
+    }
+
+    @Override
+    public void loginCam() {
+
+    }
+
+    @Override
+    public void logoutCam() {
+
+    }
+
+    @Override
+    public void playViewCam(int is_sub) {
+
+    }
+
+
+    @Override
+    public void stopViewCam() {
+
+    }
+
+    @Override
+    public void reLink() {
+
+    }
+
+    @Override
+    public void catchPic(String path) {
+
     }
 
 

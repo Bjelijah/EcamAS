@@ -202,10 +202,10 @@ public class PlayerActivity extends FragmentActivity implements Callback, OnTouc
 
 		System.out.println("mGlView:"+mGlView.toString());
 		mGlView.setEGLContextClientVersion(2);
-		mGlView.setRenderer(new YV12Renderer(this,mGlView));
-		mGlView.getHolder().addCallback((Callback) this);
+//		mGlView.setRenderer(new YV12Renderer(this,mGlView));
+		mGlView.setRenderer(new com.howell.action.YV12Renderer(this,mGlView,mPlayerHandler));
+		mGlView.getHolder().addCallback(this);
 		mGlView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-
 		mGlView.setOnTouchListener(this);   
 		mGlView.setFocusable(true);   
 		mGlView.setClickable(true);   

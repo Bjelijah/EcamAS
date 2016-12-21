@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.howell.action.HomeAction;
 import com.howell.action.LoginAction;
 import com.howell.activity.fragment.DeviceFragment;
@@ -284,8 +285,8 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
 
     private void loadBackdrop() {
         final ImageView imageView = (ImageView) findViewById(R.id.backdrop);
-//        Glide.with(this).load("https://unsplash.it/600/300/?random").centerCrop().into(imageView);
-        imageView.setImageDrawable(getDrawable(R.drawable.mm_bk));
+        Glide.with(this).load("https://unsplash.it/600/300/?random").centerCrop().into(imageView);
+//        imageView.setImageDrawable(getDrawable(R.drawable.mm_bk));//FIXME I HATE THIS PICTURE AND SHOULD NEVER USE
     }
 
     private void fillFab() {

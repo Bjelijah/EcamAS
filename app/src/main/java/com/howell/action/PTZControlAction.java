@@ -59,12 +59,13 @@ public class PTZControlAction {
 	}
 	
 	
-	public void setPtzInfo(SoapManager soapManager ,String account,String session,String devId,int channel){
+	public PTZControlAction setPtzInfo(SoapManager soapManager ,String account,String session,String devId,int channel){
 		if (info != null) {
-			return;
+			return this;
 		}
 		info = new PtzInfo();
 		info.setAccount(account).setLoginSession(session).setDevID(devId).setChannelNo(channel).setSoapManager(soapManager);
+		return this;
 	}
 	
 

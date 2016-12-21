@@ -28,7 +28,9 @@ public class VODRecord implements Serializable {
         isWatched = false;
         hasTitle = false;
     }
-    
+    public VODRecord() {
+        super();
+    }
     
     public String getTimeZoneStartTime() {
 		return TimeZoneStartTime;

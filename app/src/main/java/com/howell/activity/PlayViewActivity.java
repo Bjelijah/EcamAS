@@ -1,0 +1,311 @@
+package com.howell.activity;
+
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+
+import com.howell.action.AudioAction;
+import com.howell.action.LoginAction;
+import com.howell.action.PTZControlAction;
+import com.howell.action.PlayAction;
+import com.howell.adapter.MyPagerAdapter;
+import com.howell.ecam.R;
+import com.howell.protocol.SoapManager;
+import com.howell.transformer.CubeInTransformer;
+import com.howell.utils.FileUtils;
+import com.howell.utils.PhoneConfig;
+
+import java.io.File;
+
+/**
+ * Created by Administrator on 2016/12/16.
+ */
+
+public class PlayViewActivity extends BasePlayActivity implements GestureDetector.OnGestureListener,View.OnTouchListener,View.OnClickListener {
+
+    private GestureDetector mGestureDetector;
+    private RelativeLayout mPlayPtzMove;
+    private LinearLayout mPtzLeft,mPtzRight,mPtzUp,mPtzDown;
+    private PlayFunViewPage mPlayFun;
+    private boolean mIsShowPtz;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initPlayView();
+        initFun();
+    }
+
+    @Override
+    protected void onDestroy() {
+        AudioAction.getInstance().deInitAudioRecord();
+        super.onDestroy();
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        if (PhoneConfig.getPhoneHeight(this)>PhoneConfig.getPhoneWidth(this))return false;
+        if (isShowSurfaceIcon){
+            showSurfaceIcon(false);
+            mPlayFun.setBottomView(null);
+        }else{
+            showSurfaceIcon(true);
+            mPlayFun.setBottomView(mSurfaceIcon);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+
+        if (!PlayAction.getInstance().getPlayBean().isPtz()){
+            return false;
+        }
+
+        final int hMax = PhoneConfig.getPhoneHeight(this);
+        final int wMax = PhoneConfig.getPhoneWidth(this);
+        if (hMax > wMax) {
+            Log.e("123", "竖屏");
+            return false;
+        }
+
+        if (!PTZControlAction.getInstance().bAnimationFinish()) {
+            Log.e("123", "ptz animation not finish");
+            return false;
+        }
+        final int FLING_MIN_DISTANCE = 100, FLING_MIN_VELOCITY = 200;
+
+        if (e1.getY() - e2.getY() > FLING_MIN_DISTANCE && Math.abs(velocityY) > FLING_MIN_VELOCITY && e1.getX() < (wMax/2)) {
+            Log.e("123", "fling up");
+            mPlayPtzMove.setVisibility(View.VISIBLE);
+            mPlayFun.setVisibility(View.VISIBLE);
+            if (mIsShowPtz) {//当前显示  从当中到最上
+                //要不显示显示
+                PTZControlAction.getInstance().ptzAnimationStart(this,mPlayPtzMove,0,0,0,-hMax,false,true);
+                PTZControlAction.getInstance().ptzAnimationStart(this,mPlayFun,0,0,0,hMax,false,false);
+                mIsShowPtz = false;
+            }else{//当前不显示 从最下到当中
+                //要显示
+                PTZControlAction.getInstance().ptzAnimationStart(this,mPlayPtzMove,0,0,hMax,0,true,true);
+                PTZControlAction.getInstance().ptzAnimationStart(this,mPlayFun,0,0,-hMax,0,true,false);
+                mIsShowPtz = true;
+            }
+
+        }else if(e2.getY() - e1.getY() > FLING_MIN_DISTANCE && Math.abs(velocityY) > FLING_MIN_VELOCITY && e1.getX() < (wMax/2)){
+            Log.e("123", "fling down");
+            mPlayPtzMove.setVisibility(View.VISIBLE);
+            mPlayFun.setVisibility(View.VISIBLE);
+            if(mIsShowPtz){//当前显示  从当中到最下
+                //要不显示
+                PTZControlAction.getInstance().ptzAnimationStart(this,mPlayPtzMove,0,0,0,hMax,false,true);
+                PTZControlAction.getInstance().ptzAnimationStart(this,mPlayFun,0,0,0,-hMax,false,false);
+                mIsShowPtz = false;
+            }else{//从最上到当中
+                PTZControlAction.getInstance().ptzAnimationStart(this, mPlayPtzMove, 0, 0, -hMax, 0, true,true);
+                PTZControlAction.getInstance().ptzAnimationStart(this,mPlayFun,0,0,hMax,0,true,false);
+                mIsShowPtz = true;
+            }
+
+        }
+        return true;
+    }
+
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        super.onTouch(v,event);
+
+        switch (v.getId()){
+            case R.id.play_talk:
+                talkBtnFun(event);
+                return false;
+            case R.id.play_ptz_left:
+            case R.id.play_ptz_right:
+            case R.id.play_ptz_top:
+            case R.id.play_ptz_bottom:
+                ptzFun(v.getId(),event);
+                return false;
+
+            default:
+                break;
+        }
+        return mGestureDetector.onTouchEvent(event);
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()){
+            case R.id.pop_layout_sd:
+                mPopupWindow.dismiss();
+                PlayAction.getInstance().rePlay(mPlayMgr,1);
+                break;
+            case R.id.pop_layout_hd:
+                mPopupWindow.dismiss();
+                PlayAction.getInstance().rePlay(mPlayMgr,0);
+                break;
+            case R.id.sound:
+                soundFun();
+                break;
+            case R.id.catch_picture:
+                PlayAction.getInstance().catchPic(mPlayMgr);
+                break;
+            case R.id.player_change_stream:
+                mPopupWindow.showAsDropDown(v);
+                break;
+            case R.id.player_imagebutton_back:
+                PlayAction.getInstance().catchPic(mPlayMgr,"/sdcard/eCamera/cache");
+                //TODO: stop play
+
+                finish();
+                break;
+            default:
+                break;
+        }
+
+
+
+    }
+
+
+
+
+    private void initPlayView(){
+        mReplaySeekBar.setVisibility(View.GONE);
+        fragmentInit();
+    }
+
+    private void initFun(){
+        mGestureDetector = new GestureDetector(this,this);
+        AudioAction.getInstance().initAudioRecord();
+        AudioAction.getInstance().initSound(this);
+        mBtTalk.setOnTouchListener(this);
+        mSound.setOnClickListener(this);
+        mCatchPicture.setOnClickListener(this);
+        mHD.setOnClickListener(this);
+        mSD.setOnClickListener(this);
+        mStreamChange.setOnClickListener(this);
+        mBack.setOnClickListener(this);
+    }
+
+    private void fragmentPtzInit(){
+        mPlayPtzMove = (RelativeLayout) findViewById(R.id.play_rl_ptz);
+        mPtzLeft = (LinearLayout) findViewById(R.id.play_ptz_left);
+        mPtzRight = (LinearLayout) findViewById(R.id.play_ptz_right);
+        mPtzUp = (LinearLayout) findViewById(R.id.play_ptz_top);
+        mPtzDown = (LinearLayout) findViewById(R.id.play_ptz_bottom);
+        mPtzLeft.setOnTouchListener(this);
+        mPtzRight.setOnTouchListener(this);
+        mPtzUp.setOnTouchListener(this);
+        mPtzDown.setOnTouchListener(this);
+        PTZControlAction.getInstance().setPtzInfo(SoapManager.getInstance(),
+                LoginAction.getInstance().getmInfo().getAccount(),
+                LoginAction.getInstance().getmInfo().getLr().getLoginSession(),
+                PlayAction.getInstance().getPlayBean().getDeviceId(),
+                PlayAction.getInstance().getPlayBean().getChannelNo()).setHandle(mHandler);
+        mIsShowPtz = false;
+    }
+
+    private void fragmentFunInit(){
+        mPlayFun = (PlayFunViewPage) findViewById(R.id.play_fun);
+        mPlayFun.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+        mPlayFun.setCurrentItem(200);
+        mPlayFun.setPageTransformer(true,new CubeInTransformer());
+        mPlayFun.setBottomView(mSurfaceIcon);
+    }
+
+
+    private void fragmentInit(){
+        fragmentPtzInit();
+        fragmentFunInit();
+    }
+
+    private void talkBtnFun(MotionEvent event){
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                Log.i("123", "按下了   开始对讲");
+                AudioAction.getInstance().pauseAudio();
+                AudioAction.getInstance().startAudioRecord();
+                break;
+            case MotionEvent.ACTION_UP:
+                Log.i("123", "ACTION_UP   停止对讲");
+                AudioAction.getInstance().stopAudioRecord();
+                AudioAction.getInstance().playAudio();
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                Log.i("123", "ACTION_CANCEL   停止对讲");
+                AudioAction.getInstance().stopAudioRecord();
+                AudioAction.getInstance().playAudio();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void ptzFun(int viewID,MotionEvent event){
+        switch (viewID){
+            case R.id.play_ptz_left:
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    PTZControlAction.getInstance().ptzMoveStart("Left");
+                }else if(event.getAction() == MotionEvent.ACTION_UP){
+                    PTZControlAction.getInstance().ptzMoveStop();
+                }
+                break;
+            case R.id.play_ptz_right:
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    PTZControlAction.getInstance().ptzMoveStart("Right");
+                }else if(event.getAction() == MotionEvent.ACTION_UP){
+                    PTZControlAction.getInstance().ptzMoveStop();
+                }
+                break;
+            case R.id.play_ptz_top:
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    PTZControlAction.getInstance().ptzMoveStart("Up");
+                }else if(event.getAction() == MotionEvent.ACTION_UP){
+                    PTZControlAction.getInstance().ptzMoveStop();
+                }
+                break;
+            case R.id.play_ptz_bottom:
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    PTZControlAction.getInstance().ptzMoveStart("Down");
+                }else if(event.getAction() == MotionEvent.ACTION_UP){
+                    PTZControlAction.getInstance().ptzMoveStop();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+
+
+
+}

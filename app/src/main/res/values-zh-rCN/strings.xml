@@ -309,8 +309,8 @@
 	<string name="device_item_remove_msg">您确定要删除设备？</string>
 	<string name="device_item_remove_fail">删除设备失败</string>
 	<string name="server_setting_title">服务器设置</string>
-	<string name="server_setting_ip_title">服务器IP:</string>
-	<string name="server_setting_ip">输入服务器的IP</string>
+	<string name="server_setting_ip_title">服务器IP或域名:</string>
+	<string name="server_setting_ip">输入服务器的IP或域名</string>
 	<string name="server_setting_port_title">服务器端口:</string>
 	<string name="server_setting_port">输入服务器的端口</string>
 	<string name="server_setting_btn">保存</string>

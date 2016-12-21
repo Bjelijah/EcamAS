@@ -1,6 +1,7 @@
 package com.howell.bean;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 
 import com.howell.action.LoginAction;
@@ -29,6 +30,16 @@ public class ECamMgr implements ICam,IConst {
     }
 
     @Override
+    public void setHandler(Handler handler) {
+
+    }
+
+    @Override
+    public void setStreamBSub(int isSub) {
+
+    }
+
+    @Override
     public boolean bind() {
         return true;
     }
@@ -48,5 +59,37 @@ public class ECamMgr implements ICam,IConst {
         System.out.println("removeDevice:"+res.getResult());
         Log.e("123","removeDevice:"+res.getResult());
         return true;
+    }
+
+    @Override
+    public void loginCam() {
+
+    }
+
+    @Override
+    public void logoutCam() {
+
+    }
+
+    @Override
+    public void playViewCam(int is_sub) {
+
+    }
+
+
+
+    @Override
+    public void stopViewCam() {
+
+    }
+
+    @Override
+    public void reLink() {
+
+    }
+
+    @Override
+    public void catchPic(String path) {
+
     }
 }

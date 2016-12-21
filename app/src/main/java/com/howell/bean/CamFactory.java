@@ -12,6 +12,7 @@ public class CamFactory {
                 mp = new ECamMgr();
                 break;
             case TURN:
+                mp = new H265Mgr();
                 break;
             case HW5198:
                 mp = new ApCamMgr();
