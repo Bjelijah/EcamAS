@@ -115,7 +115,7 @@ LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
 LOCAL_SHARED_LIBRARIES := hwplay jpush ecamstream
 #LOCAL_STATIC_LIBRARIES := ecamstream
 LOCAL_LDFLAGS := -LE:/Android/android-ndk-r10e/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi-v7a
-LOCAL_LDLIBS := -llog -lgnustl_static -lGLESv2 -lz -ldl -lgcc
+LOCAL_LDLIBS := -llog -lGLESv2 -lz -ldl -lgcc #-lgnustl_static
 include $(BUILD_SHARED_LIBRARY)
 
 

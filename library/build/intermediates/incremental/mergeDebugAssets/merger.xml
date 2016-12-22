@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="D:\Android\workspace\Ecam\library\src\main\assets"><file name="fonts/materialdrawerfont-font-v5.0.0.ttf" path="D:\Android\workspace\Ecam\library\src\main\assets\fonts\materialdrawerfont-font-v5.0.0.ttf"/></source><source path="D:\Android\workspace\Ecam\library\build\generated\assets\shaders\debug"/></dataSet><dataSet config="debug"><source path="D:\Android\workspace\Ecam\library\src\debug\assets"/></dataSet></merger>
