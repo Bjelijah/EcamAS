@@ -43,10 +43,16 @@ import java.io.File;
 
 public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.Callback,View.OnTouchListener{
 
-    public final static int MSG_PLAY_RELINK_OK      = 0xff00;
-    public final static int MSG_PLAY_SOUND_MUTE     = 0xff01;
-    public final static int MSG_PLAY_SOUND_UNMUTE   = 0xff02;
-    public final static int MSG_PLAY_SAVE_PICTURE   = 0xff03;
+    public final static int MSG_PLAY_RELINK_OK          = 0xff00;
+    public final static int MSG_PLAY_SOUND_MUTE         = 0xff01;
+    public final static int MSG_PLAY_SOUND_UNMUTE       = 0xff02;
+    public final static int MSG_PLAY_SAVE_PICTURE       = 0xff03;
+    public final static int MSG_PLAY_LOGIN_CAM_OK       = 0xff04;
+    public final static int MSG_PLAY_LOGIN_CAM_ERROR    = 0xff05;
+    public final static int MSG_PLAY_PLAY_CAM_OK        = 0xff06;
+    public final static int MSG_PLAY_PLAY_CAM_ERROR     = 0xff07;
+
+
 
     //控件
     protected GLSurfaceView mGlView;
@@ -85,6 +91,11 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
                 case MSG_PLAY_SAVE_PICTURE:
                     MessageUtiles.postToast(getApplicationContext(),getResources().getString(R.string.save_picture), Toast.LENGTH_SHORT);
                     break;
+                case MSG_PLAY_LOGIN_CAM_OK:
+                    break;
+                case MSG_PLAY_LOGIN_CAM_ERROR:
+                    break;
+
                 default:
                     break;
             }

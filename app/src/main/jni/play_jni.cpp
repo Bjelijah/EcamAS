@@ -1271,6 +1271,7 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_turnInputViewData
 
 typedef struct{
     ecam_stream_req_t* req;
+    struct ecam_stream_req_context * context;
     jobject callbackObj;
     int isBack;
 }Ecam_T;
@@ -1314,6 +1315,107 @@ void onStreamArrive(ecam_stream_req_t * req,ECAM_STREAM_REQ_FRAME_TYPE media_typ
     }
 }
 
+void fill_context(JNIEnv * env,jobject obj, struct ecam_stream_req_context* c) {
+    if(env==NULL|| obj==NULL || c==NULL)return;
+    jclass clazz = env->GetObjectClass(obj);
+    jfieldID id = env->GetFieldID(clazz,"playback","I");
+    jint _playback = env->GetIntField(obj,id);
+
+    id = env->GetFieldID(clazz,"beg","J");
+    jlong _beg = env->GetLongField(obj,id);
+
+    id = env->GetFieldID(clazz,"end","J");
+    jlong _end = env->GetLongField(obj,id);
+
+    id = env->GetFieldID(clazz,"re_invite","I");
+    jint _re_invite = env->GetIntField(obj,id);
+
+    id = env->GetFieldID(clazz,"method_bitmap","I");
+    jint _bitmapID = env->GetIntField(obj,id);
+
+    id = env->GetFieldID(clazz,"udp_addr", "Ljava/lang/String;");
+    jstring _udp_addr = (jstring) env->GetObjectField(obj, id);
+
+    id = env->GetFieldID(clazz,"udp_port","I");
+    jint _udp_port = env->GetIntField(obj,id);
+
+    id = env->GetFieldID(clazz,"ice_opt","Lcom/howell/entityclass/StreamReqIceOpt;");
+    jobject _iceObj = env->GetObjectField(obj,id);
+
+    id = env->GetFieldID(clazz,"crypto","Lcom/howell/entityclass/Crypto;");
+    jobject _cryptoObj = env->GetObjectField(obj,id);
+
+    id = env->GetFieldID(clazz,"channel","I");
+    jint _channel = env->GetIntField(obj,id);
+
+    id = env->GetFieldID(clazz,"stream","I");
+    jint _stream= env->GetIntField(obj,id);
+
+    env->DeleteLocalRef(clazz);
+    ///////////////////// ice obj ////////////////////
+    clazz = env->GetObjectClass(_iceObj);
+    id = env->GetFieldID(clazz,"comp_cnt","I");
+    jint _comp_cnt = env->GetIntField(_iceObj,id);
+
+    id = env->GetFieldID(clazz,"stun_addr","Ljava/lang/String;");
+    jstring  _stun_addr= (jstring) env->GetObjectField(_iceObj, id);
+
+    id = env->GetFieldID(clazz,"stun_port","I");
+    jint _stun_port=env->GetIntField(_iceObj,id);
+
+    id = env->GetFieldID(clazz,"turn_addr","Ljava/lang/String;");
+    jstring _turn_addr = (jstring) env->GetObjectField(_iceObj, id);
+
+    id = env->GetFieldID(clazz,"turn_port","I");
+    jint _turn_port = env->GetIntField(_iceObj,id);
+
+    id = env->GetFieldID(clazz,"turn_tcp","I");
+    jint _turn_tcp = env->GetIntField(_iceObj,id);
+
+    id = env->GetFieldID(clazz,"turn_username","Ljava/lang/String;");
+    jstring  _turn_username = (jstring) env->GetObjectField(_iceObj, id);
+
+    id = env->GetFieldID(clazz,"turn_password","Ljava/lang/String;");
+    jstring _turn_password = (jstring) env->GetObjectField(_iceObj, id);
+    env->DeleteLocalRef(clazz);
+    ////////////////crypto  obj ////////////////////////
+    clazz = env->GetObjectClass(_cryptoObj);
+    id = env->GetFieldID(clazz,"enable","I");
+    jint _enable=env->GetIntField(_cryptoObj,id);
+    env->DeleteLocalRef(clazz);
+
+    const char * c_udp_addr = env->GetStringUTFChars(_udp_addr,0);
+    const char * c_trun_addr = env->GetStringUTFChars(_turn_addr,0);
+    const char * c_stun_addr = env->GetStringUTFChars(_stun_addr,0);
+    const char * c_turn_name = env->GetStringUTFChars(_turn_username,0);
+    const char * c_turn_pwd = env->GetStringUTFChars(_turn_password,0);
+
+    c->playback             = _playback;
+    c->beg                  = _beg;
+    c->end                  = _end;
+    c->re_invite            = _re_invite;
+    c->method_map           = _bitmapID;
+    c->udp_port             = _udp_port;
+    c->channel              = _channel;
+    c->stream               = _stream;
+    c->crypto.enable        = _enable;
+    c->ice_opt.comp_cnt     = _comp_cnt;
+    c->ice_opt.stun_port    = _stun_port;
+    c->ice_opt.turn_port    = _turn_port;
+    c->ice_opt.turn_tcp     = _turn_tcp;
+    strcpy(c->udp_addr,c_udp_addr);
+    strcpy(c->ice_opt.stun_addr,c_stun_addr);
+    strcpy(c->ice_opt.turn_addr,c_trun_addr);
+    strcpy(c->ice_opt.turn_username,c_turn_name);
+    strcpy(c->ice_opt.turn_password,c_turn_pwd);
+
+    env->ReleaseStringUTFChars(_udp_addr,c_udp_addr);
+    env->ReleaseStringUTFChars(_stun_addr,c_stun_addr);
+    env->ReleaseStringUTFChars(_turn_addr,c_trun_addr);
+    env->ReleaseStringUTFChars(_turn_username,c_turn_name);
+    env->ReleaseStringUTFChars(_turn_password,c_turn_pwd);
+}
+
 
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_ecamInit
@@ -1322,6 +1424,8 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_ecamInit
     if (g_ecamMgr==NULL){
         g_ecamMgr = (Ecam_T *) malloc(sizeof(Ecam_T));
         memset(g_ecamMgr,0,sizeof(Ecam_T));
+        g_ecamMgr->context = (ecam_stream_req_context *) malloc(sizeof(struct ecam_stream_req_context));
+        memset(g_ecamMgr->context,0,sizeof(struct ecam_stream_req_context));
     }
     const char * _account= env->GetStringUTFChars(account,NULL);
     g_ecamMgr->req = ecam_stream_req_new(_account);
@@ -1343,6 +1447,12 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_ecamSetCallbackObj
     }
 }
 
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_ecamSetContextObj
+        (JNIEnv *env, jclass, jobject obj){
+    if (g_ecamMgr==NULL||obj==NULL)return;
+    if (g_ecamMgr->context==NULL)return;
+    fill_context(env,obj,g_ecamMgr->context);
+}
 
 JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamGetAudioType
         (JNIEnv *, jclass){
@@ -1363,14 +1473,90 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamGetAudioType
     return audio_type;
 }
 
+JNIEXPORT jstring JNICALL Java_com_howell_jni_JniUtil_ecamPrepareSDP
+        (JNIEnv *env, jclass){
+    if (g_ecamMgr==NULL||g_ecamMgr->context==NULL) return NULL;
+    char *local_sdp = ecam_stream_req_prepare_sdp(g_ecamMgr->req,g_ecamMgr->context);
+    return env->NewStringUTF((const char *)local_sdp);
+}
+
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_ecamHandleRemoteSDP
+        (JNIEnv *env, jclass,  jstring dialogID, jstring remoteSDP){
+    if (dialogID==NULL||remoteSDP==NULL||g_ecamMgr==NULL||g_ecamMgr->context==NULL)return;
+    const char * _dialogID = env->GetStringUTFChars(dialogID,0);
+    const char * _remoteSDP= env->GetStringUTFChars(remoteSDP,0);
+    ecam_stream_req_handle_remote_sdp(g_ecamMgr->req,g_ecamMgr->context,_dialogID,_remoteSDP);
+    env->ReleaseStringUTFChars(dialogID,_dialogID);
+    env->ReleaseStringUTFChars(remoteSDP,_remoteSDP);
+}
+
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamStart
+        (JNIEnv *, jclass){
+    if (g_ecamMgr==NULL)return -1;
+    return ecam_stream_req_start(g_ecamMgr->req,g_ecamMgr->context,5000);
+}
+
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamStop
+        (JNIEnv *, jclass){
+    if (g_ecamMgr==NULL) return -1;
+    return ecam_stream_req_stop(g_ecamMgr->req,3000);
+}
 
 
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamGetMethod
+        (JNIEnv *, jclass){
+    if (g_ecamMgr==NULL)return -1;
+    int req = ecam_stream_req_get_transfer_method(g_ecamMgr->req);
+    switch (req){
+        case 0:
+            return 0;
+        case 1:
+            return 3;
+        case 2:
+        {
+            int ice_flag = ice_get_type(ecam_stream_req_get_ice(g_ecamMgr->req));
+            if (ice_flag==0){
+                return 0;
+            } else if(ice_flag == 1){
+                return 2;
+            }else if (ice_flag == 2){
+                return 1;
+            }
+        }
+            break;
+        default:
+            break;
+    }
+    return -1;
+}
 
+JNIEXPORT jlongArray JNICALL Java_com_howell_jni_JniUtil_ecamGetSdpTime
+        (JNIEnv *env, jclass){
+    if(g_ecamMgr == NULL)return NULL;
+    time_t beg=0;
+    time_t end=0;
+    ecam_stream_req_get_sdp_time(g_ecamMgr->req,&beg,&end);
+    jlongArray longArray = env->NewLongArray(2);
+    jlong *arry = env->GetLongArrayElements(longArray,0);
+    arry[0] = beg;
+    arry[1] = end;
+    return longArray;
+}
 
-
-
-
-
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamSendAudioData
+        (JNIEnv *env, jclass, jbyteArray bytes, jint len){
+    if (g_ecamMgr==NULL)return -1;
+    char *data = (char *) env->GetByteArrayElements(bytes, NULL);
+    if (data==NULL)return -1;
+    int dstlen = 0;
+    char *encodeData = (char *) malloc(1024);
+    memset(encodeData,0,1024);
+    g711u_Encode((unsigned char *) data, (unsigned char *) encodeData, len, (unsigned int *) &dstlen);
+    int ret = ecam_stream_send_audio(g_ecamMgr->req,0, encodeData, dstlen, 0);
+    env->ReleaseByteArrayElements(bytes, (jbyte *) data, 0);
+    free(encodeData);
+    return ret;
+}
 
 
 

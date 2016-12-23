@@ -35,7 +35,7 @@ public class H265Mgr implements ICam {
     private int mUnexpectNoFrame = 0;
     boolean mIsTransDeinit = false;
     private long dialogId = 0;
-    private int m_bSub = 1;
+    private int mIsSub = 1;
 
     private Timer timer = null;
     private MyTimerTask myTimerTask = null;
@@ -61,8 +61,18 @@ public class H265Mgr implements ICam {
     }
 
     @Override
-    public void setStreamBSub(int isSub) {
-        this.m_bSub = isSub;
+    public void setStreamBSub(boolean isSub) {
+
+    }
+
+    @Override
+    public void setPlayBack(boolean isPlayback) {
+        this.mIsSub = isPlayback?1:0;
+    }
+
+    @Override
+    public void setPlayBackTime(long startTime, long endTime) {
+
     }
 
     @Override
@@ -139,11 +149,11 @@ public class H265Mgr implements ICam {
     }
 
     @Override
-    public void playViewCam(int is_sub) {
+    public void playViewCam() {
         if(JniUtil.readyPlayLive(2,0)){
-            m_bSub = is_sub;
+
             Log.i("123", "play view cam");
-            Subscribe s = new Subscribe(mSessionID, (int)getDialogId(),mBean.getDeviceId(), "live",is_sub);
+            Subscribe s = new Subscribe(mSessionID, (int)getDialogId(),mBean.getDeviceId(), "live",mIsSub);
             s.setStartTime(null);
             s.setEndTime(null);
             String jsonStr = JsonUtil.subScribeJson(s);
@@ -223,7 +233,7 @@ public class H265Mgr implements ICam {
                     e.printStackTrace();
                 }
 //                loginCam();
-                playViewCam(m_bSub);
+                playViewCam();
             };
         }.start();
     }

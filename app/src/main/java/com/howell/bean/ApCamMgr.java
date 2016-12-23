@@ -31,9 +31,20 @@ public class ApCamMgr implements ICam {
     }
 
     @Override
-    public void setStreamBSub(int isSub) {
+    public void setStreamBSub(boolean isSub) {
 
     }
+
+    @Override
+    public void setPlayBack(boolean isPlayback) {
+
+    }
+
+    @Override
+    public void setPlayBackTime(long startTime, long endTime) {
+
+    }
+
 
     @Override
     public boolean bind() {
@@ -65,7 +76,7 @@ public class ApCamMgr implements ICam {
     }
 
     @Override
-    public void playViewCam(int is_sub) {
+    public void playViewCam() {
 
     }
 

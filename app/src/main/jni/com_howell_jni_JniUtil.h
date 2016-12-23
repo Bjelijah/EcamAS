@@ -361,6 +361,14 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_ecamSetCallbackObj
 
 /*
  * Class:     com_howell_jni_JniUtil
+ * Method:    ecamSetContextObj
+ * Signature: (Lcom/howell/entityclass/StreamReqContext;)V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_ecamSetContextObj
+  (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     com_howell_jni_JniUtil
  * Method:    ecamGetAudioType
  * Signature: ()I
  */
@@ -369,11 +377,59 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamGetAudioType
 
 /*
  * Class:     com_howell_jni_JniUtil
- * Method:    prepareSDP
+ * Method:    ecamPrepareSDP
  * Signature: ()Ljava/lang/String;
  */
-JNIEXPORT jstring JNICALL Java_com_howell_jni_JniUtil_prepareSDP
+JNIEXPORT jstring JNICALL Java_com_howell_jni_JniUtil_ecamPrepareSDP
   (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    ecamHandleRemoteSDP
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_ecamHandleRemoteSDP
+  (JNIEnv *, jclass, jstring, jstring);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    ecamStart
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamStart
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    ecamStop
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamStop
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    ecamGetMethod
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamGetMethod
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    ecamGetSdpTime
+ * Signature: ()[J
+ */
+JNIEXPORT jlongArray JNICALL Java_com_howell_jni_JniUtil_ecamGetSdpTime
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    ecamSendAudioData
+ * Signature: ([BI)I
+ */
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamSendAudioData
+  (JNIEnv *, jclass, jbyteArray, jint);
 
 #ifdef __cplusplus
 }

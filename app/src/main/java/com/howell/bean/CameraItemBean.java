@@ -18,6 +18,16 @@ public class CameraItemBean {
     private String picturePath;
     private String upnpIP; // for ap
     private int upnpPort;
+    private int methodType;
+
+    public int getMethodType() {
+        return methodType;
+    }
+
+    public CameraItemBean setMethodType(int methodType) {
+        this.methodType = methodType;
+        return this;
+    }
 
     public PlayType getType() {
         return type;

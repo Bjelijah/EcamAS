@@ -1,5 +1,7 @@
 package com.howell.jni;
 
+import com.howell.entityclass.StreamReqContext;
+
 public class JniUtil {
 	static{
 		System.loadLibrary("jpush");
@@ -67,8 +69,13 @@ public class JniUtil {
 	//ecam
 	public static native void ecamInit(String account);
 	public static native void ecamSetCallbackObj(Object obj,int flag);
+	public static native void ecamSetContextObj(StreamReqContext obj);
 	public static native int ecamGetAudioType();//return:-1:error;0:aac;1:g711u
-	public static native String prepareSDP();
-
-
+	public static native String ecamPrepareSDP();
+	public static native void ecamHandleRemoteSDP(String dialogID,String remoteSDP);
+	public static native int ecamStart();//return:0 ok; -1 :error; -2:timeout
+	public static native int ecamStop();
+	public static native int ecamGetMethod();//retrun 0:other; 1:turn;2sturn;3:other;-1 error
+	public static native long []ecamGetSdpTime();//return long[0]:begtime ,long[1]:endTime;
+	public static native int ecamSendAudioData(byte [] bytes,int len);
 }

@@ -195,6 +195,7 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
                     .setStore(n.iseStoreFlag())
                     .setUpnpIP(n.getUpnpIP())
                     .setUpnpPort(n.getUpnpPort())
+                    .setMethodType(n.getMethodType())
                     .setPicturePath(n.getPicturePath());
 
             mList.add(b);
