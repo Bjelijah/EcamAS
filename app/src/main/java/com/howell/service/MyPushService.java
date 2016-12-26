@@ -8,14 +8,19 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.howell.activity.LogoActivity;
 import com.howell.ecam.R;
+import com.howell.utils.PhoneConfig;
 
 import atuobahn.WebSocketConnection;
+import atuobahn.WebSocketConnectionHandler;
+import atuobahn.WebSocketException;
 
 /**
  * Created by Administrator on 2016/12/23.
@@ -27,7 +32,10 @@ public class MyPushService extends Service {
     NotificationManager notificationManager;
     private BroadcastReceiver receiver;
     public static final String NOTIFY_ACTION = "com.howell.service.notification";
-    private final WebSocketConnection mConnection = new WebSocketConnection();
+    private WebSocketConnection mConnection = new WebSocketConnection();
+
+
+    private String mWS,mAccount,mPhoneID;
 
     @Nullable
     @Override
@@ -51,7 +59,20 @@ public class MyPushService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e("123","MyPushService onStartCommand");
+        startForeground(100, new Notification());
         initNotification();
+        initConn();
+        //TODO : wsuri, session that last login
+
+
+
+        mWS = "";
+        mAccount = getSharedPreferences("set",Context.MODE_PRIVATE).getString("account", "");
+        mPhoneID = PhoneConfig.getPhoneDeveceID(this);
+
+
+        this.start(mWS,mAccount,mPhoneID);
+
 
         sendNotification("title","msg");
         return super.onStartCommand(intent, flags, startId);
@@ -81,14 +102,21 @@ public class MyPushService extends Service {
             public void onReceive(Context context, Intent intent) {
                 Log.e("123","on receive");
                 //TODO open app
-
-
+                Intent appIntent = new Intent(MyPushService.this, LogoActivity.class);
+                context.startActivity(appIntent);
             }
         };
 
         IntentFilter filter = new IntentFilter(NOTIFY_ACTION);
         registerReceiver(this.receiver,filter);
     }
+
+    private void initConn(){
+        if (mConnection==null){
+            mConnection = new WebSocketConnection();
+        }
+    }
+
 
 
     private void sendNotification(String title,String msg){
@@ -119,11 +147,38 @@ public class MyPushService extends Service {
     }
 
 
-    private void start(final String webIP,final String session,final String phoneID){
+    private void start(final String uri,final String account,final String phoneID){
+        try {
+            mConnection.connect(uri,new WebSocketConnectionHandler(){
+                @Override
+                public void onOpen() {
+                    super.onOpen();
+                    //login ok
+                    //TODO client send phone info to server
+
+                }
+
+                @Override
+                public void onTextMessage(String payload) {
+                    super.onTextMessage(payload);
 
 
+                }
 
+                @Override
+                public void onClose(int code, String reason) {
+                    super.onClose(code, reason);
+                    Log.e("123","webSocket close code="+code);
 
+                    if (code == 2 || code == 3){
+                        start(mWS,mAccount,mPhoneID);
+                    }
+
+                }
+            });
+        } catch (WebSocketException e) {
+            e.printStackTrace();
+        }
     }
 
 
