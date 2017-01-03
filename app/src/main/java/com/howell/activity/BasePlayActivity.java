@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.howell.action.AudioAction;
+import com.howell.action.PTZControlAction;
 import com.howell.action.PlayAction;
 import com.howell.action.YV12Renderer;
 import com.howell.bean.CamFactory;
@@ -34,6 +35,7 @@ import com.howell.ehlib.MySeekBar;
 import com.howell.utils.FileUtils;
 import com.howell.utils.MessageUtiles;
 import com.howell.utils.PhoneConfig;
+import com.howell.utils.UserConfigSp;
 
 import java.io.File;
 
@@ -41,9 +43,9 @@ import java.io.File;
  * Created by Administrator on 2016/12/16.
  */
 
-public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.Callback,View.OnTouchListener{
+public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.Callback,View.OnTouchListener,ICam.IStream{
 
-    public final static int MSG_PLAY_RELINK_OK          = 0xff00;
+    public static final int MSG_PTZ_SHAKE               = 0xff00;
     public final static int MSG_PLAY_SOUND_MUTE         = 0xff01;
     public final static int MSG_PLAY_SOUND_UNMUTE       = 0xff02;
     public final static int MSG_PLAY_SAVE_PICTURE       = 0xff03;
@@ -51,8 +53,13 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
     public final static int MSG_PLAY_LOGIN_CAM_ERROR    = 0xff05;
     public final static int MSG_PLAY_PLAY_CAM_OK        = 0xff06;
     public final static int MSG_PLAY_PLAY_CAM_ERROR     = 0xff07;
-
-
+    public final static int MSG_PLAY_PLAY_WAIT          = 0xff08;
+    public final static int MSG_PLAY_PLAY_UNWAIT        = 0xff09;
+    public final static int MSG_PLAY_STOP_CAM_OK        = 0xff0a;
+    public final static int MSG_PLAY_STOP_CAM_ERROR     = 0xff0b;
+    public final static int MSG_PLAY_LOGOUT_CAM_OK      = 0xff0c;
+    public final static int MSG_PLAY_LOGOUT_CAM_ERROR   = 0xff0d;
+    public final static int MSG_PLAY_RELINK_OK          = 0xff0e;
 
     //控件
     protected GLSurfaceView mGlView;
@@ -67,35 +74,51 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
     protected PopupWindow mPopupWindow;
     protected TextView mStreamLen;
     protected boolean isShowSurfaceIcon = true;
-
     protected ICam mPlayMgr;
+    protected boolean mIsAudioOpen = false;
+
+
 
     protected Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what){
+                case MSG_PTZ_SHAKE:
+                    PTZControlAction.getInstance().ptzShake(BasePlayActivity.this, (View)msg.obj);
+                    break;
                 case MSG_PLAY_RELINK_OK:
+                    Log.i("123","get play re link ok");
                     if (msg.arg1==1){
                         mStreamChange.setText("标清");
-                    }else if(msg.arg1==0){
+                    }else if(msg.arg1==2){
                         mStreamChange.setText("高清");
                     }
                     break;
                 case MSG_PLAY_SOUND_MUTE:
                     mSound.setImageDrawable(getResources().getDrawable(R.mipmap.img_no_sound));
+                    mIsAudioOpen = false;
                     break;
                 case MSG_PLAY_SOUND_UNMUTE:
                     mSound.setImageDrawable(getResources().getDrawable(R.mipmap.img_sound));
+                    mIsAudioOpen = true;
                     break;
                 case MSG_PLAY_SAVE_PICTURE:
                     MessageUtiles.postToast(getApplicationContext(),getResources().getString(R.string.save_picture), Toast.LENGTH_SHORT);
                     break;
                 case MSG_PLAY_LOGIN_CAM_OK:
+                    Log.e("123","MSG_PLAY_LOGIN_CAM_OK");
+                    camPlay();
                     break;
                 case MSG_PLAY_LOGIN_CAM_ERROR:
-                    break;
 
+                    break;
+                case MSG_PLAY_PLAY_WAIT:
+                    mWaitProgressBar.setVisibility(View.VISIBLE);
+                    break;
+                case MSG_PLAY_PLAY_UNWAIT:
+                    mWaitProgressBar.setVisibility(View.GONE);
+                    break;
                 default:
                     break;
             }
@@ -129,6 +152,7 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
         mWaitProgressBar = (ProgressBar) findViewById(R.id.waitProgressBar);
 
         mStreamLen = (TextView) findViewById(R.id.tv_stream_len);
+        findViewById(R.id.player_talk).setVisibility(View.GONE);
         initPopupWindow();
     }
 
@@ -146,9 +170,8 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
         if (PhoneConfig.getPhoneHeight(this)<PhoneConfig.getPhoneWidth(this)){
             showSurfaceIcon(false);
         }
-
-
-
+        mIsAudioOpen = UserConfigSp.loadSoundState(this);
+        mSound.setImageDrawable(getResources().getDrawable(mIsAudioOpen?R.mipmap.img_sound:R.mipmap.img_no_sound));
     }
 
 
@@ -167,7 +190,10 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
     protected void initPlayer(){
 
         mPlayMgr = CamFactory.buildCam(PlayAction.getInstance().getPlayBean().getType());
-        PlayAction.getInstance().setHandler(mHandler);
+        mPlayMgr.init(this,PlayAction.getInstance().getPlayBean());
+        mPlayMgr.setHandler(mHandler);
+        mPlayMgr.registStreamLenCallback(this);
+        PlayAction.getInstance().setHandler(mHandler).setCam(mPlayMgr);
 
     }
 
@@ -191,12 +217,32 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
     protected void soundFun(){
         if (PlayAction.getInstance().isMute()){
             PlayAction.getInstance().unmute();
+            mIsAudioOpen = true;
         }else{
             PlayAction.getInstance().mute();
+            mIsAudioOpen = false;
         }
     }
 
 
+
+
+    protected void camConnect(){
+        PlayAction.getInstance().camLogin();
+    }
+
+    protected void camPlay(){
+        Log.i("123","base play cam play");
+        PlayAction.getInstance().camViewPlay();
+    }
+
+    protected void camStop(){
+        PlayAction.getInstance().camViewStop();
+    }
+
+    protected void camDisconnect(){
+        PlayAction.getInstance().camLogout();
+    }
 
 
 
@@ -214,7 +260,9 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
 
     @Override
     protected void onDestroy() {
-
+        mPlayMgr.unregistStreamLenCallback();
+        camStop();
+        camDisconnect();
         super.onDestroy();
     }
 
@@ -259,4 +307,15 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
     }
 
 
+    @Override
+    public void showStreamSpeed(final int kbitPerSec) {
+        if (mStreamLen!=null){
+            mStreamLen.post(new Runnable() {
+                @Override
+                public void run() {
+                    mStreamLen.setText(kbitPerSec+" kbit/s");
+                }
+            });
+        }
+    }
 }

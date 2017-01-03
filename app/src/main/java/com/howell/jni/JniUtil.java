@@ -8,6 +8,7 @@ public class JniUtil {
 		System.loadLibrary("hwtrans");
 		System.loadLibrary("hwplay");
 		System.loadLibrary("player_jni");
+		System.loadLibrary("play_jni");
 	}
 	
 	//yuv
@@ -40,6 +41,7 @@ public class JniUtil {
 	public static native void setCallBackObj(Object o);
 	public static native boolean readyPlayLive(int vCodeFlag,int aCodeFlag);//vCodeFlag:0 ap,1 ecam,2 h265  //aCodeFlag 0 aac ,1g711u
 	public static native boolean readyPlayPlayback();
+	public static native void releasePlay();
 	public static native void playView();
 	public static native void stopView();
 	
@@ -68,6 +70,7 @@ public class JniUtil {
 
 	//ecam
 	public static native void ecamInit(String account);
+	public static native void ecamDeinit();
 	public static native void ecamSetCallbackObj(Object obj,int flag);
 	public static native void ecamSetContextObj(StreamReqContext obj);
 	public static native int ecamGetAudioType();//return:-1:error;0:aac;1:g711u
@@ -78,4 +81,5 @@ public class JniUtil {
 	public static native int ecamGetMethod();//retrun 0:other; 1:turn;2sturn;3:other;-1 error
 	public static native long []ecamGetSdpTime();//return long[0]:begtime ,long[1]:endTime;
 	public static native int ecamSendAudioData(byte [] bytes,int len);
+	public static native int ecamGetStreamLenSomeTime();
 }

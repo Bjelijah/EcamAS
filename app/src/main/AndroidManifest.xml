@@ -187,6 +187,7 @@
         </activity>
 
         <activity android:name="com.howell.activity.DeviceSettingActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/MyAppThemeDeviceSetting"
             />
 
@@ -223,6 +224,16 @@
         <activity android:name="com.howell.activity.AddNewCamera"
             android:screenOrientation="portrait"
             android:theme="@style/MyAppThemeAdd"/>
+
+        <activity android:name="com.howell.activity.BasePlayActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:theme="@style/MyappThemePlay"
+            />
+        <activity android:name="com.howell.activity.PlayViewActivity"
+            android:parentActivityName="com.howell.activity.BasePlayActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:theme="@style/MyappThemePlay"
+            />
 
         <activity
             android:name="com.howell.activity.VideoList"

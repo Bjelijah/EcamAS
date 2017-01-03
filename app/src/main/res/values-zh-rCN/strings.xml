@@ -320,4 +320,21 @@
 	<string name="camera_setting_param">参数</string>
 	<string name="camera_setting_resolution_dec">视频图像的分辨率</string>
 	<string name="camera_setting_picture_dec">获取的图片质量</string>
+	<string name="camera_setting_assist">辅助</string>
+	<string name="camera_setting_lamp">指示灯</string>
+	<string name="camera_setting_detection">侦测</string>
+	<string name="camera_setting_det_rec">移动侦测录像</string>
+	<string name="camera_setting_det_rec_dec">视频画面中移动物体，即触发报警并录像（有安装SD卡）</string>
+	<string name="camera_setting_det_alarm">移动侦测报警推送</string>
+	<string name="camera_setting_det_alarm_dec">推送报警给我的手机</string>
+	<string name="camera_setting_camera_version">版本</string>
+	<string name="camera_setting_camera_updata">升级摄像机</string>
+	<string name="camera_setting_share">@string/share</string>
+	<string name="camera_setting_share_device">分享摄像机</string>
+	<string name="camera_setting_share_device_dec">分享我的摄像机让其他用户可以访问</string>
+	<string name="camera_setting_action_save">保存设置</string>
+	<string name="camera_setting_save_exit_title">保存和退出</string>
+	<string name="camera_setting_save_exit_msg">您尚未保存！是否要保存?</string>
+	<string name="camera_setting_save_exit_ok">保存</string>
+	<string name="camera_setting_save_exit_no">退出</string>
 </resources>

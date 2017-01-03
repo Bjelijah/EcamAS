@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
 
+import android.provider.MediaStore;
 import android.util.Log;
 
 import com.howell.action.AudioAction;
@@ -24,8 +25,9 @@ import com.howell.utils.IConst;
 import org.kobjects.base64.Base64;
 
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import static com.zys.brokenview.Utils.random;
 
 /**
  * Created by howell on 2016/12/6.
@@ -44,6 +46,10 @@ public class ECamMgr implements ICam,IConst {
     int mPlayBackRe = 0;//是否是移动滑杆条
 
     private int auType = 0;
+    private static final int F_TIME = 2;//刷新率  s
+    ICam.IStream mStreamCB = null;
+    private MyTimerTask myTimerTask = null;
+    private Timer timer = null;
 
     @Override
     public void init(Context context, CameraItemBean bean) {
@@ -63,8 +69,21 @@ public class ECamMgr implements ICam,IConst {
     }
 
     @Override
+    public void registStreamLenCallback(IStream cb) {
+        this.mStreamCB = cb;
+    }
+
+    @Override
+    public void unregistStreamLenCallback() {
+        this.mStreamCB = null;
+    }
+
+
+
+    @Override
     public void setStreamBSub(boolean isSub) {
         this.mIsSub = isSub?1:0;
+        this.mStreamType = isSub?"Sub":"Main";
     }
 
     @Override
@@ -105,91 +124,126 @@ public class ECamMgr implements ICam,IConst {
     }
 
     @Override
-    public void loginCam() {
-
-        new AsyncTask<Void,Void,Boolean>(){
-
-            @Override
-            protected Boolean doInBackground(Void... params) {
-                JniUtil.netInit();
-                JniUtil.ecamInit(LoginAction.getInstance().getmInfo().getAccount());
-                JniUtil.ecamSetCallbackObj(ECamMgr.this,0);
-                JniUtil.ecamSetContextObj(getStreamReqContext());
-                boolean ret = false;
-                try {
-                    ret = invite();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return false;
-                }
-                if (ret){
-                    auType = JniUtil.ecamGetAudioType();
-                }
-
-                AudioAction.getInstance().initAudio();
-                AudioAction.getInstance().playAudio();
-                return true;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                if (mHandler==null)return;
-                if (aBoolean){
-                    mHandler.sendEmptyMessage(BasePlayActivity.MSG_PLAY_LOGIN_CAM_OK);
-                }else{
-                    mHandler.sendEmptyMessage(BasePlayActivity.MSG_PLAY_LOGIN_CAM_ERROR);
-                }
-            }
-        }.execute();
-
-
-
+    public boolean loginCam() {
+        Log.e("123","login cam~~~~~~~~~~");
+        return ecamloginCam();
     }
 
     @Override
-    public void logoutCam() {
-
-
-
-
+    public boolean logoutCam() {
+       return ecamlogoutCam();
     }
 
     @Override
-    public void playViewCam() {
+    public boolean playViewCam() {
+        Log.e("123","play view cam ~~~~~~~~~~~");
+        return ecamPlayViewCam();
+    }
 
-        if (JniUtil.readyPlayLive(1,auType)){
-            JniUtil.ecamStart();
-            JniUtil.playView();
-            mHandler.sendEmptyMessage(BasePlayActivity.MSG_PLAY_PLAY_CAM_OK);
-        }else{
-            //TODO playview error;
-            mHandler.sendEmptyMessage(BasePlayActivity.MSG_PLAY_PLAY_CAM_ERROR);
+
+
+    @Override
+    public boolean stopViewCam() {
+        return ecamStopViewCam();
+    }
+
+    @Override
+    public boolean reLink() {
+        if(!ecamStopViewCam()){
+            Log.e("123","stop view cam error");
+            return false;
         }
+        if(!ecamlogoutCam()){
+            Log.e("123","logout cam error");
+            return false;
+        }
+        if(!ecamloginCam()){
+            Log.e("123","login cam error");
+            return false;
+        }
+        if(!ecamPlayViewCam()){
+            Log.e("123","play view cam error");
+            return false;
+        }
+        return true;
     }
 
-
-
     @Override
-    public void stopViewCam() {
-        JniUtil.stopView();
-        JniUtil.ecamStop();
-
-    }
-
-    @Override
-    public void reLink() {
-
-    }
-
-    @Override
-    public void catchPic(String path) {
+    public boolean catchPic(String path) {
         JniUtil.catchPic(path);
+        return true;
+    }
+
+    @Override
+    public boolean soundSetData(byte[] buf, int len) {
+        return JniUtil.ecamSendAudioData(buf,len)==0?false:true;
+    }
+
+    private boolean ecamloginCam(){
+        JniUtil.netInit();
+        JniUtil.ecamInit(LoginAction.getInstance().getmInfo().getAccount());
+        JniUtil.ecamSetCallbackObj(ECamMgr.this,0);
+        JniUtil.ecamSetContextObj(getStreamReqContext());
+        boolean ret = false;
+        try {
+            ret = invite();//sdp
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("123","invite error  try");
+            return false;
+        }
+        if (ret){
+            auType = JniUtil.ecamGetAudioType();
+        }else {
+            Log.e("123","invite error");
+            return false;
+        }
+
+        if(!JniUtil.readyPlayLive(1,auType)){
+            Log.e("123","readplay live error");
+            return false;
+        }//解码器 初始化
+
+        AudioAction.getInstance().initAudio();
+        Log.e("123","init audio");
+        AudioAction.getInstance().playAudio();
+        Log.e("123","play audio");
+        return true;
+    }
+
+    private boolean ecamlogoutCam(){
+        JniUtil.releasePlay();//释放解码器
+        AudioAction.getInstance().deInitAudio();
+        JniUtil.ecamDeinit();
+        JniUtil.netDeinit();
+        return true;
+    }
+
+    private boolean ecamPlayViewCam(){
+        if(JniUtil.ecamStart()!=0){//申请流
+            Log.e("123","ecam start error");
+            return false;
+        }
+        JniUtil.playView();
+        startTimerTask();
+        return true;
+    }
+
+    private boolean ecamStopViewCam(){
+        int ret = -3;
+        ret = JniUtil.ecamStop();
+        if (ret!=0) {
+            Log.e("123", "ecam stop error ret=" + ret);
+        }
+        AudioAction.getInstance().stopAudio();
+        JniUtil.stopView();
+        stopTimerTask();
+        return true;
     }
 
 
     private StreamReqContext fillStreamReqContext(int isPlayBack,long beg,long end,int re_invite,int methodType,int stream){
-
+        Log.e("123","isPlayBack="+isPlayBack+" beg="+beg+" end="+end+" re="+re_invite+" methodtype="+methodType+" stream="+stream);
         String UpnpIP = mCamBean.getUpnpIP();
         int UpnpPort = mCamBean.getUpnpPort();
 
@@ -207,7 +261,6 @@ public class ECamMgr implements ICam,IConst {
                     0, res.getTURNServerUserName(), res.getTURNServerPassword());
             Crypto crypto = new Crypto(1);
             if(methodType == 0){
-
                 streamReqContext = new StreamReqContext(isPlayBack,
                         beg, end, re_invite, 1 << 1 | 1 << 2 ,UpnpIP , UpnpPort, opt,crypto,0,stream);
                 Log.e("streamReqContext", "java stream:"+stream);
@@ -232,6 +285,7 @@ public class ECamMgr implements ICam,IConst {
 
 
     private StreamReqContext getStreamReqContext(){
+
         return fillStreamReqContext(mIsPlayBack,mPlayBackStartTime,mPlayBackEndTime,mPlayBackRe,mCamBean.getMethodType(),mIsSub);
     }
 
@@ -255,6 +309,54 @@ public class ECamMgr implements ICam,IConst {
         return true;
     }
 
+    private void startTimerTask(){
+        timer = new Timer();
+        myTimerTask = new MyTimerTask();
+        timer.schedule(myTimerTask,0,F_TIME*1000);
+    }
 
+    private void stopTimerTask(){
+        if (timer!=null){
+            timer.cancel();
+            timer.purge();
+            timer = null;
+        }
+        if (myTimerTask!=null){
+            myTimerTask.cancel();
+            myTimerTask = null;
+        }
+    }
+
+
+    class MyTimerTask extends TimerTask{
+
+        int mUnexpectNoFrame = 0;
+        boolean doOnce = false;
+        @Override
+        public void run() {
+            int streamLen = JniUtil.ecamGetStreamLenSomeTime();
+            int speed = streamLen*8/1024/F_TIME;
+            if (mStreamCB!=null){
+                mStreamCB.showStreamSpeed(speed);
+            }
+            if (streamLen==0){
+                mUnexpectNoFrame++;
+            }else {
+                mUnexpectNoFrame = 0;
+                if (!doOnce) {
+                    doOnce = true;
+                    mHandler.sendEmptyMessage(BasePlayActivity.MSG_PLAY_PLAY_UNWAIT);
+                }
+            }
+
+            if (mUnexpectNoFrame==3){
+                mHandler.sendEmptyMessage(BasePlayActivity.MSG_PLAY_PLAY_WAIT);
+                doOnce = false;
+            }
+            if (mUnexpectNoFrame == 10){
+                //TODO relink
+            }
+        }
+    }
 
 }

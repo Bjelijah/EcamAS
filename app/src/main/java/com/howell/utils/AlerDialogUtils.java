@@ -74,5 +74,15 @@ public class AlerDialogUtils {
 				.show();
 	}
 
+	public static void postDialogMsg(Context context,String title,String msg,String pos,String neg,OnClickListener posBtn,OnClickListener negBtn){
+		Builder builder = new Builder(context);
+		builder.setTitle(title).setMessage(msg)
+				.setPositiveButton(pos,posBtn)
+				.setNegativeButton(neg,negBtn)
+				.create()
+				.show();
+	}
+
+
 
 }

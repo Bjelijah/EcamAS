@@ -392,145 +392,6 @@ static int register_nvr(const char* ip){
     return 0;
 }
 
-void *HW265D_Malloc(UINT32 channel_id, UINT32 size)
-{
-    return (void *)malloc(size);
-}
-
-void HW265D_Free(UINT32 channel_id, void * ptr)
-{
-    free(ptr);
-}
-
-void HW265D_Log( UINT32 channel_id, IHWVIDEO_ALG_LOG_LEVEL eLevel, INT8 *p_msg, ...)
-{
-}
-
-void initHi265Decode(){
-    if(res == NULL)return;
-    IHW265D_INIT_PARAM stInitParam = {0};
-    IH265DEC_INARGS stInArgs;
-    IH265DEC_OUTARGS stOutArgs = {0};
-    IHWVIDEO_ALG_VERSION_STRU stVersion;
-
-    INT32 MultiThreadEnable = 0;	// default is single thread mode
-    INT32 DispOutput = 0;
-
-    stInitParam.uiChannelID = 0;
-    stInitParam.iMaxWidth   = 1920;
-    stInitParam.iMaxHeight  = 1088;
-    stInitParam.iMaxRefNum  = 4;
-
-    stInitParam.eThreadType = MultiThreadEnable? IH265D_MULTI_THREAD: IH265D_SINGLE_THREAD;
-    stInitParam.eOutputOrder= DispOutput? IH265D_DISPLAY_ORDER:IH265D_DECODE_ORDER;
-
-    stInitParam.MallocFxn  = HW265D_Malloc;
-    stInitParam.FreeFxn    = HW265D_Free;
-    stInitParam.LogFxn     = HW265D_Log;
-
-    INT32 iRet = 0;
-    iRet = IHW265D_Create(&res->play_265_handle, &stInitParam);
-    if (IHW265D_OK != iRet)
-    {
-        LOGE("265 create error");
-    }
-
-}
-
-void deInit265Decode(){
-    if(res==NULL)return;
-    IHW265D_Delete(res->play_265_handle);
-}
-
-
-
-INT32 H265DecLoadAU(UINT8* pStream, UINT32 iStreamLen, UINT32* pFrameLen)
-{
-    UINT32 i;
-    UINT32 state = 0xffffffff;
-    BOOL32 bFrameStartFound=0;
-    BOOL32 bSliceStartFound = 0;
-
-    *pFrameLen = 0;
-    if( NULL == pStream || iStreamLen <= 4)
-    {
-        return -1;
-    }
-
-    for( i = 0; i < iStreamLen; i++)
-    {
-        if( (state & 0xFFFFFF7E) >= 0x100 &&
-            (state & 0xFFFFFF7E) <= 0x13E )
-        {
-            if( 1 == bFrameStartFound || bSliceStartFound == 1 )
-            {
-                if( (pStream[i+1]>>7) == 1)
-                {
-                    *pFrameLen = i - 4;
-                    return 0;
-                }
-            }
-            else
-            {
-                bSliceStartFound = 1;
-                //bFrameStartFound = 1;
-            }
-        }
-
-        /*find a vps, sps, pps*/
-        if( (state&0xFFFFFF7E) == 0x140 ||
-            (state&0xFFFFFF7E) == 0x142 ||
-            (state&0xFFFFFF7E) == 0x144)
-        {
-            if (1 == bSliceStartFound)
-            {
-                bSliceStartFound = 1;
-            }
-            else if(1 == bFrameStartFound)
-            {
-                *pFrameLen = i - 4;
-                return 0;
-            }
-            else
-            {
-                bFrameStartFound = 1;
-            }
-        }
-
-        state = (state << 8) | pStream[i];
-    }
-
-    *pFrameLen = i;
-    return -1;
-}
-
-
-
-
-
-void hi265InputData(const char *buf,int len){
-
-    INT32 iNaluLen;
-
-    H265DecLoadAU((UINT8 *)buf, (UINT32)len, (UINT32*)&iNaluLen);
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -559,7 +420,7 @@ void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* bu
 
 static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, int len, unsigned long timestamp, long sys_tm, int w, int h, int framerate, int au_sample, int au_channel, int au_bits, long user){
 
-    LOGE("type=%d  len=%d  w=%d  h=%d  timestamp=%ld sys_tm=%ld  framerate=%d  au_sample=%d  au_channel=%d au_bits=%d",type,len,w,h,timestamp,sys_tm,framerate,au_sample,au_channel,au_bits);
+//    LOGE("type=%d  len=%d  w=%d  h=%d  timestamp=%ld sys_tm=%ld  framerate=%d  au_sample=%d  au_channel=%d au_bits=%d",type,len,w,h,timestamp,sys_tm,framerate,au_sample,au_channel,au_bits);
 
     if(type == 0){//音频
         //		audio_play(buf,len,au_sample,au_channel,au_bits);
@@ -624,7 +485,7 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setCallBackObj
 JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayLive
         (JNIEnv *, jclass,jint vFlag,jint aFlag){
     if(res == NULL) return false;
-
+    LOGI("vFlag=%d    aFlag=%d\n",vFlag,aFlag);
     hwplay_init(1,0,0);
     RECT area;
     HW_MEDIAINFO media_head;
@@ -645,13 +506,13 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayLive
 
     switch (vFlag){
         case 0:
-            media_head.vdec_code = 0x0f;
+            media_head.vdec_code = 0x0f;//unknow
             break;
         case 1:
-            media_head.vdec_code = 0x0f;
+            media_head.vdec_code = VDEC_H264;//ecam
             break;
         case 2:
-            media_head.vdec_code = 0x10;
+            media_head.vdec_code = VDEC_HIS_H265;//h265
             break;
         default:
             break;
@@ -685,7 +546,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayLive
     //hwplay_set_max_framenum_in_buf(ph,is_playback?25:5);
     LOGI("ph=%d",ph);
     int b = hwplay_register_source_data_callback(ph,on_source_callback,0);
-    LOGI("callback bool = %d   play_handle=%d ",b,res->play_handle);
+    LOGI("~~~~~~~~~~~~~~~~~callback bool = %d   play_handle=%d ",b,res->play_handle);
     return res->play_handle>=0?true:false;
 }
 
@@ -694,6 +555,16 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayPlayback
     return true;
 //    return Java_com_howell_jni_JniUtil_readyPlayLive(env,cls);
 }
+
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_releasePlay
+        (JNIEnv *, jclass){
+    if (res==NULL)
+        return;
+    int ret = hwplay_release();
+    LOGI("hwplay_release  ret = %d\n",ret);
+    res->play_handle = -1;
+}
+
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_playView
         (JNIEnv *, jclass){
@@ -707,11 +578,12 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_stopView
         (JNIEnv *, jclass){
     if(res == NULL)return;
 
-    hwplay_stop(res->play_handle);
+    int ret = hwplay_stop(res->play_handle);
+    LOGI("123","hwplay_stop ret=%d\n",ret);
+    ret = hwplay_close_sound(res->play_handle);
+    LOGI("123","hwplay_close_sound ret = %d\n",ret);
     //hwnet_close_live_stream(res->live_stream_handle);
-
     res->is_exit = 1;
-    //deInit265Decode();
 }
 
 
@@ -837,9 +709,6 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_nativeAudioSetdata
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_getHI265Version
         (JNIEnv *env, jclass){
 
-    IHWVIDEO_ALG_VERSION_STRU stVersion;
-    IHW265D_GetVersion(&stVersion);
-    LOGI("version = %d",stVersion.uiCompileVersion);
 }
 
 
@@ -1274,6 +1143,7 @@ typedef struct{
     struct ecam_stream_req_context * context;
     jobject callbackObj;
     int isBack;
+    int ecamDataLen;
 }Ecam_T;
 
 static Ecam_T* g_ecamMgr = NULL;
@@ -1288,6 +1158,12 @@ static void global_init(void)
 void onStreamArrive(ecam_stream_req_t * req,ECAM_STREAM_REQ_FRAME_TYPE media_type,const char * data, size_t len, uint32_t timestamp){
     if (res==NULL || g_ecamMgr==NULL)
         return;
+    if(res->play_handle==-1){
+        LOGE("play_handle == -1");
+        return;
+    }
+
+    g_ecamMgr->ecamDataLen += len;
 
     stream_head head ;
     head.len = len + sizeof(stream_head);
@@ -1433,6 +1309,24 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_ecamInit
     ecam_stream_req_regist_stream_cb(g_ecamMgr->req,onStreamArrive);
 }
 
+
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_ecamDeinit
+        (JNIEnv *env, jclass){
+    if (g_ecamMgr==NULL)return;
+    ecam_stream_req_free(g_ecamMgr->req);
+    if (g_ecamMgr->context!=NULL){
+        free(g_ecamMgr->context);
+        g_ecamMgr->context = NULL;
+    }
+    if (g_ecamMgr->callbackObj!=NULL){
+        env->DeleteGlobalRef(g_ecamMgr->callbackObj);
+        g_ecamMgr->callbackObj = NULL;
+    }
+    free(g_ecamMgr);
+    g_ecamMgr = NULL;
+}
+
+
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_ecamSetCallbackObj
         (JNIEnv *env, jclass, jobject obj, jint flag){
     if (g_ecamMgr==NULL)return;
@@ -1558,6 +1452,13 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamSendAudioData
     return ret;
 }
 
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamGetStreamLenSomeTime
+        (JNIEnv *, jclass){
+    if (g_ecamMgr==NULL)return -1;
+    int len = g_ecamMgr->ecamDataLen;
+    g_ecamMgr->ecamDataLen=0;
+    return len;
+}
 
 
 

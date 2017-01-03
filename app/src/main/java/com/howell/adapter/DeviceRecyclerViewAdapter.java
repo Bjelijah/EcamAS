@@ -203,14 +203,21 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
 
 //        holder.ivDelete.setClickable(false);
 
-
-        holder.ivCamera.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.ivCamera.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View view) {
-                mClickListener.onItemVideoClickListener(view,holder.getItemView(),pos);
-                return false;
+            public void onClick(View v) {
+                mClickListener.onItemVideoClickListener(v,holder.getItemView(),pos);
             }
         });
+
+
+//        holder.ivCamera.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View view) {
+//                mClickListener.onItemVideoClickListener(view,holder.getItemView(),pos);
+//                return false;
+//            }
+//        });
 
         if (!LoginAction.getInstance().ismIsGuest()){
             holder.getItemView().setTag(pos);

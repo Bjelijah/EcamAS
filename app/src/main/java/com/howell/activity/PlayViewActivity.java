@@ -1,5 +1,6 @@
 package com.howell.activity;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ import com.howell.protocol.SoapManager;
 import com.howell.transformer.CubeInTransformer;
 import com.howell.utils.FileUtils;
 import com.howell.utils.PhoneConfig;
+import com.howell.utils.UserConfigSp;
 
 import java.io.File;
 
@@ -29,7 +31,7 @@ import java.io.File;
  * Created by Administrator on 2016/12/16.
  */
 
-public class PlayViewActivity extends BasePlayActivity implements GestureDetector.OnGestureListener,View.OnTouchListener,View.OnClickListener {
+public class PlayViewActivity extends BasePlayActivity implements GestureDetector.OnGestureListener,View.OnTouchListener,View.OnClickListener,IPlayFun {
 
     private GestureDetector mGestureDetector;
     private RelativeLayout mPlayPtzMove;
@@ -42,6 +44,7 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
         super.onCreate(savedInstanceState);
         initPlayView();
         initFun();
+        start();
     }
 
     @Override
@@ -58,6 +61,28 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
     @Override
     public void onShowPress(MotionEvent e) {
 
+    }
+
+    @Override
+    protected void camConnect() {
+        super.camConnect();
+    }
+
+    @Override
+    protected void camDisconnect() {
+        super.camDisconnect();
+    }
+
+    @Override
+    protected void camPlay() {
+        Log.i("123","play view cam play");
+        super.camPlay();
+    }
+
+
+    @Override
+    protected void camStop() {
+        super.camStop();
     }
 
     @Override
@@ -166,23 +191,23 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
         switch (v.getId()){
             case R.id.pop_layout_sd:
                 mPopupWindow.dismiss();
-                PlayAction.getInstance().rePlay(mPlayMgr,1);
+                PlayAction.getInstance().rePlay(1);
                 break;
             case R.id.pop_layout_hd:
                 mPopupWindow.dismiss();
-                PlayAction.getInstance().rePlay(mPlayMgr,0);
+                PlayAction.getInstance().rePlay(0);
                 break;
             case R.id.sound:
-                soundFun();
+                this.soundFun();
                 break;
             case R.id.catch_picture:
-                PlayAction.getInstance().catchPic(mPlayMgr);
+                PlayAction.getInstance().catchPic();
                 break;
             case R.id.player_change_stream:
                 mPopupWindow.showAsDropDown(v);
                 break;
             case R.id.player_imagebutton_back:
-                PlayAction.getInstance().catchPic(mPlayMgr,"/sdcard/eCamera/cache");
+                PlayAction.getInstance().catchPic("/sdcard/eCamera/cache");
                 //TODO: stop play
 
                 finish();
@@ -214,6 +239,8 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
         mSD.setOnClickListener(this);
         mStreamChange.setOnClickListener(this);
         mBack.setOnClickListener(this);
+
+
     }
 
     private void fragmentPtzInit(){
@@ -305,7 +332,35 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
         }
     }
 
+    private void start(){
+        this.camConnect();
+    }
 
+    private void end(){
 
+    }
 
+    @Override
+    protected void soundFun() {
+        super.soundFun();
+        UserConfigSp.saveSoundState(PlayViewActivity.this,mIsAudioOpen);
+        mPlayFun.updataAllView();
+    }
+
+    @Override
+    public void clickSound() {
+        if (mIsAudioOpen){
+            mIsAudioOpen = false;
+            PlayAction.getInstance().mute();
+        }else{
+            mIsAudioOpen = true;
+            PlayAction.getInstance().unmute();
+        }
+        UserConfigSp.saveSoundState(PlayViewActivity.this,mIsAudioOpen);
+    }
+
+    @Override
+    public boolean getSoundState() {
+        return mIsAudioOpen;
+    }
 }

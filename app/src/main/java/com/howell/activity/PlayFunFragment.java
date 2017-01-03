@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.howell.action.PlayAction;
 import com.howell.ecam.R;
 import com.howell.utils.FileUtils;
 import com.howell.utils.MessageUtiles;
@@ -94,13 +95,8 @@ public class PlayFunFragment extends Fragment implements OnClickListener {
 			MessageUtiles.postToast(context, getResources().getString(R.string.no_sdcard),2000);
 			return;
 		}
-		File destDir = new File("/sdcard/eCamera");
-		if (!destDir.exists()) {
-			destDir.mkdirs();
-		}
-		String path = "/sdcard/eCamera/"+FileUtils.getFileName()+".jpg";
-		if(PlayerActivity.client.setCatchPictureFlag(PlayerActivity.client.getHandle(),path,path.length()) == 1)
-			MessageUtiles.postToast(context, getResources().getString(R.string.save_picture),2000);
+		PlayAction.getInstance().catchPic();
+
 	}
 	
 	private void soundFun(){

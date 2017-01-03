@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/camera_setting_action_refresh"
+        app:showAsAction="ifRoom"
+        android:icon="@mipmap/ic_sync_white_24dp"
+
+        android:title="action_bar_refresh"
+        />
+
+    <item
+        android:id="@+id/camera_setting_action_save"
+
+        android:title="@string/camera_setting_action_save"
+        app:showAsAction="never"
+        />
+    <!--android:icon="@mipmap/ic_sync_white_24dp"-->
+
+
+</menu>

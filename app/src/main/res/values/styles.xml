@@ -146,6 +146,24 @@
 
     </style>
 
+    <style name="MyStyleCameraSettingLL">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_marginLeft">@dimen/camera_setting_margin_horizontal</item>
+        <item name="android:layout_marginRight">@dimen/camera_setting_margin_horizontal</item>
+        <item name="android:layout_marginTop">@dimen/camera_setting_margin_vertcail</item>
+        <item name="android:layout_marginBottom">@dimen/camera_setting_margin_vertcail</item>
+    </style>
+
+    <style name="MyStyleCameraSettingSubTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/camera_setting_title_size</item>
+        <item name="android:textColor">@color/homeText</item>
+    </style>
+
+
     <style name="toolbar_theme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="colorControlNormal">@color/white</item>
 
@@ -166,6 +184,10 @@
         <item name="android:clickable">true</item>
     </style>
 
+    <style name="MyappThemePlay" parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+        <item name="colorPrimary">@color/home_bk</item>
+        <item name="colorPrimaryDark">@color/home_bk_dark</item>
+    </style>
 
     <!--@style/MaterialDrawerTheme.Light.DarkToolbar.TranslucentStatus-->
     <!--<style name="MyAppThemeHome" parent="MaterialDrawerTheme.Light.DarkToolbar.TranslucentStatus">-->
@@ -188,6 +210,7 @@
             @color/material_drawer_dark_primary_text
         </item>
     </style>
+
 
 
 

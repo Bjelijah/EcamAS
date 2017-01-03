@@ -31,6 +31,16 @@ public class ApCamMgr implements ICam {
     }
 
     @Override
+    public void registStreamLenCallback(IStream cb) {
+
+    }
+
+    @Override
+    public void unregistStreamLenCallback() {
+
+    }
+
+    @Override
     public void setStreamBSub(boolean isSub) {
 
     }
@@ -66,34 +76,39 @@ public class ApCamMgr implements ICam {
     }
 
     @Override
-    public void loginCam() {
-
+    public boolean loginCam() {
+        return false;
     }
 
     @Override
-    public void logoutCam() {
-
+    public boolean logoutCam() {
+        return false;
     }
 
     @Override
-    public void playViewCam() {
-
+    public boolean playViewCam() {
+        return false;
     }
 
 
     @Override
-    public void stopViewCam() {
-
+    public boolean stopViewCam() {
+        return false;
     }
 
     @Override
-    public void reLink() {
-
+    public boolean reLink() {
+        return false;
     }
 
     @Override
-    public void catchPic(String path) {
+    public boolean catchPic(String path) {
+        return false;
+    }
 
+    @Override
+    public boolean soundSetData(byte[] buf, int len) {
+        return true;
     }
 
 

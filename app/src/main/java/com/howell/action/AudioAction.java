@@ -195,7 +195,9 @@ public class AudioAction {
 					//TalkManager.getInstance().setData(buffer, bufferReadResult);//FIXME
 
 //					boolean ret = TalkManager.getInstance().sendVoiceData2Service(buffer, bufferReadResult);
-					boolean ret = JniUtil.nativeAudioSetdata(buffer,bufferReadResult);
+//					boolean ret = JniUtil.nativeAudioSetdata(buffer,bufferReadResult);
+					boolean ret = PlayAction.getInstance().soundSendBuf(buffer,bufferReadResult);
+
 					if (!ret) {
 						bAudioRecording = false;
 					}

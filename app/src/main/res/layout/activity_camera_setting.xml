@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/home_bk_light"
@@ -52,14 +53,6 @@
             android:orientation="vertical">
 
 
-
-
-
-
-
-
-
-
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,23 +61,11 @@
                 >
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/camera_setting_margin_horizontal"
-                    android:layout_marginRight="@dimen/camera_setting_margin_horizontal"
-                    android:layout_marginTop="@dimen/camera_setting_margin_vertcail"
-                    android:layout_marginBottom="@dimen/camera_setting_margin_vertcail"
-                    >
+                    style="@style/MyStyleCameraSettingLL">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/camera_setting_title_size"
-                        android:textColor="@color/homeText"
+                        style="@style/MyStyleCameraSettingSubTitle"
                         android:text="@string/camera_setting_title_name"
-                        android:layout_alignParentLeft="true"
-
                         />
 
 
@@ -93,7 +74,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/camera_setting_name_tv"
                         android:layout_marginTop="@dimen/camera_setting_margin_vertacil_ctrl"
-                        android:layout_alignParentRight="true"
+
                         android:textSize="@dimen/camera_setting_subtitle_size"
                         android:text="test"
                         />
@@ -110,19 +91,9 @@
                 style="@style/MyStyleCameraSetting">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="@dimen/camera_setting_margin_horizontal"
-                    android:layout_marginRight="@dimen/camera_setting_margin_horizontal"
-                    android:layout_marginTop="@dimen/camera_setting_margin_vertcail"
-                    android:layout_marginBottom="@dimen/camera_setting_margin_vertcail"
-                    >
+                    style="@style/MyStyleCameraSettingLL">
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/camera_setting_title_size"
-                        android:textColor="@color/homeText"
+                        style="@style/MyStyleCameraSettingSubTitle"
                         android:text="@string/camera_setting_param"
 
                         />
@@ -131,18 +102,18 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="@dimen/camera_setting_margin_vertacil_ctrl">
-                       <LinearLayout
-                           android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           android:id="@+id/camera_setting_param_resolution_ll"
-                           android:orientation="vertical">
-                           <TextView
-                               android:layout_width="wrap_content"
-                               android:layout_height="wrap_content"
-                               android:textSize="@dimen/camera_setting_subtitle_size"
-                               android:textColor="@color/white"
-                               android:text="@string/resolution"
-                               />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/camera_setting_param_resolution_ll"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/camera_setting_subtitle_size"
+                                android:textColor="@color/white"
+                                android:text="@string/resolution"
+                                />
                             <TextView
                                 android:layout_width="@dimen/camera_setting_width_ctrl"
                                 android:layout_height="wrap_content"
@@ -150,7 +121,7 @@
                                 android:text="@string/camera_setting_resolution_dec"
 
                                 />
-                       </LinearLayout>
+                        </LinearLayout>
 
 
                         <LinearLayout
@@ -158,7 +129,8 @@
                             android:layout_height="match_parent"
                             android:orientation="horizontal"
                             android:layout_toEndOf="@+id/camera_setting_param_resolution_ll"
-                            android:layout_alignParentTop="true"
+
+                            android:layout_centerVertical="true"
                             >
 
                             <SeekBar
@@ -215,7 +187,8 @@
                             android:layout_height="match_parent"
                             android:orientation="horizontal"
                             android:layout_toEndOf="@+id/camera_setting_param_picture_ll"
-                            android:layout_alignParentTop="true"
+
+                            android:layout_centerVertical="true"
                             >
                             <SeekBar
                                 style="@style/Widget.AppCompat.SeekBar.Discrete"
@@ -234,11 +207,174 @@
                                 android:textSize="@dimen/camera_setting_dec_size"
                                 android:text="@string/popup_window_sd"
                                 />
+                        </LinearLayout>
 
+                    </RelativeLayout>
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/MyStyleCameraSetting">
+
+                <LinearLayout
+                    style="@style/MyStyleCameraSettingLL">
+
+                    <TextView
+                        style="@style/MyStyleCameraSettingSubTitle"
+                        android:text="@string/camera_setting_assist"
+                        />
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/camera_setting_margin_vertacil_ctrl"
+                        >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/camera_setting_subtitle_size"
+                            android:text="@string/turn_over"
+                            android:layout_alignParentLeft="true"
+                            android:id="@+id/camera_setting_turn_tv"
+                            android:layout_centerVertical="true"
+                            />
+
+                        <android.support.v7.widget.AppCompatCheckBox
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentBottom="true"
+                            android:id="@+id/camera_setting_turn_cb"
+                            />
+
+                    </RelativeLayout>
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/camera_setting_margin_vertacil_ctrl">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/camera_setting_subtitle_size"
+                            android:text="@string/camera_setting_lamp"
+                            android:id="@+id/camera_setting_lamp_tv"
+                            android:layout_centerVertical="true"
+                            />
+
+                        <android.support.v7.widget.AppCompatCheckBox
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentBottom="true"
+                            android:id="@+id/camera_setting_lamp_cb"
+                            />
+                    </RelativeLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/MyStyleCameraSetting"
+                >
+
+                <LinearLayout
+                    style="@style/MyStyleCameraSettingLL">
+
+
+                    <TextView
+                        style="@style/MyStyleCameraSettingSubTitle"
+                        android:text="@string/camera_setting_detection"
+                        />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/camera_setting_margin_vertacil_ctrl">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_alignParentLeft="true">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/camera_setting_subtitle_size"
+                                android:text="@string/camera_setting_det_rec"
+
+                                />
+
+                            <TextView
+
+                                android:layout_width="220dp"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/camera_setting_dec_size"
+                                android:text="@string/camera_setting_det_rec_dec"
+                                />
+                        </LinearLayout>
+
+
+                        <android.support.v7.widget.AppCompatCheckBox
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:id="@+id/camera_setting_det_dec_cb"
+                            />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/camera_setting_margin_vertacil_ctrl">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_alignParentLeft="true"
+                            >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/camera_setting_subtitle_size"
+                                android:text="@string/camera_setting_det_alarm"
+                                />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/camera_setting_dec_size"
+                                android:text="@string/camera_setting_det_alarm_dec"
+                                />
 
 
                         </LinearLayout>
 
+                        <android.support.v7.widget.AppCompatCheckBox
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:id="@+id/camera_setting_det_alarm_cb"/>
 
 
 
@@ -246,32 +382,138 @@
 
 
 
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/MyStyleCameraSetting">
+
+                <LinearLayout
+                    style="@style/MyStyleCameraSettingLL">
+
+                    <TextView
+                        style="@style/MyStyleCameraSettingSubTitle"
+                        android:text="@string/camera_setting_camera_version"
+                        />
+
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/camera_setting_margin_vertacil_ctrl">
+
+
+                        <LinearLayout
+                            android:layout_width="200dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_alignParentLeft="true"
+                            >
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/camera_setting_subtitle_size"
+                                android:text="@string/camera_setting_camera_updata"
+                                />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/camera_setting_dec_size"
+                                android:text="当前固件为最新不需要升级（2.0.1）"
+                                android:id="@+id/camera_setting_updata_tv"
+                                />
 
 
 
+                        </LinearLayout>
 
 
 
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/camera_update"
+                            android:minHeight="38dp"
+                            android:id="@+id/camera_setting_updata_btn"
+                            android:textColor="@color/homeText"
+                            />
 
 
-
+                    </RelativeLayout>
 
 
                 </LinearLayout>
 
 
 
-
-
             </android.support.v7.widget.CardView>
 
 
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/MyStyleCameraSetting">
 
+                <LinearLayout
+                   style="@style/MyStyleCameraSettingLL">
+
+                    <TextView
+                       style="@style/MyStyleCameraSettingSubTitle"
+                        android:text="@string/camera_setting_share"
+                        />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/camera_setting_margin_vertacil_ctrl"
+                        android:clickable="true"
+                        android:id="@+id/camera_setting_share_ll"
+                        android:background="@drawable/camera_setting_share_bk">
+
+                        <LinearLayout
+                            android:layout_width="220dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/camera_setting_subtitle_size"
+                                android:text="@string/camera_setting_share_device"
+                                />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/camera_setting_dec_size"
+                                android:text="@string/camera_setting_share_device_dec"
+                                />
+
+
+
+                        </LinearLayout>
+
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:id="@+id/camera_setting_share_iv"
+                            />
+                    </RelativeLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
         </LinearLayout>
 
-
     </ScrollView>
-
-
-
 </LinearLayout>

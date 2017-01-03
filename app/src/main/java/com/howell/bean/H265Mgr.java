@@ -61,6 +61,16 @@ public class H265Mgr implements ICam {
     }
 
     @Override
+    public void registStreamLenCallback(IStream cb) {
+
+    }
+
+    @Override
+    public void unregistStreamLenCallback() {
+
+    }
+
+    @Override
     public void setStreamBSub(boolean isSub) {
 
     }
@@ -86,70 +96,66 @@ public class H265Mgr implements ICam {
     }
 
     @Override
-    public void loginCam() {
+    public boolean loginCam() {
         mTurnServiceIP = ServerConfigSp.loadServerIP(mContext);
         mTurnServicePort = ServerConfigSp.loadServerPort(mContext);
-        if (mTurnServiceIP==null||mTurnServicePort==0) return;
+        if (mTurnServiceIP==null||mTurnServicePort==0) return false;
 
-        new AsyncTask<Void, Void, Void>(){
 
-            @Override
-            protected Void doInBackground(Void... params) {
-                Log.i("123", "doinback");
-                JniUtil.netInit();
-                transInit(mTurnServiceIP,mTurnServicePort);
-                mIsTransDeinit = false;
-                JniUtil.transSetCallBackObj(H265Mgr.this, 0);
-                JniUtil.transSetCallbackMethodName("onConnect", 0);
-                JniUtil.transSetCallbackMethodName("onDisConnect", 1);
-                JniUtil.transSetCallbackMethodName("onRecordFileList", 2);
-                JniUtil.transSetCallbackMethodName("onDisconnectUnexpect", 3);
-                InputStream ca = getClass().getResourceAsStream("/assets/ca.crt");
-                InputStream client = getClass().getResourceAsStream("/assets/client.crt");
-                InputStream key = getClass().getResourceAsStream("/assets/client.key");
-                String castr = new String(SDCardUtils.saveCreateCertificate(ca, "ca.crt",mContext));
-                String clstr = new String(SDCardUtils.saveCreateCertificate(client, "client.crt",mContext));
-                String keystr = new String(SDCardUtils.saveCreateCertificate(key, "client.key",mContext));
+        Log.i("123", "doinback");
+        JniUtil.netInit();
+        transInit(mTurnServiceIP,mTurnServicePort);
+        mIsTransDeinit = false;
+        JniUtil.transSetCallBackObj(H265Mgr.this, 0);
+        JniUtil.transSetCallbackMethodName("onConnect", 0);
+        JniUtil.transSetCallbackMethodName("onDisConnect", 1);
+        JniUtil.transSetCallbackMethodName("onRecordFileList", 2);
+        JniUtil.transSetCallbackMethodName("onDisconnectUnexpect", 3);
+        InputStream ca = getClass().getResourceAsStream("/assets/ca.crt");
+        InputStream client = getClass().getResourceAsStream("/assets/client.crt");
+        InputStream key = getClass().getResourceAsStream("/assets/client.key");
+        String castr = new String(SDCardUtils.saveCreateCertificate(ca, "ca.crt",mContext));
+        String clstr = new String(SDCardUtils.saveCreateCertificate(client, "client.crt",mContext));
+        String keystr = new String(SDCardUtils.saveCreateCertificate(key, "client.key",mContext));
 
-                Log.i("123", "castr="+castr);
-                JniUtil.transSetCrtPaht(castr, clstr, keystr);
+        Log.i("123", "castr="+castr);
+        JniUtil.transSetCrtPaht(castr, clstr, keystr);
 
-                try {
-                    ca.close();
-                    client.close();
-                    key.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        try {
+            ca.close();
+            client.close();
+            key.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-                int type = 101;
-                String id = PhoneConfig.getPhoneUid(mContext);//FIXME  android id
-                String imei = PhoneConfig.getPhoneDeveceID(mContext);  //imei
+        int type = 101;
+        String id = PhoneConfig.getPhoneUid(mContext);//FIXME  android id
+        String imei = PhoneConfig.getPhoneDeveceID(mContext);  //imei
 
-                transConnect(type, imei, LoginAction.getInstance().getmInfo().getAccount(), LoginAction.getInstance().getmInfo().getPassword());
+        transConnect(type, imei, LoginAction.getInstance().getmInfo().getAccount(), LoginAction.getInstance().getmInfo().getPassword());
 
-                Log.i("PlayManager", "transConnect ok");
+        Log.i("PlayManager", "transConnect ok");
 
-                AudioAction.getInstance().initAudio();
-                AudioAction.getInstance().playAudio();
+        AudioAction.getInstance().initAudio();
+        AudioAction.getInstance().playAudio();
 
-                return null;
-            }
 
-        }.execute();
         Log.i("123", "login task exe over");
+        return true;
     }
 
     @Override
-    public void logoutCam() {
+    public boolean logoutCam() {
         JniUtil.transDisconnect();
         transDeInit();
         AudioAction.getInstance().stopAudio();
         AudioAction.getInstance().deInitAudio();
+        return true;
     }
 
     @Override
-    public void playViewCam() {
+    public boolean playViewCam() {
         if(JniUtil.readyPlayLive(2,0)){
 
             Log.i("123", "play view cam");
@@ -163,14 +169,17 @@ public class H265Mgr implements ICam {
             startTimerTask();
         }else{
             Log.e("123", "ready play live error");
+            return false;
         }
+        return true;
     }
 
     @Override
-    public void stopViewCam() {
+    public boolean stopViewCam() {
         JniUtil.stopView();
         JniUtil.transUnsubscribe();
         stopTimerTask();
+        return true;
     }
 
     private void transInit(String ip,int port){
@@ -217,7 +226,7 @@ public class H265Mgr implements ICam {
     }
 
     @Override
-    public void reLink(){
+    public boolean reLink(){
         //stop
         Log.d("123", "relink........");
         mHandler.sendEmptyMessage(PlayerActivity.SHOWPROGRESSBAR);
@@ -236,11 +245,18 @@ public class H265Mgr implements ICam {
                 playViewCam();
             };
         }.start();
+        return true;
     }
 
     @Override
-    public void catchPic(String path) {
+    public boolean catchPic(String path) {
         JniUtil.catchPic(path);
+        return true;
+    }
+
+    @Override
+    public boolean soundSetData(byte[] buf, int len) {
+        return true;
     }
 
     private void onConnect(String sessionId){

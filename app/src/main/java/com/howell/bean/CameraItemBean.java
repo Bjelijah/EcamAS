@@ -1,10 +1,12 @@
 package com.howell.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by howell on 2016/11/18.
  */
 
-public class CameraItemBean {
+public class CameraItemBean implements Serializable {
     private PlayType type;
     private String cameraName;
     private String deviceId;

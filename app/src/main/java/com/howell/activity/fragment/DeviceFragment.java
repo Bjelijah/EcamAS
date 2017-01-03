@@ -2,6 +2,7 @@ package com.howell.activity.fragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,12 +17,16 @@ import android.view.ViewGroup;
 
 import com.howell.action.HomeAction;
 import com.howell.action.LoginAction;
+import com.howell.action.PlayAction;
 import com.howell.activity.DeviceSettingActivity;
+import com.howell.activity.PlayViewActivity;
 import com.howell.adapter.DeviceRecyclerViewAdapter;
 import com.howell.bean.CameraItemBean;
 import com.howell.bean.PlayType;
 import com.howell.ecam.R;
 import com.howell.entityclass.NodeDetails;
+import com.howell.protocol.GetNATServerReq;
+import com.howell.protocol.SoapManager;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.IConst;
 import com.zys.brokenview.BrokenCallback;
@@ -42,7 +47,7 @@ import pullrefreshview.layout.PullRefreshLayout;
 public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.OnRefreshListener,BaseFooterView.OnLoadListener, DeviceRecyclerViewAdapter.OnItemClickListener,HomeAction.QueryDeviceCallback,IConst {
     public static final int MSG_RECEIVE_SIP = 0x0000;
     public static final int MSG_DEVICE_LIST_UPDATA = 0x0001;
-
+    public static final int MSG_NET_SERVER_OK = 0x0002;
 
 
     View mView;
@@ -71,6 +76,9 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
 
                     adapter.setData(mList);
 //                    mBrokenView.reset();
+                    break;
+                case MSG_NET_SERVER_OK:
+                    doPlay(msg.arg1);
                     break;
                 default:
                     break;
@@ -197,7 +205,7 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
                     .setUpnpPort(n.getUpnpPort())
                     .setMethodType(n.getMethodType())
                     .setPicturePath(n.getPicturePath());
-
+            Log.e("123","~~~~~~~~~~~~~~~~~~~~~~~~~~~n.getMethod type="+n.getMethodType());
             mList.add(b);
         }
         //TODO 重新排列： 1ecam OnLine 2ap 3ecam Offline
@@ -218,11 +226,11 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
 
     @Override
     public void onItemVideoClickListener(View v, View itemView, int pos) {
-        //long click
-        Log.i("123","on item vied long click");
+        //long click || click
+        Log.i("123","on item vied long click || click");
       //  itemView.setOnTouchListener(mColorfulListener);
-        //TODO play video
-
+        //TODO get net server res
+        getNetServer(pos);
 
 
     }
@@ -236,9 +244,10 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
     @Override
     public void onItemSettingClickListener(View v, int pos) {
         //TODO: camera setting
+        CameraItemBean bean = mList.get(pos);
         Intent intent = new Intent(getContext(), DeviceSettingActivity.class);
+        intent.putExtra("bean",bean);
         startActivity(intent);
-
     }
 
     @Override
@@ -316,5 +325,38 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
         }
     }
 
+    private void getNetServer(final int pos){
+        new AsyncTask<Void,Void,Boolean>(){
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                SoapManager soapManager = SoapManager.getInstance();
+                GetNATServerReq req = new GetNATServerReq(LoginAction.getInstance().getmInfo().getAccount(),
+                        LoginAction.getInstance().getmInfo().getLr().getLoginSession());
+
+                soapManager.getGetNATServerRes(req);
+                return true;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                super.onPostExecute(aBoolean);
+                if (aBoolean){
+                    Message msg = new Message();
+                    msg.what = MSG_NET_SERVER_OK;
+                    msg.arg1 = pos;
+
+                    mHandler.sendMessage(msg);
+                }
+            }
+        }.execute();
+    }
+
+    private void doPlay(int pos){
+        CameraItemBean bean = mList.get(pos);
+        PlayAction.getInstance().setPlayBean(bean);
+        Intent intent = new Intent(getContext(), PlayViewActivity.class);
+        getContext().startActivity(intent);
+    }
 
 }

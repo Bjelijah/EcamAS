@@ -344,4 +344,21 @@
     <string name="camera_setting_param">Parameters</string>
     <string name="camera_setting_resolution_dec">The resolutiong of the video</string>
     <string name="camera_setting_picture_dec">The Image quality which be taken </string>
+    <string name="camera_setting_assist">Assist</string>
+    <string name="camera_setting_lamp">Lamp</string>
+    <string name="camera_setting_detection">Detection</string>
+    <string name="camera_setting_det_rec">Detection and Recording</string>
+    <string name="camera_setting_det_rec_dec">If something moving in the video,it will trigger the alarm,record it(if has SDcard)</string>
+    <string name="camera_setting_det_alarm">Detection and Push Alarm</string>
+    <string name="camera_setting_det_alarm_dec">Push the Alarm To My Phone</string>
+    <string name="camera_setting_camera_version">Version</string>
+    <string name="camera_setting_camera_updata">Updata Camera</string>
+    <string name="camera_setting_share">@string/share</string>
+    <string name="camera_setting_share_device">Share Camera</string>
+    <string name="camera_setting_share_device_dec">Share My Camera And Other User Can Visit It</string>
+    <string name="camera_setting_action_save">Save Settings</string>
+    <string name="camera_setting_save_exit_title">Save Or Exit</string>
+    <string name="camera_setting_save_exit_msg">You have not save! save it?</string>
+    <string name="camera_setting_save_exit_ok">Save</string>
+    <string name="camera_setting_save_exit_no">Exit</string>
 </resources>

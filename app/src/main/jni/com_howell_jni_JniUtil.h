@@ -201,6 +201,14 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayPlayback
 
 /*
  * Class:     com_howell_jni_JniUtil
+ * Method:    releasePlay
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_releasePlay
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
  * Method:    playView
  * Signature: ()V
  */
@@ -353,6 +361,14 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_ecamInit
 
 /*
  * Class:     com_howell_jni_JniUtil
+ * Method:    ecamDeinit
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_ecamDeinit
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
  * Method:    ecamSetCallbackObj
  * Signature: (Ljava/lang/Object;I)V
  */
@@ -430,6 +446,14 @@ JNIEXPORT jlongArray JNICALL Java_com_howell_jni_JniUtil_ecamGetSdpTime
  */
 JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamSendAudioData
   (JNIEnv *, jclass, jbyteArray, jint);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    ecamGetStreamLenSomeTime
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamGetStreamLenSomeTime
+  (JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }

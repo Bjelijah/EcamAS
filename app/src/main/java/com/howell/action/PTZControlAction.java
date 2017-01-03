@@ -15,6 +15,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 
+import com.howell.activity.BasePlayActivity;
 import com.howell.activity.PlayerActivity;
 import com.howell.ecam.R;
 import com.howell.protocol.LensControlReq;
@@ -233,7 +234,7 @@ public class PTZControlAction {
 				if (bshow) {
 					view.layout(left, 0, right, hMax);
 					Message message = new Message();
-					message.what = PlayerActivity.MSG_PTZ_SHAKE;
+					message.what = BasePlayActivity.MSG_PTZ_SHAKE;
 					message.obj = view;
 					handler.sendMessage(message);
 				}else{
