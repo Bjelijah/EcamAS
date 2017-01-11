@@ -30,6 +30,16 @@ public class TimeTransform {
 		 String endDate = dft.format(cal.getTime());
 		 return endDate;
      }
+
+	 public static String reduceDays(Date date,int day){
+		 SimpleDateFormat dft = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		 Calendar cal = Calendar.getInstance();
+		 cal.setTime(date);
+		 cal.set(Calendar.DATE, cal.get(Calendar.DATE) - day);
+		 String endDate = dft.format(cal.getTime());
+		 return endDate;
+	 }
+
      
      public static Date StringToDate(String string){
     	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");

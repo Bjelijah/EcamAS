@@ -337,4 +337,12 @@
 	<string name="camera_setting_save_exit_msg">您尚未保存！是否要保存?</string>
 	<string name="camera_setting_save_exit_ok">保存</string>
 	<string name="camera_setting_save_exit_no">退出</string>
+	<string name="camera_setting_no_new_version">当前摄像机版本是最新的</string>
+	<string name="camera_setting_cur_version">当前版本为</string>
+	<string name="camera_setting_new_version">最新版本为</string>
+	<string name="camera_setting_save_title">保存设置</string>
+	<string name="camera_setting_save_msg">正在保存...</string>
+	<string name="vod_last_page">现在已经是最后一页了</string>
+	<string name="play_play_error_msg_title">播放失败</string>
+	<string name="play_play_error_msg_msg">播放失败，wifi信号弱，请稍后尝试</string>
 </resources>

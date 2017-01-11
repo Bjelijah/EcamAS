@@ -13,18 +13,27 @@ import com.howell.activity.BasePlayActivity;
 import com.howell.entityclass.Crypto;
 import com.howell.entityclass.StreamReqContext;
 import com.howell.entityclass.StreamReqIceOpt;
+import com.howell.entityclass.VODRecord;
 import com.howell.jni.JniUtil;
+import com.howell.protocol.GetDevVerReq;
+import com.howell.protocol.GetDevVerRes;
 import com.howell.protocol.GetNATServerRes;
 import com.howell.protocol.InviteRequest;
 import com.howell.protocol.InviteResponse;
 import com.howell.protocol.NullifyDeviceReq;
 import com.howell.protocol.NullifyDeviceRes;
 import com.howell.protocol.SoapManager;
+import com.howell.protocol.VodSearchRes;
+import com.howell.utils.DeviceVersionUtils;
 import com.howell.utils.IConst;
 
 import org.kobjects.base64.Base64;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -50,6 +59,10 @@ public class ECamMgr implements ICam,IConst {
     ICam.IStream mStreamCB = null;
     private MyTimerTask myTimerTask = null;
     private Timer timer = null;
+    private String lastRefreshStartTime,lastRefreshEndTime;
+    //playback  video list
+
+    VodSearchRes mVodSearchRes = null;
 
     @Override
     public void init(Context context, CameraItemBean bean) {
@@ -179,6 +192,49 @@ public class ECamMgr implements ICam,IConst {
         return JniUtil.ecamSendAudioData(buf,len)==0?false:true;
     }
 
+    @Override
+    public void setVideoListTime(String startTime, String endTime) {
+        lastRefreshStartTime = startTime;
+        lastRefreshEndTime = endTime;
+    }
+
+
+    @Override
+    public int getVideoListPageCount(int nowPage,int pageSize) {
+        String account = LoginAction.getInstance().getmInfo().getAccount();
+        String loginSession = LoginAction.getInstance().getmInfo().getLr().getLoginSession();
+        String devID = mCamBean.getDeviceId();
+        int channelNo = mCamBean.getChannelNo();
+        Log.i("123","getVideoListPageCount");
+
+        if (checkVerIsNew()){
+            mVodSearchRes = mSoapManager.getVodSearchReq(account, loginSession, devID,
+                    channelNo, mStreamType , nowPage,lastRefreshStartTime,lastRefreshEndTime,pageSize);
+            Log.i("123","pageConut = "+mVodSearchRes.getPageCount());
+            return mVodSearchRes.getPageCount();
+        }else{
+
+        }
+        return 0;
+    }
+
+    @Override
+    public ArrayList<VODRecord> getVideoList() {
+        return mVodSearchRes==null?null:mVodSearchRes.getRecord();
+    }
+
+    private boolean checkVerIsNew(){
+        String account = LoginAction.getInstance().getmInfo().getAccount();
+        String session = LoginAction.getInstance().getmInfo().getLr().getLoginSession();
+        String devId = mCamBean.getDeviceId();
+        GetDevVerReq req = new GetDevVerReq(account,session,devId);
+        GetDevVerRes res = SoapManager.getInstance().getGetDevVerRes(req);
+        Log.e("123", "CurDevVer:"+res.getCurDevVer());
+        return DeviceVersionUtils.isNewVersionDevice(res.getCurDevVer());
+
+    }
+
+
     private boolean ecamloginCam(){
         JniUtil.netInit();
         JniUtil.ecamInit(LoginAction.getInstance().getmInfo().getAccount());
@@ -199,7 +255,7 @@ public class ECamMgr implements ICam,IConst {
             return false;
         }
 
-        if(!JniUtil.readyPlayLive(1,auType)){
+        if(!JniUtil.readyPlay(1,auType,mIsPlayBack)){
             Log.e("123","readplay live error");
             return false;
         }//解码器 初始化
@@ -220,8 +276,9 @@ public class ECamMgr implements ICam,IConst {
     }
 
     private boolean ecamPlayViewCam(){
-        if(JniUtil.ecamStart()!=0){//申请流
-            Log.e("123","ecam start error");
+        int ret = 0;
+        if((ret = JniUtil.ecamStart())!=0){//申请流
+            Log.e("123","ecam start error   申请流 ret ="+ret);
             return false;
         }
         JniUtil.playView();
@@ -246,7 +303,7 @@ public class ECamMgr implements ICam,IConst {
         Log.e("123","isPlayBack="+isPlayBack+" beg="+beg+" end="+end+" re="+re_invite+" methodtype="+methodType+" stream="+stream);
         String UpnpIP = mCamBean.getUpnpIP();
         int UpnpPort = mCamBean.getUpnpPort();
-
+        Log.i("123","ip="+UpnpIP+"  port="+UpnpPort);
 
         StreamReqContext streamReqContext = null;
         GetNATServerRes res = mSoapManager.getLocalGetNATServerRes();

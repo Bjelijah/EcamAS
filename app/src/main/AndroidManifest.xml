@@ -186,6 +186,13 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="com.howell.activity.VideoListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/MyappThemeVideoList"
+            />
+
+
+
         <activity android:name="com.howell.activity.DeviceSettingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MyAppThemeDeviceSetting"
@@ -234,6 +241,13 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:theme="@style/MyappThemePlay"
             />
+
+        <activity android:name="com.howell.activity.PlayBackActivity"
+            android:parentActivityName="com.howell.activity.BasePlayActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:theme="@style/MyappThemePlay"
+            />
+
 
         <activity
             android:name="com.howell.activity.VideoList"

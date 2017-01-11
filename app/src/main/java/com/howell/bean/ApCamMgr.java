@@ -5,6 +5,9 @@ import android.os.Handler;
 
 import com.howell.action.LoginAction;
 import com.howell.db.ApDeviceDao;
+import com.howell.entityclass.VODRecord;
+
+import java.util.ArrayList;
 
 /**
  * Created by howell on 2016/12/6.
@@ -109,6 +112,21 @@ public class ApCamMgr implements ICam {
     @Override
     public boolean soundSetData(byte[] buf, int len) {
         return true;
+    }
+
+    @Override
+    public void setVideoListTime(String startTime, String endTime) {
+
+    }
+
+    @Override
+    public int getVideoListPageCount(int nowPage, int pageSize) {
+        return 0;
+    }
+
+    @Override
+    public ArrayList<VODRecord> getVideoList() {
+        return null;
     }
 
 

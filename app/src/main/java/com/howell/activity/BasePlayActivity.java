@@ -32,6 +32,7 @@ import com.howell.bean.CamFactory;
 import com.howell.bean.ICam;
 import com.howell.ecam.R;
 import com.howell.ehlib.MySeekBar;
+import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.FileUtils;
 import com.howell.utils.MessageUtiles;
 import com.howell.utils.PhoneConfig;
@@ -64,7 +65,7 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
     //控件
     protected GLSurfaceView mGlView;
     protected Button mBtTalk;
-    protected ImageButton mCatchPicture,mSound,mPause,mBack;
+    protected ImageButton mVodList,mCatchPicture,mSound,mPause,mBack;
     protected FrameLayout mTitle;
     protected TextView mStreamChange;
     protected MySeekBar mReplaySeekBar;
@@ -110,8 +111,14 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
                     Log.e("123","MSG_PLAY_LOGIN_CAM_OK");
                     camPlay();
                     break;
-                case MSG_PLAY_LOGIN_CAM_ERROR:
+                case MSG_PLAY_PLAY_CAM_ERROR:
+                    Log.e("123","play cam error");
+                    playErrorFun();
 
+                    break;
+                case MSG_PLAY_LOGIN_CAM_ERROR:
+                    Log.e("123","MSG_PLAY_LOGIN_CAM_ERROR");
+                    playErrorFun();
                     break;
                 case MSG_PLAY_PLAY_WAIT:
                     mWaitProgressBar.setVisibility(View.VISIBLE);
@@ -124,6 +131,15 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
             }
         }
     };
+
+
+    private void playErrorFun(){
+        mWaitProgressBar.setVisibility(View.GONE);
+        AlerDialogUtils.postDialogMsg(BasePlayActivity.this,
+                getResources().getString(R.string.play_play_error_msg_title),
+                getResources().getString(R.string.play_play_error_msg_msg),null);
+    }
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -142,6 +158,7 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
         mGlView = (GLSurfaceView)findViewById(R.id.glsurface_view);
         mBtTalk = (Button) findViewById(R.id.play_talk);
         mCatchPicture = (ImageButton)findViewById(R.id.catch_picture);
+        mVodList = (ImageButton) findViewById(R.id.vedio_list);
         mSound = (ImageButton)findViewById(R.id.sound);
         mTitle = (FrameLayout)findViewById(R.id.player_title_bar);
         mStreamChange = (TextView)findViewById(R.id.player_change_stream);

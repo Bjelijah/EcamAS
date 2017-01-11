@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,9 +43,9 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
     public static final int MSG_SETTING_GAIN_ERROR          = 0x00;
     public static final int MSG_SETTING_WAIT_DISSHOW        = 0x01;
     public static final int MSG_SETTING_WAIT_SHOW           = 0x02;
-
-
-
+    public static final int MSG_SETTING_GAIN_MSG            = 0x03;
+    public static final int MSG_SETTING_SAVE_ERROR          = 0x04;
+    public static final int MSG_SETTING_SAVE_OK             = 0x05;
     Toolbar mTb;
     CameraItemBean mBean;
     TextView mDeviceName,mResolutionTv,mPictureTv,mUpdataTv;
@@ -59,30 +61,45 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
     private ProgressDialog mPd;
 
 
+    public static String [] mFrameSizeValues;
+    public static String [] mResolutionTexts;
+    public static String [] mImageQualityTexts;
+    public static int[][] reso_bitrate_map_ = {{96,128,196},{128,256,384},{1024,1536,2048}};
+
+    private int mResoIndex,mQualityIndex;
+    private boolean mBRotation,mBLamp,mBVmd,mBPush;
+
+
+
     private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what){
                 case MSG_SETTING_GAIN_ERROR:
+                    Snackbar.make(mTb,"获取信息失败", Snackbar.LENGTH_SHORT).show();
                     break;
                 case MSG_SETTING_WAIT_DISSHOW:
                     waitUnshow();
                     break;
                 case MSG_SETTING_WAIT_SHOW:
-                    Bundle bundle = (Bundle) msg.obj;
+                    Bundle bundle = msg.getData();
                     String titleStr = bundle.getString("title");
                     String msgStr = bundle.getString("msg");
-                    waitShow(titleStr,msgStr);
+                    waitShow(titleStr,msgStr,0);
+                    break;
+                case MSG_SETTING_GAIN_MSG:
+                    doShowParam(msg.getData());
+                    break;
+                case MSG_SETTING_SAVE_ERROR:
+                    break;
+                case MSG_SETTING_SAVE_OK:
+                    break;
+                default:
                     break;
             }
-
-
-
-
         }
     };
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -97,7 +114,7 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
                 //TODO refresh:
                 Log.i("123","refresh");
                 gainSet();
-                waitShow(getResources().getString(R.string.gain_set),getResources().getString(R.string.please_wait));
+                waitShow(getResources().getString(R.string.gain_set),getResources().getString(R.string.please_wait),0);
                 break;
             case R.id.camera_setting_action_save:
                 Log.i("123","save it");
@@ -216,23 +233,39 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
         mDetAlarmCb.setOnCheckedChangeListener(this);
         mResolutionSb.setOnSeekBarChangeListener(this);
         mPictureSb.setOnSeekBarChangeListener(this);
+        mUpdataBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         mDeviceName.setText(mBean.getCameraName());
+
+        mResolutionTexts = getResources().getStringArray(R.array.ResolutionText);
+        mFrameSizeValues = getResources().getStringArray(R.array.FrameSize);
+        mImageQualityTexts = getResources().getStringArray(R.array.ImageQualityText);
+
+        SettingAction.getInstance().setHandler(mHandler).setBean(mBean);
+
         //send msg
 
         gainSet();
 
 
         //wait dialog
-        waitShow(getResources().getString(R.string.gain_set),getResources().getString(R.string.please_wait));
+        waitShow(getResources().getString(R.string.gain_set),getResources().getString(R.string.please_wait),0);
     }
 
-    private void waitShow(String title,String msg){
+    private void waitShow(String title,String msg,long autoDismissMS){
         mPd = new ProgressDialog(this);
         mPd.setTitle(title);
         mPd.setMessage(msg);
         mPd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         mPd.show();
+        if (autoDismissMS>0){
+            mHandler.sendEmptyMessageDelayed(MSG_SETTING_WAIT_DISSHOW,autoDismissMS);
+        }
     }
 
     private void waitUnshow(){
@@ -245,11 +278,12 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
 
     private void saveSet(boolean bExit){
         mIsSaved = true;
-
-
-
-
-
+        doSaveParam();
+        if (bExit){
+            finish();
+        }else{
+            waitShow(getResources().getString(R.string.camera_setting_save_title),getResources().getString(R.string.camera_setting_save_msg),1000);
+        }
 
     }
 
@@ -274,9 +308,94 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
                 });
     }
 
+    private void doShowParam(Bundle b){
+        if (b==null){
+            Log.i("123","b==null");
+            return;
+        }
+        Log.i("123","do show param b="+b.toString());
+        String frameSize = b.getString("frameSize");
+        int bitrate = b.getInt("bitrate");
+        boolean bVmd = b.getBoolean("bVmd");
+        boolean bPush = b.getBoolean("bPush");
+        boolean bLamp = b.getBoolean("bLamp");
+        boolean bRotation = b.getBoolean("bRotation");
+        boolean bNeedUpdata = b.getBoolean("bNeedUpdata");
+        String curVer = b.getString("curVer");
+        String newVer = b.getString("newVer");
+        Log.i("123","do Show Param");
+        int resoIndex = getResoIndex(frameSize);
+        mResoIndex = resoIndex;
+        Log.i("123","reso Index="+resoIndex);
+        mResolutionSb.setProgress(resoIndex);
+        mResolutionTv.setText(mResolutionTexts[resoIndex]);
+        int qualityIndex = getQualityIndex(resoIndex,bitrate);
+        mQualityIndex = qualityIndex;
+        Log.i("123","quality index="+qualityIndex);
+        mPictureSb.setProgress(qualityIndex);
+        mPictureTv.setText(mImageQualityTexts[qualityIndex]);
+
+        mBRotation = bRotation;
+        mBLamp = bLamp;
+        mTurnCb.setChecked(bRotation);
+        mLampCb.setChecked(bLamp);
+
+        mBVmd = bVmd;
+        mBPush = bPush;
+        mDetRecCb.setChecked(bVmd);
+        mDetAlarmCb.setChecked(bVmd?bPush:false);
+        mDetAlarmCb.setEnabled(bVmd);
+
+        mUpdataBtn.setVisibility(bNeedUpdata?View.VISIBLE:View.GONE);
+        String updataTv = bNeedUpdata?
+                getResources().getString(R.string.camera_setting_cur_version)+":("+curVer+") "+getResources().getString(R.string.camera_setting_new_version)+":("+newVer+")":
+                getResources().getString(R.string.camera_setting_no_new_version)+" ("+curVer+")";
+        mUpdataTv.setText(updataTv);
+    }
+
+    private int getResoIndex(String frameSize){
+        for (int i=0;i<mFrameSizeValues.length;++i){
+            if (mFrameSizeValues[i].equals(frameSize)){
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    private int getQualityIndex(int resoIndex,int bitrate){
+        for (int i=0;i<reso_bitrate_map_[resoIndex].length;++i){
+            if (reso_bitrate_map_[resoIndex][i]>=bitrate){
+                return i;
+            }
+        }
+        return 0;
+    }
+
+
+
+    private void doSaveParam(){
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("bSaveEncode",mResoIndex==mResolutionSb.getProgress()&&mQualityIndex==mPictureSb.getProgress()?false:true);
+        bundle.putInt("resoIndex",mResolutionSb.getProgress());
+        bundle.putInt("qualityIndex",mPictureSb.getProgress());
+        bundle.putBoolean("bSaveTurn",mTurnCb.isChecked()!=mBRotation);
+        bundle.putBoolean("bTurn",mTurnCb.isChecked());
+        bundle.putBoolean("bSaveLamp",mLampCb.isChecked()!=mBLamp);
+        bundle.putBoolean("bLamp",mLampCb.isChecked());
+        bundle.putBoolean("bSaveVmd",mDetRecCb.isChecked()!=mBVmd);
+        bundle.putBoolean("bVmd",mDetRecCb.isChecked());
+        bundle.putBoolean("bSavePush",mDetAlarmCb.isChecked()!=mBPush);
+        bundle.putBoolean("bPush",mDetAlarmCb.isChecked());
+        SettingAction.getInstance().saveSetting(bundle);
+
+    }
+
+
+
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        mIsSaved =false;
         switch (buttonView.getId()){
             case R.id.camera_setting_turn_cb:
                 mIsTurn = isChecked;
@@ -286,6 +405,10 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
                 break;
             case R.id.camera_setting_det_dec_cb:
                 mIsRec = isChecked;
+                mDetAlarmCb.setEnabled(mIsRec);
+                if (!mIsRec){
+                    mDetAlarmCb.setChecked(false);
+                }
                 break;
             case R.id.camera_setting_det_alarm_cb:
                 mIsAlarm = isChecked;
@@ -298,12 +421,15 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        mIsSaved = false;
         switch (seekBar.getId()){
             case R.id.camera_setting_resolution_sb:
                 mResolution = progress;
+                mResolutionTv.setText(mResolutionTexts[mResolution]);
                 break;
             case R.id.camera_setting_picture_sb:
                 mPicture = progress;
+                mPictureTv.setText(mImageQualityTexts[mPicture]);
                 break;
             default:
                 break;
@@ -317,9 +443,16 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
     public void onStopTrackingTouch(SeekBar seekBar) {    }
 
 
-
-
-
-
-
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode){
+            case KeyEvent.KEYCODE_BACK:
+                if (mIsSaved)finish();
+                doSaveDialog();
+                return false;
+            default:
+                break;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }

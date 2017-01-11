@@ -3,6 +3,10 @@ package com.howell.bean;
 import android.content.Context;
 import android.os.Handler;
 
+import com.howell.entityclass.VODRecord;
+
+import java.util.ArrayList;
+
 /**
  * Created by howell on 2016/12/6.
  */
@@ -30,10 +34,16 @@ public interface ICam {
     boolean reLink();
 
 
-
     //功能
     boolean catchPic(String path);
     boolean soundSetData(byte [] buf,int len);
+
+    //回放列表
+
+    void setVideoListTime(String startTime,String endTime);
+    int getVideoListPageCount(int nowPage,int pageSize);//nowPage:当前第几页,pageSize:每页多少条 返回：从当前页到结束页共多少页
+//    boolean getVideoList(String start,String end,int streamType);
+    ArrayList<VODRecord> getVideoList();
 
 
 

@@ -185,19 +185,11 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setCallBackObj
 
 /*
  * Class:     com_howell_jni_JniUtil
- * Method:    readyPlayLive
- * Signature: (II)Z
+ * Method:    readyPlay
+ * Signature: (III)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayLive
-  (JNIEnv *, jclass, jint, jint);
-
-/*
- * Class:     com_howell_jni_JniUtil
- * Method:    readyPlayPlayback
- * Signature: ()Z
- */
-JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayPlayback
-  (JNIEnv *, jclass);
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlay
+  (JNIEnv *, jclass, jint, jint, jint);
 
 /*
  * Class:     com_howell_jni_JniUtil

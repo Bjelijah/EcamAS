@@ -101,8 +101,9 @@
 
     <color name="server_bk">#13a9f4</color>
     <color name="server_bk_dark">#2196f3</color>
-    <!--  -->
 
+    <!--   -->
+    <color name="item_video_list_bk">#3E50B4</color>
 
 
 </resources>

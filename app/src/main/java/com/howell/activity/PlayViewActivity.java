@@ -1,5 +1,6 @@
 package com.howell.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.howell.adapter.MyPagerAdapter;
 import com.howell.ecam.R;
 import com.howell.protocol.SoapManager;
 import com.howell.transformer.CubeInTransformer;
+import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.FileUtils;
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.UserConfigSp;
@@ -200,6 +202,9 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
             case R.id.sound:
                 this.soundFun();
                 break;
+            case R.id.vedio_list:
+                showVodFun();
+                break;
             case R.id.catch_picture:
                 PlayAction.getInstance().catchPic();
                 break;
@@ -220,7 +225,21 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
 
     }
 
-
+    private void showVodFun(){
+        //if
+        if (!PlayAction.getInstance().getPlayBean().isStore()){
+            AlerDialogUtils.postDialogMsg(this,
+                    getResources().getString(R.string.no_estore),
+                    getResources().getString(R.string.no_sdcard),null);
+            return;
+        }
+        //stop
+        finish();
+        //goto activity
+        Intent intent = new Intent(this, VideoListActivity.class);
+        intent.putExtra("bean",PlayAction.getInstance().getPlayBean());
+        startActivity(intent);
+    }
 
 
     private void initPlayView(){
@@ -234,13 +253,13 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
         AudioAction.getInstance().initSound(this);
         mBtTalk.setOnTouchListener(this);
         mSound.setOnClickListener(this);
+        mVodList.setOnClickListener(this);
         mCatchPicture.setOnClickListener(this);
         mHD.setOnClickListener(this);
         mSD.setOnClickListener(this);
         mStreamChange.setOnClickListener(this);
         mBack.setOnClickListener(this);
-
-
+        PlayAction.getInstance().setPlayBack(false);
     }
 
     private void fragmentPtzInit(){

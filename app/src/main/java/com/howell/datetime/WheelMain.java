@@ -211,4 +211,12 @@ public class WheelMain {
 		System.out.println(dateTime);
 		return dateTime;
 	}
+
+	public String getStartTIme(String endTime,int reduceDays){
+		Date date = TimeTransform.StringToDate(endTime);
+		String dateTime = TimeTransform.reduceDays(date,reduceDays);
+		return dateTime;
+	}
+
+
 }

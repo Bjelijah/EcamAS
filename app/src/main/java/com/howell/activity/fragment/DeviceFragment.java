@@ -20,6 +20,7 @@ import com.howell.action.LoginAction;
 import com.howell.action.PlayAction;
 import com.howell.activity.DeviceSettingActivity;
 import com.howell.activity.PlayViewActivity;
+import com.howell.activity.VideoListActivity;
 import com.howell.adapter.DeviceRecyclerViewAdapter;
 import com.howell.bean.CameraItemBean;
 import com.howell.bean.PlayType;
@@ -230,15 +231,30 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
         Log.i("123","on item vied long click || click");
       //  itemView.setOnTouchListener(mColorfulListener);
         //TODO get net server res
+        CameraItemBean bean = mList.get(pos);
+        if (!bean.isOnline()){
+            AlerDialogUtils.postDialogMsg(this.getContext(),
+                    getResources().getString(R.string.not_online),
+                    getResources().getString(R.string.not_online_message),null);
+            return;
+        }
         getNetServer(pos);
-
-
     }
 
 
     @Override
     public void onItemReplayClickListener(View v, int pos) {
         Log.i("123","onItemClickListener   pos="+pos);
+        CameraItemBean bean = mList.get(pos);
+        if (!bean.isStore()){
+            AlerDialogUtils.postDialogMsg(getContext(),
+                    getResources().getString(R.string.no_estore),
+                    getResources().getString(R.string.no_sdcard),null);
+            return;
+        }
+        Intent intent = new Intent(this.getContext(), VideoListActivity.class);
+        intent.putExtra("bean",bean);
+        this.getContext().startActivity(intent);
     }
 
     @Override

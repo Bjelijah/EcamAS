@@ -39,8 +39,7 @@ public class JniUtil {
 	public static native boolean login(String ip);//no using
 	public static native boolean loginOut();//no using
 	public static native void setCallBackObj(Object o);
-	public static native boolean readyPlayLive(int vCodeFlag,int aCodeFlag);//vCodeFlag:0 ap,1 ecam,2 h265  //aCodeFlag 0 aac ,1g711u
-	public static native boolean readyPlayPlayback();
+	public static native boolean readyPlay(int vCodeFlag,int aCodeFlag,int isPlayBack);//vCodeFlag:0 ap,1 ecam,2 h265  //aCodeFlag 0 aac ,1g711u
 	public static native void releasePlay();
 	public static native void playView();
 	public static native void stopView();

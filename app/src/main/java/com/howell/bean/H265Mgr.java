@@ -8,6 +8,7 @@ import android.util.Log;
 import com.howell.action.AudioAction;
 import com.howell.action.LoginAction;
 import com.howell.activity.PlayerActivity;
+import com.howell.entityclass.VODRecord;
 import com.howell.jni.JniUtil;
 import com.howell.utils.JsonUtil;
 import com.howell.utils.PhoneConfig;
@@ -16,6 +17,7 @@ import com.howell.utils.ServerConfigSp;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -156,7 +158,7 @@ public class H265Mgr implements ICam {
 
     @Override
     public boolean playViewCam() {
-        if(JniUtil.readyPlayLive(2,0)){
+        if(JniUtil.readyPlay(2,0,0)){
 
             Log.i("123", "play view cam");
             Subscribe s = new Subscribe(mSessionID, (int)getDialogId(),mBean.getDeviceId(), "live",mIsSub);
@@ -258,6 +260,22 @@ public class H265Mgr implements ICam {
     public boolean soundSetData(byte[] buf, int len) {
         return true;
     }
+
+    @Override
+    public void setVideoListTime(String startTime, String endTime) {
+
+    }
+
+    @Override
+    public int getVideoListPageCount(int nowPage, int pageSize) {
+        return 0;
+    }
+
+    @Override
+    public ArrayList<VODRecord> getVideoList() {
+        return null;
+    }
+
 
     private void onConnect(String sessionId){
         Log.i("123", "session id = "+sessionId);

@@ -482,8 +482,8 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setCallBackObj
     res->obj = env->NewGlobalRef(obj);
 }
 
-JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayLive
-        (JNIEnv *, jclass,jint vFlag,jint aFlag){
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlay
+        (JNIEnv *, jclass,jint vFlag,jint aFlag,jint isPlayBack){
     if(res == NULL) return false;
     LOGI("vFlag=%d    aFlag=%d\n",vFlag,aFlag);
     hwplay_init(1,0,0);
@@ -540,7 +540,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayLive
     LOGE(" code= 0x%x",media_head.vdec_code);
 
 
-    PLAY_HANDLE  ph = hwplay_open_stream((const char*)&media_head,sizeof(media_head),1024*1024,0,area);
+    PLAY_HANDLE  ph = hwplay_open_stream((const char*)&media_head,sizeof(media_head),1024*1024,isPlayBack,area);
     res->play_handle = ph;
     hwplay_open_sound(ph);
     //hwplay_set_max_framenum_in_buf(ph,is_playback?25:5);
@@ -550,11 +550,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayLive
     return res->play_handle>=0?true:false;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayPlayback
-        (JNIEnv *env, jclass cls){
-    return true;
-//    return Java_com_howell_jni_JniUtil_readyPlayLive(env,cls);
-}
+
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_releasePlay
         (JNIEnv *, jclass){
@@ -1267,6 +1263,7 @@ void fill_context(JNIEnv * env,jobject obj, struct ecam_stream_req_context* c) {
     const char * c_turn_pwd = env->GetStringUTFChars(_turn_password,0);
 
     c->playback             = _playback;
+    LOGI("123","c->playback=%d",c->playback);
     c->beg                  = _beg;
     c->end                  = _end;
     c->re_invite            = _re_invite;
@@ -1343,8 +1340,14 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_ecamSetCallbackObj
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_ecamSetContextObj
         (JNIEnv *env, jclass, jobject obj){
-    if (g_ecamMgr==NULL||obj==NULL)return;
-    if (g_ecamMgr->context==NULL)return;
+    if (g_ecamMgr==NULL||obj==NULL){
+        LOGE("g_ecamMgr  g_ecamMgr==null  obj==null");
+        return;
+    }
+    if (g_ecamMgr->context==NULL){
+        LOGE("context == NULL");
+        return;
+    }
     fill_context(env,obj,g_ecamMgr->context);
 }
 
@@ -1386,7 +1389,14 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_ecamHandleRemoteSDP
 
 JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamStart
         (JNIEnv *, jclass){
-    if (g_ecamMgr==NULL)return -1;
+    if (g_ecamMgr==NULL) {
+        LOGE("g_ecamMgr==null");
+        return -1;
+    }
+    LOGI("isback=%d  context isBack=%d  ",g_ecamMgr->isBack,g_ecamMgr->context->playback);
+
+
+
     return ecam_stream_req_start(g_ecamMgr->req,g_ecamMgr->context,5000);
 }
 
