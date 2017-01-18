@@ -1,5 +1,7 @@
 package com.howell.jni;
 
+import com.howell.bean.ApTimeBean;
+import com.howell.bean.ReplayFile;
 import com.howell.entityclass.StreamReqContext;
 
 public class JniUtil {
@@ -39,11 +41,22 @@ public class JniUtil {
 	public static native boolean login(String ip);//no using
 	public static native boolean loginOut();//no using
 	public static native void setCallBackObj(Object o);
+	public static native void setPlayBackTime(ApTimeBean beg,ApTimeBean end);
+	public static native boolean netReadyPlay(int isPlayBack,int slot,int isSub);
 	public static native boolean readyPlay(int vCodeFlag,int aCodeFlag,int isPlayBack);//vCodeFlag:0 ap,1 ecam,2 h265  //aCodeFlag 0 aac ,1g711u
 	public static native void releasePlay();
+	public static native void netStopPlay();
 	public static native void playView();
 	public static native void stopView();
-	
+	public static native int netGetStreamLenSomeTime();
+	//vod file list
+
+	public static native int netGetVideoListCount(ApTimeBean beg,ApTimeBean end);//获取总录像文件数
+	public static native int netGetVideoListPageCount(ApTimeBean beg,ApTimeBean end,int pageSize,int curPageNo);//获取分页 总页数 pageSize:单页文件数  curPageNo当前第几页
+	public static native ReplayFile[] netGetVideoListAll(int count);
+	public static native void netCloseVideoList();
+
+
 	public static native void getHI265Version();
 
 	//transmission

@@ -73,18 +73,8 @@ public class PlayAction {
 
     public PlayAction setPlayBackTime(String startTime,String endTime){
         Log.i("123","setPlayBackTime  startTime="+startTime+"  endTime="+endTime);
-        SimpleDateFormat bar = new SimpleDateFormat(
-                "yyyy-MM-dd'T'HH:mm:ss");
-        bar.setTimeZone(TimeZone.getTimeZone("UTC"));
-        long start = 0;
-        long end = 0;
-        try {
-            start = bar.parse(startTime).getTime()/1000;
-            end = bar.parse(endTime).getTime()/1000;
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        mCamMgr.setPlayBackTime(start,end);
+
+        mCamMgr.setPlayBackTime(startTime,endTime);
         return this;
     }
 

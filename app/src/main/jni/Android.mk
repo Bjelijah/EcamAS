@@ -122,6 +122,13 @@ LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
 include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
+LOCAL_MODULE := hwnet
+LOCAL_SRC_FILES := libhwnet.a
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
+include $(PREBUILT_STATIC_LIBRARY)
+
+
+include $(CLEAR_VARS)
 LOCAL_MODULE := player_jni
 LOCAL_SRC_FILES := yv12gl_jni.c streamreq_jni.c audio_jni.c g711.cpp g7.cpp
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
@@ -137,7 +144,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := play_jni
 LOCAL_SRC_FILES := play_jni.cpp g711.cpp g7.cpp
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
-LOCAL_SHARED_LIBRARIES := hwplay jpush ecamstream hiplay hwtrans
+LOCAL_SHARED_LIBRARIES := hwplay jpush ecamstream hiplay hwtrans hwnet
 #LOCAL_STATIC_LIBRARIES := ecamstream
 LOCAL_LDFLAGS := -LD:/Android/android-ndk-r10e/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi-v7a
 LOCAL_LDLIBS := -llog -lGLESv2 -lz -ldl -lgcc

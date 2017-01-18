@@ -83,7 +83,15 @@ public class VideoListActivity extends AppCompatActivity implements AppBarLayout
         imageWidth = PhoneConfig.getPhoneWidth(this)/2;
         imageHeight = imageWidth * 10 / 16;
         mBean = (CameraItemBean) getIntent().getSerializableExtra("bean");
-        PlayBackVideoListAction.getInstance().init(this).setBean(mBean);
+        PlayBackVideoListAction.getInstance().init(this,mBean);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+
+        PlayBackVideoListAction.getInstance().deInit();
+        super.onDestroy();
     }
 
     private void initView(){
@@ -173,20 +181,6 @@ public class VideoListActivity extends AppCompatActivity implements AppBarLayout
                     }
                 })
                 .show();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
 

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -220,9 +221,14 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
             default:
                 break;
         }
+    }
 
-
-
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode==KeyEvent.KEYCODE_BACK){
+            PlayAction.getInstance().catchPic("/sdcard/eCamera/cache");
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void showVodFun(){

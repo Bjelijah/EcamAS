@@ -277,9 +277,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                 .withOnDrawerItemClickListener(onDrawerItemClickListener)
 //                .withStickyHeaderShadow(false)
 //                .withSliderBackgroundColor(getColor(R.color.about_libraries_card_dark))
-
                 .build();
-
     }
 
 

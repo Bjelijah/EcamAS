@@ -19,7 +19,7 @@ public interface ICam {
     void unregistStreamLenCallback();
     void setStreamBSub(boolean isSub);
     void setPlayBack(boolean isPlayback);
-    void setPlayBackTime(long startTime,long endTime);
+    void setPlayBackTime(String startTime,String endTime);
 
 
 
@@ -40,6 +40,7 @@ public interface ICam {
 
     //回放列表
 
+    boolean hasVideoList();
     void setVideoListTime(String startTime,String endTime);
     int getVideoListPageCount(int nowPage,int pageSize);//nowPage:当前第几页,pageSize:每页多少条 返回：从当前页到结束页共多少页
 //    boolean getVideoList(String start,String end,int streamType);

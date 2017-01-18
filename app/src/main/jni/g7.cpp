@@ -1409,10 +1409,10 @@ unsigned char linear2alaw(signed short l)
 	return(_l2A[l] & mask);
 }
 
-signed short alaw2linear(unsigned char a)
-{
-	return(_A2l[a]);
-}
+//signed short alaw2linear(unsigned char a)
+//{
+//	return(_A2l[a]);
+//}
 
 
 unsigned char linear2ulaw(signed short l)

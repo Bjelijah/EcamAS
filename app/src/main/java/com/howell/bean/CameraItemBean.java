@@ -9,6 +9,7 @@ import java.io.Serializable;
 public class CameraItemBean implements Serializable {
     private PlayType type;
     private String cameraName;
+    private String cameraDescription;
     private String deviceId;
     private int channelNo;
     private boolean isOnline;
@@ -28,6 +29,15 @@ public class CameraItemBean implements Serializable {
 
     public CameraItemBean setMethodType(int methodType) {
         this.methodType = methodType;
+        return this;
+    }
+
+    public String getCameraDescription() {
+        return cameraDescription;
+    }
+
+    public CameraItemBean setCameraDescription(String cameraDescription) {
+        this.cameraDescription = cameraDescription;
         return this;
     }
 

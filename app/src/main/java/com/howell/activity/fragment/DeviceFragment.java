@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.howell.action.ApAction;
 import com.howell.action.HomeAction;
 import com.howell.action.LoginAction;
 import com.howell.action.PlayAction;
@@ -22,6 +23,7 @@ import com.howell.activity.DeviceSettingActivity;
 import com.howell.activity.PlayViewActivity;
 import com.howell.activity.VideoListActivity;
 import com.howell.adapter.DeviceRecyclerViewAdapter;
+import com.howell.bean.APDeviceDBBean;
 import com.howell.bean.CameraItemBean;
 import com.howell.bean.PlayType;
 import com.howell.ecam.R;
@@ -45,7 +47,7 @@ import pullrefreshview.layout.PullRefreshLayout;
  * Created by howell on 2016/11/11.
  */
 
-public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.OnRefreshListener,BaseFooterView.OnLoadListener, DeviceRecyclerViewAdapter.OnItemClickListener,HomeAction.QueryDeviceCallback,IConst {
+public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.OnRefreshListener,BaseFooterView.OnLoadListener, DeviceRecyclerViewAdapter.OnItemClickListener,HomeAction.QueryDeviceCallback,IConst,ApAction.QueryApDevice {
     public static final int MSG_RECEIVE_SIP = 0x0000;
     public static final int MSG_DEVICE_LIST_UPDATA = 0x0001;
     public static final int MSG_NET_SERVER_OK = 0x0002;
@@ -150,10 +152,15 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
             getData(5);
             return;
         }
+        if (mList==null)return;
+        mList.clear();
+
 
         LoginAction.UserInfo info = LoginAction.getInstance().getmInfo();
         //get ap list
         HomeAction.getInstance().addApCam2List(getContext(),info.getAccount(),mList);
+//        HomeAction.getInstance().addApCam2List(getContext(),info.getAccount(),this);
+
         HomeAction.getInstance().setContext(getContext()).registQueryDeviceCallback(this).queryDevice(info.getAccount(),info.getLr().getLoginSession());
     }
 
@@ -197,6 +204,7 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
             CameraItemBean b = new CameraItemBean()
                     .setType(HomeAction.getInstance().isUseTurn()?PlayType.TURN:PlayType.ECAM)//FIXME ME  should be ecam when test ,is 5198
                     .setCameraName(n.getName())
+                    .setCameraDescription(null)
                     .setIndensity(n.getIntensity())
                     .setDeviceId(n.getDevID())
                     .setOnline(n.isOnLine())
@@ -206,7 +214,7 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
                     .setUpnpPort(n.getUpnpPort())
                     .setMethodType(n.getMethodType())
                     .setPicturePath(n.getPicturePath());
-            Log.e("123","~~~~~~~~~~~~~~~~~~~~~~~~~~~n.getMethod type="+n.getMethodType());
+            Log.e("123","~~~~~~~~~~~~~~~~~~~~~~~~~~~n.getMethod type="+n.getMethodType()+"  name="+n.getName()+"  upnpIP="+n.getUpnpIP());
             mList.add(b);
         }
         //TODO 重新排列： 1ecam OnLine 2ap 3ecam Offline
@@ -246,12 +254,12 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
     public void onItemReplayClickListener(View v, int pos) {
         Log.i("123","onItemClickListener   pos="+pos);
         CameraItemBean bean = mList.get(pos);
-        if (!bean.isStore()){
-            AlerDialogUtils.postDialogMsg(getContext(),
-                    getResources().getString(R.string.no_estore),
-                    getResources().getString(R.string.no_sdcard),null);
-            return;
-        }
+//        if (!bean.isStore()){
+//            AlerDialogUtils.postDialogMsg(getContext(),
+//                    getResources().getString(R.string.no_estore),
+//                    getResources().getString(R.string.no_sdcard),null);
+//            return;
+//        }
         Intent intent = new Intent(this.getContext(), VideoListActivity.class);
         intent.putExtra("bean",bean);
         this.getContext().startActivity(intent);
@@ -288,6 +296,29 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
                 }
             }
         }, null);
+    }
+
+    @Override
+    public void onQueryApDevice(List<APDeviceDBBean> list) {
+        if (mList==null)return;
+
+        for (APDeviceDBBean apBean:list){
+            CameraItemBean camBean = new CameraItemBean()
+                    .setType(PlayType.HW5198)
+                    .setCameraName(apBean.getDeviceName()+"\n"+apBean.getDeviceIP())
+                    .setCameraDescription("AP:"+apBean.getDeviceIP())
+                    .setOnline(apBean.isOnLine())
+                    .setIndensity(0)
+                    .setStore(true)
+                    .setPtz(true)
+                    .setUpnpIP(apBean.getDeviceIP())
+                    .setUpnpPort(apBean.getDevicePort())
+                    .setDeviceId(apBean.getDeviceIP())
+                    .setPicturePath("/sdcard/eCamera/cache/"+apBean.getDeviceIP()+".jpg");
+            mList.add(camBean);
+        }
+        HomeAction.getInstance().sort((ArrayList<CameraItemBean>) mList);//online 倒序添加
+        mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);//updata ecam list and ap list
     }
 
     class MyBrokenCallback extends BrokenCallback {

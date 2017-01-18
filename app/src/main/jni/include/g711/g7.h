@@ -13,7 +13,7 @@ extern signed short _u2l[256];
 
 
 unsigned char linear2alaw(signed short l);
-signed short alaw2linear(unsigned char a);
+//signed short alaw2linear(unsigned char a);
 unsigned char linear2ulaw(signed short l);
 
 

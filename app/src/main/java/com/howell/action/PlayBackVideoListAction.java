@@ -51,14 +51,7 @@ public class PlayBackVideoListAction {
         return mVodList;
     }
 
-    public PlayBackVideoListAction setBean(CameraItemBean bean){
-        mBean = bean;
-        if (mCam==null){
-            mCam = CamFactory.buildCam(bean.getType());
-            mCam.init(mContext,mBean);
-        }
-        return this;
-    }
+
     public PlayBackVideoListAction setHandler(Handler h){
         mHandler = h;
         if (mCam!=null){
@@ -71,10 +64,21 @@ public class PlayBackVideoListAction {
         return this;
     }
 
-    public PlayBackVideoListAction init(Context context){
+    public PlayBackVideoListAction init(Context context,CameraItemBean bean){
         mContext = context;
-       return reset();
+        mBean = bean;
+        mCam = CamFactory.buildCam(bean.getType());
+        mCam.init(mContext,bean);
+        return reset();
     }
+
+    public void deInit(){
+        mBean = null;
+        mCam.deInit();
+        Log.e("123","deInit");
+        mHandler = null;
+    }
+
     public PlayBackVideoListAction reset(){
         mCurPage = 1;//从1开始计算
         mTotalPage = 1;
@@ -95,7 +99,10 @@ public class PlayBackVideoListAction {
         mStartTime = sdf.format(begDate);
         mEndTime = sdf.format(endDate);
     }
-
+    public boolean hasVod(){
+        if (mCam==null)return false;
+        return mCam.hasVideoList();
+    }
 
     public void searchVODList(){
         if (mStartTime==null||mEndTime==null){
@@ -105,6 +112,7 @@ public class PlayBackVideoListAction {
         new AsyncTask<Void,Void,Boolean>(){
 
             private void listFun(ArrayList<VODRecord> list){
+                if (list==null)return;
                 for (VODRecord v:list){
                     if (!mLastVODTime.equals(v.getTimeZoneStartTime().substring(0,10))){
                         mLastVODTime = v.getTimeZoneStartTime().substring(0,10);
@@ -139,7 +147,7 @@ public class PlayBackVideoListAction {
                 if (aBoolean){
                     mHandler.sendEmptyMessage(VodFragment.MSG_VIDEO_LIST_DATA_UPDATE);
                 }else {
-                    mHandler.sendEmptyMessage((mCurPage==mTotalPage+1)?VodFragment.MSG_VIDEO_LIST_DATA_LAST:VodFragment.MSG_VIDEO_LIST_DATA_UPDATE_ERROR);
+                    mHandler.sendEmptyMessage((mCurPage>=mTotalPage+1)?VodFragment.MSG_VIDEO_LIST_DATA_LAST:VodFragment.MSG_VIDEO_LIST_DATA_UPDATE_ERROR);
                 }
             }
         }.execute();
@@ -148,7 +156,8 @@ public class PlayBackVideoListAction {
 
 
     public void refreashVODList(){
-        init(mContext);
+//        init(mContext,mBean);
+        reset();
         initNowTime();
         searchVODList();
     }
@@ -157,8 +166,4 @@ public class PlayBackVideoListAction {
         ++mCurPage;
         searchVODList();
     }
-
-
-
-
 }

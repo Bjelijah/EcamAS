@@ -29,6 +29,7 @@ import com.howell.utils.IConst;
 
 import org.kobjects.base64.Base64;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -109,9 +110,20 @@ public class ECamMgr implements ICam,IConst {
     }
 
     @Override
-    public void setPlayBackTime(long startTime, long endTime) {
-        this.mPlayBackStartTime = startTime;
-        this.mPlayBackEndTime = endTime;
+    public void setPlayBackTime(String startTime, String endTime) {
+        SimpleDateFormat bar = new SimpleDateFormat(
+                "yyyy-MM-dd'T'HH:mm:ss");
+        bar.setTimeZone(TimeZone.getTimeZone("UTC"));
+        long start = 0;
+        long end = 0;
+        try {
+            start = bar.parse(startTime).getTime()/1000;
+            end = bar.parse(endTime).getTime()/1000;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        this.mPlayBackStartTime = start;
+        this.mPlayBackEndTime = end;
     }
 
     @Override
@@ -192,6 +204,13 @@ public class ECamMgr implements ICam,IConst {
         return JniUtil.ecamSendAudioData(buf,len)==0?false:true;
     }
 
+
+
+    @Override
+    public boolean hasVideoList() {
+        return mCamBean.isStore();
+    }
+
     @Override
     public void setVideoListTime(String startTime, String endTime) {
         lastRefreshStartTime = startTime;
@@ -235,7 +254,7 @@ public class ECamMgr implements ICam,IConst {
     }
 
 
-    private boolean ecamloginCam(){
+    private boolean ecamloginCam(){ //login and ready encode
         JniUtil.netInit();
         JniUtil.ecamInit(LoginAction.getInstance().getmInfo().getAccount());
         JniUtil.ecamSetCallbackObj(ECamMgr.this,0);
@@ -275,7 +294,7 @@ public class ECamMgr implements ICam,IConst {
         return true;
     }
 
-    private boolean ecamPlayViewCam(){
+    private boolean ecamPlayViewCam(){//stream and play
         int ret = 0;
         if((ret = JniUtil.ecamStart())!=0){//申请流
             Log.e("123","ecam start error   申请流 ret ="+ret);

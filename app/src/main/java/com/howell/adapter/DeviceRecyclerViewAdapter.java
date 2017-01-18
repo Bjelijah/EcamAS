@@ -121,6 +121,7 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
         options.inSampleSize = 2;
         Bitmap bm = null;
         try {
+
             bm = ScaleImageUtils.decodeFile(imageWidth, imageHeight, new File(item.getPicturePath()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -135,7 +136,14 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
         holder.tvName.setText(item.getCameraName());
 
         if (item.isOnline()){
-            holder.ivInOffLine.setImageResource(country==0?R.mipmap.card_online_image_blue:R.mipmap.card_online_image_blue_english);
+            if(item.getType()==PlayType.HW5198){
+                holder.ivInOffLine.setImageResource(R.mipmap.card_ap_image_green_english);
+            }else {
+                holder.ivInOffLine.setImageResource(country == 0 ? R.mipmap.card_online_image_blue : R.mipmap.card_online_image_blue_english);
+            }
+
+
+
             if (item.getIndensity()>75){
                 holder.ivWifi.setImageResource(R.mipmap.wifi_4);
             }else if(item.getIndensity()>50){
@@ -148,7 +156,7 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
                 holder.ivWifi.setImageResource(item.getType()==PlayType.HW5198?R.mipmap.wifi_0:R.mipmap.wifi_1);
             }
         }else{
-            holder.ivInOffLine.setImageResource(country==0?R.mipmap.card_offline_image_gray:R.mipmap.card_offline_image_gray_english);
+            holder.ivInOffLine.setImageResource(country == 0 ? R.mipmap.card_offline_image_gray : R.mipmap.card_offline_image_gray_english);
             holder.ivWifi.setImageResource(R.mipmap.wifi_0);
         }
         //back

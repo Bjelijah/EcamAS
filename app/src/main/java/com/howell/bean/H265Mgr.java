@@ -83,7 +83,7 @@ public class H265Mgr implements ICam {
     }
 
     @Override
-    public void setPlayBackTime(long startTime, long endTime) {
+    public void setPlayBackTime(String startTime, String endTime) {
 
     }
 
@@ -259,6 +259,13 @@ public class H265Mgr implements ICam {
     @Override
     public boolean soundSetData(byte[] buf, int len) {
         return true;
+    }
+
+
+
+    @Override
+    public boolean hasVideoList() {
+        return false;
     }
 
     @Override

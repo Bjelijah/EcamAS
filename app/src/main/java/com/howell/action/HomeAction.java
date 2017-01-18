@@ -13,6 +13,7 @@ import com.howell.bean.UserLoginDBBean;
 import com.howell.db.ApDeviceDao;
 import com.howell.db.UserLoginDao;
 import com.howell.entityclass.NodeDetails;
+import com.howell.entityclass.StreamReqContext;
 import com.howell.protocol.QueryDeviceReq;
 import com.howell.protocol.SoapManager;
 import com.howell.utils.ServerConfigSp;
@@ -112,6 +113,18 @@ public class HomeAction {
         return beanList;
     }
 
+    private boolean isAPOnLine(String ip){
+        return ApAction.getInstance().isAPOnLine(ip);
+    }
+
+
+    public boolean addApCam2List(Context context, String userName,ApAction.QueryApDevice cb){
+        ApAction.getInstance().registQueryApDeviceCallback(cb).getApCameraList(context,userName);
+        return true;
+    }
+
+
+
     public boolean addApCam2List(Context context,String userName,List<CameraItemBean> list){
         list.clear();
         if (list==null)return false;
@@ -120,14 +133,16 @@ public class HomeAction {
         for (APDeviceDBBean apBean:apList){
             CameraItemBean camBean = new CameraItemBean()
                     .setType(PlayType.HW5198)
-                    .setCameraName(apBean.getDeviceName())
+                    .setCameraName(apBean.getDeviceName()+"\n"+apBean.getDeviceIP())
+                    .setCameraDescription("AP:"+apBean.getDeviceIP())
                     .setOnline(true)
                     .setIndensity(0)
                     .setStore(true)
                     .setPtz(true)
                     .setUpnpIP(apBean.getDeviceIP())
                     .setUpnpPort(apBean.getDevicePort())
-                    .setPicturePath(null);
+                    .setDeviceId(apBean.getDeviceIP())
+                    .setPicturePath("/sdcard/eCamera/cache/"+apBean.getDeviceIP()+".jpg");
             list.add(camBean);
         }
         return true;

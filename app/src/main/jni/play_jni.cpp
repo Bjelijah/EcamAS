@@ -11,6 +11,9 @@
 #include <g711/g711.h>
 #include <ecamstreamreq.h>
 #include <unistd.h>
+#include <hw_config.h>
+#include <stream_type.h>
+#include <protocol_type.h>
 #include "include/stream_type.h"
 #include "include/net_sdk.h"
 #include "include/play_def.h"
@@ -371,7 +374,11 @@ struct StreamResource
     IH265DEC_HANDLE play_265_handle;
     LIVE_STREAM_HANDLE live_stream_handle;
     FILE_STREAM_HANDLE file_stream_handle;
+    FILE_LIST_HANDLE file_list_handle;
+    int total_file_list_count;
+    SYSTEMTIME beg,end; //回放文件的开始结束 不是列表的
     int media_head_len;
+    int stream_len;
     int is_exit;	//退出标记位
 };
 static struct StreamResource * res = NULL;
@@ -380,17 +387,7 @@ static struct StreamResource * res = NULL;
 
 
 
-static int register_nvr(const char* ip){
-    //	int ret = hwnet_init(5888);
-    //	/* 192.168.18.23 */
-    //	LOGI("ret=%d    ip=%s   ",ret,ip);
-    //	res->user_handle = hwnet_login(ip,5198,"admin","12345");
-    //	if(res->user_handle == -1){
-    //		LOGE("hwnet_login fail");
-    //		return 0;
-    //	}
-    return 0;
-}
+
 
 
 
@@ -398,7 +395,7 @@ static int register_nvr(const char* ip){
 
 void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* buf,int len,long userdata){
     //__android_log_print(ANDROID_LOG_INFO, "jni", "-------------stream_type %d-len %d",stream_type,len);
-    //res->stream_len += len;
+    res->stream_len += len;
     if(res == NULL){
         return;
     }
@@ -410,13 +407,23 @@ void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* bu
 
     int ret = hwplay_input_data(res->play_handle, buf ,len);
 
-    //	LOGI("on live stream fun len=%d",len);
+//    LOGI("on live stream fun input data ret=%d",ret);
 
     //hi265InputData(buf,len);
 
-
-
 }
+
+void on_file_stream_fun(FILE_STREAM_HANDLE handle,const char *buf,int len,long userdata){
+    res->stream_len += len;
+    if(res == NULL){
+        return;
+    }
+    if(res->is_exit == 1){
+        return;
+    }
+    int ret = hwplay_input_data(res->play_handle, buf ,len);
+}
+
 
 static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, int len, unsigned long timestamp, long sys_tm, int w, int h, int framerate, int au_sample, int au_channel, int au_bits, long user){
 
@@ -433,6 +440,18 @@ static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, in
     }
 }
 
+static int register_nvr(const char* ip){
+
+    //	/* 192.168.18.23 */
+    //	LOGI("ret=%d    ip=%s   ",ret,ip);
+    res->user_handle = hwnet_login(ip,5198,"admin","12345");
+    //	if(res->user_handle == -1){
+    //		LOGE("hwnet_login fail");
+    //		return 0;
+    //	}
+    return res->user_handle>=0?1:0;
+}
+
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netInit
         (JNIEnv *env, jclass cls){
@@ -442,6 +461,12 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netInit
         env->GetJavaVM(&res->jvm);
         res->obj = NULL;
         res->is_exit = 0;
+        res->live_stream_handle = -1;
+        res->file_stream_handle = -1;
+        res->alarm_stream_handle = -1;
+        res->file_list_handle = -1;
+        res->play_handle = -1;
+        res->total_file_list_count = 0;
     }
 }
 
@@ -461,18 +486,27 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netDeinit
 
 JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_login
         (JNIEnv *env, jclass, jstring ip){
+    LOGI("~~~~~~~~~~~login");
+
+    if(res==NULL)return false;
     const char* _ip = env-> GetStringUTFChars(ip,NULL);
+    LOGE("123 jni   ip=%s\n",_ip);
+    hwnet_init(5888);
+
     int ret = register_nvr(_ip);
     env->ReleaseStringUTFChars(ip,_ip);
     return ret==1?true:false;
+//    return false;
 }
 
 JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_loginOut
         (JNIEnv *, jclass){
-    //	if(res==NULL)return false;
-    //	if(res->user_handle<0)return false;
-    //	int ret = hwnet_logout(res->user_handle);
-    //	return ret==1?true:false;
+    	if(res==NULL)return false;
+    	if(res->user_handle<0)return false;
+    	int ret = hwnet_logout(res->user_handle);
+        res->user_handle = -1;
+        hwnet_release();
+    	return ret==1?true:false;
     return false;
 }
 
@@ -481,6 +515,67 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setCallBackObj
     if(res == NULL) return;
     res->obj = env->NewGlobalRef(obj);
 }
+
+
+void fill_net_time
+        (JNIEnv *env,jobject obj,SYSTEMTIME *time){
+    if(time==NULL)return;
+    jclass clazz = env->GetObjectClass(obj);
+    jfieldID id = env->GetFieldID(clazz,"year","S");
+    time->wYear = env->GetShortField(obj,id);
+    id =  env->GetFieldID(clazz,"month","S");
+    time->wMonth = env->GetShortField(obj,id);
+    id = env->GetFieldID(clazz,"dayOfWeek","S");
+    time->wDayofWeek = env->GetShortField(obj,id);
+    id = env->GetFieldID(clazz,"day","S");
+    time->wDay = env->GetShortField(obj,id);
+    id = env->GetFieldID(clazz,"hour","S");
+    time->wHour = env->GetShortField(obj,id);
+    id = env->GetFieldID(clazz,"minute","S");
+    time->wMinute = env->GetShortField(obj,id);
+    id = env->GetFieldID(clazz,"second","S");
+    time->wSecond = env->GetShortField(obj,id);
+    id = env->GetFieldID(clazz,"msecond","S");
+    time->wMilliseconds = env->GetShortField(obj,id);
+    env->DeleteLocalRef(clazz);
+    LOGI("fill net time:[year:%d m:%d d:%d h:%d min:%d  s:%d\n",time->wYear,time->wMonth,time->wDay,time->wHour,time->wMinute,time->wSecond);
+}
+
+
+
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setPlayBackTime
+        (JNIEnv *env, jclass, jobject beg, jobject end){
+    if (res == NULL) return;
+    fill_net_time(env,beg,&res->beg);
+    fill_net_time(env,end,&res->end);
+}
+
+
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
+        (JNIEnv *, jclass, jint isPlayBack,jint slot,jint is_sub){
+    if(res == NULL)return false;
+    hwplay_init(1,0,0);
+    RECT area;
+    HW_MEDIAINFO media_head;
+    memset(&media_head,0,sizeof(media_head));
+    if (!isPlayBack){
+        res->live_stream_handle = hwnet_get_live_stream(res->user_handle,slot,is_sub,0,on_live_stream_fun,0);
+        hwnet_get_live_stream_head(res->live_stream_handle,(char*)&media_head,1024,&res->media_head_len);
+    }else{
+        file_stream_t file_info;
+        res->file_stream_handle = hwnet_get_file_stream(res->user_handle,slot,res->beg,res->end,on_file_stream_fun,0,&file_info);
+        hwnet_get_file_stream_head(res->file_stream_handle,(char*)&media_head,1024,&res->media_head_len);
+    }
+    LOGI("net ready play get live stream head vdec_code=");
+    LOGE(" code= 0x%x",media_head.vdec_code);
+    media_head.vdec_code = VDEC_HISH264;
+    PLAY_HANDLE  ph = hwplay_open_stream((char*)&media_head,sizeof(media_head),1024*1024,isPlayBack,area);
+    hwplay_open_sound(ph);
+    hwplay_register_source_data_callback(ph,on_source_callback,0);
+    res->play_handle = ph;
+    return res->play_handle>=0?true:false;
+}
+
 
 JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlay
         (JNIEnv *, jclass,jint vFlag,jint aFlag,jint isPlayBack){
@@ -506,7 +601,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlay
 
     switch (vFlag){
         case 0:
-            media_head.vdec_code = 0x0f;//unknow
+            media_head.vdec_code = VDEC_HISH264;//unknow   his h264   h264 : new ffmpeg_dec(CODEC_ID_H264)
             break;
         case 1:
             media_head.vdec_code = VDEC_H264;//ecam
@@ -556,11 +651,24 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_releasePlay
         (JNIEnv *, jclass){
     if (res==NULL)
         return;
+
     int ret = hwplay_release();
     LOGI("hwplay_release  ret = %d\n",ret);
     res->play_handle = -1;
 }
-
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netStopPlay
+        (JNIEnv *, jclass){
+    if(res == NULL)return;
+    if (res->live_stream_handle!=-1){
+        hwnet_close_live_stream(res->live_stream_handle);
+        res->live_stream_handle = -1;
+    }
+    if (res->file_stream_handle!=-1){
+        hwnet_close_file_stream(res->file_stream_handle);
+        res->file_stream_handle = -1;
+    }
+    res->stream_len = 0;
+}
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_playView
         (JNIEnv *, jclass){
@@ -580,10 +688,109 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_stopView
     LOGI("123","hwplay_close_sound ret = %d\n",ret);
     //hwnet_close_live_stream(res->live_stream_handle);
     res->is_exit = 1;
+}JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetStreamLenSomeTime
+        (JNIEnv *, jclass){
+    if (res == NULL)return -1;
+    int len = res->stream_len;
+    res->stream_len=0;
+    return len;
+}
+
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetVideoListCount
+        (JNIEnv *env, jclass, jobject beg, jobject end){
+    if (res==NULL)return -1;
+    if(res->play_handle==-1)return -1;
+    SYSTEMTIME beg_time,end_time;
+    fill_net_time(env,beg,&beg_time);
+    fill_net_time(env,end,&end_time);
+    res->file_list_handle = hwnet_get_file_list(res->play_handle,0,beg_time,end_time,0);
+    hwnet_get_file_count(res->file_list_handle,&res->total_file_list_count);
+    return res->total_file_list_count;
+}
+
+JNIEXPORT jobjectArray JNICALL Java_com_howell_jni_JniUtil_netGetVideoListAll
+        (JNIEnv *env, jclass, jint count){
+    if(res == NULL) return NULL;
+    if (res->file_list_handle==-1)return NULL;
+    SYSTEMTIME beg,end;
+    jclass clz              = env->FindClass("com/howell/bean/ReplayFile");
+    jfieldID _begYearId     = env->GetFieldID(clz,"begYear","S");
+    jfieldID _begMounthId   = env->GetFieldID(clz,"begMonth","S");
+    jfieldID _begDayId      = env->GetFieldID(clz,"begDay","S");
+    jfieldID _begHourId     = env->GetFieldID(clz,"begHour","S");
+    jfieldID _begMinId      = env->GetFieldID(clz,"begMin","S");
+    jfieldID _begSecId      = env->GetFieldID(clz,"begSec","S");
+
+    jfieldID _endYearId     = env->GetFieldID(clz,"endYear","S");
+    jfieldID _endMounthId   = env->GetFieldID(clz,"endMount","S");
+    jfieldID _endDayId      = env->GetFieldID(clz,"endDay","S");
+    jfieldID _endHourId     = env->GetFieldID(clz,"endHour","S");
+    jfieldID _endMinId      = env->GetFieldID(clz,"endMin","S");
+    jfieldID _endSecId      = env->GetFieldID(clz,"endSec","S");
+    jmethodID consId        = env->GetMethodID(clz,"<init>","()V");
+
+    jobjectArray arry = env->NewObjectArray(count,clz,NULL);
+    jobject obj;
+    int type = 0;
+    for(int i=0;i<count;i++){
+        memset(&beg,0,sizeof(beg));
+        memset(&end,0,sizeof(end));
+        if (hwnet_get_file_detail(res->file_list_handle,i,&beg,&end,&type)==1){
+            obj = env->NewObject(clz,consId);
+            env->SetShortField(obj,_begYearId,beg.wYear);
+            env->SetShortField(obj,_begMounthId,beg.wMonth);
+            env->SetShortField(obj,_begDayId,beg.wDay);
+            env->SetShortField(obj,_begHourId,beg.wHour);
+            env->SetShortField(obj,_begMinId,beg.wMinute);
+            env->SetShortField(obj,_begSecId,beg.wSecond);
+            env->SetShortField(obj,_endYearId,end.wYear);
+            env->SetShortField(obj,_endMounthId,end.wMonth);
+            env->SetShortField(obj,_endDayId,end.wDay);
+            env->SetShortField(obj,_endHourId,end.wHour);
+            env->SetShortField(obj,_endMinId,end.wMinute);
+            env->SetShortField(obj,_endSecId,end.wSecond);
+
+            env->SetObjectArrayElement(arry,i,obj);
+        }else {
+            break;
+        }
+    }
+    return arry;
+}
+
+void netCloseFileListNecessary(){
+    if (res==NULL)return;
+    if (res->file_list_handle==-1)return;
+    hwnet_close_file_list(res->file_list_handle);
+    res->file_list_handle = -1;
 }
 
 
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netCloseVideoList
+        (JNIEnv *, jclass){
+    netCloseFileListNecessary();
+}
 
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetVideoListPageCount
+        (JNIEnv *env, jclass, jobject begObj, jobject endObj, jint pageSize,jint curPageNo){
+    if(res==NULL)return -1;
+    if (res->play_handle==-1)return -1;
+    SYSTEMTIME beg,end;
+    memset(&beg,0,sizeof(beg));
+    memset(&end,0,sizeof(end));
+    fill_net_time(env,begObj,&beg);
+    fill_net_time(env,endObj,&end);
+    Pagination page;
+    memset(&page,0,sizeof(page));
+    page.page_size = pageSize;
+    page.page_no = curPageNo;
+
+    netCloseFileListNecessary();
+
+    res->file_list_handle = hwnet_get_file_list_by_page(res->play_handle,0,1,beg,end,0,1,0,&page);
+    res->total_file_list_count = page.page_count;
+    return res->file_list_handle>-1?page.page_count:-1;
+}
 
 ///////////////////////////////
 /////////////////////////////////////
@@ -693,6 +900,10 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_nativeAudioSetdata
 
     return ret==0?false:true;
 }
+
+
+
+
 
 ////////////////////////////////////////////
 ////////////////////////////////////////////

@@ -22,6 +22,7 @@ import com.howell.adapter.VideoListRecyclerAdapter;
 import com.howell.bean.CameraItemBean;
 import com.howell.ecam.R;
 import com.howell.entityclass.VODRecord;
+import com.howell.utils.AlerDialogUtils;
 
 import java.util.ArrayList;
 
@@ -36,10 +37,10 @@ import pullrefreshview.support.view.LockHeaderView;
 
 public class VodFragment extends Fragment implements VideoListRecyclerAdapter.OnItemClick,LockHeaderView.OnRefreshListener,LockFooterView.OnLoadListener{
 
-    public static final int MSG_VIDEO_LIST_DATA_UPDATE          = 0xff00;
-    public static final int MSG_VIDEO_LIST_DATA_UPDATE_ERROR    = 0xff01;
-    public static final int MSG_VIDEO_LIST_DATA_REFREASH        = 0xff02;
-    public static final int MSG_VIDEO_LIST_DATA_LAST            = 0xff03;
+    public static final int MSG_VIDEO_LIST_DATA_UPDATE          = 0xfe00;
+    public static final int MSG_VIDEO_LIST_DATA_UPDATE_ERROR    = 0xfe01;
+    public static final int MSG_VIDEO_LIST_DATA_REFREASH        = 0xfe02;
+    public static final int MSG_VIDEO_LIST_DATA_LAST            = 0xfe03;
 
 
     RecyclerView mRv;
@@ -115,10 +116,17 @@ public class VodFragment extends Fragment implements VideoListRecyclerAdapter.On
         mRv.setAdapter(mAdapter);
         mRv.addItemDecoration(new RecycleViewDivider(getContext(),LinearLayoutManager.HORIZONTAL,2,getResources().getColor(R.color.black)));
         PlayBackVideoListAction.getInstance().setHandler(mHandler);
-        getData();
+        if (PlayBackVideoListAction.getInstance().hasVod()) {
+            getData();
+        }else{
+            AlerDialogUtils.postDialogMsg(getContext(),
+                    getResources().getString(R.string.no_estore),
+                    getResources().getString(R.string.no_sdcard),null);
+        }
     }
 
     private void getData(){
+
         PlayBackVideoListAction.getInstance().searchVODList();
     }
 
@@ -126,7 +134,13 @@ public class VodFragment extends Fragment implements VideoListRecyclerAdapter.On
         mList.clear();
         PlayBackVideoListAction.getInstance().reset();
         PlayBackVideoListAction.getInstance().setSearchTime(startTime,endTime);
-        getData();
+        if (PlayBackVideoListAction.getInstance().hasVod()) {
+            getData();
+        }else{
+            AlerDialogUtils.postDialogMsg(getContext(),
+                    getResources().getString(R.string.no_estore),
+                    getResources().getString(R.string.no_sdcard),null);
+        }
     }
 
     public void setBean(CameraItemBean b){

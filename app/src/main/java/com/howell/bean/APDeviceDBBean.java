@@ -9,12 +9,25 @@ public class APDeviceDBBean {
     String deviceName;
     String deviceIP;
     int devicePort;
+    boolean isOnLine;
+
 
     public APDeviceDBBean(String userName, String deviceName, String deviceIP, int devicePort) {
         this.userName = userName;
         this.deviceName = deviceName;
         this.deviceIP = deviceIP;
         this.devicePort = devicePort;
+
+    }
+
+
+
+    public boolean isOnLine(){
+        return this.isOnLine;
+    }
+
+    public void setOnLine(boolean isOnLine){
+        this.isOnLine = isOnLine;
     }
 
     public String getUserName() {
