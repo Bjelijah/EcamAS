@@ -153,6 +153,7 @@ public class PlayBackActivity extends BasePlayActivity implements View.OnClickLi
         if (mLastProgressOffset!=offset) {
             mReplaySeekBar.setProgress((int) offset);
             mLastProgressOffset = offset;
+
         }
     }
 
