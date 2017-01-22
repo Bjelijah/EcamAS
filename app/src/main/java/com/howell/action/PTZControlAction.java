@@ -17,6 +17,8 @@ import android.view.animation.TranslateAnimation;
 
 import com.howell.activity.BasePlayActivity;
 import com.howell.activity.PlayerActivity;
+import com.howell.bean.ICam;
+import com.howell.bean.PlayType;
 import com.howell.ecam.R;
 import com.howell.protocol.LensControlReq;
 import com.howell.protocol.LensControlRes;
@@ -41,31 +43,40 @@ public class PTZControlAction {
 	}
 	Handler handler = null;
 	
-	private PtzInfo info = null;
+
 	private int animationNum = 0;
 	private boolean bAnimatingFinish = true;
 	private void resetAnimationNum(){
 		animationNum = 0;
 	}
+	private ICam mCam;
+
 	public boolean bAnimationFinish(){
 		return bAnimatingFinish;
 	}
 	
-	public void setHandle(Handler handler){
+	public PTZControlAction setHandle(Handler handler){
 		this.handler = handler;
+		return this;
 	}
+
+	public PTZControlAction setCam(ICam cam){
+		mCam = cam;
+		return this;
+	}
+
+
 	
 	public boolean bAnimating(){
 		return animationNum<2?false:true;
 	}
 	
 	
-	public PTZControlAction setPtzInfo(SoapManager soapManager ,String account,String session,String devId,int channel){
-		if (info != null) {
+	public PTZControlAction setPtzInfo(String account,String session,String devId,int channel){
+		if (mCam == null) {
 			return this;
 		}
-		info = new PtzInfo();
-		info.setAccount(account).setLoginSession(session).setDevID(devId).setChannelNo(channel).setSoapManager(soapManager);
+		mCam.ptzSetInfo(account,session,devId,channel);
 		return this;
 	}
 	
@@ -75,12 +86,10 @@ public class PTZControlAction {
 
 			@Override
 			protected Void doInBackground(Void... arg0) {
-				if (null==info) {
+				if (null==mCam) {
 					throw new NullPointerException();
 				}
-				LensControlReq req = new LensControlReq(info.getAccount(),info.getLoginSession(),info.getDevID(),info.getChannelNo(),"ZoomTele");
-				LensControlRes res = info.getSoapManager().getLensControlRes(req);
-				 Log.i("123", "res="+res.getResult());
+				mCam.zoomTeleStart();
 				return null;
 			}
 		}.execute();
@@ -91,12 +100,10 @@ public class PTZControlAction {
 
 			@Override
 			protected Void doInBackground(Void... arg0) {
-				if (null==info) {
+				if (null==mCam) {
 					throw new NullPointerException();
 				}
-				LensControlReq req = new LensControlReq(info.getAccount(),info.getLoginSession(),info.getDevID(),info.getChannelNo(),"Stop");
-				 LensControlRes  res =info.getSoapManager().getLensControlRes(req);
-				 
+				mCam.zoomTeleStop();
 				
 				return null;
 			}
@@ -110,12 +117,10 @@ public class PTZControlAction {
 
 			@Override
 			protected Void doInBackground(Void... arg0) {
-				if ( null==info) {
+				if ( null==mCam) {
 					throw new NullPointerException();
 				}
-				LensControlReq req = new LensControlReq(info.getAccount(),info.getLoginSession(),info.getDevID(),info.getChannelNo(),"ZoomWide");
-				info.getSoapManager().getLensControlRes(req);
-
+				mCam.zoomWideStart();
 				return null;
 			}
 			
@@ -126,11 +131,10 @@ public class PTZControlAction {
 		new AsyncTask<Void, Integer, Void>(){
 			@Override
 			protected Void doInBackground(Void... arg0) {
-				if(null == info){
+				if(null == mCam){
 					throw new NullPointerException();
 				}
-				LensControlReq req = new LensControlReq(info.getAccount(),info.getLoginSession(),info.getDevID(),info.getChannelNo(),"Stop");
-				info.getSoapManager().getLensControlRes(req);
+				mCam.zoomWideStop();
 				return null;
 			}
 		}.execute();
@@ -142,12 +146,10 @@ public class PTZControlAction {
 
 			@Override
 			protected Void doInBackground(Void... params) {
-				if (null==info) {
+				if (null==mCam) {
 					throw new NullPointerException();
 				}
-				PtzControlReq req = new PtzControlReq(info.getAccount(),info.getLoginSession(),info.getDevID(),info.getChannelNo(),direction);
-				info.getSoapManager().GetPtzControlRes(req);
-				
+				mCam.ptzMoveStart(direction);
 				return null;
 			}
 			
@@ -158,11 +160,10 @@ public class PTZControlAction {
 		new AsyncTask<Void, Void, Void>(){
 			@Override
 			protected Void doInBackground(Void... params) {
-				if (null==info) {
+				if (null==mCam) {
 					throw new NullPointerException();
 				}
-				PtzControlReq req = new PtzControlReq(info.getAccount(),info.getLoginSession(),info.getDevID(),info.getChannelNo(),"Stop");
-				info.getSoapManager().GetPtzControlRes(req);
+				mCam.ptzMoveStop();
 				return null;
 			}
 		}.execute();
@@ -261,48 +262,5 @@ public class PTZControlAction {
 		v.startAnimation(animation);
 	}
 	
-	public class PtzInfo{
-		SoapManager soapManager;
-		String account;
-		String loginSession;
-		String devID;
-		int channelNo;
-		public SoapManager getSoapManager() {
-			return soapManager;
-		}
-		public PtzInfo setSoapManager(SoapManager soapManager) {
-			this.soapManager = soapManager;
-			return this;
-		}
-		public String getAccount() {
-			return account;
-		}
-		public PtzInfo setAccount(String account) {
-			this.account = account;
-			return this;
-		}
-		public String getLoginSession() {
-			return loginSession;
-		}
-		public PtzInfo setLoginSession(String loginSession) {
-			this.loginSession = loginSession;
-			return this;
-		}
-		public String getDevID() {
-			return devID;
-		}
-		public PtzInfo setDevID(String devID) {
-			this.devID = devID;
-			return this;
-		}
-		public int getChannelNo() {
-			return channelNo;
-		}
-		public PtzInfo setChannelNo(int channelNo) {
-			this.channelNo = channelNo;
-			return this;
-		}
-		
-	}
-	
+
 }

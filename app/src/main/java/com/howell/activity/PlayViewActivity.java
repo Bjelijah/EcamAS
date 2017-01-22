@@ -278,11 +278,12 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
         mPtzRight.setOnTouchListener(this);
         mPtzUp.setOnTouchListener(this);
         mPtzDown.setOnTouchListener(this);
-        PTZControlAction.getInstance().setPtzInfo(SoapManager.getInstance(),
+        Log.i("123","mPlayMgr="+mPlayMgr);
+        PTZControlAction.getInstance().setCam(mPlayMgr).setHandle(mHandler).setPtzInfo(
                 LoginAction.getInstance().getmInfo().getAccount(),
                 LoginAction.getInstance().getmInfo().getLr().getLoginSession(),
                 PlayAction.getInstance().getPlayBean().getDeviceId(),
-                PlayAction.getInstance().getPlayBean().getChannelNo()).setHandle(mHandler);
+                PlayAction.getInstance().getPlayBean().getChannelNo());
         mIsShowPtz = false;
     }
 

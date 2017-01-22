@@ -133,7 +133,7 @@ public class HomeAction {
         for (APDeviceDBBean apBean:apList){
             CameraItemBean camBean = new CameraItemBean()
                     .setType(PlayType.HW5198)
-                    .setCameraName(apBean.getDeviceName()+"\n"+apBean.getDeviceIP())
+                    .setCameraName(apBean.getDeviceName())
                     .setCameraDescription("AP:"+apBean.getDeviceIP())
                     .setOnline(true)
                     .setIndensity(0)

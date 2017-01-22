@@ -305,7 +305,7 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
         for (APDeviceDBBean apBean:list){
             CameraItemBean camBean = new CameraItemBean()
                     .setType(PlayType.HW5198)
-                    .setCameraName(apBean.getDeviceName()+"\n"+apBean.getDeviceIP())
+                    .setCameraName(apBean.getDeviceName())
                     .setCameraDescription("AP:"+apBean.getDeviceIP())
                     .setOnline(apBean.isOnLine())
                     .setIndensity(0)
@@ -349,7 +349,7 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
             Log.i("123","pos="+pos);
             final CameraItemBean bean = mList.get(pos);
             if(HomeAction.getInstance().removeCam(getContext(),bean)){
-                mList.remove(pos);
+              //  mList.remove(pos);
             }else{
                 Snackbar.make(mView,getString(R.string.device_item_remove_fail),Snackbar.LENGTH_LONG).show();
             }
@@ -358,11 +358,17 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
 
         @Override
         public void onFallingEnd(View v) {
-            super.onFallingEnd(v);
             Log.e("123","BrokenCallback onFallingEnd");
             //更新
+            int pos = (int) v.getTag();
+            mList.remove(pos);
+            adapter.setData(mList);
 
-            mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);
+//            mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);
+
+
+//            super.onFallingEnd(v);
+
         }
 
         @Override

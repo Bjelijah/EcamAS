@@ -61,6 +61,8 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
     public final static int MSG_PLAY_LOGOUT_CAM_OK      = 0xff0c;
     public final static int MSG_PLAY_LOGOUT_CAM_ERROR   = 0xff0d;
     public final static int MSG_PLAY_RELINK_OK          = 0xff0e;
+    public final static int MSG_PLAY_PLAY_BACK_FUN      = 0xff0f;
+
 
     //控件
     protected GLSurfaceView mGlView;
@@ -125,6 +127,9 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
                     break;
                 case MSG_PLAY_PLAY_UNWAIT:
                     mWaitProgressBar.setVisibility(View.GONE);
+                    break;
+                case MSG_PLAY_PLAY_BACK_FUN:
+                    playBackFun();
                     break;
                 default:
                     break;
@@ -231,6 +236,13 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
     }
 
 
+    protected void camConnect(){
+        PlayAction.getInstance().camLogin();
+    }
+
+
+
+
     protected void soundFun(){
         if (PlayAction.getInstance().isMute()){
             PlayAction.getInstance().unmute();
@@ -239,13 +251,6 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
             PlayAction.getInstance().mute();
             mIsAudioOpen = false;
         }
-    }
-
-
-
-
-    protected void camConnect(){
-        PlayAction.getInstance().camLogin();
     }
 
     protected void camPlay(){
@@ -323,6 +328,7 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
         return false;
     }
 
+    protected void playBackFun(){}
 
     @Override
     public void showStreamSpeed(final int kbitPerSec) {

@@ -570,7 +570,7 @@ public class PlayerActivity extends FragmentActivity implements Callback, OnTouc
 //		mFunPanel = new PlayFunPanel(this);
 //		mFunPanel.setHandle(mPlayerHandler);
 
-		PTZControlAction.getInstance().setPtzInfo(mSoapManger, account, loginSession, devID, channelNo);
+		PTZControlAction.getInstance().setPtzInfo( account, loginSession, devID, channelNo);
 		PTZControlAction.getInstance().setHandle(mPlayerHandler);
 		fragmentInit();
 //		mPlayFun1 = (RelativeLayout) findViewById(R.id.play_rl_fun1);

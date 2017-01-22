@@ -84,9 +84,7 @@ public class ApCamMgr implements ICam {
     public void setPlayBackTime(String startTime, String endTime) {
         //单个回放录像的时间
         ApTimeBean [] beans = phaseTime(startTime,endTime);
-
-
-
+        JniUtil.setPlayBackTime(beans[0],beans[1]);
     }
 
 
@@ -102,10 +100,15 @@ public class ApCamMgr implements ICam {
 
     @Override
     public boolean unBind() {
-        if (!checkInit())return false;
+        if (!checkInit()){
+            Log.e("123","ap unBind error");
+            return false;
+        }
         ApDeviceDao dao = new ApDeviceDao(mContext,"user.db",1);
+
         dao.deleteByName(LoginAction.getInstance().getmInfo().getAccount(),mCamBean.getCameraName());
         dao.close();
+        Log.i("123","ap unBind ok");
         return true;
     }
 
@@ -154,6 +157,17 @@ public class ApCamMgr implements ICam {
     }
 
     @Override
+    public boolean playBackReplay(long begOffset,long curProgress) {
+        return false;
+    }
+
+    @Override
+    public boolean playBackPause(boolean bPause, long begOffset, long curProgress) {
+        return false;
+    }
+
+
+    @Override
     public boolean catchPic(String path) {
         Log.i("123","save path="+path);
         JniUtil.catchPic(path);
@@ -165,7 +179,50 @@ public class ApCamMgr implements ICam {
         return true;
     }
 
+    @Override
+    public boolean ptzSetInfo(String account, String loginSession, String devID, int channelNo) {
+        return true;
+    }
 
+    @Override
+    public boolean zoomTeleStart() {
+        return JniUtil.netPtzCam(1);
+    }
+
+    @Override
+    public boolean zoomTeleStop() {
+        return JniUtil.netPtzCam(0);
+    }
+
+    @Override
+    public boolean zoomWideStart() {
+        return JniUtil.netPtzCam(2);
+    }
+
+    @Override
+    public boolean zoomWideStop() {
+        return JniUtil.netPtzCam(0);
+    }
+
+    @Override
+    public boolean ptzMoveStart(String direction) {
+        int cmd = 0;
+        if ("Up".equals(direction)){
+            cmd = 1;
+        }else if("Down".equals(direction)){
+            cmd = 2;
+        }else if ("Left".equals(direction)){
+            cmd = 3;
+        }else if ("Right".equals(direction)){
+            cmd = 4;
+        }
+        return JniUtil.netPtzMove(cmd);
+    }
+
+    @Override
+    public boolean ptzMoveStop() {
+        return JniUtil.netPtzMove(0);
+    }
 
 
     @Override
@@ -269,6 +326,10 @@ public class ApCamMgr implements ICam {
         return vodList;
     }
 
+    @Override
+    public boolean playPause(boolean b) {
+        return JniUtil.pause(b);
+    }
 
 
     private boolean initVideoList() {

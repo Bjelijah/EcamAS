@@ -35,7 +35,7 @@ public class JniUtil {
 	
 	//test
 	
-	//net
+	//net & play
 	public static native void netInit();
 	public static native void netDeinit();
 	public static native boolean login(String ip);//no using
@@ -46,9 +46,18 @@ public class JniUtil {
 	public static native boolean readyPlay(int vCodeFlag,int aCodeFlag,int isPlayBack);//vCodeFlag:0 ap,1 ecam,2 h265  //aCodeFlag 0 aac ,1g711u
 	public static native void releasePlay();
 	public static native void netStopPlay();
-	public static native void playView();
 	public static native void stopView();
+	public static native void playView();
 	public static native int netGetStreamLenSomeTime();
+	public static native boolean pause(boolean bPause);
+	public static native long getCurPlayTimestamp();
+	public static native long getBegPlayTimestamp();
+	public static native void keepTimestamp();//before playView()
+	//net ptz
+	public static native boolean netPtzMove(int flag);//flag: 0 1 2 3 4 停 上下左右
+	public static native boolean netPtzCam(int flag);//0 1 2 stop tele wide
+	public static native boolean netPtzIris(int flag);//0 stop 1 open
+
 	//vod file list
 
 	public static native int netGetVideoListCount(ApTimeBean beg,ApTimeBean end);//获取总录像文件数

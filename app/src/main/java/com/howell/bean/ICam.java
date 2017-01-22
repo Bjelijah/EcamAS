@@ -32,11 +32,22 @@ public interface ICam {
     boolean playViewCam();
     boolean stopViewCam();
     boolean reLink();
-
+    boolean playBackReplay(long begOffset,long curProgress);
+    boolean playBackPause(boolean bPause,long begOffset,long curProgress);
 
     //功能
     boolean catchPic(String path);
     boolean soundSetData(byte [] buf,int len);
+    //PTZ
+    boolean ptzSetInfo(String account, String loginSession, String devID, int channelNo);
+    boolean zoomTeleStart();
+    boolean zoomTeleStop();
+    boolean zoomWideStart();
+    boolean zoomWideStop();
+    boolean ptzMoveStart(String direction);
+    boolean ptzMoveStop();
+
+
 
     //回放列表
 
@@ -45,7 +56,7 @@ public interface ICam {
     int getVideoListPageCount(int nowPage,int pageSize);//nowPage:当前第几页,pageSize:每页多少条 返回：从当前页到结束页共多少页
 //    boolean getVideoList(String start,String end,int streamType);
     ArrayList<VODRecord> getVideoList();
-
+    boolean playPause(boolean b);
 
 
     interface IStream{

@@ -225,18 +225,18 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netStopPlay
 
 /*
  * Class:     com_howell_jni_JniUtil
- * Method:    playView
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_playView
-  (JNIEnv *, jclass);
-
-/*
- * Class:     com_howell_jni_JniUtil
  * Method:    stopView
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_stopView
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    playView
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_playView
   (JNIEnv *, jclass);
 
 /*
@@ -246,6 +246,62 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_stopView
  */
 JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetStreamLenSomeTime
   (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    pause
+ * Signature: (Z)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_pause
+  (JNIEnv *, jclass, jboolean);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    getCurPlayTimestamp
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_com_howell_jni_JniUtil_getCurPlayTimestamp
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    getBegPlayTimestamp
+ * Signature: ()J
+ */
+JNIEXPORT jlong JNICALL Java_com_howell_jni_JniUtil_getBegPlayTimestamp
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    keepTimestamp
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_keepTimestamp
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    netPtzMove
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzMove
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    netPtzCam
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzCam
+  (JNIEnv *, jclass, jint);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    netPtzIris
+ * Signature: (I)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzIris
+  (JNIEnv *, jclass, jint);
 
 /*
  * Class:     com_howell_jni_JniUtil

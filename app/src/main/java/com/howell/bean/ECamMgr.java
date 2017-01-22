@@ -9,6 +9,8 @@ import android.util.Log;
 
 import com.howell.action.AudioAction;
 import com.howell.action.LoginAction;
+import com.howell.action.PTZControlAction;
+import com.howell.action.PlayAction;
 import com.howell.activity.BasePlayActivity;
 import com.howell.entityclass.Crypto;
 import com.howell.entityclass.StreamReqContext;
@@ -17,11 +19,16 @@ import com.howell.entityclass.VODRecord;
 import com.howell.jni.JniUtil;
 import com.howell.protocol.GetDevVerReq;
 import com.howell.protocol.GetDevVerRes;
+import com.howell.protocol.GetNATServerReq;
 import com.howell.protocol.GetNATServerRes;
 import com.howell.protocol.InviteRequest;
 import com.howell.protocol.InviteResponse;
+import com.howell.protocol.LensControlReq;
+import com.howell.protocol.LensControlRes;
 import com.howell.protocol.NullifyDeviceReq;
 import com.howell.protocol.NullifyDeviceRes;
+import com.howell.protocol.PtzControlReq;
+import com.howell.protocol.PtzControlRes;
 import com.howell.protocol.SoapManager;
 import com.howell.protocol.VodSearchRes;
 import com.howell.utils.DeviceVersionUtils;
@@ -64,7 +71,7 @@ public class ECamMgr implements ICam,IConst {
     //playback  video list
 
     VodSearchRes mVodSearchRes = null;
-
+    PtzInfo mInfo = null;
     @Override
     public void init(Context context, CameraItemBean bean) {
         this.mCamBean = bean;
@@ -106,6 +113,7 @@ public class ECamMgr implements ICam,IConst {
         if (!isPlayback){
             mPlayBackStartTime = 0;
             mPlayBackEndTime = 0;
+            mPlayBackRe = 0;
         }
     }
 
@@ -123,6 +131,7 @@ public class ECamMgr implements ICam,IConst {
             e.printStackTrace();
         }
         this.mPlayBackStartTime = start;
+        Log.i("123","          mPlayBackStartTime = "+mPlayBackStartTime);
         this.mPlayBackEndTime = end;
     }
 
@@ -162,6 +171,7 @@ public class ECamMgr implements ICam,IConst {
     @Override
     public boolean playViewCam() {
         Log.e("123","play view cam ~~~~~~~~~~~");
+        mPlayBackRe = 0;
         return ecamPlayViewCam();
     }
 
@@ -194,6 +204,44 @@ public class ECamMgr implements ICam,IConst {
     }
 
     @Override
+    public boolean playBackReplay(long begOffset,long curProgress) {
+
+        long curSec = begOffset+curProgress/1000;
+        if(JniUtil.ecamStop()!=0)return false;
+        JniUtil.stopView();
+        //set time
+        Log.i("123","~~~~~~~~~mplaybackstat time="+mPlayBackStartTime+"   curSec="+curSec);
+        mPlayBackStartTime = curSec;
+        mPlayBackRe = 1;
+
+        JniUtil.ecamSetContextObj(getStreamReqContext());
+
+        JniUtil.readyPlay(1,auType,mIsPlayBack);
+        JniUtil.keepTimestamp();
+        JniUtil.playView();
+
+        return JniUtil.ecamStart()==0?true:false;
+    }
+
+    @Override
+    public boolean playBackPause(boolean bPause, long begOffset, long curProgress) {
+        long curSec = begOffset+curProgress/1000;
+        mPlayBackStartTime = curSec;
+        mPlayBackRe = 1;
+        JniUtil.pause(bPause);
+        if (bPause){
+            JniUtil.ecamStop();
+        }else{
+            JniUtil.ecamSetContextObj(getStreamReqContext());
+            JniUtil.ecamStart();
+        }
+
+
+        return false;
+    }
+
+
+    @Override
     public boolean catchPic(String path) {
         JniUtil.catchPic(path);
         return true;
@@ -204,6 +252,55 @@ public class ECamMgr implements ICam,IConst {
         return JniUtil.ecamSendAudioData(buf,len)==0?false:true;
     }
 
+    @Override
+    public boolean ptzSetInfo(String account, String loginSession, String devID, int channelNo) {
+        mInfo = new PtzInfo();
+        mInfo.setSoapManager(SoapManager.getInstance()).setAccount(account).setLoginSession(loginSession)
+                .setDevID(devID).setChannelNo(channelNo);
+        return true;
+    }
+
+    @Override
+    public boolean zoomTeleStart() {
+        LensControlReq req = new LensControlReq(mInfo.getAccount(),mInfo.getLoginSession(),mInfo.getDevID(),mInfo.getChannelNo(),"ZoomTele");
+        LensControlRes res = mInfo.getSoapManager().getLensControlRes(req);
+        return res.getResult().equalsIgnoreCase("OK")?true:false;
+    }
+
+    @Override
+    public boolean zoomTeleStop() {
+        LensControlReq req = new LensControlReq(mInfo.getAccount(),mInfo.getLoginSession(),mInfo.getDevID(),mInfo.getChannelNo(),"Stop");
+        LensControlRes  res =mInfo.getSoapManager().getLensControlRes(req);
+        return res.getResult().equalsIgnoreCase("OK")?true:false;
+    }
+
+    @Override
+    public boolean zoomWideStart() {
+        LensControlReq req = new LensControlReq(mInfo.getAccount(),mInfo.getLoginSession(),mInfo.getDevID(),mInfo.getChannelNo(),"ZoomWide");
+        LensControlRes res = mInfo.getSoapManager().getLensControlRes(req);
+        return res.getResult().equalsIgnoreCase("OK")?true:false;
+    }
+
+    @Override
+    public boolean zoomWideStop() {
+        LensControlReq req = new LensControlReq(mInfo.getAccount(),mInfo.getLoginSession(),mInfo.getDevID(),mInfo.getChannelNo(),"Stop");
+        LensControlRes res = mInfo.getSoapManager().getLensControlRes(req);
+        return res.getResult().equalsIgnoreCase("OK")?true:false;
+    }
+
+    @Override
+    public boolean ptzMoveStart(String direction) {
+        PtzControlReq req = new PtzControlReq(mInfo.getAccount(),mInfo.getLoginSession(),mInfo.getDevID(),mInfo.getChannelNo(),direction);
+        PtzControlRes res = mInfo.getSoapManager().GetPtzControlRes(req);
+        return res.getResult().equalsIgnoreCase("OK")?true:false;
+    }
+
+    @Override
+    public boolean ptzMoveStop() {
+        PtzControlReq req = new PtzControlReq(mInfo.getAccount(),mInfo.getLoginSession(),mInfo.getDevID(),mInfo.getChannelNo(),"Stop");
+        PtzControlRes res = mInfo.getSoapManager().GetPtzControlRes(req);
+        return res.getResult().equalsIgnoreCase("OK")?true:false;
+    }
 
 
     @Override
@@ -242,6 +339,11 @@ public class ECamMgr implements ICam,IConst {
         return mVodSearchRes==null?null:mVodSearchRes.getRecord();
     }
 
+    @Override
+    public boolean playPause(boolean b) {
+        return JniUtil.pause(b);
+    }
+
     private boolean checkVerIsNew(){
         String account = LoginAction.getInstance().getmInfo().getAccount();
         String session = LoginAction.getInstance().getmInfo().getLr().getLoginSession();
@@ -259,6 +361,7 @@ public class ECamMgr implements ICam,IConst {
         JniUtil.ecamInit(LoginAction.getInstance().getmInfo().getAccount());
         JniUtil.ecamSetCallbackObj(ECamMgr.this,0);
         JniUtil.ecamSetContextObj(getStreamReqContext());
+
         boolean ret = false;
         try {
             ret = invite();//sdp
@@ -267,7 +370,15 @@ public class ECamMgr implements ICam,IConst {
             Log.e("123","invite error  try");
             return false;
         }
+
         if (ret){
+            if (mIsPlayBack==1){
+                long [] sdpTime = JniUtil.ecamGetSdpTime();
+                PlayAction.getInstance().fillPlaybackSDPBegEndTime(sdpTime[0],sdpTime[1]);
+            }
+
+
+
             auType = JniUtil.ecamGetAudioType();
         }else {
             Log.e("123","invite error");
@@ -327,7 +438,14 @@ public class ECamMgr implements ICam,IConst {
         StreamReqContext streamReqContext = null;
         GetNATServerRes res = mSoapManager.getLocalGetNATServerRes();
         if(res == null){
-            Log.e("InviteUtils", "res == null");
+            Log.e("123", " InviteUtils  this  res == null");
+
+            GetNATServerReq req = new GetNATServerReq(LoginAction.getInstance().getmInfo().getAccount(),
+                    LoginAction.getInstance().getmInfo().getLr().getLoginSession());
+
+            mSoapManager.getGetNATServerRes(req);
+            res =  mSoapManager.getLocalGetNATServerRes();
+
         }else{
             Log.e("InviteUtils", res.toString());
         }
@@ -403,6 +521,49 @@ public class ECamMgr implements ICam,IConst {
         }
     }
 
+     class PtzInfo{
+        SoapManager soapManager;
+        String account;
+        String loginSession;
+        String devID;
+        int channelNo;
+        public SoapManager getSoapManager() {
+            return soapManager;
+        }
+        public PtzInfo setSoapManager(SoapManager soapManager) {
+            this.soapManager = soapManager;
+            return this;
+        }
+        public String getAccount() {
+            return account;
+        }
+        public PtzInfo setAccount(String account) {
+            this.account = account;
+            return this;
+        }
+        public String getLoginSession() {
+            return loginSession;
+        }
+        public PtzInfo setLoginSession(String loginSession) {
+            this.loginSession = loginSession;
+            return this;
+        }
+        public String getDevID() {
+            return devID;
+        }
+        public PtzInfo setDevID(String devID) {
+            this.devID = devID;
+            return this;
+        }
+        public int getChannelNo() {
+            return channelNo;
+        }
+        public PtzInfo setChannelNo(int channelNo) {
+            this.channelNo = channelNo;
+            return this;
+        }
+
+    }
 
     class MyTimerTask extends TimerTask{
 
@@ -419,13 +580,16 @@ public class ECamMgr implements ICam,IConst {
                 mUnexpectNoFrame++;
             }else {
                 mUnexpectNoFrame = 0;
-                if (!doOnce) {
+                if (!doOnce ) {
                     doOnce = true;
                     mHandler.sendEmptyMessage(BasePlayActivity.MSG_PLAY_PLAY_UNWAIT);
                 }
+                if (!PlayAction.getInstance().getPlayBackProgressByUser()){
+                    PlayAction.getInstance().setPlayBackKeepProgress(false);
+                }
             }
-
-            if (mUnexpectNoFrame==3){
+//            &&  mIsPlayBack==0
+            if (mUnexpectNoFrame==3  ){
                 mHandler.sendEmptyMessage(BasePlayActivity.MSG_PLAY_PLAY_WAIT);
                 doOnce = false;
             }

@@ -377,6 +377,8 @@ struct StreamResource
     FILE_LIST_HANDLE file_list_handle;
     int total_file_list_count;
     SYSTEMTIME beg,end; //回放文件的开始结束 不是列表的
+
+    long time_stamp,time_stamp_beg,bKeep;
     int media_head_len;
     int stream_len;
     int is_exit;	//退出标记位
@@ -406,7 +408,9 @@ void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* bu
 
 
     int ret = hwplay_input_data(res->play_handle, buf ,len);
-
+    if (ret!=1){
+        LOGE("on_live_stream_fun  input data error \n");
+    }
 //    LOGI("on live stream fun input data ret=%d",ret);
 
     //hi265InputData(buf,len);
@@ -428,6 +432,13 @@ void on_file_stream_fun(FILE_STREAM_HANDLE handle,const char *buf,int len,long u
 static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, int len, unsigned long timestamp, long sys_tm, int w, int h, int framerate, int au_sample, int au_channel, int au_bits, long user){
 
 //    LOGE("type=%d  len=%d  w=%d  h=%d  timestamp=%ld sys_tm=%ld  framerate=%d  au_sample=%d  au_channel=%d au_bits=%d",type,len,w,h,timestamp,sys_tm,framerate,au_sample,au_channel,au_bits);
+
+    if (res!=NULL){
+        if (res->time_stamp_beg==0){
+            res->time_stamp_beg = timestamp;
+        }
+        res->time_stamp = timestamp;
+    }
 
     if(type == 0){//音频
         //		audio_play(buf,len,au_sample,au_channel,au_bits);
@@ -467,6 +478,9 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netInit
         res->file_list_handle = -1;
         res->play_handle = -1;
         res->total_file_list_count = 0;
+        res->time_stamp_beg = 0;
+        res->time_stamp = 0;
+        res->bKeep = 0;
     }
 }
 
@@ -637,7 +651,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlay
 
     PLAY_HANDLE  ph = hwplay_open_stream((const char*)&media_head,sizeof(media_head),1024*1024,isPlayBack,area);
     res->play_handle = ph;
-    hwplay_open_sound(ph);
+
     //hwplay_set_max_framenum_in_buf(ph,is_playback?25:5);
     LOGI("ph=%d",ph);
     int b = hwplay_register_source_data_callback(ph,on_source_callback,0);
@@ -671,11 +685,16 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netStopPlay
 }
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_playView
-        (JNIEnv *, jclass){
-    if(res == NULL) return;
-    if(res->play_handle<0)return;
+        (JNIEnv *, jclass) {
+    if (res == NULL) return;
+    if (res->play_handle < 0)return;
     res->is_exit = 0;
+    if (res->bKeep == 0) {
+        res->time_stamp = 0;
+        res->time_stamp_beg = 0;
+    }
     hwplay_play(res->play_handle);
+    hwplay_open_sound(res->play_handle);
 }
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_stopView
@@ -683,18 +702,130 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_stopView
     if(res == NULL)return;
 
     int ret = hwplay_stop(res->play_handle);
-    LOGI("123","hwplay_stop ret=%d\n",ret);
+
+    LOGI("hwplay_stop ret=%d\n",ret);
     ret = hwplay_close_sound(res->play_handle);
-    LOGI("123","hwplay_close_sound ret = %d\n",ret);
+    LOGI("hwplay_close_sound ret = %d\n",ret);
     //hwnet_close_live_stream(res->live_stream_handle);
     res->is_exit = 1;
-}JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetStreamLenSomeTime
+    res->bKeep = 0;
+
+}
+
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetStreamLenSomeTime
         (JNIEnv *, jclass){
     if (res == NULL)return -1;
     int len = res->stream_len;
     res->stream_len=0;
     return len;
 }
+
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_pause
+        (JNIEnv *, jclass, jboolean bPause){
+    if (res == NULL) return false;
+    if (res->play_handle < 0 )return false;
+    BOOL _pause = 0;
+    if (bPause){
+        _pause = 1;
+    }
+
+    return hwplay_pause(res->play_handle ,_pause)==1?true:false;
+}
+
+JNIEXPORT jlong JNICALL Java_com_howell_jni_JniUtil_getCurPlayTimestamp
+        (JNIEnv *, jclass){
+    if (res==NULL)return 0;
+    return res->time_stamp;
+}
+
+JNIEXPORT jlong JNICALL Java_com_howell_jni_JniUtil_getBegPlayTimestamp
+        (JNIEnv *, jclass){
+    if(res==NULL)return 0;
+    return res->time_stamp_beg;
+}
+
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_keepTimestamp
+        (JNIEnv *, jclass){
+    if (res == NULL) return;
+    res->bKeep = 1;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzMove
+        (JNIEnv *, jclass, jint flag){
+    if (res == NULL)return false;
+    ptz_ctrl_t ctrl;
+    memset(&ctrl,0,sizeof(ctrl));
+    ctrl.slot = 0;
+    ctrl.control = 0;
+    ctrl.value = 10;
+    switch (flag){
+        case 0:
+            ctrl.cmd = 5;
+            break;
+        case 1:
+            ctrl.cmd = 8;
+            break;
+        case 2:
+            ctrl.cmd = 2;
+            break;
+        case 3:
+            ctrl.cmd = 4;
+            break;
+        case 4:
+            ctrl.cmd = 5;
+            break;
+        default:
+            break;
+    }
+    return hwnet_ptz_ctrl(res->user_handle,&ctrl)==1?true: false;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzCam
+        (JNIEnv *, jclass, jint flag){
+    if (res == NULL)return false;
+    ptz_ctrl_t ctrl;
+    memset(&ctrl,0,sizeof(ctrl));
+    ctrl.slot = 0;
+    ctrl.control = 1;
+    ctrl.value = 10;
+    switch (flag){
+        case 0:
+            ctrl.cmd = 7;
+            break;
+        case 1:
+            ctrl.cmd = 3;
+            break;
+        case 2:
+            ctrl.cmd = 4;
+            break;
+        default:
+            break;
+    }
+    return hwnet_ptz_ctrl(res->user_handle,&ctrl)==1?true: false;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzIris
+        (JNIEnv *, jclass, jint flag){
+    if (res == NULL)return false;
+    ptz_ctrl_t ctrl;
+    memset(&ctrl,0,sizeof(ctrl));
+    ctrl.slot = 0;
+    ctrl.control = 1;
+    ctrl.value = 10;
+    switch (flag){
+        case 0:
+            ctrl.cmd = 2;
+            break;
+        case 1:
+            ctrl.cmd = 1;
+            break;
+        default:
+            break;
+    }
+    return hwnet_ptz_ctrl(res->user_handle,&ctrl)==1?true: false;
+}
+
+
 
 JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetVideoListCount
         (JNIEnv *env, jclass, jobject beg, jobject end){
@@ -1381,20 +1512,34 @@ void onStreamArrive(ecam_stream_req_t * req,ECAM_STREAM_REQ_FRAME_TYPE media_typ
         head.time_stamp =  (unsigned long long)timestamp / 8 * 1000;
     }
     head.type = media_type;
+    int ret = 0;
     if (g_ecamMgr->isBack==0){
-        hwplay_input_data(res->play_handle,(char*)&head, sizeof(head));
+        ret = hwplay_input_data(res->play_handle,(char*)&head, sizeof(head));
+        if (ret!=1){
+            LOGE("onStreamArrive play live  input data error\n");
+        }
         hwplay_input_data(res->play_handle, data ,len);
     }else{
-        while (true){
-            if (!hwplay_input_data(res->play_handle,(char*)&head, sizeof(head))){
-                usleep(10000);
-                continue;
-            }
-            if (!hwplay_input_data(res->play_handle,data,len)){
-                usleep(10000);
-                continue;
-            }
+
+        ret = hwplay_input_data(res->play_handle,(char*)&head, sizeof(head));
+        if (ret!=1){
+            LOGE("onStreamArrive play back  input data error\n");
         }
+        hwplay_input_data(res->play_handle,data,len);
+
+//        while (true){//暂停后 buffer 满了 stream come input error
+//            if (!hwplay_input_data(res->play_handle,(char*)&head, sizeof(head))){
+//                usleep(10000);
+//                LOGE("onStreamArrive  play back input data error\n");
+//                continue;
+//            }
+//            if (!hwplay_input_data(res->play_handle,data,len)){
+//                usleep(10000);
+//                LOGE("onStreamArrive  play back input data error\n");
+//                continue;
+//            }
+//        }
+
     }
 }
 
@@ -1472,7 +1617,7 @@ void fill_context(JNIEnv * env,jobject obj, struct ecam_stream_req_context* c) {
     const char * c_stun_addr = env->GetStringUTFChars(_stun_addr,0);
     const char * c_turn_name = env->GetStringUTFChars(_turn_username,0);
     const char * c_turn_pwd = env->GetStringUTFChars(_turn_password,0);
-
+    g_ecamMgr->isBack       = _playback;
     c->playback             = _playback;
     LOGI("123","c->playback=%d",c->playback);
     c->beg                  = _beg;
@@ -1585,6 +1730,7 @@ JNIEXPORT jstring JNICALL Java_com_howell_jni_JniUtil_ecamPrepareSDP
         (JNIEnv *env, jclass){
     if (g_ecamMgr==NULL||g_ecamMgr->context==NULL) return NULL;
     char *local_sdp = ecam_stream_req_prepare_sdp(g_ecamMgr->req,g_ecamMgr->context);
+    LOGE("local_sdp= %s\n",local_sdp);
     return env->NewStringUTF((const char *)local_sdp);
 }
 
@@ -1614,6 +1760,7 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamStart
 JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamStop
         (JNIEnv *, jclass){
     if (g_ecamMgr==NULL) return -1;
+    g_ecamMgr->ecamDataLen = 0;
     return ecam_stream_req_stop(g_ecamMgr->req,3000);
 }
 
@@ -1648,13 +1795,18 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamGetMethod
 JNIEXPORT jlongArray JNICALL Java_com_howell_jni_JniUtil_ecamGetSdpTime
         (JNIEnv *env, jclass){
     if(g_ecamMgr == NULL)return NULL;
+    if(g_ecamMgr->req == NULL) return NULL;
     time_t beg=0;
     time_t end=0;
     ecam_stream_req_get_sdp_time(g_ecamMgr->req,&beg,&end);
+    jlong * _arry = new jlong[2];
+    _arry[0] = beg;
+    _arry[1] = end;
+
+  //  LOGI(" ecam_stream_req_get_sdp_time beg=%ld  end=%ld\n",beg,end);
     jlongArray longArray = env->NewLongArray(2);
-    jlong *arry = env->GetLongArrayElements(longArray,0);
-    arry[0] = beg;
-    arry[1] = end;
+    env->ReleaseLongArrayElements(longArray,_arry,JNI_COMMIT);
+    delete [] _arry;
     return longArray;
 }
 

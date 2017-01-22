@@ -30,7 +30,7 @@ public class PlayAction {
         }
         return mInstance;
     }
-
+    IPlayBackFun mPlayBackCB;
     private Handler mHandler;
     private ICam mCamMgr;
     private PlayAction(){}
@@ -39,6 +39,24 @@ public class PlayAction {
     public boolean isMute(){
         return bMute;
     }
+
+    private boolean mPlayBackProgressByUser = false;
+    private boolean mPlayBackKeepProgress = false;
+
+    public void setPlayBackProgressByUser(boolean b){
+        this.mPlayBackProgressByUser = b;
+    }
+    public boolean getPlayBackProgressByUser(){
+        return mPlayBackProgressByUser;
+    }
+    public void setPlayBackKeepProgress(boolean b){
+        this.mPlayBackKeepProgress = b;
+    }
+    public boolean getPlayBackKeepProgress(){
+        return mPlayBackKeepProgress;
+    }
+
+
     public void mute(){
         AudioAction.getInstance().audioSoundMute();
         bMute = true;
@@ -50,6 +68,20 @@ public class PlayAction {
         bMute = false;
         if (mHandler!=null)
             mHandler.sendEmptyMessage(BasePlayActivity.MSG_PLAY_SOUND_UNMUTE);
+    }
+
+    public PlayAction registPlayBackCallback(IPlayBackFun cb){
+        this.mPlayBackCB = cb;
+        return this;
+    }
+
+    public void unregistPlayBackCallback(){
+        this.mPlayBackCB = null;
+    }
+
+    public void fillPlaybackSDPBegEndTime(long beg,long end){
+        if (mPlayBackCB==null)return;
+        mPlayBackCB.onPlayBackBegEnd(beg,end);
     }
 
     public PlayAction setPlayBean(CameraItemBean bean){
@@ -144,15 +176,8 @@ public class PlayAction {
         return true;
     }
 
-    public boolean camBackPlay(){
-        if (mHandler==null)return false;
-        if (mCamMgr==null){
-            mHandler.sendEmptyMessage(BasePlayActivity.MSG_PLAY_PLAY_CAM_ERROR);
-            return false;
-        }
-        //TODO mCamMgr.playBackCam();
-        return true;
-    }
+
+
 
     public boolean camViewStop(){
         if (mHandler==null)return false;
@@ -181,14 +206,17 @@ public class PlayAction {
         return true;
     }
 
-    public boolean camBackStop(){
-        if (mHandler==null)return false;
-        if (mCamMgr==null){
-            return false;
-        }
-        //TODO:
-//        mCamMgr.stopBackCam();
-        return true;
+    public void camPlayBackPause(final boolean isPause,final long offset,final long cur){
+        if(mCamMgr==null)return;
+        new AsyncTask<Void,Void,Void>(){
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                mCamMgr.playBackPause(isPause,offset,cur);
+                return null;
+            }
+        }.execute();
+
     }
 
     public boolean camLogout(){
@@ -250,6 +278,23 @@ public class PlayAction {
         rePlay(isSub,null);
     }
 
+    public void playBackRePlay(final long begOffset,final long curProgress){
+        if (mCamMgr==null)return;
+        new AsyncTask<Void,Void,Boolean>(){
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                return mCamMgr.playBackReplay(begOffset,curProgress);
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                super.onPostExecute(aBoolean);
+
+
+            }
+        }.execute();
+    }
 
     /******************************
      * 功能
@@ -289,6 +334,10 @@ public class PlayAction {
     public boolean soundSendBuf(byte [] buf,int len){
         if (mCamMgr==null)return false;
         return mCamMgr.soundSetData(buf,len);
+    }
+
+    public interface IPlayBackFun{
+        void onPlayBackBegEnd(long beg,long end);
     }
 
 

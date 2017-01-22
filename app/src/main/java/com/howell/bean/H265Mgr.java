@@ -251,6 +251,17 @@ public class H265Mgr implements ICam {
     }
 
     @Override
+    public boolean playBackReplay(long begOffset,long curProgress) {
+        return false;
+    }
+
+    @Override
+    public boolean playBackPause(boolean bPause, long begOffset, long curProgress) {
+        return false;
+    }
+
+
+    @Override
     public boolean catchPic(String path) {
         JniUtil.catchPic(path);
         return true;
@@ -261,6 +272,40 @@ public class H265Mgr implements ICam {
         return true;
     }
 
+    @Override
+    public boolean ptzSetInfo(String account, String loginSession, String devID, int channelNo) {
+        return false;
+    }
+
+    @Override
+    public boolean zoomTeleStart() {
+        return false;
+    }
+
+    @Override
+    public boolean zoomTeleStop() {
+        return false;
+    }
+
+    @Override
+    public boolean zoomWideStart() {
+        return false;
+    }
+
+    @Override
+    public boolean zoomWideStop() {
+        return false;
+    }
+
+    @Override
+    public boolean ptzMoveStart(String direction) {
+        return false;
+    }
+
+    @Override
+    public boolean ptzMoveStop() {
+        return false;
+    }
 
 
     @Override
@@ -281,6 +326,11 @@ public class H265Mgr implements ICam {
     @Override
     public ArrayList<VODRecord> getVideoList() {
         return null;
+    }
+
+    @Override
+    public boolean playPause(boolean b) {
+        return JniUtil.pause(b);
     }
 
 
