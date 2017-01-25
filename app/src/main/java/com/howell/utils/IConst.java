@@ -36,8 +36,9 @@ public interface IConst {
 //	final String TEST_IP = null;
 	
 	final int TEST_TURN_SERVICE_PORT = 8862;//turn service port
-	
-	
+
+	final String DEFAULT_TURN_SERVER_IP = "180.166.7.214";
+	final int DEFAULT_TURN_SERVER_PORT = 8862;
 	
 	final static int MSG_LOGIN_OK 				= 0xa0;
 	final static int MSG_LOGIN_FAIL 			= 0xa1;

@@ -4,6 +4,8 @@ package com.howell.utils;
 import android.content.Context;
 import android.net.TrafficStats;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -78,6 +80,22 @@ public class Util {
 		Matcher mat = pat.matcher(addr);
 		boolean ipAddress = mat.find();
 		return ipAddress;
+	}
+
+	public static boolean hasDot(String addr){
+		if ("".equals(addr))return false;
+		return addr.contains(".");
+	}
+
+	public static String parseIP(String domainName){
+		InetAddress addr=null;
+		try {
+			addr =InetAddress.getByName(domainName);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return addr.getHostAddress();
 	}
 
 	public static boolean isInteger(String str) {

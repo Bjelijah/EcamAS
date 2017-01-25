@@ -261,13 +261,14 @@
 	<string name="home_guest_email">正在使用访客模式</string>
 
 	<string name="home_drawer_item_home">主页</string>
+	<string name="home_drawer_item_center">中心</string>
 	<string name="home_drawer_item_uid">UID</string>
 	<string name="home_drawer_logout">退出</string>
 	<string name="home_drawer_second_head">更多设置</string>
 	<string name="home_drawer_connect">通讯方式</string>
 	<string name="home_drawer_turn_server">流转</string>
 	<string name="home_drawer_encrypt">加密</string>
-	<string name="home_drawer_server_address">服务器地址</string>
+	<string name="home_drawer_server_address">流转服务器地址</string>
 	<string name="home_drawer_server_bind">绑定手机</string>
 	<string name="home_fragment_devices">DeviceList</string>
 	<string name="home_fragment_medias">Media</string>
@@ -301,7 +302,7 @@
 	<string name="add_ap_port_title">端口:</string>
 	<string name="add_ap_port">请输入您摄像机的端口号</string>
 	<string name="add_ap_btn">添加</string>
-	<string name="add_ap_ip_error">输入不符合IP格式</string>
+	<string name="add_ap_ip_error">输入不符合IP格式域名格式</string>
 	<string name="add_ap_port_error">需要输入数字</string>
 	<string name="notice_no_more">没有更多消息</string>
 
@@ -313,6 +314,7 @@
 	<string name="server_setting_ip">输入服务器的IP或域名</string>
 	<string name="server_setting_port_title">服务器端口:</string>
 	<string name="server_setting_port">输入服务器的端口</string>
+	<string name="server_setting_default">默认</string>
 	<string name="server_setting_btn">保存</string>
 
 	<string name="camera_settting_title">摄像机设置</string>
@@ -345,4 +347,7 @@
 	<string name="vod_last_page">现在已经是最后一页了</string>
 	<string name="play_play_error_msg_title">播放失败</string>
 	<string name="play_play_error_msg_msg">播放失败，wifi信号弱，请稍后尝试</string>
+
+	<string name="center_title_name">数据中心</string>
+	<string name="center_setting_set">设置</string>
 </resources>

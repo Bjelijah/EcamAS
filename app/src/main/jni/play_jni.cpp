@@ -566,7 +566,7 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setPlayBackTime
 
 
 JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
-        (JNIEnv *, jclass, jint isPlayBack,jint slot,jint is_sub){
+        (JNIEnv *, jclass,jint isCrypto, jint isPlayBack,jint slot,jint is_sub){
     if(res == NULL)return false;
     hwplay_init(1,0,0);
     RECT area;
@@ -582,7 +582,12 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
     }
     LOGI("net ready play get live stream head vdec_code=");
     LOGE(" code= 0x%x",media_head.vdec_code);
-    media_head.vdec_code = VDEC_HISH264;
+    if (isCrypto==1){
+        media_head.vdec_code = VDEC_H264;
+    }else{
+        media_head.vdec_code = VDEC_HISH264;
+    }
+
     PLAY_HANDLE  ph = hwplay_open_stream((char*)&media_head,sizeof(media_head),1024*1024,isPlayBack,area);
     hwplay_open_sound(ph);
     hwplay_register_source_data_callback(ph,on_source_callback,0);
@@ -650,6 +655,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlay
 
 
     PLAY_HANDLE  ph = hwplay_open_stream((const char*)&media_head,sizeof(media_head),1024*1024,isPlayBack,area);
+
     res->play_handle = ph;
 
     //hwplay_set_max_framenum_in_buf(ph,is_playback?25:5);
@@ -706,7 +712,10 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_stopView
     LOGI("hwplay_stop ret=%d\n",ret);
     ret = hwplay_close_sound(res->play_handle);
     LOGI("hwplay_close_sound ret = %d\n",ret);
+
     //hwnet_close_live_stream(res->live_stream_handle);
+
+    hwplay_clear_stream_buf(res->play_handle);
     res->is_exit = 1;
     res->bKeep = 0;
 
@@ -1286,9 +1295,9 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transDeinit
     }
 }
 
-JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transConnect
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_transConnect
         (JNIEnv *env, jclass, jint type, jstring id, jstring name, jstring pwd){
-    if(g_transMgr==NULL)return;
+    if(g_transMgr==NULL)return false;
     const char * _id = env->GetStringUTFChars(id,0);
     const char * _name = env->GetStringUTFChars(name,0);
     const char * _pwd = env->GetStringUTFChars(pwd,0);
@@ -1298,7 +1307,8 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transConnect
     env->ReleaseStringUTFChars(id,_id);
     env->ReleaseStringUTFChars(name,_name);
     env->ReleaseStringUTFChars(pwd,_pwd);
-    LOGI("trans connect ok");
+    LOGI("trans connect end");
+    return ret==0?true:false;
 }
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transDisconnect
@@ -1353,6 +1363,13 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transSetCallbackMethodName
     }
     env->ReleaseStringUTFChars(method,_mehtod);
 }
+
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transSetUseSSL
+        (JNIEnv *, jclass, jboolean useSSL){
+    if (useSSL)return;
+    trans_set_no_use_ssl();
+}
+
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transSubscribe
         (JNIEnv *env, jclass, jstring jsonStr, jint jsonLen){
@@ -1730,7 +1747,6 @@ JNIEXPORT jstring JNICALL Java_com_howell_jni_JniUtil_ecamPrepareSDP
         (JNIEnv *env, jclass){
     if (g_ecamMgr==NULL||g_ecamMgr->context==NULL) return NULL;
     char *local_sdp = ecam_stream_req_prepare_sdp(g_ecamMgr->req,g_ecamMgr->context);
-    LOGE("local_sdp= %s\n",local_sdp);
     return env->NewStringUTF((const char *)local_sdp);
 }
 

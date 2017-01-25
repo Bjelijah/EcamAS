@@ -41,8 +41,9 @@ public class PlayBackActivity extends BasePlayActivity implements View.OnClickLi
     }
 
     private void initPlayBackView(){
-        mReplaySeekBar.setVisibility(View.VISIBLE);
-        mPause.setVisibility(View.VISIBLE);
+        boolean isAllow = PlayAction.getInstance().isSeekBarAllow();
+        mReplaySeekBar.setVisibility(isAllow?View.VISIBLE:View.GONE);
+        mPause.setVisibility(isAllow?View.VISIBLE:View.GONE);
         mStreamChange.setVisibility(View.GONE);
         mBtTalk.setVisibility(View.GONE);
         mVodList.setVisibility(View.GONE);
@@ -150,10 +151,10 @@ public class PlayBackActivity extends BasePlayActivity implements View.OnClickLi
         long curTimestamp = JniUtil.getCurPlayTimestamp();
         long offset = curTimestamp - begTimestamp;
 
+        Log.i("123","offset=            "+offset);
         if (mLastProgressOffset!=offset) {
             mReplaySeekBar.setProgress((int) offset);
             mLastProgressOffset = offset;
-
 
         }
     }
@@ -169,6 +170,7 @@ public class PlayBackActivity extends BasePlayActivity implements View.OnClickLi
         PlayAction.getInstance().setPlayBackKeepProgress(true);
         int progress = seekBar.getProgress();
         mReplaySeekBar.setSeekBarText(translateTime(progress));
+        mHandler.removeMessages(MSG_PLAY_PLAY_BACK_FUN);
     }
 
     @Override
@@ -177,5 +179,6 @@ public class PlayBackActivity extends BasePlayActivity implements View.OnClickLi
         int progress = seekBar.getProgress();
         mLastProgressOffset = progress;
         PlayAction.getInstance().playBackRePlay(mCurBeg,progress);
+        mHandler.sendEmptyMessageDelayed(MSG_PLAY_PLAY_BACK_FUN,1000);
     }
 }

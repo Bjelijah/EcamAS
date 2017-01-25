@@ -15,11 +15,16 @@ import com.howell.utils.PhoneConfig;
 import com.howell.utils.SDCardUtils;
 import com.howell.utils.ServerConfigSp;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.IllegalFormatException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Administrator on 2016/12/16.
@@ -33,6 +38,7 @@ public class H265Mgr implements ICam {
 
     private String mTurnServiceIP = null;
     private int mTurnServicePort = -1;
+    private boolean mIsTurnCrypto = true;
     private String mSessionID = null;
     private int mUnexpectNoFrame = 0;
     boolean mIsTransDeinit = false;
@@ -43,7 +49,7 @@ public class H265Mgr implements ICam {
     private MyTimerTask myTimerTask = null;
 
     private static final int F_TIME = 1;
-
+    ArrayList<VODRecord> mList = null;
 
     @Override
     public void init(Context context, CameraItemBean bean) {
@@ -99,8 +105,12 @@ public class H265Mgr implements ICam {
 
     @Override
     public boolean loginCam() {
-        mTurnServiceIP = ServerConfigSp.loadServerIP(mContext);
-        mTurnServicePort = ServerConfigSp.loadServerPort(mContext);
+        try {
+            initServerInfo();
+        }catch (NullPointerException e){
+            return false;
+        }
+
         if (mTurnServiceIP==null||mTurnServicePort==0) return false;
 
 
@@ -122,7 +132,7 @@ public class H265Mgr implements ICam {
 
         Log.i("123", "castr="+castr);
         JniUtil.transSetCrtPaht(castr, clstr, keystr);
-
+        JniUtil.transSetUseSSL(mIsTurnCrypto);
         try {
             ca.close();
             client.close();
@@ -135,7 +145,9 @@ public class H265Mgr implements ICam {
         String id = PhoneConfig.getPhoneUid(mContext);//FIXME  android id
         String imei = PhoneConfig.getPhoneDeveceID(mContext);  //imei
 
-        transConnect(type, imei, LoginAction.getInstance().getmInfo().getAccount(), LoginAction.getInstance().getmInfo().getPassword());
+        if(!transConnect(type, imei, LoginAction.getInstance().getmInfo().getAccount(), LoginAction.getInstance().getmInfo().getPassword())){
+            return false;
+        }
 
         Log.i("PlayManager", "transConnect ok");
 
@@ -143,7 +155,6 @@ public class H265Mgr implements ICam {
         AudioAction.getInstance().playAudio();
 
 
-        Log.i("123", "login task exe over");
         return true;
     }
 
@@ -184,6 +195,8 @@ public class H265Mgr implements ICam {
         return true;
     }
 
+
+
     private void transInit(String ip,int port){
         JniUtil.transInit(ip, port);
     }
@@ -195,8 +208,8 @@ public class H265Mgr implements ICam {
         }
     }
 
-    private void transConnect(int type,String id,String name,String pwd){
-        JniUtil.transConnect(type, id, name, pwd);
+    private boolean transConnect(int type,String id,String name,String pwd){
+        return JniUtil.transConnect(type, id, name, pwd);
     }
 
     private void transSubscribe(String jsonStr,int jsonLen){
@@ -226,6 +239,17 @@ public class H265Mgr implements ICam {
             myTimerTask = null;
         }
     }
+
+
+    public void onRecordFileList(String jsonStr){
+        try {
+            mList = JsonUtil.parseRecordFileList(new JSONObject(jsonStr));
+//            handler.sendEmptyMessage(MSG_RECORD_LIST_GET);//FIXME
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public boolean reLink(){
@@ -325,12 +349,17 @@ public class H265Mgr implements ICam {
 
     @Override
     public ArrayList<VODRecord> getVideoList() {
-        return null;
+        return mList;
     }
 
     @Override
     public boolean playPause(boolean b) {
         return JniUtil.pause(b);
+    }
+
+    @Override
+    public boolean isPlayBackCtrlAllow() {
+        return false;
     }
 
 
@@ -352,7 +381,14 @@ public class H265Mgr implements ICam {
 //        mHandler.sendEmptyMessageDelayed(PlayerActivity.MSG_DISCONNECT_UNEXPECT, 5000);
     }
 
-
+    private void initServerInfo() throws NullPointerException {
+        mTurnServiceIP = ServerConfigSp.loadServerIP(mContext);
+        mTurnServicePort = ServerConfigSp.loadServerPort(mContext);
+        mIsTurnCrypto = ServerConfigSp.loadServerIsCrypto(mContext);
+        if (mTurnServiceIP==null){
+            throw new NullPointerException();
+        }
+    }
 
 
 

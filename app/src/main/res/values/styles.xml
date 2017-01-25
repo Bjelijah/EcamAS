@@ -242,7 +242,10 @@
         </item>
     </style>
 
+    <style name="myWebTitle" parent="@style/Base.TextAppearance.AppCompat.Title">
+        <item name="android:textSize">13sp</item>
 
+    </style>
 
 
 

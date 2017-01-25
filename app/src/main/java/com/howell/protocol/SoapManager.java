@@ -960,6 +960,7 @@ public class SoapManager implements Serializable {
  	       	res.setNewDevVer(NewDevVer.toString());
     	}catch (Exception e) {
 				// TODO: handle exception
+			return null;
 		}
     	return res;
     }

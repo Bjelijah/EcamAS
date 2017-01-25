@@ -69,6 +69,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
 
     private final static long ID_DRAWER_UID = 0x00;
     private final static long ID_DRAWER_HOME = 0x01;
+    private final static long ID_DRAWER_CENTER = 0x02;
 
     private final static long ID_DRAWER_EXIT = 0xe0;
     private final static long ID_DRAWER_SERVER_ADDRESS = 0x10;
@@ -82,7 +83,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     private final static int MSG_HOME_IP = 0xf2;
     private final static int MSG_HOME_BIND = 0xf3;
     private final static int MSG_HOME_HELP = 0xf4;
-
+    private final static int MSG_HOME_CENTER = 0xf5;
 
 
     private AccountHeader headerResult;
@@ -111,6 +112,9 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                     break;
                 case MSG_HOME_HOME:
                     funHome();
+                    break;
+                case MSG_HOME_CENTER:
+                    funCenter();
                     break;
                 case MSG_HOME_IP:
                     funIP();
@@ -253,6 +257,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                 .withFullscreen(true)
                 .addDrawerItems(
                         new PrimaryDrawerItem().withName(R.string.home_drawer_item_home).withIcon(FontAwesome.Icon.faw_home).withIdentifier(ID_DRAWER_HOME),
+                        new PrimaryDrawerItem().withName(R.string.home_drawer_item_center).withIcon(FontAwesome.Icon.faw_cloud).withIdentifier(ID_DRAWER_CENTER),
 //                        new PrimaryDrawerItem().withName(R.string.drawer_item_free_play).withIcon(FontAwesome.Icon.faw_gamepad),
 //                        new PrimaryDrawerItem().withName(R.string.drawer_item_custom).withIcon(FontAwesome.Icon.faw_eye),
                         new SectionDrawerItem().withName(R.string.home_drawer_second_head),
@@ -370,6 +375,11 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         mViewPager.setCurrentItem(0);
     }
 
+    private void funCenter(){
+        Intent intent = new Intent(HomeExActivity.this,CenterActivity.class);
+        HomeExActivity.this.startActivity(intent);
+    }
+
     private void funIP(){
         Intent intent = new Intent(this,ServerSetActivity.class);
         startActivity(intent);
@@ -440,6 +450,8 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                 msg.what = MSG_HOME_EXIT;
             } else if (drawerItem.getIdentifier()==ID_DRAWER_HOME){
                 msg.what = MSG_HOME_HOME;
+            } else if(drawerItem.getIdentifier()==ID_DRAWER_CENTER){
+                msg.what = MSG_HOME_CENTER;
             } else if (drawerItem.getIdentifier() == ID_DRAWER_SERVER_ADDRESS){
                 msg.what = MSG_HOME_IP;
             } else if (drawerItem.getIdentifier() == ID_DRAWER_SERVER_BIND){

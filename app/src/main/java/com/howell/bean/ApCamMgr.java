@@ -10,6 +10,7 @@ import com.howell.activity.BasePlayActivity;
 import com.howell.db.ApDeviceDao;
 import com.howell.entityclass.VODRecord;
 import com.howell.jni.JniUtil;
+import com.howell.utils.ServerConfigSp;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,6 +42,7 @@ public class ApCamMgr implements ICam {
     private boolean mIsNetInit = false;
 
     int mCurCount = 0;//当前页的总文件数
+    int isCrypto = 0;
     String mLastDay = "";
 
 
@@ -114,8 +116,7 @@ public class ApCamMgr implements ICam {
 
     @Override
     public boolean loginCam() {
-
-
+        isCrypto = ServerConfigSp.loadServerIsCrypto(mContext)?1:0;
         return apLoginCamera();
     }
 
@@ -158,6 +159,11 @@ public class ApCamMgr implements ICam {
 
     @Override
     public boolean playBackReplay(long begOffset,long curProgress) {
+
+
+
+
+
         return false;
     }
 
@@ -277,8 +283,6 @@ public class ApCamMgr implements ICam {
 
 //        Log.i("123","~~~  endTime="+calendar.get(calendar.YEAR)  +" "+calendar.get(calendar.MONTH)+" "+calendar.get(calendar.DAY_OF_WEEK)+" "+calendar.get(calendar.DAY_OF_MONTH)+" "+calendar.get(calendar.DAY_OF_WEEK_IN_MONTH)+"  "
 //                +calendar.get(calendar.HOUR_OF_DAY)+" "+calendar.get(calendar.MINUTE)+"  "+calendar.get(calendar.SECOND)+" "+calendar.get(calendar.MILLISECOND));
-
-
     }
 
     @Override
@@ -329,6 +333,11 @@ public class ApCamMgr implements ICam {
     @Override
     public boolean playPause(boolean b) {
         return JniUtil.pause(b);
+    }
+
+    @Override
+    public boolean isPlayBackCtrlAllow() {
+        return false;
     }
 
 
@@ -397,7 +406,7 @@ public class ApCamMgr implements ICam {
     }
 
     private boolean apPlayViewCam(){
-        if(!JniUtil.netReadyPlay(mIsPlayBack,mCamBean.getChannelNo(),mIsSub)){
+        if(!JniUtil.netReadyPlay(isCrypto,mIsPlayBack,mCamBean.getChannelNo(),mIsSub)){
             return false;
         }
         JniUtil.playView();

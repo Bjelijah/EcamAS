@@ -42,7 +42,7 @@ public class JniUtil {
 	public static native boolean loginOut();//no using
 	public static native void setCallBackObj(Object o);
 	public static native void setPlayBackTime(ApTimeBean beg,ApTimeBean end);
-	public static native boolean netReadyPlay(int isPlayBack,int slot,int isSub);
+	public static native boolean netReadyPlay(int isCrypto,int isPlayBack,int slot,int isSub);
 	public static native boolean readyPlay(int vCodeFlag,int aCodeFlag,int isPlayBack);//vCodeFlag:0 ap,1 ecam,2 h265  //aCodeFlag 0 aac ,1g711u
 	public static native void releasePlay();
 	public static native void netStopPlay();
@@ -53,6 +53,7 @@ public class JniUtil {
 	public static native long getCurPlayTimestamp();
 	public static native long getBegPlayTimestamp();
 	public static native void keepTimestamp();//before playView()
+
 	//net ptz
 	public static native boolean netPtzMove(int flag);//flag: 0 1 2 3 4 停 上下左右
 	public static native boolean netPtzCam(int flag);//0 1 2 stop tele wide
@@ -73,8 +74,9 @@ public class JniUtil {
 	public static native void transInit(String ip,int port);
 	public static native void transSetCallBackObj(Object o,int flag);
 	public static native void transSetCallbackMethodName(String methodName,int flag);
+	public static native void transSetUseSSL(boolean useSSL);
 	public static native void transDeinit();
-	public static native void transConnect(int type,String id,String name,String pwd);
+	public static native boolean transConnect(int type,String id,String name,String pwd);
 	public static native void transDisconnect();
 	public static native void transSubscribe(String jsonStr,int jsonLen);
 	public static native void transUnsubscribe();

@@ -98,6 +98,10 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
         notifyDataSetChanged();
     }
 
+    public void removeSllData(int pos){
+        mSllList.remove(pos);
+    }
+
     public List<?>getData(){
         return mList;
     }
@@ -179,6 +183,8 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
          //   holder.ivDelete.setVisibility(LoginAction.getInstance().ismIsGuest() ? View.GONE : View.VISIBLE);
         }else{
         }
+        holder.sll.scrollAuto(SwipeLinearLayout.DIRECTION_SHRINK);
+        holder.getItemView().setVisibility(View.VISIBLE);// broke vew may be set item View.Invisible
     }
 
     private void initClick(final ViewHolder holder, final int pos, final CameraItemBean item){
@@ -303,19 +309,12 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
         View ll_back;
         View ll_top;
         View itemView;
-
         TextView tvName;
         ImageView ivCamera;
         ImageView ivWifi;
         ImageView ivInOffLine;
-
-
-
         BrokenView mBrokenView;
         BrokenTouchListener mColorfulListener;
-
-
-
         //back
         FloatingActionButton ivReplay,ivSetting,ivInfo,ivDelete;
         LinearLayout llDelete;
@@ -334,18 +333,12 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
             sll = (SwipeLinearLayout) itemView.findViewById(R.id.item_camera_sll);
             ll_back = itemView.findViewById(R.id.item_camera_bk);
             ll_top = itemView.findViewById(R.id.item_camera_top);
-
             tvName = (TextView) itemView.findViewById(R.id.item_camera_name);
             this.itemView = itemView;
             sll.setOnSwipeListener(DeviceRecyclerViewAdapter.this);
             ivCamera = (ImageView) itemView.findViewById(R.id.item_camera_iv_picture);
             ivWifi = (ImageView) itemView.findViewById(R.id.item_camera_iv_wifi_idensity);
             ivInOffLine = (ImageView) itemView.findViewById(R.id.item_camera_iv_offline);
-
-
-
-
-
         }
     }
 

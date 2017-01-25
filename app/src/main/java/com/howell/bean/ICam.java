@@ -57,7 +57,7 @@ public interface ICam {
 //    boolean getVideoList(String start,String end,int streamType);
     ArrayList<VODRecord> getVideoList();
     boolean playPause(boolean b);
-
+    boolean isPlayBackCtrlAllow();
 
     interface IStream{
         void showStreamSpeed(final int kbitPerSec);

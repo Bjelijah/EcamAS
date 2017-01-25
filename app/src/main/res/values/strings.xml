@@ -275,11 +275,12 @@
     <string name="home_drawer_logout">Exit</string>
 
     <string name="home_drawer_item_home">Home</string>
+    <string name="home_drawer_item_center">Center</string>
     <string name="home_drawer_second_head">More Setting</string>
     <string name="home_drawer_connect">Communication Mode</string>
     <string name="home_drawer_turn_server">Turn Server</string>
     <string name="home_drawer_encrypt">encrypt</string>
-    <string name="home_drawer_server_address">Server Address</string>
+    <string name="home_drawer_server_address">Turn Server Address</string>
     <string name="home_drawer_server_bind">Bind My Phone</string>
     <string name="home_fragment_devices">DeviceList</string>
     <string name="home_fragment_medias">Media</string>
@@ -337,6 +338,7 @@
     <string name="server_setting_ip">Input Server IP OR Address</string>
     <string name="server_setting_port_title">ServerPort:</string>
     <string name="server_setting_port">Input Server Port</string>
+    <string name="server_setting_default">Default</string>
     <string name="server_setting_btn">Save</string>
 
     <string name="camera_settting_title">Camera Setting</string>
@@ -372,8 +374,8 @@
     <string name="play_play_error_msg_msg">Play Error case POOR WIFI,please try again later</string>
     <string name="vod_last_page">now it is last page</string>
 
-
-
+    <string name="center_title_name">Data Center</string>
+    <string name="center_setting_set">Setting</string>
 
 
     	<string name="lorem">

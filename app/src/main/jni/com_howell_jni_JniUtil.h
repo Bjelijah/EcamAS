@@ -194,10 +194,10 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_setPlayBackTime
 /*
  * Class:     com_howell_jni_JniUtil
  * Method:    netReadyPlay
- * Signature: (III)Z
+ * Signature: (IIII)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
-  (JNIEnv *, jclass, jint, jint, jint);
+  (JNIEnv *, jclass, jint, jint, jint, jint);
 
 /*
  * Class:     com_howell_jni_JniUtil
@@ -369,6 +369,14 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transSetCallbackMethodName
 
 /*
  * Class:     com_howell_jni_JniUtil
+ * Method:    transSetUseSSL
+ * Signature: (Z)V
+ */
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transSetUseSSL
+  (JNIEnv *, jclass, jboolean);
+
+/*
+ * Class:     com_howell_jni_JniUtil
  * Method:    transDeinit
  * Signature: ()V
  */
@@ -378,9 +386,9 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transDeinit
 /*
  * Class:     com_howell_jni_JniUtil
  * Method:    transConnect
- * Signature: (ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+ * Signature: (ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)Z
  */
-JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transConnect
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_transConnect
   (JNIEnv *, jclass, jint, jstring, jstring, jstring);
 
 /*

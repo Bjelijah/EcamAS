@@ -56,6 +56,11 @@ public class PlayAction {
         return mPlayBackKeepProgress;
     }
 
+    public boolean isSeekBarAllow(){
+        if (mCamMgr==null)return false;
+        return mCamMgr.isPlayBackCtrlAllow();
+    }
+
 
     public void mute(){
         AudioAction.getInstance().audioSoundMute();

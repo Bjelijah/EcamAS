@@ -224,9 +224,18 @@
 
 
         <activity android:name="com.howell.activity.HomeExActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/MyAppThemeHome"
             />
+        <!--android:theme="@style/MyAppThemeHome"-->
+        <activity android:name="com.howell.activity.CenterActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+                android:theme="@style/MyAppThemeHome"
+            />
+
+
 
         <activity android:name="com.howell.activity.AddNewCamera"
             android:screenOrientation="portrait"

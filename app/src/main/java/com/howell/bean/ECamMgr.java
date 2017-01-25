@@ -344,12 +344,18 @@ public class ECamMgr implements ICam,IConst {
         return JniUtil.pause(b);
     }
 
+    @Override
+    public boolean isPlayBackCtrlAllow() {
+        return true;
+    }
+
     private boolean checkVerIsNew(){
         String account = LoginAction.getInstance().getmInfo().getAccount();
         String session = LoginAction.getInstance().getmInfo().getLr().getLoginSession();
         String devId = mCamBean.getDeviceId();
         GetDevVerReq req = new GetDevVerReq(account,session,devId);
         GetDevVerRes res = SoapManager.getInstance().getGetDevVerRes(req);
+        if (res==null) return false;
         Log.e("123", "CurDevVer:"+res.getCurDevVer());
         return DeviceVersionUtils.isNewVersionDevice(res.getCurDevVer());
 
@@ -376,8 +382,6 @@ public class ECamMgr implements ICam,IConst {
                 long [] sdpTime = JniUtil.ecamGetSdpTime();
                 PlayAction.getInstance().fillPlaybackSDPBegEndTime(sdpTime[0],sdpTime[1]);
             }
-
-
 
             auType = JniUtil.ecamGetAudioType();
         }else {
