@@ -76,6 +76,8 @@ public class MediaFragment extends HomeBaseFragment implements MediaRecyclerView
     private ArrayList<String> getFileName(File file){
         File[] fileArray = file.listFiles();
         ArrayList<String>   list = new ArrayList<String>();
+        Log.i("123","fileArray="+fileArray);
+        if (fileArray==null)return list;
         for (File f : fileArray) {
             if(f.isFile() && !list.contains(f.getPath())){
                 list.add(f.getPath());
