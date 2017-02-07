@@ -39,7 +39,10 @@ public interface IConst {
 
 	final String DEFAULT_TURN_SERVER_IP = "180.166.7.214";
 	final int DEFAULT_TURN_SERVER_PORT = 8862;
-	
+
+	final String DEFAULT_CENTER_IP = "116.228.67.70";
+	final int DEFAULT_CENTER_PORT = 8800;
+
 	final static int MSG_LOGIN_OK 				= 0xa0;
 	final static int MSG_LOGIN_FAIL 			= 0xa1;
 	final static int MSG_CONNECT_OK 			= 0xa2;

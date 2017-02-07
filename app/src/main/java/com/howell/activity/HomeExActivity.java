@@ -47,6 +47,7 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.holder.ImageHolder;
 import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
 import com.mikepenz.materialdrawer.model.ExpandableDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
@@ -208,12 +209,14 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     private void buildHead(boolean compact, Bundle savedInstanceState){
         List<IProfile> profileList = getProfile();
 
-//        com.mikepenz.materialdrawer.holder.ImageHolder imageHolder = new com.mikepenz.materialdrawer.holder.ImageHolder("https://unsplash.it/600/300/?random");
+//        com.mikepenz.materialdrawer.holder.ImageHolder imageHolder = new com.mikepenz.materialdrawer.holder.ImageHolder("https://unsplash.it/300/150/?random");
+
 
         headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackground(R.drawable.header)
+//                .withHeaderBackground(R.drawable.header)
 //                .withHeaderBackground(R.mipmap.background_poly)
+                .withHeaderBackground(R.color.home_bk_dark)
                 .withCompactStyle(compact)
                 .addProfiles(profileList)
                 .withSavedInstance(savedInstanceState)

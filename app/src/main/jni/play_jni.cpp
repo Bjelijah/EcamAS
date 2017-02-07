@@ -718,7 +718,8 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_stopView
     hwplay_clear_stream_buf(res->play_handle);
     res->is_exit = 1;
     res->bKeep = 0;
-
+    res->time_stamp_beg = 0;
+    res->time_stamp = 0;
 }
 
 JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetStreamLenSomeTime

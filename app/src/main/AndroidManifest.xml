@@ -202,6 +202,9 @@
         <activity android:name="com.howell.activity.ServerSetActivity"
             android:theme="@style/MyAppThemeServerAddress"/>
 
+        <activity android:name="com.howell.activity.CenterSetActivity"
+            android:theme="@style/MyAppThemeServerAddress" />
+
         <activity android:name="com.howell.activity.DeviceWifiActivity"
             android:theme="@style/MyAppThemeListenDevice"
             />

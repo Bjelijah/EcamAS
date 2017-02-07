@@ -350,4 +350,9 @@
 
 	<string name="center_title_name">数据中心</string>
 	<string name="center_setting_set">设置</string>
+	<string name="center_setting_title">中心设置</string>
+	<string name="center_setting_ip_title">中心IP或域名:</string>
+	<string name="center_setting_ip">输入IP或域名</string>
+	<string name="center_setting_port_title">中心端口:</string>
+	<string name="center_setting_port">输入端口</string>
 </resources>

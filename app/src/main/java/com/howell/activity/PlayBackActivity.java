@@ -147,7 +147,9 @@ public class PlayBackActivity extends BasePlayActivity implements View.OnClickLi
         mHandler.sendEmptyMessageDelayed(MSG_PLAY_PLAY_BACK_FUN,200);
         if (PlayAction.getInstance().getPlayBackKeepProgress())return;
         long begTimestamp = JniUtil.getBegPlayTimestamp();
-        if (begTimestamp == 0)return;
+        if (begTimestamp == 0) {
+            return;
+        }
         long curTimestamp = JniUtil.getCurPlayTimestamp();
         long offset = curTimestamp - begTimestamp;
 
@@ -155,7 +157,6 @@ public class PlayBackActivity extends BasePlayActivity implements View.OnClickLi
         if (mLastProgressOffset!=offset) {
             mReplaySeekBar.setProgress((int) offset);
             mLastProgressOffset = offset;
-
         }
     }
 

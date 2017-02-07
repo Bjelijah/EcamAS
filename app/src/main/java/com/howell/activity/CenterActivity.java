@@ -124,6 +124,9 @@ public class CenterActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.center_setting_action_set:
+                //TODO setting activity
+                Intent intent = new Intent(this,CenterSetActivity.class);
+                startActivity(intent);
                 break;
             default:
                 break;

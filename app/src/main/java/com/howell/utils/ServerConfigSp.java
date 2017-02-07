@@ -59,5 +59,22 @@ public class ServerConfigSp {
         return sp.getBoolean("server_crypto",false);
     }
 
+    public static void saveCenterInfo(Context context,String ip,int port){
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("center_ip",ip);
+        editor.putInt("center_port",port);
+        editor.commit();
+    }
+
+    public static String loadCenterIP(Context context){
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        return sp.getString("center_ip",null);
+    }
+
+    public static int loadCenterPort(Context context){
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        return sp.getInt("center_port",0);
+    }
 
 }
