@@ -18,7 +18,9 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.howell.action.CenterAction;
 import com.howell.ecam.R;
+import com.howell.utils.ServerConfigSp;
 
 /**
  * Created by Administrator on 2017/1/25.
@@ -31,6 +33,7 @@ public class WebFragment extends Fragment {
     private String mErrorHtml = "";
     private View myView = null;
     private WebChromeClient.CustomViewCallback myCallback = null;
+    private String mURL;
 
     @Nullable
     @Override
@@ -49,6 +52,15 @@ public class WebFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (mWebView!=null && CenterAction.getInstance().ismIsUpdata()){
+            mWebView.loadUrl(getURL());
+            CenterAction.getInstance().setmIsUpdata(false);
+        }
+    }
+
+    @Override
     public void onPause() {
         Log.i("123","fragment pause");
         super.onPause();
@@ -62,14 +74,23 @@ public class WebFragment extends Fragment {
 
     public void initWeb(){
         mWebView = (WebView) mView.findViewById(R.id.fragment_web_webview);
-        mWebView.loadUrl("http://116.228.67.70:8800/");
+        if (getURL()==null)return;
+        mWebView.loadUrl(mURL);
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.requestFocus();
         mWebView.setWebViewClient(new MyWebViewClient());
         mWebView.setWebChromeClient(new MyWebChromeClient());
         mWebView.addJavascriptInterface(new MyWebClickCallback(),"demo");
-
         mErrorHtml = "<html><body><h1>Page not find！</h1></body></html>";
+    }
+
+    @Nullable
+    private String getURL(){
+        String ip = ServerConfigSp.loadCenterIP(getActivity().getApplicationContext());
+        int port = ServerConfigSp.loadCenterPort(getActivity().getApplicationContext());
+        if (ip==null)return null;
+        mURL = "http://"+ip+":"+port;
+        return mURL;
     }
 
     public boolean clickBack(){
@@ -81,7 +102,7 @@ public class WebFragment extends Fragment {
     }
 
     public boolean returnHomePage(){
-        mWebView.loadUrl("http://116.228.67.70:8800/");
+        mWebView.loadUrl(mURL);
         return true;
     }
 
