@@ -17,11 +17,8 @@ import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.LinearLayout;
 
-import com.howell.activity.CenterActivity;
 import com.howell.ecam.R;
-import com.howell.utils.PhoneConfig;
 
 /**
  * Created by Administrator on 2017/1/25.
@@ -73,12 +70,7 @@ public class WebFragment extends Fragment {
         mWebView.addJavascriptInterface(new MyWebClickCallback(),"demo");
 
         mErrorHtml = "<html><body><h1>Page not find！</h1></body></html>";
-
-
-
     }
-
-
 
     public boolean clickBack(){
         if (mWebView.canGoBack()){
