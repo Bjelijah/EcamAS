@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.howell.activity.BigImages;
+import com.howell.activity.BigImagesActivity;
 import com.howell.adapter.MediaRecyclerViewAdapter;
 import com.howell.bean.MediaItemBean;
 import com.howell.ecam.R;
@@ -106,7 +107,7 @@ public class MediaFragment extends HomeBaseFragment implements MediaRecyclerView
     public void onItemClickListener(View view,int pos) {
         Log.i("123","media on item click  pos="+pos);
         //TODO : show big picture;
-        Intent intent = new Intent(getContext(), BigImages.class);
+        Intent intent = new Intent(getContext(), BigImagesActivity.class);
         intent.putExtra("position", pos);
         intent.putStringArrayListExtra("arrayList", mPicPath);
         //startActivity(intent);

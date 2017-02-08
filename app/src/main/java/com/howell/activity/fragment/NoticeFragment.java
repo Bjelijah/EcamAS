@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.howell.action.NoticeAction;
 import com.howell.activity.BigImages;
+import com.howell.activity.BigImagesActivity;
 import com.howell.adapter.NoticeRecyclerViewAdapter;
 import com.howell.bean.NoticeItemBean;
 import com.howell.ecam.R;
@@ -120,7 +121,7 @@ public class NoticeFragment extends HomeBaseFragment implements BaseHeaderView.O
     @Override
     public void onPicClickListener(int pos, int index,ArrayList<String>picPath) {
        if (picPath==null||picPath.size()==0)return;
-        Intent intent = new Intent(getContext(), BigImages.class);
+        Intent intent = new Intent(getContext(), BigImagesActivity.class);
         intent.putExtra("position", index);
         intent.putStringArrayListExtra("arrayList", picPath);
         getActivity().overridePendingTransition(R.anim.zoomin, R.anim.zoomout);

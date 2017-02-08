@@ -81,8 +81,6 @@ public class CenterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_center);
         initToobar();
         initView();
-
-
         buildDrawer(savedInstanceState);
     }
 
@@ -198,13 +196,4 @@ public class CenterActivity extends AppCompatActivity {
             return false;
         }
     }
-
-
-
-
-
-
-
-
-
 }

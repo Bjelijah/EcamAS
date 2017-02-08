@@ -154,7 +154,7 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
 //        GoogleMaterial.Icon.gmd_arrow_left_bottom
 
 //                gmd_chevron_left
-        mTb.setNavigationIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_chevron_left).actionBar().color(Color.WHITE));
+//        mTb.setNavigationIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_chevron_left).actionBar().color(Color.WHITE));
 //        mTb.setOverflowIcon(new IconicsDrawable(this,GoogleMaterial.Icon.gmd_refresh_sync).actionBar().color(Color.WHITE));
 //        mTb.setNavigationIcon(getResources().getDrawable(R.mipmap.ic_theaters_white_24dp));
         mTb.showOverflowMenu();

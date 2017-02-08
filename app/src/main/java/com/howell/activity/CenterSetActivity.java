@@ -71,7 +71,8 @@ public class CenterSetActivity extends AppCompatActivity implements View.OnClick
 
     private void initToolbar(){
         mTb = (Toolbar) findViewById(R.id.center_set_toolbar);
-        mTb.setNavigationIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_chevron_left).actionBar().color(Color.WHITE));
+        //FIXME we ues default navigation icon for back button
+//        mTb.setNavigationIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_chevron_left).actionBar().color(Color.WHITE));
 
 //        mTb.setNavigationIcon(getResources().getDrawable(R.mipmap.ic_theaters_white_24dp));
         // mTb.showOverflowMenu();

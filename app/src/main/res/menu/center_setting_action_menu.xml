@@ -5,8 +5,8 @@
     <item
         android:id="@+id/center_setting_action_set"
         android:title="@string/center_setting_set"
+
         app:showAsAction="never"
+
         />
-
-
 </menu>

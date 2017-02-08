@@ -87,16 +87,13 @@ public class PlayFunFragment extends Fragment implements OnClickListener {
 			break;
 		}
 	}
-	
-	
-	
+
 	private void photoFun(){
 		if(!SDCardUtils.existSDCard()){
 			MessageUtiles.postToast(context, getResources().getString(R.string.no_sdcard),2000);
 			return;
 		}
 		PlayAction.getInstance().catchPic();
-
 	}
 	
 	private void soundFun(){

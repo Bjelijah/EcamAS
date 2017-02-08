@@ -33,14 +33,13 @@ public class WebFragment extends Fragment {
     private String mErrorHtml = "";
     private View myView = null;
     private WebChromeClient.CustomViewCallback myCallback = null;
-    private String mURL;
+    private String mURL = "";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.i("123","on web fragment onCreateView");
         mView = inflater.inflate(R.layout.fragment_web,container,false);
-
         initWeb();
         return mView;
     }
@@ -102,7 +101,13 @@ public class WebFragment extends Fragment {
     }
 
     public boolean returnHomePage(){
-        mWebView.loadUrl(mURL);
+        if (CenterAction.getInstance().ismIsUpdata()){
+            mWebView.loadUrl(getURL());
+            CenterAction.getInstance().setmIsUpdata(false);
+        }else{
+            mWebView.loadUrl(mURL);
+        }
+
         return true;
     }
 
@@ -159,9 +164,7 @@ public class WebFragment extends Fragment {
             parent.addView(view);
             myView = view;
             myCallback = callback;
-
             setFullScreen();
-
         }
 
         @Override

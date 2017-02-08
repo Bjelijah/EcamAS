@@ -81,7 +81,7 @@ public class CaptureActivity extends AppCompatActivity implements Callback,OnCli
 
 	private void initToolBar(){
 		mTb = (Toolbar) findViewById(R.id.camera_scan_toolbar);
-		mTb.setNavigationIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_chevron_left).actionBar().color(Color.WHITE));
+//		mTb.setNavigationIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_chevron_left).actionBar().color(Color.WHITE));
 
 //        mTb.setNavigationIcon(getResources().getDrawable(R.mipmap.ic_theaters_white_24dp));
 		// mTb.showOverflowMenu();

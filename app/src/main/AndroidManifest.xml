@@ -238,7 +238,10 @@
                 android:theme="@style/MyAppThemeHome"
             />
 
-
+        <activity android:name="com.howell.activity.BigImagesActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/MyAppThemeHome.BigImage"
+            />
 
         <activity android:name="com.howell.activity.AddNewCamera"
             android:screenOrientation="portrait"

@@ -128,7 +128,7 @@ public class DeviceWifiActivity extends AppCompatActivity {
 
     private void initToobar(){
         mTb = (Toolbar) findViewById(R.id.listen_device_tb);
-        mTb.setNavigationIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_chevron_left).actionBar().color(Color.WHITE));
+//        mTb.setNavigationIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_chevron_left).actionBar().color(Color.WHITE));
 
         mTb.showOverflowMenu();
         mTb.setTitle(getString(R.string.add_camera_title));

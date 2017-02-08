@@ -60,7 +60,7 @@ public class ApActivity extends AppCompatActivity {
 
     private void initToolbar(){
         mTb = (Toolbar) findViewById(R.id.add_ap_toolbar);
-        mTb.setNavigationIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_chevron_left).actionBar().color(Color.WHITE));
+//        mTb.setNavigationIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_chevron_left).actionBar().color(Color.WHITE));
 
 //        mTb.setNavigationIcon(getResources().getDrawable(R.mipmap.ic_theaters_white_24dp));
         // mTb.showOverflowMenu();
