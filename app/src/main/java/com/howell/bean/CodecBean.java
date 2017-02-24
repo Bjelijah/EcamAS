@@ -11,6 +11,7 @@ public class CodecBean {
     int audioCodec;
     int videoCodec;
 
+
     public int getAudioChannels() {
         return audioChannels;
     }
