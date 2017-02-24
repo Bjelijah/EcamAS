@@ -43,7 +43,7 @@ public class JniUtil {
 	public static native void setCallBackObj(Object o);
 	public static native void setPlayBackTime(ApTimeBean beg,ApTimeBean end);
 	public static native boolean netReadyPlay(int isCrypto,int isPlayBack,int slot,int isSub);
-	public static native boolean readyPlay(int vCodeFlag,int aCodeFlag,int isPlayBack);//vCodeFlag:0 ap,1 ecam,2 h265  //aCodeFlag 0 aac ,1g711u
+	public static native boolean readyPlay(Object CodecBean,int isPlayBack);//vCodeFlag:0 ap,1 ecam,2 h265  //aCodeFlag 0 aac ,1g711u
 	public static native void releasePlay();
 	public static native void netStopPlay();
 	public static native void stopView();

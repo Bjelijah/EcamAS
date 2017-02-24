@@ -13,13 +13,19 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.Settings.Secure;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.howell.action.LoginAction;
+import com.howell.bean.Custom;
+import com.howell.bean.UserLoginDBBean;
+import com.howell.db.UserLoginDao;
 import com.howell.ecam.R;
 import com.howell.protocol.SoapManager;
 import com.howell.utils.NetWorkUtils;
+import com.howell.utils.ServerConfigSp;
 
+import java.util.List;
 import java.util.Set;
 
 import cn.jpush.android.api.JPushInterface;
@@ -67,7 +73,6 @@ public class LogoActivity extends Activity implements TagAliasCallback,LoginActi
 			isFirstLogin = sharedPreferences.getBoolean("isFirstLogin", true);
 			account = sharedPreferences.getString("account", "");
 			password = sharedPreferences.getString("password", "");
-
 			Log.e("123","isFirstlogin="+isFirstLogin+"  account="+account+"   password="+password);
 
 			//如果用户以前登录过app（配置文件中用户名，密码不为空）则直接登录
@@ -148,8 +153,11 @@ public class LogoActivity extends Activity implements TagAliasCallback,LoginActi
 //							intent.putExtra("intentFlag", 2);
 //							startActivity(intent);
 //						}
+
+
+						Custom c = getCustomFromName(account,password);
 						LoginAction.getInstance().setContext(LogoActivity.this).regLoginResCallback(LogoActivity.this)
-								.Login(account,password);
+								.Login(account,password,c);
 
 
 						break;
@@ -174,6 +182,24 @@ public class LogoActivity extends Activity implements TagAliasCallback,LoginActi
 
 		}
 	}
+
+	@Nullable
+	private Custom getCustomFromName(String userName,String password){
+		Custom c = null;
+		UserLoginDao dao = new UserLoginDao(this, "user.db", 1);
+		if(dao.findByName(userName)){
+			List<UserLoginDBBean> list = dao.queryByName(userName);
+			for(UserLoginDBBean b:list){
+				if (b.getUserPassword().equals(password)){
+					c = b.getC();
+					break;
+				}
+			}
+		}
+		return c;
+	}
+
+
 
 	//设置推送别名（老版本用ANDROID_ID作为别名）
 	private void setAlias(){

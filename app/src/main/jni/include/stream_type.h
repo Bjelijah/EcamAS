@@ -102,6 +102,8 @@ typedef enum{
 	ADEC_AAC =						0x0a,
 	ADEC_G726_32 =					0x0b,
 	VDEC_HIS_H265  =                0x0f,
+	VDEC_HISH265_ENCRYPT = 0x10,
+	VDEC_H264_ENCRYPT = 0x11,
 }HW_DEC_TYPE;
 #else
 typedef enum{

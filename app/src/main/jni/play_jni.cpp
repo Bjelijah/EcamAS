@@ -583,9 +583,9 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
     LOGI("net ready play get live stream head vdec_code=");
     LOGE(" code= 0x%x",media_head.vdec_code);
     if (isCrypto==1){
-        media_head.vdec_code = VDEC_H264;
+        media_head.vdec_code = VDEC_H264_ENCRYPT;//加密  用于bao VDEC_H264     VDEC_H264_ENCRYPT
     }else{
-        media_head.vdec_code = VDEC_HISH264;
+        media_head.vdec_code = VDEC_H264;//未加密 用于 ap
     }
 
     PLAY_HANDLE  ph = hwplay_open_stream((char*)&media_head,sizeof(media_head),1024*1024,isPlayBack,area);
@@ -595,11 +595,28 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
     return res->play_handle>=0?true:false;
 }
 
-
 JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlay
-        (JNIEnv *, jclass,jint vFlag,jint aFlag,jint isPlayBack){
+        (JNIEnv *env, jclass, jobject obj, jint isPlayBack)
+{
     if(res == NULL) return false;
-    LOGI("vFlag=%d    aFlag=%d\n",vFlag,aFlag);
+
+    jclass clz = env->GetObjectClass(obj);
+    int auChannel = 0;
+    int auSample = 0;
+    int auBits = 0;
+    int auCode = 0;
+    int vidioCode = 0;
+    jfieldID id = env->GetFieldID(clz,"audioChannels","I");
+    auChannel = env->GetIntField(obj,id);
+    id = env->GetFieldID(clz,"audioSamples","I");
+    auSample = env->GetIntField(obj,id);
+    id = env->GetFieldID(clz,"audioBitwidth","I");
+    auBits = env->GetIntField(obj,id);
+    id = env->GetFieldID(clz,"audioCodec","I");
+    auCode = env->GetIntField(obj,id);
+    id = env->GetFieldID(clz,"videoCodec","I");
+    vidioCode = env->GetIntField(obj,id);
+
     hwplay_init(1,0,0);
     RECT area;
     HW_MEDIAINFO media_head;
@@ -610,28 +627,31 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlay
 
 
     media_head.media_fourcc = HW_MEDIA_TAG;
-    media_head.au_channel = 1;
-    media_head.au_sample = 8;
-    media_head.au_bits = 16;
+    media_head.au_channel = auChannel;
+    media_head.au_sample = auSample/1000;
+    media_head.au_bits = auBits;
     media_head.adec_code = ADEC_AAC;
     //	media_head.vdec_code = 0x0f;
     media_head.vdec_code = 0x10;
 
 
-    switch (vFlag){
+    switch (vidioCode){
         case 0:
-            media_head.vdec_code = VDEC_HISH264;//unknow   his h264   h264 : new ffmpeg_dec(CODEC_ID_H264)
+            media_head.vdec_code = VDEC_H264;//unknow   his h264   h264 : new ffmpeg_dec(CODEC_ID_H264) VDEC_HISH264
             break;
         case 1:
-            media_head.vdec_code = VDEC_H264;//ecam
+            media_head.vdec_code = VDEC_H264_ENCRYPT;//h264 加密
             break;
         case 2:
             media_head.vdec_code = VDEC_HIS_H265;//h265
             break;
+        case 3:
+            media_head.vdec_code = VDEC_HISH265_ENCRYPT;
+            break;
         default:
             break;
     }
-    switch (aFlag){
+    switch (auCode){
         case 0:
             media_head.adec_code = ADEC_AAC;
             break;
@@ -651,7 +671,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlay
      */
 
 
-    LOGE(" code= 0x%x",media_head.vdec_code);
+    LOGE("code= 0x%x",media_head.vdec_code);
 
 
     PLAY_HANDLE  ph = hwplay_open_stream((const char*)&media_head,sizeof(media_head),1024*1024,isPlayBack,area);
@@ -720,6 +740,7 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_stopView
     res->bKeep = 0;
     res->time_stamp_beg = 0;
     res->time_stamp = 0;
+    res->play_handle = -1;
 }
 
 JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetStreamLenSomeTime
@@ -1076,7 +1097,7 @@ typedef struct {
     JavaVM* jvm;
     JNIEnv * env;
     jobject callback_obj;
-    jmethodID on_connect_method,on_disconnect_method,on_recordFile_method,on_socket_error_method;
+    jmethodID on_connect_method,on_disconnect_method,on_recordFile_method,on_socket_error_method,on_subscribe_method;
     int transDataLen;
 }TRANS_T;
 
@@ -1153,6 +1174,22 @@ int on_my_ack_res(int msgCommand,void * res,int len){
                 return 0;
             }
             env->CallVoidMethod(g_transMgr->callback_obj,g_transMgr->on_disconnect_method);
+            if (_jvm->DetachCurrentThread() != JNI_OK) {
+                LOGE("%s: DetachCurrentThread() failed", __FUNCTION__);
+            }
+        }
+            break;
+        case 0x15:
+        {
+            JNIEnv *env = NULL;
+            JavaVM * _jvm = g_transMgr->jvm;
+            if(_jvm->AttachCurrentThread( &env, NULL) != JNI_OK) {
+                LOGE("%s: AttachCurrentThread() failed", __FUNCTION__);
+                return 0;
+            }
+            jstring  jsonStr = env->NewStringUTF((char *)res);
+            env->CallVoidMethod(g_transMgr->callback_obj,g_transMgr->on_subscribe_method,jsonStr);
+            env->DeleteLocalRef(jsonStr);
             if (_jvm->DetachCurrentThread() != JNI_OK) {
                 LOGE("%s: DetachCurrentThread() failed", __FUNCTION__);
             }
@@ -1265,8 +1302,6 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transInit
     if(g_transMgr==NULL){
         g_transMgr = (TRANS_T*)malloc(sizeof(TRANS_T));
         memset(g_transMgr,0,sizeof(TRANS_T));
-
-
         env->GetJavaVM(&g_transMgr->jvm);
     }
     trans_init(on_my_connect,on_my_ack_res,on_my_data_fun,on_my_socket_error_fun);
@@ -1308,7 +1343,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_transConnect
     env->ReleaseStringUTFChars(id,_id);
     env->ReleaseStringUTFChars(name,_name);
     env->ReleaseStringUTFChars(pwd,_pwd);
-    LOGI("trans connect end");
+    LOGI("trans connect ok");
     return ret==0?true:false;
 }
 
@@ -1358,6 +1393,13 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transSetCallbackMethodName
             g_transMgr->on_socket_error_method = env->GetMethodID(clz,_mehtod,"()V");
             break;
         }
+        case 4:{
+            jclass clz = env->GetObjectClass(g_transMgr->callback_obj);
+            g_transMgr->on_subscribe_method = env->GetMethodID(clz,_mehtod,"(Ljava/lang/String;)V");
+            break;
+        }
+
+
 
         default:
             break;
@@ -1367,8 +1409,8 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transSetCallbackMethodName
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transSetUseSSL
         (JNIEnv *, jclass, jboolean useSSL){
-    if (useSSL)return;
-    trans_set_no_use_ssl();
+
+    trans_set_no_use_ssl(useSSL?false:true);
 }
 
 

@@ -211,11 +211,14 @@
 	<string name="device_set_no_permission">没有操作权限</string>
 
 	<!-- new ui -->
+	<string name="login_use_custom">自定义服务器?</string>
+	<string name="login_server_select">服务器:</string>
+	<string name="login_server">www.haoweis.com:8800</string>
 	<string name="login_not_user">还不是e看用户?</string>
 	<string name="login_register">注册</string>
 	<string name="login_test_user">暂时跳过</string>
 	<string name="login_try">您将使用试用帐号登入e看，访问已经配置好的默认摄像机</string>
-
+	<string name="login_other">或</string>
 	<string name="register">注册</string>
 	<string name="prompt_email">邮箱：</string>
 	<string name="reg_if_bind_finger">绑定指纹？</string>
@@ -231,8 +234,9 @@
 	<string name="save_db">绑定当前帐号与指纹信息</string>
 	<string name="save_db_ok">绑定成功!</string>
 	<string name="save_db_error">绑定失败！</string>
-
-
+	<string name="save_db_no_support">绑定不支持！</string>
+	<string name="login_other_fingerprint">登入</string>
+	<string name="login_other_fingerprint_no_support">指纹识别不支持！</string>
 	<!-- 指纹识别 -->
 	<string name="finger_title">指纹识别</string>
 	<string name="finger_cancel">取消</string>
@@ -242,6 +246,7 @@
 	<string name="fingerprint_failed">验证失败..请重新尝试!!</string>
 	<string name="fingerprint_error">失败 请等待片刻再尝试</string>
 	<string name="fingerprint_ok">验证成功!!  正在登入..</string>
+	<string name="fingerprint_save_ok">验证成功!!  正在保存..</string>
 	<string name="fingerprint_sign_error">登入失败 请用密码登入 </string>
 
 	<!-- 唯一码发送 -->
@@ -269,7 +274,7 @@
 	<string name="home_drawer_turn_server">流转</string>
 	<string name="home_drawer_encrypt">加密</string>
 	<string name="home_drawer_server_address">流转服务器地址</string>
-	<string name="home_drawer_server_bind">绑定手机</string>
+	<string name="home_drawer_server_bind">绑定账户</string>
 	<string name="home_fragment_devices">DeviceList</string>
 	<string name="home_fragment_medias">Media</string>
 	<string name="home_fragment_notice">Notice</string>
@@ -314,6 +319,7 @@
 	<string name="server_setting_ip">输入服务器的IP或域名</string>
 	<string name="server_setting_port_title">服务器端口:</string>
 	<string name="server_setting_port">输入服务器的端口</string>
+	<string name="server_setting_ssl">服务器使用SSL</string>
 	<string name="server_setting_default">默认</string>
 	<string name="server_setting_btn">保存</string>
 

@@ -283,6 +283,31 @@ public class PlayAction {
         rePlay(isSub,null);
     }
 
+    public void reLink(){
+        new AsyncTask<Void,Void,Boolean>(){
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                return  mCamMgr.reLink();
+            }
+            @Override
+            protected void onPostExecute(Boolean aVoid) {
+                super.onPostExecute(aVoid);
+                if (mHandler==null)return;
+                if (aVoid){
+                    mHandler.sendEmptyMessage(BasePlayActivity.MSG_PLAY_RELINK_OK);
+                }else {
+
+                }
+
+
+            }
+        }.execute();
+
+
+    }
+
+
+
     public void playBackRePlay(final long begOffset,final long curProgress){
         if (mCamMgr==null)return;
         new AsyncTask<Void,Void,Boolean>(){

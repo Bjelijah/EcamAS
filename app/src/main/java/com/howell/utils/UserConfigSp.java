@@ -11,11 +11,12 @@ public class UserConfigSp {
 
     private static final String SP_NAME = "user_set";
     private static final String SET_SP_NAME = "set";
-    public static void saveUserInfo(Context context,String name,String pwd){
+    public static void saveUserInfo(Context context,String name,String pwd,boolean isCustom){
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("user_name",name);
         editor.putString("user_pwd",pwd);
+        editor.putBoolean("user_custom",isCustom);
         editor.commit();
 
 
@@ -23,6 +24,7 @@ public class UserConfigSp {
         SharedPreferences.Editor editor2 = sp2.edit();
         editor2.putString("account",name);
         editor2.putString("password",pwd);
+        editor2.putBoolean("custom",isCustom);
         editor2.commit();
 
     }
@@ -34,6 +36,11 @@ public class UserConfigSp {
     public static String loadUserPwd(Context context){
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
         return sp.getString("user_pwd",null);
+    }
+
+    public static boolean loadUserIsCustom(Context context){
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        return sp.getBoolean("user_custom",false);
     }
 
     public static void saveSoundState(Context context,boolean isOpen){

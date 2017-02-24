@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -18,6 +19,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -30,13 +32,26 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
+import com.howell.action.FingerprintUiHelper;
 import com.howell.action.LoginAction;
+import com.howell.activity.fragment.FingerPrintFragment;
+import com.howell.bean.Custom;
 import com.howell.ecam.R;
+import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.IConst;
+import com.howell.utils.ServerConfigSp;
+import com.howell.utils.Util;
+import com.mikepenz.fontawesome_typeface_library.FontAwesome;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
+import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +64,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>,OnClickListener,LoginAction.IloginRes,IConst {
 
     private static final int MSG_LOGIN_SUCCESS = 0x01;
-
+    private static final int MSG_LOGIN_CUSTOM_SERVER = 0x02;
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -74,14 +89,41 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private Button mloginBtn,mRegBtn;
-    LinearLayout mTryLl;
+    LinearLayout mTryLl,mCustomLl;
+    private FloatingActionButton mFab;
+    private ImageView mCustomIv;
+    private TextView mCustomTv;
+    private Switch mCustomSw;
+
     private boolean mIsGuest;
+    private boolean mIsCustom = false;
     Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what){
                 case LoginActivity.MSG_LOGIN_SUCCESS:
+                    break;
+                case LoginActivity.MSG_LOGIN_CUSTOM_SERVER:
+                    Intent intent = new Intent(LoginActivity.this,ServerSetActivity.class);
+                    startActivity(intent);
+                    break;
+                case MSG_FINGER_OK:
+                    Bundle bundle = msg.getData();
+                    String userName = bundle.getString("userName");
+                    String userPassword = bundle.getString("userPassword");
+                    Custom c = (Custom) bundle.getSerializable("custom");
+
+                    Log.i("123","userName="+userName+"  pwd="+userPassword+" custom="+c.isCustom()
+                            +"  ip="+c.getCustomIP()+"  port="+c.getCustomPort()+"   ssl="+c.isSSL());
+
+
+                    mIsGuest = userName.equals(GUEST_NAME)?true:false;
+                    mProgressView.setVisibility(View.VISIBLE);
+                    LoginAction.getInstance().setContext(LoginActivity.this).regLoginResCallback(LoginActivity.this).Login(userName,userPassword,c);
+
+                    break;
+                default:
                     break;
             }
 
@@ -120,10 +162,57 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mTryLl = (LinearLayout) findViewById(R.id.login_ll_try);
         mTryLl.setOnClickListener(this);
 
+        mCustomLl = (LinearLayout) findViewById(R.id.login_ll_custom);
+        mCustomLl.setOnClickListener(this);
 
+        mCustomIv = (ImageView) findViewById(R.id.login_iv_custom);
+        mCustomTv = (TextView) findViewById(R.id.login_tv_server);
+
+        mCustomSw = (Switch) findViewById(R.id.login_sw_custom);
+        mCustomSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mIsCustom = isChecked;
+                if (mIsCustom) {
+                    String ip = ServerConfigSp.loadServerIP(LoginActivity.this);
+                    int port = ServerConfigSp.loadServerPort(LoginActivity.this);
+                    if (ip == null || port == 0) {
+                        mHandler.sendEmptyMessage(MSG_LOGIN_CUSTOM_SERVER);
+                        return;
+                    }
+                    mCustomTv.setText(getString(R.string.login_server_select) + ip + ":" + port);
+
+                }else{
+                    mCustomTv.setText(getString(R.string.login_server_select)+getString(R.string.login_server));
+                }
+            }
+        });
+        mCustomSw.setChecked(false);
         mLoginFormView = findViewById(R.id.login_form);
 //        mLoginFormView.setOnClickListener(this);
         mProgressView = findViewById(R.id.login_progress);
+
+        mFab = (FloatingActionButton) findViewById(R.id.login_fab_fingerprint);
+
+//        FontAwesome.Icon
+
+//        mFab.setImageDrawable(new IconicsDrawable(this,  GoogleMaterial.Icon.gmd_print).actionBar().color(Color.RED));
+        mFab.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mIsCustom){
+            String ip = ServerConfigSp.loadServerIP(LoginActivity.this);
+            int port = ServerConfigSp.loadServerPort(LoginActivity.this);
+            if (ip != null && port != 0) {
+                mCustomTv.setText(getString(R.string.login_server_select) + ip + ":" + port);
+                return;
+            }
+        }
+        mCustomSw.setChecked(false);
+        mCustomTv.setText(getString(R.string.login_server_select)+getString(R.string.login_server));
     }
 
     private void populateAutoComplete() {
@@ -225,7 +314,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
             //login
             mProgressView.setVisibility(View.VISIBLE);
-            LoginAction.getInstance().setContext(this).regLoginResCallback(this).Login(username,password);
+            Custom c = new Custom();
+            c.setCustom(mIsCustom);
+            c.setCustomIP(mIsCustom?ServerConfigSp.loadServerIP(this):null);
+            c.setCustomPort(ServerConfigSp.loadServerPort(this));
+            c.setSSL(ServerConfigSp.loadServerSSL(this));
+
+            LoginAction.getInstance().setContext(this).regLoginResCallback(this).Login(username,password,c);
         }
     }
 
@@ -255,18 +350,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             });
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
             mProgressView.animate().setDuration(shortAnimTime).alpha(
                     show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
                 }
             });
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
@@ -335,6 +430,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             case R.id.login_ll_try:
                 attemptLogin(true);
                 break;
+            case R.id.login_fab_fingerprint:
+                fingerprintFun();
+                break;
+            case R.id.login_ll_custom:
+                customFun();
+                break;
             default:
                 break;
         }
@@ -342,7 +443,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     @Override
     public void onLoginSuccess() {
-        mProgressView.setVisibility(View.GONE);
+        mProgressView.setVisibility(View.INVISIBLE);
         LoginAction.getInstance().setmIsGuest(mIsGuest).unRegLoginResCallback();
         mHandler.sendEmptyMessage(LoginActivity.MSG_LOGIN_SUCCESS);
         //TODO:show camLIST activity
@@ -353,7 +454,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     @Override
     public void onLoginError(int e) {
-        mProgressView.setVisibility(View.GONE);
+        mProgressView.setVisibility(View.INVISIBLE);
         switch (e){
             case LoginAction.ERROR_LOGIN_ACCOUNT:
                 mUserNameView.requestFocus();
@@ -382,6 +483,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             default:
                 break;
         }
+    }
+
+    private void fingerprintFun(){
+        if(!Util.isNewApi() || !FingerprintUiHelper.isFingerAvailable(this)){
+            AlerDialogUtils.postDialogMsg(this,getString(R.string.login_other_fingerprint),getString(R.string.login_other_fingerprint_no_support),null);
+            return;
+        }
+        FingerPrintFragment fingerFragment = new FingerPrintFragment();
+        fingerFragment.setHandler(mHandler);
+        fingerFragment.show(getFragmentManager(), "fingerLogin");
+    }
+
+    private void customFun(){
+        Intent intent = new Intent(LoginActivity.this,ServerSetActivity.class);
+        startActivity(intent);
     }
 
 

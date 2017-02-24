@@ -40,6 +40,7 @@ public class ProfileDrawerItem extends AbstractDrawerItem<ProfileDrawerItem, Pro
     protected ImageHolder icon;
 
     protected StringHolder name;
+
     protected StringHolder email;
 
     protected ColorHolder selectedColor;
@@ -48,6 +49,10 @@ public class ProfileDrawerItem extends AbstractDrawerItem<ProfileDrawerItem, Pro
     protected ColorHolder disabledTextColor;
 
     protected Typeface typeface = null;
+
+
+
+
 
     @Override
     public ProfileDrawerItem withIcon(Drawable icon) {

@@ -227,10 +227,16 @@
     </string>
 
     <!-- -->
+    <string name="login_use_custom">Custom Server?</string>
+    <string name="login_server_select">Server:</string>
+    <string name="login_server">www.haoweis.com:8800</string>
     <string name="login_not_user">Not a member of eCam?</string>
     <string name="login_register">register</string>
     <string name="login_test_user">Skip for now</string>
     <string name="login_try">You will login eCam with trial account which has been configured the default camera</string>
+    <string name="login_other">OR</string>
+    <string name="login_other_fingerprint">Login</string>
+    <string name="login_other_fingerprint_no_support">fingerprint not support!</string>
 
     <string name="register">Register</string>
     <string name="reg_if_bind_finger">Bind fingerprint?</string>
@@ -242,8 +248,8 @@
 
     <string name="save_db">bind user infomation with finger</string>
     <string name="save_db_ok">bind OK!</string>
-    <string name="save_db_error">bind error！</string>
-
+    <string name="save_db_error">bind error!</string>
+    <string name="save_db_no_support">bind not support!</string>
     <string name="finger_title">FingerPrint</string>
     <string name="finger_cancel">Cancel</string>
     <string name="finger_login_with_password">use password</string>
@@ -252,6 +258,7 @@
     <string name="fingerprint_failed">Authentication Failed try it again</string>
     <string name="fingerprint_error">Authentication ERROR plz wait and try again</string>
     <string name="fingerprint_ok">Verification Successful!!  login..</string>
+    <string name="fingerprint_save_ok">Verification Successful!!  save..</string>
     <string name="fingerprint_sign_error">sign in fail! plz use password to sign in</string>
 
     <string name="phone_info_send_title">register this Phone</string>
@@ -281,7 +288,7 @@
     <string name="home_drawer_turn_server">Turn Server</string>
     <string name="home_drawer_encrypt">encrypt</string>
     <string name="home_drawer_server_address">Turn Server Address</string>
-    <string name="home_drawer_server_bind">Bind My Phone</string>
+    <string name="home_drawer_server_bind">Bind My Account</string>
     <string name="home_fragment_devices">DeviceList</string>
     <string name="home_fragment_medias">Media</string>
     <string name="home_fragment_notice">Notice</string>
@@ -338,6 +345,8 @@
     <string name="server_setting_ip">Input Server IP OR Address</string>
     <string name="server_setting_port_title">ServerPort:</string>
     <string name="server_setting_port">Input Server Port</string>
+    <string name="server_setting_ssl">Server Using SSL</string>
+
     <string name="server_setting_default">Default</string>
     <string name="server_setting_btn">Save</string>
 

@@ -2,7 +2,9 @@ package com.howell.action;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
+import com.howell.bean.Custom;
 import com.howell.bean.UserLoginDBBean;
 import com.howell.db.UserLoginDao;
 import com.howell.protocol.AccountRequest;
@@ -12,6 +14,8 @@ import com.howell.protocol.LoginResponse;
 import com.howell.protocol.SoapManager;
 import com.howell.utils.DecodeUtils;
 import com.howell.utils.UserConfigSp;
+
+import java.util.List;
 
 /**
  * Created by howell on 2016/11/9.
@@ -62,9 +66,22 @@ public class LoginAction {
 
     private LoginAction(){}
 
-    public void Login(final String account,final String password){
+    public void Login(final String account, final String password, final Custom custom){
+        if (custom==null){
+            if(mCallback!=null)mCallback.onLoginError(ERROR_LOGIN_OTHER);
+            return;
+        }
         mInfo.setAccount(account).setPassword(password);
         setmIsGuest(account.equals("100868"));
+
+        Log.i("123","account="+account+"  password="+password+"  custom="+custom.isCustom()+
+        "  ip="+custom.getCustomIP()+"  port="+custom.getCustomPort()+"   ssl="+custom.isSSL());
+
+
+        SoapManager.initUrl(mContext,custom.isCustom(),custom.getCustomIP(),custom.getCustomPort(),custom.isSSL());
+
+
+
         new AsyncTask<Void,Void,Boolean>(){
             int mError;
             LoginResponse mLoginRes = null;
@@ -121,6 +138,8 @@ public class LoginAction {
                     mError = ERROR_LINK_ERROR;
                     return false;
                 }
+                mInfo.setCustom(custom);
+
                 if (!checkLoginRes(mLoginRes)){
                     return false;
                 }
@@ -151,15 +170,23 @@ public class LoginAction {
 
     private void saveLogin2DB(){
         UserLoginDao dao = new UserLoginDao(mContext, "user.db", 1);
-        if (dao.findByName(mInfo.getAccount())){
+        if(dao.findByNameAndIP(mInfo.getAccount(),mInfo.getCustom().getCustomIP())){
+            List<UserLoginDBBean> list = dao.queryByNameAndIP(mInfo.getAccount(),mInfo.getCustom().getCustomIP());
+            for (UserLoginDBBean b : list){
+                if (b.getUserNum()==0){
+                    dao.close();
+                    return;
+                }
+            }
+            dao.insert(new UserLoginDBBean(0,mInfo.getAccount(),mInfo.getPassword(),mInfo.getAr().getEmail(), mInfo.getCustom()));
         }else{
-            dao.insert(new UserLoginDBBean(0,mInfo.getAccount(),mInfo.getPassword(),mInfo.getAr().getEmail()));
+            dao.insert(new UserLoginDBBean(0,mInfo.getAccount(),mInfo.getPassword(),mInfo.getAr().getEmail(), mInfo.getCustom()));
         }
         dao.close();
     }
 
     private void saveLogin2Sp(){
-        UserConfigSp.saveUserInfo(mContext,mInfo.getAccount(),mInfo.getPassword());
+        UserConfigSp.saveUserInfo(mContext,mInfo.getAccount(),mInfo.getPassword(),mInfo.getCustom().isCustom());
     }
 
 
@@ -176,6 +203,16 @@ public class LoginAction {
         private String password;
         private LoginResponse lr;
         private AccountResponse ar;
+        private Custom custom;
+
+        public Custom getCustom() {
+            return custom;
+        }
+
+        public void setCustom(Custom custom) {
+            this.custom = custom;
+        }
+
         public LoginResponse getLr() {
             return lr;
         }

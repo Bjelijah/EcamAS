@@ -62,7 +62,7 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
     public final static int MSG_PLAY_LOGOUT_CAM_ERROR   = 0xff0d;
     public final static int MSG_PLAY_RELINK_OK          = 0xff0e;
     public final static int MSG_PLAY_PLAY_BACK_FUN      = 0xff0f;
-
+    public final static int MSG_PLAY_RELINK_START       = 0xff10;
 
     //控件
     protected GLSurfaceView mGlView;
@@ -89,6 +89,9 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
             switch (msg.what){
                 case MSG_PTZ_SHAKE:
                     PTZControlAction.getInstance().ptzShake(BasePlayActivity.this, (View)msg.obj);
+                    break;
+                case MSG_PLAY_RELINK_START:
+                    camReLink();
                     break;
                 case MSG_PLAY_RELINK_OK:
                     Log.i("123","get play re link ok");
@@ -251,6 +254,10 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
             PlayAction.getInstance().mute();
             mIsAudioOpen = false;
         }
+    }
+
+    protected void camReLink(){
+        PlayAction.getInstance().reLink();
     }
 
     protected void camPlay(){

@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 import com.howell.action.HomeAction;
 import com.howell.ecam.R;
@@ -31,7 +33,9 @@ public class ServerSetActivity extends AppCompatActivity implements IConst{
     Toolbar mTb;
     AutoCompleteTextView mIPView,mPortView;
     Button mbtnSave,mbtnDefault;
+    Switch mswSSL;
     private ProgressDialog mPd;
+    private boolean mIsSSL = false;
 //    ImageButton mBack;
 
 
@@ -77,6 +81,14 @@ public class ServerSetActivity extends AppCompatActivity implements IConst{
                 mPortView.setText(DEFAULT_TURN_SERVER_PORT+"");
             }
         });
+        mswSSL = (Switch) findViewById(R.id.server_set_ssl);
+        mswSSL.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mIsSSL = isChecked;
+            }
+        });
+
 //        mBack = (ImageButton) findViewById(R.id.server_set_ib_back);
 //        mBack.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -109,7 +121,7 @@ public class ServerSetActivity extends AppCompatActivity implements IConst{
 
         mIPView.setText(ServerConfigSp.loadServerIP(this));
         mPortView.setText(ServerConfigSp.loadServerPort(this)+"");
-
+        mswSSL.setChecked(ServerConfigSp.loadServerSSL(this));
     }
 
 
@@ -170,7 +182,7 @@ public class ServerSetActivity extends AppCompatActivity implements IConst{
             _ip = Util.parseIP(ip);
         }
         HomeAction.getInstance().setServiceIPAndPort(_ip,port);
-        ServerConfigSp.saveServerInfo(this,_ip,port);
+        ServerConfigSp.saveServerInfo(this,_ip,port,mIsSSL);
         waitShow(getResources().getString(R.string.camera_setting_save_title),getResources().getString(R.string.camera_setting_save_msg),1000);
     }
 

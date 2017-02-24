@@ -20,10 +20,13 @@ import android.widget.Toast;
 import com.howell.action.FingerprintUiHelper;
 import com.howell.action.MyTimeMgr;
 import com.howell.activity.Activities;
+import com.howell.bean.Custom;
 import com.howell.bean.UserLoginDBBean;
 import com.howell.db.UserLoginDao;
 import com.howell.ecam.R;
 import com.howell.utils.IConst;
+import com.howell.utils.ServerConfigSp;
+import com.howell.utils.UserConfigSp;
 import com.zys.brokenview.BrokenTouchListener;
 import com.zys.brokenview.BrokenView;
 
@@ -52,7 +55,7 @@ public class FingerPrintSaveFragment extends DialogFragment implements Fingerpri
 	Handler mParentHandler;
 	String mUserName;
 	String mUserPsd;
-	
+	String mEmail;
 	public FingerPrintSaveFragment setHandler(Handler h){
 		this.mParentHandler = h;
 		return this;
@@ -63,6 +66,10 @@ public class FingerPrintSaveFragment extends DialogFragment implements Fingerpri
 	}
 	public FingerPrintSaveFragment setUserPassword(String pwd){
 		mUserPsd = pwd;
+		return this;
+	}
+	public FingerPrintSaveFragment setUserEmail(String email){
+		mEmail = email;
 		return this;
 	}
 	
@@ -182,7 +189,7 @@ public class FingerPrintSaveFragment extends DialogFragment implements Fingerpri
 		showAuthenticationInfo(MyState.OK);
 		//开始登入
 		if(saveDB(fingerID)){
-			mParentHandler.sendEmptyMessageDelayed(MSG_POST_SAVE_OK,500);
+			mParentHandler.sendEmptyMessageDelayed(MSG_POST_SAVE_OK,1000);
 		}else{
 			Toast.makeText(mContext, "保存失败！！", Toast.LENGTH_LONG).show();
 		}
@@ -190,7 +197,7 @@ public class FingerPrintSaveFragment extends DialogFragment implements Fingerpri
 			public void run() {
 				dismiss();
 			}
-		}, 300);
+		}, 1000);
 		
 	}
 
@@ -250,7 +257,7 @@ public class FingerPrintSaveFragment extends DialogFragment implements Fingerpri
 		case OK:
 //			mIvFingerState.setImageDrawable(getResources().getDrawable(R.drawable.ok_default_green));
 			mIvFingerState.setImageDrawable(mContext.getResources().getDrawable(R.mipmap.ic_fp_ok));
-			mTvFingerState.setText(mContext.getString(R.string.fingerprint_ok));
+			mTvFingerState.setText(mContext.getString(R.string.fingerprint_save_ok));
 			mTvFingerState.setTextColor(mContext.getResources().getColor(R.color.finger_green));
 			break;
 		case ERROR:
@@ -306,9 +313,22 @@ public class FingerPrintSaveFragment extends DialogFragment implements Fingerpri
 		int userNum = id;
 		String userName = mUserName;
 		String userPassword = mUserPsd;
-		UserLoginDBBean info = new UserLoginDBBean(userNum, userName, userPassword);
+		Custom c = new Custom();
+		boolean isCustom = UserConfigSp.loadUserIsCustom(mContext);
+		String ip = ServerConfigSp.loadServerIP(mContext);
+		int port = ServerConfigSp.loadServerPort(mContext);
+		boolean isSSL = ServerConfigSp.loadServerSSL(mContext);
+		c.setCustom(isCustom);
+		c.setCustomIP(isCustom?ip:null);
+		c.setCustomPort(port);
+		c.setSSL(isSSL);
+		Log.i("123","finger set to db num="+userNum+" name="+userName+" pwd="+userPassword+" custom="+isCustom+
+		" ip="+ip+" port="+port+" ssl="+isSSL);
+		UserLoginDBBean info = new UserLoginDBBean(userNum, userName, userPassword,mEmail,c);
 
 		UserLoginDao dao = new UserLoginDao(mContext, "user.db", 1);
+
+
 		if (dao.findByNum(userNum)) {
 			dao.updataByNum(info);
 		}else{

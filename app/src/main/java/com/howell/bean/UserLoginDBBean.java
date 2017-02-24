@@ -6,7 +6,7 @@ public class UserLoginDBBean {
 	String userName;
 	String userEmail;
 	String userPassword;
-	
+	Custom c;
 	public UserLoginDBBean(){}
 	public UserLoginDBBean(int userNum, String userName, String userPassword) {
 		super();
@@ -15,14 +15,21 @@ public class UserLoginDBBean {
 		this.userPassword = userPassword;
 	}
 
-	public UserLoginDBBean(int userNum, String userName, String userPassword,String userEmail){
+	public UserLoginDBBean(int userNum, String userName, String userPassword,String userEmail,Custom c){
 		super();
 		this.userNum = userNum;
 		this.userName = userName;
 		this.userPassword = userPassword;
 		this.userEmail = userEmail;
+		this.c = c;
 	}
 
+	public Custom getC() {
+		return c;
+	}
+	public void setC(Custom c) {
+		this.c = c;
+	}
 	public int getUserNum() {
 		return userNum;
 	}

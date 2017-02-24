@@ -24,9 +24,11 @@ import com.howell.action.LoginAction;
 import com.howell.action.MyTimeMgr;
 import com.howell.activity.Activities;
 import com.howell.activity.MainActivity;
+import com.howell.bean.Custom;
 import com.howell.bean.UserLoginDBBean;
 import com.howell.db.UserLoginDao;
 import com.howell.ecam.R;
+import com.howell.utils.IConst;
 import com.zys.brokenview.BrokenCallback;
 import com.zys.brokenview.BrokenTouchListener;
 import com.zys.brokenview.BrokenView;
@@ -35,7 +37,7 @@ import java.util.List;
 
 
 
-public class FingerPrintFragment extends DialogFragment implements FingerprintUiHelper.Callback,OnTouchListener,LoginAction.IloginRes{
+public class FingerPrintFragment extends DialogFragment implements FingerprintUiHelper.Callback,OnTouchListener,LoginAction.IloginRes,IConst{
 	private static final int MSG_SIGN_IN_FAIL 	= 0xa0;
 	private static final int MSG_SIGN_IN_OK 	= 0xa1;
 	public static final int MSG_ERROR_WAIT_OK		= 0xa2;
@@ -52,7 +54,12 @@ public class FingerPrintFragment extends DialogFragment implements FingerprintUi
 //	Timer mWaitTimer = null;
 //	MyWaitTimerTask mWaitTimeTask = null;
 	MyTimeMgr mTimemgr = MyTimeMgr.getInstance();
-	
+	Handler mParentHandler;
+
+	public void setHandler(Handler h){
+		this.mParentHandler = h;
+	}
+
 	
 	Handler mHandler = new Handler(){
 
@@ -263,8 +270,8 @@ public class FingerPrintFragment extends DialogFragment implements FingerprintUi
 				mTvPassword.postDelayed(new Runnable() {
 					public void run() {
 						dismiss();
-						Intent intent = new Intent(mContext,MainActivity.class);
-						startActivity(intent);
+//						Intent intent = new Intent(mContext,MainActivity.class);
+//						startActivity(intent);
 					}
 				}, 300);	
 			}
@@ -297,7 +304,8 @@ public class FingerPrintFragment extends DialogFragment implements FingerprintUi
 
 
 		new AsyncTask<Void, Void, Boolean>() {
-
+			String mUserName,mUserPassword;
+			Custom c;
 			@Override
 			protected Boolean doInBackground(Void... params) {
 //				int sn = (int)PhoneConfig.showUserSerialNum(mContext);
@@ -310,16 +318,33 @@ public class FingerPrintFragment extends DialogFragment implements FingerprintUi
 					return false;
 				}
 				dao.close();
-				String userName = l.get(0).getUserName();
-				String userPassword = l.get(0).getUserPassword();
-				Log.e("123", "sign in    finger start login"+"   user name="+userName+"  psw="+userPassword);
+
+				mUserName = l.get(0).getUserName();
+				mUserPassword = l.get(0).getUserPassword();
+				String email = l.get(0).getUserEmail();
+				c = l.get(0).getC();
+				Log.e("123", "sign in    finger start login"+"   user name="+mUserName+"  psw="+mUserPassword+" email="+email);
+				if (mUserName==null||mUserPassword==null)return false;
+
 				//start login
 				//TODO login
 				return true;	
 			}
 			protected void onPostExecute(Boolean result) {
 				if (result) {
-					mHandler.sendEmptyMessage(MSG_SIGN_IN_OK);
+//					mHandler.sendEmptyMessage(MSG_SIGN_IN_OK);
+					if (mParentHandler!=null){
+						Message msg = new Message();
+						msg.what = MSG_FINGER_OK;
+						Bundle bundle = new Bundle();
+						bundle.putString("userName",mUserName);
+						bundle.putString("userPassword",mUserPassword);
+						bundle.putSerializable("custom",c);
+						msg.setData(bundle);
+						mParentHandler.sendMessage(msg);
+					}
+
+
 				}else{
 					mHandler.sendEmptyMessage(MSG_SIGN_IN_FAIL);
 				}

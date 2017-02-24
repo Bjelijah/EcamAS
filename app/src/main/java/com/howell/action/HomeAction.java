@@ -2,11 +2,13 @@ package com.howell.action;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.howell.bean.APDeviceDBBean;
 import com.howell.bean.CamFactory;
 import com.howell.bean.CameraItemBean;
+import com.howell.bean.Custom;
 import com.howell.bean.ICam;
 import com.howell.bean.PlayType;
 import com.howell.bean.UserLoginDBBean;
@@ -213,21 +215,28 @@ public class HomeAction {
         }.execute();
     }
 
-    public void changeUser(Context context, String userName){
-        String userPwd = getUserPwdByDB(userName);
+    public void changeUser(Context context, String userName,String email){
+        Bundle bundle = getUserPwdByDB(userName,email);
+        String userPwd = bundle.getString("pwd");
+        Custom c = (Custom) bundle.getSerializable("custom");
         LoginRes res = new LoginRes();
-        LoginAction.getInstance().setContext(context).regLoginResCallback(res).Login(userName,userPwd);
+        LoginAction.getInstance().setContext(context).regLoginResCallback(res).Login(userName,userPwd,c);
     }
 
-    private String getUserPwdByDB(String name){
+    private Bundle getUserPwdByDB(String name,String email){
         String pwd = null;
+        Custom c = null;
         UserLoginDao dao = new UserLoginDao(mContext, "user.db", 1);
-        List<UserLoginDBBean> b = dao.queryByName(name);
+        List<UserLoginDBBean> b = dao.queryByNameAndEmail(name,email);
         dao.close();
         if (b.size()>0){
             pwd = b.get(0).getUserPassword();
+            c = b.get(0).getC();
         }
-        return pwd;
+        Bundle bundle = new Bundle();
+        bundle.putString("pwd",pwd);
+        bundle.putSerializable("custom",c);
+        return bundle;
     }
 
     class LoginRes implements LoginAction.IloginRes{

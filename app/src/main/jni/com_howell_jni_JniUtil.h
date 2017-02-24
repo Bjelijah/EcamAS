@@ -202,10 +202,10 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
 /*
  * Class:     com_howell_jni_JniUtil
  * Method:    readyPlay
- * Signature: (III)Z
+ * Signature: (Ljava/lang/Object;I)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlay
-  (JNIEnv *, jclass, jint, jint, jint);
+  (JNIEnv *, jclass, jobject, jint);
 
 /*
  * Class:     com_howell_jni_JniUtil

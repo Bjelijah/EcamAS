@@ -30,16 +30,22 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.howell.action.FingerprintUiHelper;
 import com.howell.action.HomeAction;
 import com.howell.action.LoginAction;
 import com.howell.activity.fragment.DeviceFragment;
+import com.howell.activity.fragment.FingerPrintFragment;
+import com.howell.activity.fragment.FingerPrintSaveFragment;
 import com.howell.activity.fragment.HomeBaseFragment;
 import com.howell.activity.fragment.MediaFragment;
 import com.howell.activity.fragment.NoticeFragment;
 import com.howell.bean.UserLoginDBBean;
 import com.howell.db.UserLoginDao;
 import com.howell.ecam.R;
+import com.howell.utils.AlerDialogUtils;
+import com.howell.utils.IConst;
 import com.howell.utils.ServerConfigSp;
+import com.howell.utils.Util;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -60,13 +66,14 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
  * Created by howell on 2016/11/15.
  */
 
-public class HomeExActivity extends AppCompatActivity implements HomeAction.ChangeUser {
+public class HomeExActivity extends AppCompatActivity implements HomeAction.ChangeUser,IConst{
 
     private final static long ID_DRAWER_UID = 0x00;
     private final static long ID_DRAWER_HOME = 0x01;
@@ -121,8 +128,12 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                     funIP();
                     break;
                 case MSG_HOME_BIND:
+                    funBind();
                     break;
                 case MSG_HOME_HELP:
+                    break;
+                case MSG_POST_SAVE_OK:
+                    Snackbar.make(mViewPager,getString(R.string.save_db_ok),Snackbar.LENGTH_SHORT).show();
                     break;
                 default:
                     break;
@@ -181,6 +192,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
 
     private List<IProfile> getProfile(){
         List<IProfile> mList = new ArrayList<>();
+        HashSet<IProfile> mSet = new HashSet<>();
         if (mbGuest){
             Drawable guestIcon =  new IconicsDrawable(this, GoogleMaterial.Icon.gmd_account_circle).actionBar().color(Color.WHITE);
             IProfile mine = new ProfileDrawerItem().withName(getString(R.string.home_guest)).withEmail(getString(R.string.home_guest_email)).withIcon(guestIcon);
@@ -191,17 +203,48 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         String userName = LoginAction.getInstance().getmInfo().getAccount();
         String usermail = LoginAction.getInstance().getmInfo().getAr().getEmail();
         IProfile mine = new ProfileDrawerItem().withName(userName).withEmail(usermail).withIcon(getRamdomUserIcon());
+
         mList.add(mine);
 
+
         UserLoginDao dao = new UserLoginDao(this, "user.db", 1);
-        List<UserLoginDBBean> list = dao.queryAll();
+        List<UserLoginDBBean> list2 = dao.queryAll();
+        for(UserLoginDBBean b:list2){
+            Log.i("123","all b.name="+b.getUserName()+" email="+b.getUserEmail() +"  num="+b.getUserNum()+" ip="+b.getC().getCustomIP());
+        }
+        Log.i("123","~~~~~~~~");
+        List<UserLoginDBBean> list = dao.queryByNum(0);
         for (UserLoginDBBean b:list){
-            if (!b.getUserName().equals(userName)){
-                IProfile profile = new ProfileDrawerItem().withName(b.getUserName()).withEmail(b.getUserEmail()).withIcon(getRamdomUserIcon());
+            Log.i("123","dao b.name="+b.getUserName()   +" email="+b.getUserEmail()      +"  num="+b.getUserNum()+"  ip="+b.getC().getCustomIP());
+            if (!b.getUserName().equals(userName)
+                    || !b.getUserEmail().equals(usermail)){
+                IProfile profile = new ProfileDrawerItem().
+                        withName(b.getUserName()).
+                        withEmail(b.getUserEmail()).
+                        withIcon(getRamdomUserIcon());
                 mList.add(profile);
             }
         }
+
+
+//        for (UserLoginDBBean b:list){
+//            Log.e("123","~~~~~~dao list name="+b.getUserName()+" num="+b.getUserNum());
+//            for(int i=0;i<mList.size();i++){
+//                String nameInList = mList.get(i).getName().toString();
+//                Log.i("123","nameInlist="+nameInList);
+//                if (!b.getUserName().equals(userName) && !b.getUserName().equals(nameInList)){
+//                    Log.i("123"," b.username="+b.getUserName()+"  username="+userName);
+//                    IProfile profile = new ProfileDrawerItem().withName(b.getUserName()).withEmail(b.getUserEmail()).withIcon(getRamdomUserIcon());
+//                    mList.add(profile);
+//                    break;
+//                }
+//            }
+//        }
         dao.close();
+
+
+
+
         return mList;
     }
 
@@ -240,7 +283,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                         if (current)return false;
                         Log.i("123","on profile changed current="+current+" emal="+profile.getEmail()+" name="+profile.getName());
                         //FIXME change to new user
-                        HomeAction.getInstance().changeUser(HomeExActivity.this,profile.getName()+"");
+                        HomeAction.getInstance().changeUser(HomeExActivity.this,profile.getName().toString(),profile.getEmail().toString());
                         return false;
                     }
                 })
@@ -265,12 +308,13 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
 //                        new PrimaryDrawerItem().withName(R.string.drawer_item_custom).withIcon(FontAwesome.Icon.faw_eye),
                         new SectionDrawerItem().withName(R.string.home_drawer_second_head),
                         new SecondaryDrawerItem().withName(R.string.home_drawer_server_address).withIcon(Octicons.Icon.oct_server).withIdentifier(ID_DRAWER_SERVER_ADDRESS),
-                        new SecondaryDrawerItem().withName(R.string.home_drawer_server_bind).withIcon(GoogleMaterial.Icon.gmd_8tracks).withIdentifier(ID_DRAWER_SERVER_BIND),
+
                         new ExpandableDrawerItem().withName(R.string.home_drawer_connect).withIcon(FontAwesome.Icon.faw_connectdevelop).withSelectable(false)
                         .withSubItems(
                                 new SwitchDrawerItem().withName(R.string.home_drawer_turn_server).withLevel(2).withIcon(Octicons.Icon.oct_tools).withChecked(isTurn).withOnCheckedChangeListener(onCheckedChangerListener).withSelectable(false).withIdentifier(ID_DRAWER_SERVER_TURN),
                                 new SwitchDrawerItem().withName(R.string.home_drawer_encrypt).withLevel(2).withIcon(Octicons.Icon.oct_tools).withChecked(isCrypto).withOnCheckedChangeListener(onCheckedChangerListener).withSelectable(false).withIdentifier(ID_DRAWER_SERVER_ENCRYPT)
                         ),
+                        new SecondaryDrawerItem().withName(R.string.home_drawer_server_bind).withIcon(GoogleMaterial.Icon.gmd_8tracks).withIdentifier(ID_DRAWER_SERVER_BIND),
 //                        new SecondaryDrawerItem().withName(R.string.drawer_item_settings).withIcon(FontAwesome.Icon.faw_cog),
                         new SecondaryDrawerItem().withName(R.string.drawer_item_help).withIcon(FontAwesome.Icon.faw_question).withEnabled(false).withIdentifier(ID_DRAWER_HELP)
 //                        new SecondaryDrawerItem().withName(R.string.drawer_item_open_source).withIcon(FontAwesome.Icon.faw_github),
@@ -386,6 +430,24 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     private void funIP(){
         Intent intent = new Intent(this,ServerSetActivity.class);
         startActivity(intent);
+    }
+
+    private void funBind(){
+        if (!Util.isNewApi() || !FingerprintUiHelper.isFingerAvailable(this)){
+            //TODO not support
+            AlerDialogUtils.postDialogMsg(this,getString(R.string.home_drawer_server_bind),getString(R.string.save_db_no_support),null);
+            return;
+        }
+        FingerPrintSaveFragment fragment = new FingerPrintSaveFragment();
+
+
+        fragment.setHandler(mHandler)
+                .setUserName(LoginAction.getInstance().getmInfo().getAccount())
+                .setUserPassword(LoginAction.getInstance().getmInfo().getPassword())
+                .setUserEmail(LoginAction.getInstance().getmInfo().getAr().getEmail());
+        fragment.show(getFragmentManager(), "fingerSave");
+
+
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.howell.action.AudioAction;
 import com.howell.action.LoginAction;
+import com.howell.activity.BasePlayActivity;
 import com.howell.activity.PlayerActivity;
 import com.howell.entityclass.VODRecord;
 import com.howell.jni.JniUtil;
@@ -14,6 +15,7 @@ import com.howell.utils.JsonUtil;
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.SDCardUtils;
 import com.howell.utils.ServerConfigSp;
+import com.howell.utils.TurnJsonUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,7 +52,7 @@ public class H265Mgr implements ICam {
 
     private static final int F_TIME = 1;
     ArrayList<VODRecord> mList = null;
-
+    ICam.IStream mStreamCB = null;
     @Override
     public void init(Context context, CameraItemBean bean) {
         this.mBean = bean;
@@ -70,17 +72,17 @@ public class H265Mgr implements ICam {
 
     @Override
     public void registStreamLenCallback(IStream cb) {
-
+        mStreamCB = cb;
     }
 
     @Override
     public void unregistStreamLenCallback() {
-
+        mStreamCB = null;
     }
 
     @Override
     public void setStreamBSub(boolean isSub) {
-
+        mIsSub = isSub?1:0;
     }
 
     @Override
@@ -117,12 +119,14 @@ public class H265Mgr implements ICam {
         Log.i("123", "doinback");
         JniUtil.netInit();
         transInit(mTurnServiceIP,mTurnServicePort);
+        JniUtil.transSetUseSSL(mIsTurnCrypto);
         mIsTransDeinit = false;
         JniUtil.transSetCallBackObj(H265Mgr.this, 0);
         JniUtil.transSetCallbackMethodName("onConnect", 0);
         JniUtil.transSetCallbackMethodName("onDisConnect", 1);
         JniUtil.transSetCallbackMethodName("onRecordFileList", 2);
         JniUtil.transSetCallbackMethodName("onDisconnectUnexpect", 3);
+        JniUtil.transSetCallbackMethodName("onSubscribe",4);
         InputStream ca = getClass().getResourceAsStream("/assets/ca.crt");
         InputStream client = getClass().getResourceAsStream("/assets/client.crt");
         InputStream key = getClass().getResourceAsStream("/assets/client.key");
@@ -132,7 +136,7 @@ public class H265Mgr implements ICam {
 
         Log.i("123", "castr="+castr);
         JniUtil.transSetCrtPaht(castr, clstr, keystr);
-        JniUtil.transSetUseSSL(mIsTurnCrypto);
+
         try {
             ca.close();
             client.close();
@@ -149,7 +153,7 @@ public class H265Mgr implements ICam {
             return false;
         }
 
-        Log.i("PlayManager", "transConnect ok");
+        Log.i("123", "H265Mgr transConnect ok");
 
         AudioAction.getInstance().initAudio();
         AudioAction.getInstance().playAudio();
@@ -169,21 +173,15 @@ public class H265Mgr implements ICam {
 
     @Override
     public boolean playViewCam() {
-        if(JniUtil.readyPlay(2,0,0)){
-
-            Log.i("123", "play view cam");
-            Subscribe s = new Subscribe(mSessionID, (int)getDialogId(),mBean.getDeviceId(), "live",mIsSub);
-            s.setStartTime(null);
-            s.setEndTime(null);
-            String jsonStr = JsonUtil.subScribeJson(s);
-            Log.i("123", "jsonStr="+jsonStr);
-            transSubscribe(jsonStr, jsonStr.length());
-            JniUtil.playView();
-            startTimerTask();
-        }else{
-            Log.e("123", "ready play live error");
-            return false;
-        }
+        Log.i("123", "h265  play view cam");
+        if (mSessionID==null)return true;
+        Log.e("123","mSessionID="+mSessionID);
+        Subscribe s = new Subscribe(mSessionID, (int)getDialogId(),mBean.getDeviceId(), "live",mIsSub);
+        s.setStartTime(null);
+        s.setEndTime(null);
+        String jsonStr = JsonUtil.subScribeJson(s);
+        Log.i("123", "jsonStr="+jsonStr);
+        transSubscribe(jsonStr, jsonStr.length());
         return true;
     }
 
@@ -366,7 +364,7 @@ public class H265Mgr implements ICam {
     private void onConnect(String sessionId){
         Log.i("123", "session id = "+sessionId);
         mSessionID = sessionId;
-//        mHandler.sendEmptyMessage(MSG_LOGIN_CAM_OK);
+        mHandler.sendEmptyMessage(BasePlayActivity.MSG_PLAY_LOGIN_CAM_OK);
     }
 
     private void onDisConnect(){
@@ -381,39 +379,62 @@ public class H265Mgr implements ICam {
 //        mHandler.sendEmptyMessageDelayed(PlayerActivity.MSG_DISCONNECT_UNEXPECT, 5000);
     }
 
-    private void initServerInfo() throws NullPointerException {
-        mTurnServiceIP = ServerConfigSp.loadServerIP(mContext);
-        mTurnServicePort = ServerConfigSp.loadServerPort(mContext);
-        mIsTurnCrypto = ServerConfigSp.loadServerIsCrypto(mContext);
-        if (mTurnServiceIP==null){
-            throw new NullPointerException();
+    private void onSubscribe(String jsonStr){
+        Log.i("123","onASubscribe   jsonStr="+jsonStr);
+
+        TurnSubScribeAckBean bean = TurnJsonUtil.getTurnSubscribeAckAllFromJsonStr(jsonStr);
+        CodecBean codec = new CodecBean();
+        codec.setAudioCodec(bean.getAudioCodec())
+                .setVideoCodec(bean.getVideoCodec())
+                .setAudioChannels(bean.getAudioChannels())
+                .setAudioBitwidth(bean.getAudioBitwidth())
+                .setAudioSamples(bean.getAudioSamples());
+
+        if(JniUtil.readyPlay(codec,mIsSub)){
+            JniUtil.playView();
+            startTimerTask();
+        }else{
+            Log.e("123", "ready play live error");
         }
     }
 
 
+
+    private void initServerInfo() throws NullPointerException {
+        mTurnServiceIP = ServerConfigSp.loadServerIP(mContext);
+        mIsTurnCrypto = ServerConfigSp.loadServerIsCrypto(mContext);
+        mTurnServicePort = mIsTurnCrypto?8862:8812;
+        if (mTurnServiceIP==null){
+            throw new NullPointerException();
+        }
+    }
 
     class MyTimerTask extends TimerTask {
         @Override
         public void run() {
             int streamLen = JniUtil.transGetStreamLenSomeTime();
             Log.i("123","from my time task   "+ streamLen+"    speed="+streamLen*8/1024/F_TIME+"kbit");
+            int speed = streamLen*8/1024/F_TIME;
+            if (mStreamCB!=null){
+                mStreamCB.showStreamSpeed(speed);
+            }
 
-//            PlayerActivity.ShowStreamSpeed(streamLen*8/1024/F_TIME);//FIXME
             if (streamLen == 0) {
                 mUnexpectNoFrame++;
             }else{
-                mHandler.sendEmptyMessage(PlayerActivity.HIDEPROGRESSBAR);
+                mHandler.sendEmptyMessage(BasePlayActivity.MSG_PLAY_PLAY_UNWAIT);
                 mUnexpectNoFrame = 0;
+            }
+
+            if (mUnexpectNoFrame==3  ){
+                mHandler.sendEmptyMessage(BasePlayActivity.MSG_PLAY_PLAY_WAIT);
             }
 
             if (mUnexpectNoFrame == 10) {// 10s / 1000ms
 //                mHandler.sendEmptyMessage(PlayerActivity.MSG_DISCONNECT_UNEXPECT);//FIXME
+                // TODO reLink
+                mHandler.sendEmptyMessage(BasePlayActivity.MSG_PLAY_RELINK_START);
             }
         }
     }
-
-
-
-
-
 }

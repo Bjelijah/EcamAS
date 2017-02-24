@@ -386,7 +386,7 @@ public class ApCamMgr implements ICam {
         JniUtil.setCallBackObj(this);
 
         if(!JniUtil.login(mCamBean.getUpnpIP())){
-
+            Log.e("123","ap login error");
             return false;
         }
 

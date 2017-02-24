@@ -215,7 +215,7 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
                     .setUpnpPort(n.getUpnpPort())
                     .setMethodType(n.getMethodType())
                     .setPicturePath(n.getPicturePath());
-            Log.e("123","~~~~~~~~~~~~~~~~~~~~~~~~~~~n.getMethod type="+n.getMethodType()+"  name="+n.getName()+"  upnpIP="+n.getUpnpIP());
+//            Log.e("123","~~~~~~~~~~~~~~~~~~~~~~~~~~~n.getMethod type="+n.getMethodType()+"  name="+n.getName()+"  upnpIP="+n.getUpnpIP());
             mList.add(b);
         }
         //TODO 重新排列： 1ecam OnLine 2ap 3ecam Offline
@@ -241,6 +241,7 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
       //  itemView.setOnTouchListener(mColorfulListener);
         //TODO get net server res
         CameraItemBean bean = mList.get(pos);
+        Log.i("123","bean type="+bean.getType());
         if (!bean.isOnline()){
             AlerDialogUtils.postDialogMsg(this.getContext(),
                     getResources().getString(R.string.not_online),
@@ -408,10 +409,21 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
     }
 
     private void doPlay(int pos){
-        CameraItemBean bean = mList.get(pos);
+        CameraItemBean bean = getUpdataBean(pos);
+
         PlayAction.getInstance().setPlayBean(bean);
         Intent intent = new Intent(getContext(), PlayViewActivity.class);
         getContext().startActivity(intent);
     }
+
+    private CameraItemBean getUpdataBean(int pos){
+        CameraItemBean b = mList.get(pos);
+        if (b.getType()==PlayType.ECAM || b.getType() == PlayType.TURN){
+            b.setType(HomeAction.getInstance().isUseTurn()?PlayType.TURN:PlayType.ECAM);
+            mList.set(pos,b);
+        }
+        return b;
+    }
+
 
 }

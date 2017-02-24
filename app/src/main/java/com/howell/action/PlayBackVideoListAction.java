@@ -136,6 +136,7 @@ public class PlayBackVideoListAction {
                 mTotalPage = mCam.getVideoListPageCount(mCurPage, 20);
                 Log.i("123","mTotalPage="+mTotalPage);
                 mVodList = mCam.getVideoList();
+                Log.e("123"," mVODLISt size="+mVodList.size());
                 listFun(mVodList);
                 return mVodList==null?false:true;
             }

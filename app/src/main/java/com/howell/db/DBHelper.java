@@ -23,7 +23,11 @@ public class DBHelper extends SQLiteOpenHelper {
 				+ "num integer,"
 				+ "username varchar(80),"
 				+ "useremail varchar(80),"
-				+ "userpassword varchar(20));";
+				+ "userpassword varchar(20),"
+				+ "custom integer,"
+				+ "ip varchar(20),"
+				+ "port integer,"
+				+ "ssl integer);";
 				
 		db.execSQL(sqlUserInfo);
 

@@ -10,11 +10,12 @@ import android.util.Log;
 
 public class ServerConfigSp {
     private static final String SP_NAME = "server_set";
-    public static void saveServerInfo(Context context, String ip, int port){
+    public static void saveServerInfo(Context context, String ip, int port,boolean isSSL){
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("server_ip",ip);
         editor.putInt("server_port",port);
+        editor.putBoolean("server_ssl",isSSL);
         editor.commit();
     }
 
@@ -27,6 +28,12 @@ public class ServerConfigSp {
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
         return sp.getInt("server_port",0);
     }
+
+    public static boolean loadServerSSL(Context context){
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        return sp.getBoolean("server_ssl",false);
+    }
+
 
     public static void saveCommunicationInfo(Context context,boolean isTurn,boolean isCrypto){
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);

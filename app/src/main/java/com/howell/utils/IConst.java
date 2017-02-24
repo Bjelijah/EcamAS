@@ -70,6 +70,6 @@ public interface IConst {
 	
 	//new ecam ui
 	final static int MSG_POST_SAVE_OK = 0xf000;
-
+	final static int MSG_FINGER_OK= 0xf001;
 
 }

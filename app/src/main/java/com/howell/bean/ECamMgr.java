@@ -216,7 +216,9 @@ public class ECamMgr implements ICam,IConst {
 
         JniUtil.ecamSetContextObj(getStreamReqContext());
 
-        JniUtil.readyPlay(1,auType,mIsPlayBack);
+        CodecBean codec = new CodecBean();
+        codec.setVideoCodec(0).setAudioCodec(auType).setAudioBitwidth(16).setAudioChannels(1).setAudioSamples(8000);
+        JniUtil.readyPlay(codec,mIsPlayBack);
         JniUtil.keepTimestamp();
         JniUtil.playView();
 
@@ -388,8 +390,11 @@ public class ECamMgr implements ICam,IConst {
             Log.e("123","invite error");
             return false;
         }
+        CodecBean codec = new CodecBean();
+        codec.setAudioSamples(8000).setVideoCodec(0).setAudioBitwidth(16)
+                .setAudioChannels(1).setAudioCodec(auType);
 
-        if(!JniUtil.readyPlay(1,auType,mIsPlayBack)){
+        if(!JniUtil.readyPlay(codec,mIsPlayBack)){
             Log.e("123","readplay live error");
             return false;
         }//解码器 初始化

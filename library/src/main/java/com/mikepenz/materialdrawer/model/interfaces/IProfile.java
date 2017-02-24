@@ -9,6 +9,7 @@ import com.mikepenz.fastadapter.IIdentifyable;
 import com.mikepenz.iconics.typeface.IIcon;
 import com.mikepenz.materialdrawer.holder.ImageHolder;
 import com.mikepenz.materialdrawer.holder.StringHolder;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 
 /**
  * Created by mikepenz on 03.02.15.
@@ -16,7 +17,11 @@ import com.mikepenz.materialdrawer.holder.StringHolder;
 public interface IProfile<T> extends IIdentifyable<T> {
     T withName(String name);
 
+
+
     StringHolder getName();
+
+
 
     T withEmail(String email);
 

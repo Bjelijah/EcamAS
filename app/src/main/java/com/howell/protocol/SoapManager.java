@@ -1,5 +1,7 @@
 package com.howell.protocol;
 
+import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.howell.entityclass.Device;
@@ -7,6 +9,8 @@ import com.howell.entityclass.DeviceSharer;
 import com.howell.entityclass.NodeDetails;
 import com.howell.entityclass.VODRecord;
 import com.howell.utils.AnalyzingDoNetOutput;
+import com.howell.utils.SSLConection;
+import com.howell.utils.ServerConfigSp;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
@@ -27,11 +31,11 @@ public class SoapManager implements Serializable {
     //https://www.haoweis.com:8807/HomeService/HomeMCUService.svc 
     //http://www.haoweis.com:8800/HomeService/HomeMCUService.svc?xsd=xsd0
     private static String sEndPoint = "http://www.haoweis.com:8800/HomeService/HomeMCUService.svc?wsdl";
-
+	private static boolean sIsSSL = false;
     //private static String sSoapAction = null;
 
     private static SoapManager sInstance = new SoapManager();
-
+	private static Context sContext;
     private LoginRequest mLoginRequest;
     private LoginResponse mLoginResponse;
     private GetNATServerRes mGetNATServerRes;
@@ -44,6 +48,20 @@ public class SoapManager implements Serializable {
     private SoapManager() {
 
     }
+
+	public static void initUrl(Context context,boolean isCustom, @Nullable String ip,@Nullable int port,@Nullable boolean isSSL){
+		if (isCustom){
+			sEndPoint = isSSL?
+					"https://" + ip + ":" + port + "/HomeService/HomeMCUService.svc?wsdl":
+					"http://" + ip + ":" + port + "/HomeService/HomeMCUService.svc?wsdl";
+			sIsSSL = true;
+		}else{
+			sEndPoint = "http://www.haoweis.com:8800/HomeService/HomeMCUService.svc?wsdl";
+			sIsSSL = false;
+		}
+		sContext = context;
+	}
+
 
     public static SoapManager getInstance() {
         return sInstance;
@@ -96,6 +114,12 @@ public class SoapManager implements Serializable {
         envelope.encodingStyle = "UTF-8";
         envelope.setOutputSoapObject(rpc);
         //com.howell.activity.FakeX509TrustManager.allowAllSSL();
+
+		if (sIsSSL){
+			SSLConection.allowAllSSL(sContext);
+		}
+
+
         HttpTransportSE transport;
 		transport = new HttpTransportSE(sEndPoint);
 		transport.debug = true;

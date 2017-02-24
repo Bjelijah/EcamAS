@@ -103,7 +103,9 @@ public class Util {
 		return pattern.matcher(str).matches();
 	}
 
-
+	public static boolean isNewApi(){
+		return android.os.Build.VERSION.SDK_INT>22;
+	}
 
 
 }
