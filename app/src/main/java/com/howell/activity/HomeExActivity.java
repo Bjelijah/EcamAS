@@ -42,6 +42,7 @@ import com.howell.activity.fragment.NoticeFragment;
 import com.howell.bean.UserLoginDBBean;
 import com.howell.db.UserLoginDao;
 import com.howell.ecam.R;
+import com.howell.ecamera.cameraupdatedetective.Observable;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.IConst;
 import com.howell.utils.ServerConfigSp;
@@ -68,6 +69,14 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.Callable;
+
+import io.reactivex.ObservableSource;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by howell on 2016/11/15.
@@ -108,7 +117,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     private DrawerItemClickListener onDrawerItemClickListener = new DrawerItemClickListener();
     public static Bitmap sBkBitmap;
     private List<HomeBaseFragment> mFragments;
-
+    private final CompositeDisposable mDisposables = new CompositeDisposable();
 
     Handler mHandler = new Handler(){
         @Override
@@ -182,6 +191,13 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         fillFab();
         loadBackdrop();
         initFragment();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mHandler = null;
+        mDisposables.clear();
+        super.onDestroy();
     }
 
     private Drawable getRamdomUserIcon(){
@@ -498,6 +514,10 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
             Log.i("123","on drawer close");
             //TODO:1 save to sp  2 do
             ServerConfigSp.saveCommunicationInfo(HomeExActivity.this, HomeAction.getInstance().isUseTurn(), HomeAction.getInstance().isUseCrypto());
+            //TODO to set all device list if is TurnType and isUseCrypto
+
+            onUpdataBean();
+
         }
 
         @Override
@@ -505,6 +525,12 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
 
         }
     }
+
+    private void onUpdataBean(){
+
+    }
+
+
 
 
     class DrawerItemClickListener implements Drawer.OnDrawerItemClickListener{

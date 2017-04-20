@@ -40,6 +40,7 @@ import com.zys.brokenview.BrokenView;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.disposables.CompositeDisposable;
 import pullrefreshview.layout.BaseFooterView;
 import pullrefreshview.layout.BaseHeaderView;
 import pullrefreshview.layout.PullRefreshLayout;
@@ -52,6 +53,7 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
     public static final int MSG_RECEIVE_SIP = 0x0000;
     public static final int MSG_DEVICE_LIST_UPDATA = 0x0001;
     public static final int MSG_NET_SERVER_OK = 0x0002;
+
 
 
     View mView;
@@ -91,6 +93,11 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
     };
 
 
+    @Override
+    public void onDestroyView() {
+        mHandler = null;
+        super.onDestroyView();
+    }
 
     @Nullable
     @Override
@@ -410,7 +417,7 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
 
     private void doPlay(int pos){
         CameraItemBean bean = getUpdataBean(pos);
-
+        Log.i("123","do play Type="+bean.getType());
         PlayAction.getInstance().setPlayBean(bean);
         Intent intent = new Intent(getContext(), PlayViewActivity.class);
         getContext().startActivity(intent);
@@ -423,6 +430,16 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
             mList.set(pos,b);
         }
         return b;
+    }
+
+    public void updataAllBeanType(){
+        Log.i("123","updata All bean type");
+        for (CameraItemBean b:mList){
+            if (b.getType()==PlayType.ECAM||b.getType()==PlayType.TURN){
+                b.setType(HomeAction.getInstance().isUseTurn()?PlayType.TURN:PlayType.ECAM);
+            }
+        }
+
     }
 
 
