@@ -144,7 +144,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := play_jni
 LOCAL_SRC_FILES := play_jni.cpp g711.cpp g7.cpp
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/include
-LOCAL_SHARED_LIBRARIES := hwplay jpush ecamstream hiplay hwtrans hwnet
+LOCAL_SHARED_LIBRARIES := hwplay jpush ecamstream hwtrans hwnet #hiplay
 #LOCAL_STATIC_LIBRARIES := ecamstream
 LOCAL_LDFLAGS := -LD:/Android/android-ndk-r10e/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi-v7a
 LOCAL_LDLIBS := -llog -lGLESv2 -lz -ldl -lgcc
