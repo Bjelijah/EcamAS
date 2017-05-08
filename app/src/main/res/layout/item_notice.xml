@@ -20,20 +20,42 @@
         android:orientation="vertical"
         android:layout_marginTop="@dimen/item_notice_vertical_margin">
 
-        <TextView
-            android:id="@+id/item_notice_title"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="20sp"
-            />
-        <TextView
-            android:id="@+id/item_notice_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentLeft="true">
 
-            />
+                <TextView
+                    android:id="@+id/item_notice_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    />
+                <TextView
+                    android:id="@+id/item_notice_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+
+                    />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/item_notice_read"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:src="@mipmap/ic_mail_white_24dp"
+                android:layout_centerVertical="true"
+                />
+
+        </RelativeLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"

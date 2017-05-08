@@ -362,7 +362,11 @@ public class PlayAction {
     }
 
     public boolean soundSendBuf(byte [] buf,int len){
-        if (mCamMgr==null)return false;
+        if (mCamMgr==null)
+        {
+            Log.e("123","mcamMgr==null");
+            return false;
+        }
         return mCamMgr.soundSetData(buf,len);
     }
 

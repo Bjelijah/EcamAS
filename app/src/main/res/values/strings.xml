@@ -9,6 +9,7 @@
     <string name="remember_password">Remember password</string>
     <string name="message">Please link network first</string>
     <string name="ok">OK</string>
+    <string name="all">ALL</string>
     <string name="verification">Account and password cannot be empty</string>
     <string name="password_error">Password error</string>
     <string name="account_error">Account does not exist</string>
@@ -294,6 +295,13 @@
     <string name="home_fragment_notice">Notice</string>
     <string name="home_drawer_changer_user_error">Changer user error</string>
 
+    <string name="home_setting_set">Setting</string>
+    <string name="home_setting_help">Help</string>
+    <string name="home_setting_search">Search</string>
+    <string name="home_setting_scope">Scope</string>
+    <string name="home_setting_unread">Unread</string>
+    <string name="home_setting_read">Read</string>
+    <string name="home_setting_read_all">All</string>
 
     <!-- add -->
     <string name="add_camera_title">Add New Camera</string>
@@ -352,6 +360,9 @@
 
     <string name="camera_settting_title">Camera Setting</string>
     <string name="camera_setting_title_name">Camera Name</string>
+    <string name="camera_setting_name_change">Rename</string>
+    <string name="camera_setting_rename_title">Rename</string>
+    <string name="camera_setting_rename_input">Input Your Camera New Name</string>
     <string name="camera_setting_param">Parameters</string>
     <string name="camera_setting_resolution_dec">The resolutiong of the video</string>
     <string name="camera_setting_picture_dec">The Image quality which be taken </string>
@@ -390,6 +401,8 @@
     <string name="center_setting_ip">Input IP or Address</string>
     <string name="center_setting_port_title">Center Port:</string>
     <string name="center_setting_port">Input Port</string>
+
+
 
     	<string name="lorem">
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit.

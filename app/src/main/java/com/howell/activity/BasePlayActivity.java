@@ -297,8 +297,10 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
+
         super.onConfigurationChanged(newConfig);
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+
             showSurfaceIcon(false);
 
         } else if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){

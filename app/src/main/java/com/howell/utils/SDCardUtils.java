@@ -121,7 +121,9 @@ public class SDCardUtils {
 	}  
 	
 	static final int neededCacheSpace = 50;
-	
+
+
+
 	public static void saveBmpToSd(Bitmap bm, String filename) {  
         if (bm == null) {  
         	Log.e("", "bm == null");

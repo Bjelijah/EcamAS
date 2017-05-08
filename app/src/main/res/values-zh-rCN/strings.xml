@@ -9,6 +9,7 @@
     <string name="remember_password">记住密码</string>
     <string name="message">请先连接网络!</string>
     <string name="ok">确定</string>
+	<string name="all">全部</string>
     <string name="verification">用户名和密码不能为空</string>
     <string name="password_error">密码错误</string>
     <string name="account_error">帐户不存在</string>
@@ -280,8 +281,13 @@
 	<string name="home_fragment_notice">Notice</string>
 	<string name="home_drawer_changer_user_error">切换用户失败</string>
 	<string name="drawer_item_help">帮助</string>
-
-
+	<string name="home_setting_set">设置</string>
+	<string name="home_setting_help">帮助</string>
+	<string name="home_setting_search">查询</string>
+    <string name="home_setting_scope">范围</string>
+    <string name="home_setting_unread">未读</string>
+    <string name="home_setting_read">已读</string>
+    <string name="home_setting_read_all">全部</string>
 	<string name="add_camera_title">添加新的摄像机</string>
 	<string name="add_ap">添加AP摄像机</string>
 	<string name="add_flash">扫一扫</string>
@@ -325,6 +331,9 @@
 
 	<string name="camera_settting_title">摄像机设置</string>
 	<string name="camera_setting_title_name">摄像机名称</string>
+	<string name="camera_setting_name_change">修改</string>
+	<string name="camera_setting_rename_title">重命名</string>
+	<string name="camera_setting_rename_input">输入摄像机新名称</string>
 	<string name="camera_setting_param">参数</string>
 	<string name="camera_setting_resolution_dec">视频图像的分辨率</string>
 	<string name="camera_setting_picture_dec">获取的图片质量</string>

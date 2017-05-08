@@ -228,17 +228,25 @@ public class BigImagesActivity extends AppCompatActivity implements View.OnClick
             System.out.println("最后修改时间："+foo.format(d));
             System.out.println("最后修改时间："+new File(mList.get(position)).lastModified());
 //            Log.i("123", "view:"+position);
-            if(scale){
+            try {
+                if (scale) {
 //                Log.e("123", "scale  view:"+position+"file name:"+mList.get(position));
 //				Bitmap bm = ScaleImageUtils.resizeImage(ScaleImageUtils.decodeFile(requiredWidthSize,requiredWidthSize * 9 / 16
 //						,new File(mList.get(1))),requiredWidthSize , requiredWidthSize * 9 / 16);
-                photoView.setImageBitmap(/*sDrawables[position]*/ScaleImageUtils.resizeImage(ScaleImageUtils.decodeFile(requiredWidthSize,requiredWidthSize * 9 / 16
-                        ,new File(mList.get(position))),requiredWidthSize , requiredWidthSize * 9 / 16));
+
+                    photoView.setImageBitmap(/*sDrawables[position]*/ScaleImageUtils.resizeImage(ScaleImageUtils.decodeFile(requiredWidthSize, requiredWidthSize * 9 / 16
+                            , new File(mList.get(position))), requiredWidthSize, requiredWidthSize * 9 / 16));
+
+
 //				im.setImageBitmap(bm);
-            }else{
+                } else {
 //                Log.e("123", "no scale  view:"+position);
-                photoView.setImageBitmap(ScaleImageUtils.decodeFile(requiredWidthSize,requiredWidthSize * 3 / 4
-                        ,new File(mList.get(position))));
+                    photoView.setImageBitmap(ScaleImageUtils.decodeFile(requiredWidthSize, requiredWidthSize * 3 / 4
+                            , new File(mList.get(position))));
+                }
+            }catch (Exception e){
+                photoView.setImageResource(R.mipmap.local_file_bg2);
+                return photoView;
             }
             //注册点击事件
             photoView.setOnViewTapListener(BigImagesActivity.this);

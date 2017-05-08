@@ -36,4 +36,12 @@ public class GetPictureRes {
 		this.picture = picture;
 	}
 
+	@Override
+	public String toString() {
+		return "GetPictureRes{" +
+				"result='" + result + '\'' +
+				", pictureID='" + pictureID + '\'' +
+				", picture='" + picture + '\'' +
+				'}';
+	}
 }

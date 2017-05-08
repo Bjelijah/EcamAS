@@ -77,9 +77,9 @@ public class AudioAction {
 
 	
 	public void audioWrite() {
-		Log.e("123", "audio write  mAudioDataLength="+mAudioDataLength+" dataLen="+mAudioData.length);
+		//Log.e("123", "audio write  mAudioDataLength="+mAudioDataLength+" dataLen="+mAudioData.length);
 		
-		Log.i("123","play state="+	mAudioTrack.getPlayState()+"     1:stop 2:pause 3:play");//1 stop 2 pause 3 play
+		//Log.i("123","play state="+	mAudioTrack.getPlayState()+"     1:stop 2:pause 3:play");//1 stop 2 pause 3 play
 		mAudioTrack.write(mAudioData,0,mAudioDataLength);
 	}    
 	
@@ -181,7 +181,10 @@ public class AudioAction {
 	}
 
 	public void startAudioRecord(){
-		if(bAudioRecording)return;
+		if(bAudioRecording) {
+			Log.i("123","bAudioRecording alreadly  bAudioRecording");
+				return;
+		}
 		bAudioRecording = true;
 		new Thread(){
 			@Override
@@ -196,10 +199,11 @@ public class AudioAction {
 
 //					boolean ret = TalkManager.getInstance().sendVoiceData2Service(buffer, bufferReadResult);
 //					boolean ret = JniUtil.nativeAudioSetdata(buffer,bufferReadResult);
+					Log.i("123","buffer readResult="+bufferReadResult);
 					boolean ret = PlayAction.getInstance().soundSendBuf(buffer,bufferReadResult);
-
+					Log.i("123","send ret=   "+ret);
 					if (!ret) {
-						bAudioRecording = false;
+//						bAudioRecording = false;
 					}
 				}
 

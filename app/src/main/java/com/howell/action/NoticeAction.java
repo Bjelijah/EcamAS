@@ -1,10 +1,16 @@
 package com.howell.action;
 
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
+import com.howell.protocol.FlaggedNoticeStatusReq;
+import com.howell.protocol.FlaggedNoticeStatusRes;
 import com.howell.protocol.QueryNoticesReq;
 import com.howell.protocol.QueryNoticesRes;
 import com.howell.protocol.SoapManager;
+
+import java.util.Date;
 
 /**
  * Created by howell on 2016/11/28.
@@ -22,10 +28,12 @@ public class NoticeAction {
 
     private int curPage;
     private int totalPage;
-    private int pageSize = 20;
+    private final int pageSize = 20;//// FIXME: 2017/5/5
     private SoapManager mSoapManager = SoapManager.getInstance();
     private OnNoticeRes mListener;
-
+    private String mTime = null;
+    private String mStatus = null;
+    private String mSender = null;
 
     public NoticeAction init(){
         curPage = 1;
@@ -43,6 +51,31 @@ public class NoticeAction {
         return this;
     }
 
+    public void searchNotices(@Nullable String day){
+        mTime = day;
+        init();
+        getNoticesTask();
+    }
+
+    public void searchNotices(int status){
+        switch (status){
+            case 0:
+                mStatus = "Unread";
+                break;
+            case 1:
+                mStatus = "Read";
+                break;
+            case 2:
+                mStatus = null;
+                break;
+            default:
+                mStatus = null;
+                break;
+        }
+        init();
+        getNoticesTask();
+    }
+
 
     public void getNoticesTask(){
         new AsyncTask<Void,Void,Boolean>(){
@@ -54,7 +87,9 @@ public class NoticeAction {
                 try {
                     String account = LoginAction.getInstance().getmInfo().getAccount();
                     String session = LoginAction.getInstance().getmInfo().getLr().getLoginSession();
-                    mRes = mSoapManager.getQueryNoticesRes(new QueryNoticesReq(account,session,curPage,pageSize));
+
+                    mRes = mSoapManager.getQueryNoticesRes(new QueryNoticesReq(account,session,curPage,pageSize,mStatus,mTime,mSender));//// FIXME: 2017/5/5
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     return false;
@@ -86,6 +121,26 @@ public class NoticeAction {
         }.execute();
     }
 
+    public void setNoticesStatus(final String id, final boolean isRead){
+        new AsyncTask<Void,Void,Void>(){
+            FlaggedNoticeStatusRes res;
+            @Override
+            protected Void doInBackground(Void... params) {
+                String account = LoginAction.getInstance().getmInfo().getAccount();
+                String session = LoginAction.getInstance().getmInfo().getLr().getLoginSession();
+                String [] ids = new String[1];
+                ids[0] = id;
+                try{
+                    res = mSoapManager.getFlaggedNoticeStatusRes(new FlaggedNoticeStatusReq(account,session, isRead?"Read":"Unread",ids));
+                    Log.i("123","flaggedNoticeStat res="+res.getResult().toString());
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+        }.execute();
+    }
 
     public interface OnNoticeRes{
         void OnNoticeError();

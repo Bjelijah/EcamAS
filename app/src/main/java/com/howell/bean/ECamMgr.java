@@ -251,7 +251,7 @@ public class ECamMgr implements ICam,IConst {
 
     @Override
     public boolean soundSetData(byte[] buf, int len) {
-        return JniUtil.ecamSendAudioData(buf,len)==0?false:true;
+        return JniUtil.ecamSendAudioData(buf,len)==0?true:false;
     }
 
     @Override

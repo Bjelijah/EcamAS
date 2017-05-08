@@ -3,9 +3,16 @@ package com.howell.utils;
 
 import android.content.Context;
 import android.net.TrafficStats;
+import android.util.Log;
+
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
+import com.fasterxml.jackson.databind.util.ISO8601Utils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -107,5 +114,45 @@ public class Util {
 		return android.os.Build.VERSION.SDK_INT>22;
 	}
 
+	public static String Date2ISODate(Date date){
+		ISO8601DateFormat isoDate = new ISO8601DateFormat();
+		String isoString = isoDate.format(date);
+		Log.i("123", "isoDate:"+isoString);
+		return isoString;
+	}
 
+	public static String ISODateString2Date(String isoDate){
+		String str = null;
+		try {
+			Date date = ISO8601Utils.parse(isoDate,new ParsePosition(0));
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			str = sdf.format(date);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return str;
+
+		//		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+		//		DateFormat sd=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		//		try {
+		//			return sd.format(sdf.parse(isoDate));
+		//		} catch (ParseException e) {
+		//			e.printStackTrace();
+		//			return null;
+		//		}
+	}
+
+	public static String ISODateString2ISOString(String isoDate){
+		String str = null;
+		try{
+			Date date = ISO8601Utils.parse(isoDate,new ParsePosition(0));
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+			str = sdf.format(date);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return str;
+
+
+	}
 }

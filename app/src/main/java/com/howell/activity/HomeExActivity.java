@@ -22,9 +22,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -82,7 +85,7 @@ import io.reactivex.schedulers.Schedulers;
  * Created by howell on 2016/11/15.
  */
 
-public class HomeExActivity extends AppCompatActivity implements HomeAction.ChangeUser,IConst{
+public class HomeExActivity extends AppCompatActivity implements HomeAction.ChangeUser,IConst, ViewPager.OnPageChangeListener {
 
     private final static long ID_DRAWER_UID = 0x00;
     private final static long ID_DRAWER_HOME = 0x01;
@@ -118,7 +121,6 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     public static Bitmap sBkBitmap;
     private List<HomeBaseFragment> mFragments;
     private final CompositeDisposable mDisposables = new CompositeDisposable();
-
     Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -159,7 +161,16 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_ex);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        toolbar.showOverflowMenu();
+        toolbar.inflateMenu(R.menu.center_setting_action_menu);
         setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+
+        actionBar.setDisplayShowTitleEnabled(true);
+
+
+
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle(getString(R.string.app_name));
 //        collapsingToolbarLayout.setTitle(" ");//FIXME : just for screen shoot
@@ -198,6 +209,72 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         mHandler = null;
         mDisposables.clear();
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.home_action_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        switch (mViewPager.getCurrentItem()){
+            case 0:
+                menu.findItem(R.id.menu_home_help).setVisible(true);
+                menu.findItem(R.id.menu_home_notice_search).setVisible(false);
+                menu.findItem(R.id.menu_home_scope).setVisible(false);
+                menu.findItem(R.id.menu_home_setting).setVisible(false);
+                menu.findItem(R.id.menu_home_notice_unread).setVisible(false);
+                menu.findItem(R.id.menu_home_notice_read).setVisible(false);
+                menu.findItem(R.id.menu_home_notice_all).setVisible(false);
+                break;
+            case 1:
+                menu.findItem(R.id.menu_home_help).setVisible(false);
+                menu.findItem(R.id.menu_home_notice_search).setVisible(false);
+                menu.findItem(R.id.menu_home_scope).setVisible(true);
+                menu.findItem(R.id.menu_home_setting).setVisible(false);
+                menu.findItem(R.id.menu_home_notice_unread).setVisible(false);
+                menu.findItem(R.id.menu_home_notice_read).setVisible(false);
+                menu.findItem(R.id.menu_home_notice_all).setVisible(false);
+                break;
+            case 2:
+                menu.findItem(R.id.menu_home_help).setVisible(false);
+                menu.findItem(R.id.menu_home_notice_search).setVisible(true);
+                menu.findItem(R.id.menu_home_scope).setVisible(false);
+                menu.findItem(R.id.menu_home_setting).setVisible(false);
+                menu.findItem(R.id.menu_home_notice_unread).setVisible(true);
+                menu.findItem(R.id.menu_home_notice_read).setVisible(true);
+                menu.findItem(R.id.menu_home_notice_all).setVisible(true);
+                break;
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.menu_home_help:
+                break;
+            case R.id.menu_home_notice_search:
+                ((NoticeFragment)mFragments.get(2)).doSearchByTime();
+                break;
+            case R.id.menu_home_scope:
+                item.setIcon(getDrawable(R.mipmap.ic_view_list_white_24dp));
+                break;
+            case R.id.menu_home_setting:
+                break;
+            case R.id.menu_home_notice_unread:
+                ((NoticeFragment)mFragments.get(2)).doSearchByState(0);
+                break;
+            case R.id.menu_home_notice_read:
+                ((NoticeFragment)mFragments.get(2)).doSearchByState(1);
+                break;
+            case R.id.menu_home_notice_all:
+                ((NoticeFragment)mFragments.get(2)).doSearchByState(2);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private Drawable getRamdomUserIcon(){
@@ -369,6 +446,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mViewPager.setOffscreenPageLimit(3);
         mViewPager.setAdapter(myFragmentPagerAdatper);
+        mViewPager.addOnPageChangeListener(this);
     }
 
     private Bitmap getViewBitmap(View v){
@@ -486,6 +564,19 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     @Override
     public void onChangeError() {
         Snackbar.make(mViewPager,getString(R.string.home_drawer_changer_user_error),Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        invalidateOptionsMenu();
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
     }
 
     class DrawerCheckedChangeListener implements OnCheckedChangeListener {

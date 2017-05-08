@@ -7,10 +7,12 @@ import java.util.List;
  */
 
 public class NoticeItemBean {
+    private String id;
     private String title;
     private String description;
     private String time;
     private List<String> picID;
+    private boolean hasRead;
     public String getDescription() {
         return description;
     }
@@ -21,6 +23,24 @@ public class NoticeItemBean {
 
     public NoticeItemBean setPicID(List<String> picID) {
         this.picID = picID;
+        return this;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public NoticeItemBean setId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public boolean isHasRead() {
+        return hasRead;
+    }
+
+    public NoticeItemBean setHasRead(boolean hasRead) {
+        this.hasRead = hasRead;
         return this;
     }
 

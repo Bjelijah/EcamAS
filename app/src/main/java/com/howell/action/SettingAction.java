@@ -26,6 +26,8 @@ import com.howell.protocol.SetVideoParamRes;
 import com.howell.protocol.SoapManager;
 import com.howell.protocol.SubscribeAndroidPushReq;
 import com.howell.protocol.SubscribeAndroidPushRes;
+import com.howell.protocol.UpdateChannelNameReq;
+import com.howell.protocol.UpdateChannelNameRes;
 import com.howell.protocol.VMDParamReq;
 import com.howell.protocol.VMDParamRes;
 import com.howell.utils.DeviceVersionUtils;
@@ -187,6 +189,11 @@ public class SettingAction {
 
     }
 
+    public void setRenameCameraName(String newName){
+
+    }
+
+
     public void saveSetting(Bundle bundle){
         final boolean bSaveEncode = bundle.getBoolean("bSaveEncode");
         final boolean bSaveTurn = bundle.getBoolean("bSaveTurn");
@@ -200,7 +207,8 @@ public class SettingAction {
         final boolean bLamp = bundle.getBoolean("bLamp");
         final boolean bVmd = bundle.getBoolean("bVmd");
         final boolean bPush = bundle.getBoolean("bPush");
-
+        final boolean brename = bundle.getBoolean("bRename");
+        final String renameStr = bundle.getString("newName");
         new AsyncTask<Void,Void,Boolean>(){
 
             @Override
@@ -211,6 +219,7 @@ public class SettingAction {
                     if (bSaveLamp)saveLampParam(bLamp);
                     if (bSaveVmd)saveVmdParam(bVmd);
                     if (bSavePush)savePushParam(bPush);
+                    if (brename) saveNewCameraName(renameStr);
                 }catch (Exception e){
                     e.printStackTrace();
                     return false;
@@ -241,10 +250,13 @@ public class SettingAction {
 
     private void saveEncodeParam(int resoIndex,int qualityIndex) throws Exception{
         int bitrate = DeviceSettingActivity.reso_bitrate_map_[resoIndex][qualityIndex];
+        Log.i("123","bitrate="+bitrate);
         String streamType=resoIndex==0?"Sub":"Main";
         mResParam.setStreamType(streamType);
         mResParam.setFrameSize(DeviceSettingActivity.mFrameSizeValues[resoIndex]);
         mResParam.setBitRate(String.valueOf(bitrate));
+
+
         mSoapManager.setCodingParam(mResParam);
     }
 
@@ -283,6 +295,16 @@ public class SettingAction {
         SubscribeAndroidPushReq req = new SubscribeAndroidPushReq(account,session,bPush?0x01:0x00,devId,ch);
         SubscribeAndroidPushRes res = mSoapManager.getSubscribeAndroidPushRes(req);
         if (!res.getResult().equalsIgnoreCase("OK"))throw new IllegalStateException("save push param res="+res.getResult());
+    }
+
+    private void saveNewCameraName(String name){
+        String account = LoginAction.getInstance().getmInfo().getAccount();
+        String session = LoginAction.getInstance().getmInfo().getLr().getLoginSession();
+        String devId = mBean.getDeviceId();
+        int ch = mBean.getChannelNo();
+        UpdateChannelNameReq req = new UpdateChannelNameReq(account,session,devId,ch,name);
+        UpdateChannelNameRes  res = mSoapManager.getUpdateChannelNameRes(req);
+        if (res.getResult().equalsIgnoreCase("OK"))throw new IllegalStateException("save new name res="+res.getResult());
     }
 
 }

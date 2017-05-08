@@ -191,12 +191,12 @@ void audio_play(const char* buf,int len)
         self->env->CallVoidMethod( self->obj, self->mid, NULL);
     }
 
-    LOGE("start to detach audio play thread");
+   // LOGE("start to detach audio play thread");
 
     if (self->jvm->DetachCurrentThread() != JNI_OK) {
         LOGE("%s: DetachCurrentThread() failed", __FUNCTION__);
     }else{
-        LOGE("audio_play detach ok");
+      //  LOGE("audio_play detach ok");
     }
     /* char* data = (*self.env)->GetByteArrayElements(self.env,self.data_array,0); */
     /* memcpy(data,buf,len); */
@@ -1879,6 +1879,7 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamSendAudioData
     memset(encodeData,0,1024);
     g711u_Encode((unsigned char *) data, (unsigned char *) encodeData, len, (unsigned int *) &dstlen);
     int ret = ecam_stream_send_audio(g_ecamMgr->req,0, encodeData, dstlen, 0);
+    LOGE("ecam_stream_send_audio ret=%d\n",ret);
     env->ReleaseByteArrayElements(bytes, (jbyte *) data, 0);
     free(encodeData);
     return ret;

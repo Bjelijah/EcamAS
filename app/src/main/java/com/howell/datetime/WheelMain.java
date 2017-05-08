@@ -1,5 +1,6 @@
 package com.howell.datetime;
 
+import android.util.Log;
 import android.view.View;
 
 import com.howell.ecam.R;
@@ -8,6 +9,7 @@ import com.howell.utils.TimeTransform;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -218,5 +220,20 @@ public class WheelMain {
 		return dateTime;
 	}
 
+	public Date getTime(){
+		int year = (wv_year.getCurrentItem() + START_YEAR);
+		int month = wv_month.getCurrentItem() + 1;
+		int day = wv_day.getCurrentItem() + 1;
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.YEAR,year);
+		calendar.set(Calendar.MONTH,month-1);
+		calendar.set(Calendar.DAY_OF_MONTH,day);
+		Date d = calendar.getTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String str = sdf.format(d);
+		Log.i("123","year="+year+" month="+month+" day="+day+"   str="+str);
+		return calendar.getTime();
+	}
 
 }

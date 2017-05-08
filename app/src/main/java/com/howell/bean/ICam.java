@@ -37,9 +37,9 @@ public interface ICam {
 
     //功能
     boolean catchPic(String path);
-    boolean soundSetData(byte [] buf,int len);
     //PTZ
     boolean ptzSetInfo(String account, String loginSession, String devID, int channelNo);
+    boolean soundSetData(byte [] buf,int len);
     boolean zoomTeleStart();
     boolean zoomTeleStop();
     boolean zoomWideStart();

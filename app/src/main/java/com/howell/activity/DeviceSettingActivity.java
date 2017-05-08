@@ -15,9 +15,11 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
@@ -51,11 +53,11 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
     TextView mDeviceName,mResolutionTv,mPictureTv,mUpdataTv;
     SeekBar mResolutionSb,mPictureSb;
     AppCompatCheckBox mTurnCb,mLampCb,mDetRecCb,mDetAlarmCb;
-    Button mUpdataBtn;
+    Button mUpdataBtn,mRenameBtn;
     RelativeLayout mSharell;
     ImageView mShareIv;
 
-    boolean mIsSaved,mIsTurn,mIsLamp,mIsRec,mIsAlarm;
+    boolean mIsSaved,mIsTurn,mIsLamp,mIsRec,mIsAlarm,mIsRename=false;
     int mResolution,mPicture;
 
     private ProgressDialog mPd;
@@ -68,7 +70,7 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
 
     private int mResoIndex,mQualityIndex;
     private boolean mBRotation,mBLamp,mBVmd,mBPush;
-
+    private String renameNewName;
 
 
     private Handler mHandler = new Handler(){
@@ -206,16 +208,14 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
     }
     private void initView(){
         mDeviceName = (TextView) findViewById(R.id.camera_setting_name_tv);
+        mRenameBtn = (Button) findViewById(R.id.camera_setting_name_btn);
         mResolutionSb = (SeekBar) findViewById(R.id.camera_setting_resolution_sb);
         mPictureSb = (SeekBar) findViewById(R.id.camera_setting_picture_sb);
 
         mResolutionTv = (TextView) findViewById(R.id.camera_setting_resolution_tv);
         mPictureTv = (TextView) findViewById(R.id.camera_setting_picture_tv);
-
         mTurnCb = (AppCompatCheckBox) findViewById(R.id.camera_setting_turn_cb);
         mLampCb = (AppCompatCheckBox) findViewById(R.id.camera_setting_lamp_cb);
-
-
         mDetRecCb = (AppCompatCheckBox) findViewById(R.id.camera_setting_det_dec_cb);
         mDetAlarmCb = (AppCompatCheckBox) findViewById(R.id.camera_setting_det_alarm_cb);
 
@@ -239,6 +239,12 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
             @Override
             public void onClick(View v) {
 
+            }
+        });
+        mRenameBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                renameDailogShow();
             }
         });
 
@@ -273,6 +279,34 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
     private void waitUnshow(){
         mPd.dismiss();
     }
+
+    private void renameDailogShow(){
+        View v = LayoutInflater.from(this).inflate(R.layout.dailog_rename,null);
+        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        adb.setView(v);
+        final AutoCompleteTextView atv = (AutoCompleteTextView) v.findViewById(R.id.camera_setting_rename_dailog_et);
+        adb.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mIsRename = false;
+            }
+        });
+        adb.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mIsRename = false;
+                renameNewName = atv.getText().toString();
+                if (!renameNewName.equals("")){
+                    mIsRename = true;
+                    mDeviceName.setText(renameNewName);
+                }
+            }
+        });
+        adb.setTitle(getResources().getString(R.string.camera_setting_rename_title));
+        AlertDialog ad = adb.create();
+        ad.show();
+    }
+
 
     private void gainSet(){
         SettingAction.getInstance().loadSetting();
@@ -388,6 +422,8 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
         bundle.putBoolean("bVmd",mDetRecCb.isChecked());
         bundle.putBoolean("bSavePush",mDetAlarmCb.isChecked()!=mBPush);
         bundle.putBoolean("bPush",mDetAlarmCb.isChecked());
+        bundle.putBoolean("bRename",mIsRename);
+        bundle.putString("newName",renameNewName);
         SettingAction.getInstance().saveSetting(bundle);
 
     }

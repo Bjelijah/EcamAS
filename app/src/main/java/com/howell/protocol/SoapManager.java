@@ -13,6 +13,7 @@ import com.howell.utils.SSLConection;
 import com.howell.utils.ServerConfigSp;
 
 import org.ksoap2.SoapEnvelope;
+import org.ksoap2.serialization.PropertyInfo;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
@@ -538,14 +539,14 @@ public class SoapManager implements Serializable {
         rpc.addProperty("BitRate", res.getBitRate());
         rpc.addProperty("ImageQuality", res.getImageQuality());
         rpc.addProperty("AudioInput", res.getAudioInput());
-
+		Log.i("123","rpc="+rpc.toString());
         SoapObject object = initEnvelopAndTransport(rpc,"http://www.haoweis.com/HomeServices/MCU/setCodingParam");
         try{
 	        Object result = object.getProperty("result");
 //	        if(result.toString().equals("SessionExpired")){
 //	        	reLogin();
 //	        }
-	        Log.e("-----111----->>>>", "result = " + result.toString());
+	        Log.e("123", "result = " + result.toString());
         }catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -1430,7 +1431,14 @@ public class SoapManager implements Serializable {
     		rpc.addProperty("PageNo", req.getPageNo());
     	if(req.getPageSize() != 0)
     		rpc.addProperty("PageSize", req.getPageSize());
+		if (req.getStatus()!=null)
+			rpc.addProperty("Status",req.getStatus());
+		if (req.getTime()!=null)
+			rpc.addProperty("Time",req.getTime());
+		if (req.getSender()!=null)
+			rpc.addProperty("Sender",req.getSender());
     	SoapObject object = initEnvelopAndTransport(rpc,"http://www.haoweis.com/HomeServices/MCU/queryNotices");
+		Log.e("123","obj="+object.toString());
     	try{
     		Object result = object.getProperty("result");
     		if(result.toString().equals("SessionExpired")){
@@ -1487,6 +1495,7 @@ public class SoapManager implements Serializable {
 		        }catch(Exception e){
 		        	System.out.println("name is null");
 		        	n.setName("");
+					e.printStackTrace();
 		        }
 		        try{
 		        	SoapObject pictureIDList = (SoapObject)notice.getProperty("PictureID");
@@ -1509,6 +1518,7 @@ public class SoapManager implements Serializable {
     	}catch (Exception e) {
     		// TODO: handle exception
     		System.out.println("QueryNoticesRes crash");
+			e.printStackTrace();
     	}
     	return res;
     }
@@ -1516,11 +1526,18 @@ public class SoapManager implements Serializable {
     // 标记通知状态
     public FlaggedNoticeStatusRes getFlaggedNoticeStatusRes(FlaggedNoticeStatusReq req){
     	FlaggedNoticeStatusRes res = new FlaggedNoticeStatusRes();
-    	SoapObject rpc = new SoapObject(sNameSpace, "FlaggedNoticeStatusReq");
+    	SoapObject rpc = new SoapObject(sNameSpace, "flaggedNoticeStatusReq");
     	rpc.addProperty("Account", req.getAccount());
     	rpc.addProperty("LoginSession", req.getLoginSession());
     	rpc.addProperty("Status", req.getStatus());
-    	rpc.addProperty("NoticeID", req.getNoticeID());
+		PropertyInfo p = new PropertyInfo();
+		for (int i=0;i<req.getNoticeID().length;i++){
+			p.setName("NoticeID");
+			p.setValue(req.getNoticeID()[i]);
+		}
+    	rpc.addProperty(p);
+
+		Log.i("123","rpc="+rpc);
     	SoapObject object = initEnvelopAndTransport(rpc,"http://www.haoweis.com/HomeServices/MCU/flaggedNoticeStatus");
     	try{
     		Object result = object.getProperty("result");
@@ -1533,6 +1550,7 @@ public class SoapManager implements Serializable {
     	 	System.out.println(result);
     	}catch (Exception e) {
     		// TODO: handle exception
+			e.printStackTrace();
     	}
     	return res;
     }
@@ -1565,6 +1583,7 @@ public class SoapManager implements Serializable {
     	}catch (Exception e) {
     		// TODO: handle exception
     		System.out.println("GetPictureRes crash");
+			e.printStackTrace();
     	}
     	return res;
     }
@@ -1595,7 +1614,11 @@ public class SoapManager implements Serializable {
     	}
     	return res;
     }
-    
+
+
+
+
+
 	@Override
 	public String toString() {
 		return "SoapManager [mLoginRequest=" + mLoginRequest
