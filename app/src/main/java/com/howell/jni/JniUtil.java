@@ -32,7 +32,8 @@ public class JniUtil {
     public static native void nativeAudioBPlayable();
     public static native void nativeAudioStop();		
    	public static native boolean nativeAudioSetdata(byte [] buf,int len);
-	
+
+
 	//test
 	
 	//net & play
