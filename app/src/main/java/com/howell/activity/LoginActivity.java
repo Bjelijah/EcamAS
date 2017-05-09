@@ -123,6 +123,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     LoginAction.getInstance().setContext(LoginActivity.this).regLoginResCallback(LoginActivity.this).Login(userName,userPassword,c);
 
                     break;
+                case FingerPrintFragment.MSG_FINGERPRINT_ERROR:
+                    Snackbar.make(mLoginFormView,getString(R.string.fingerprint_no_support),Snackbar.LENGTH_LONG).show();
+                    break;
                 default:
                     break;
             }

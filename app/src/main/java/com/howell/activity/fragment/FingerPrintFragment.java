@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -42,6 +43,7 @@ public class FingerPrintFragment extends DialogFragment implements FingerprintUi
 	private static final int MSG_SIGN_IN_OK 	= 0xa1;
 	public static final int MSG_ERROR_WAIT_OK		= 0xa2;
 	public static final int MSG_WAIT_SEC       = 0xa3;
+	public static final int MSG_FINGERPRINT_ERROR = 0xa4;
 	private BrokenView mBrokenView;
 	private BrokenTouchListener colorfulListener;
 	private OnCreateViewFinish o;
@@ -84,6 +86,7 @@ public class FingerPrintFragment extends DialogFragment implements FingerprintUi
 				int sec = msg.arg1;
 				mTvFingerWait.setText(sec+"");
 				break;
+
 			default:
 				break;
 			}
@@ -407,6 +410,12 @@ public class FingerPrintFragment extends DialogFragment implements FingerprintUi
 		dismiss();
 	}
 
-	
-	
+	@Override
+	public void onFingerNoSupport() {
+		dismiss();
+		Snackbar.make(getView(),"no support",Snackbar.LENGTH_LONG).show();
+		mParentHandler.sendEmptyMessage(MSG_FINGERPRINT_ERROR);
+	}
+
+
 }

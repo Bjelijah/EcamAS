@@ -5,6 +5,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -41,7 +44,7 @@ import java.util.List;
 public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecyclerViewAdapter.ViewHolder> implements SwipeLinearLayout.OnSwipeListener,IConst {
 //    List<SwipeLinearLayout> mSllList = new ArrayList<>();
     public static int VIEW_TAG = 0xff;
-
+    private final static int MSG_DRAW_PIC = 0xf0;
     List<SwipeLinearLayout> mSllList = new ArrayList<>();
     private OnItemClickListener mClickListener;
     List<CameraItemBean> mList;
@@ -50,6 +53,35 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
     private int country;//中国 0 ，别的国家 1
     BrokenTouchListener mBrokenTouchListener;
     Activity mActivity;
+
+    Handler mHandle = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case MSG_DRAW_PIC:
+                    Bundle b = msg.getData();
+                    String path = b.getString("path");
+                    ImageView v = (ImageView) msg.obj;
+                    Bitmap bm = null;
+                    try {
+                        bm = ScaleImageUtils.decodeFile(imageWidth, imageHeight, new File(path));
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                    if (bm==null){
+                        v.setImageBitmap(null);
+                        v.setBackgroundColor(mContext.getResources().getColor(R.color.item_camera_video));
+                    }else{
+                        v.setImageBitmap(bm);
+                    }
+
+                break;
+            }
+        }
+    };
+
 
     MyBrokenCallback mBrokenCallback = new MyBrokenCallback();
 
@@ -123,20 +155,30 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
         holder.ivCamera.setLayoutParams(new FrameLayout.LayoutParams(imageWidth, imageHeight));
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 2;
-        Bitmap bm = null;
-        try {
+//        Bitmap bm = null;
+//
+//        try {
+//
+//            bm = ScaleImageUtils.decodeFile(imageWidth, imageHeight, new File(item.getPicturePath()));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        if(bm == null){
+////            holder.ivCamera.setImageResource(R.mipmap.card_camera_default_image);
+//            holder.ivCamera.setImageBitmap(null);
+//            holder.ivCamera.setBackgroundColor(mContext.getResources().getColor(R.color.item_camera_video));
+//        }else{
+//            holder.ivCamera.setImageBitmap(bm);
+//        }
 
-            bm = ScaleImageUtils.decodeFile(imageWidth, imageHeight, new File(item.getPicturePath()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if(bm == null){
-//            holder.ivCamera.setImageResource(R.mipmap.card_camera_default_image);
-            holder.ivCamera.setImageBitmap(null);
-            holder.ivCamera.setBackgroundColor(mContext.getResources().getColor(R.color.item_camera_video));
-        }else{
-            holder.ivCamera.setImageBitmap(bm);
-        }
+        Message msg = new Message();
+        Bundle bundle = new Bundle();
+        bundle.putString("path",item.getPicturePath());
+        msg.what = MSG_DRAW_PIC;
+        msg.obj = holder.ivCamera;
+        msg.setData(bundle);
+        mHandle.sendMessage(msg);
+
         holder.tvName.setText(item.getCameraName());
 
         if (item.isOnline()){

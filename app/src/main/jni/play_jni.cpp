@@ -1879,7 +1879,7 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamSendAudioData
     memset(encodeData,0,1024);
     g711u_Encode((unsigned char *) data, (unsigned char *) encodeData, len, (unsigned int *) &dstlen);
     int ret = ecam_stream_send_audio(g_ecamMgr->req,0, encodeData, dstlen, 0);
-    LOGE("ecam_stream_send_audio ret=%d\n",ret);
+    //LOGE("ecam_stream_send_audio ret=%d\n",ret);
     env->ReleaseByteArrayElements(bytes, (jbyte *) data, 0);
     free(encodeData);
     return ret;

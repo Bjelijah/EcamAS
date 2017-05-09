@@ -209,6 +209,7 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
             return;
         }
         for (NodeDetails n:l){
+            Log.i("123","n="+n.toString());
             CameraItemBean b = new CameraItemBean()
                     .setType(HomeAction.getInstance().isUseTurn()?PlayType.TURN:PlayType.ECAM)//FIXME ME  should be ecam when test ,is 5198
                     .setCameraName(n.getName())

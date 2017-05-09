@@ -100,6 +100,7 @@ final class DecodeHandler extends Handler {
 	// it says: "It works for any pixel format where
 	// the Y channel is planar and appears first, including
 	// YCbCr_420_SP and YCbCr_422_SP."
+    Log.e("123","DecodeHandler   decode");
 	byte[] rotatedData = new byte[data.length];
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++)
@@ -118,10 +119,12 @@ final class DecodeHandler extends Handler {
       rawResult = multiFormatReader.decodeWithState(bitmap);
     } catch (ReaderException re) {
       // continue
+      Log.e("123","has been catch");
+      re.printStackTrace();
     } finally {
       multiFormatReader.reset();
     }
-
+    Log.i("123","rawResult="+rawResult);
     if (rawResult != null) {
       long end = System.currentTimeMillis();
       Log.d(TAG, "Found barcode (" + (end - start) + " ms):\n" + rawResult.toString());

@@ -182,11 +182,20 @@ public class FingerprintUiHelper extends FingerprintManager.AuthenticationCallba
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		} catch (NullPointerException e){
+			e.printStackTrace();
+		} catch (Exception e){
+			e.printStackTrace();
 		}
+		if (bean!=null) {
+			Log.e("123", "onAuthenticationSucceeded   fingerID=" + bean.getFpID());
 
-		Log.e("123", "onAuthenticationSucceeded   fingerID="+bean.getFpID());
+			mCallback.onAuthenticated(bean.getFpID());
+		}else{
+			Log.i("123","bu zhi chi");
+			mCallback.onFingerNoSupport();
 
-		mCallback.onAuthenticated(bean.getFpID());
+		}
 	}
 
 
@@ -196,6 +205,7 @@ public class FingerprintUiHelper extends FingerprintManager.AuthenticationCallba
 		void onHelp(int helpCode, CharSequence str);
 		void onError(int code, CharSequence s);
 		void onFingerCancel();
+		void onFingerNoSupport();
 	}
 
 }

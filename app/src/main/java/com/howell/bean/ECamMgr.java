@@ -599,7 +599,9 @@ public class ECamMgr implements ICam,IConst {
             }
 //            &&  mIsPlayBack==0
             if (mUnexpectNoFrame==3  ){
-                mHandler.sendEmptyMessage(BasePlayActivity.MSG_PLAY_PLAY_WAIT);
+                if (mIsPlayBack==0) {
+                    mHandler.sendEmptyMessage(BasePlayActivity.MSG_PLAY_PLAY_WAIT);
+                }
                 doOnce = false;
             }
             if (mUnexpectNoFrame == 10){
@@ -607,5 +609,4 @@ public class ECamMgr implements ICam,IConst {
             }
         }
     }
-
 }

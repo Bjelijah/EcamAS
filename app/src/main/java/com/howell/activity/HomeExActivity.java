@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -48,7 +49,9 @@ import com.howell.ecam.R;
 import com.howell.ecamera.cameraupdatedetective.Observable;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.IConst;
+import com.howell.utils.SDCardUtils;
 import com.howell.utils.ServerConfigSp;
+import com.howell.utils.UserConfigSp;
 import com.howell.utils.Util;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -146,14 +149,14 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                 case MSG_POST_SAVE_OK:
                     Snackbar.make(mViewPager,getString(R.string.save_db_ok),Snackbar.LENGTH_SHORT).show();
                     break;
+                case FingerPrintSaveFragment.MSG_FINGERPRINT_ERROR:
+                    Snackbar.make(mViewPager,getString(R.string.fingerprint_no_support),Snackbar.LENGTH_LONG).show();
+                    break;
                 default:
                     break;
             }
         }
     };
-
-
-
 
     @SuppressLint("NewApi")
     @Override
@@ -161,16 +164,11 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_ex);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-
         toolbar.showOverflowMenu();
         toolbar.inflateMenu(R.menu.center_setting_action_menu);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-
         actionBar.setDisplayShowTitleEnabled(true);
-
-
-
         CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle(getString(R.string.app_name));
 //        collapsingToolbarLayout.setTitle(" ");//FIXME : just for screen shoot
@@ -222,6 +220,9 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         switch (mViewPager.getCurrentItem()){
             case 0:
                 menu.findItem(R.id.menu_home_help).setVisible(true);
+                menu.findItem(R.id.menu_home_like).setVisible(true);
+                if(UserConfigSp.loadLike(this)) {menu.findItem(R.id.menu_home_like).setIcon(getDrawable(R.mipmap.ic_favorite_white_24dp));}else{
+                    menu.findItem(R.id.menu_home_like).setIcon(getDrawable(R.mipmap.ic_favorite_border_white_24dp));}
                 menu.findItem(R.id.menu_home_notice_search).setVisible(false);
                 menu.findItem(R.id.menu_home_scope).setVisible(false);
                 menu.findItem(R.id.menu_home_setting).setVisible(false);
@@ -229,7 +230,9 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                 menu.findItem(R.id.menu_home_notice_read).setVisible(false);
                 menu.findItem(R.id.menu_home_notice_all).setVisible(false);
                 break;
+
             case 1:
+                menu.findItem(R.id.menu_home_like).setVisible(false);
                 menu.findItem(R.id.menu_home_help).setVisible(false);
                 menu.findItem(R.id.menu_home_notice_search).setVisible(false);
                 menu.findItem(R.id.menu_home_scope).setVisible(true);
@@ -239,6 +242,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                 menu.findItem(R.id.menu_home_notice_all).setVisible(false);
                 break;
             case 2:
+                menu.findItem(R.id.menu_home_like).setVisible(false);
                 menu.findItem(R.id.menu_home_help).setVisible(false);
                 menu.findItem(R.id.menu_home_notice_search).setVisible(true);
                 menu.findItem(R.id.menu_home_scope).setVisible(false);
@@ -254,6 +258,19 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
+            case R.id.menu_home_like:
+                //TODO:
+                if(UserConfigSp.loadLike(this)) {
+                    item.setIcon(getDrawable(R.mipmap.ic_favorite_border_white_24dp));
+                    UserConfigSp.saveLike(this,false);
+                    removeLikeBk();
+                }else{
+                    item.setIcon(getDrawable(R.mipmap.ic_favorite_white_24dp));
+                    UserConfigSp.saveLike(this,true);
+                    saveLikeBk();
+                }
+
+                break;
             case R.id.menu_home_help:
                 break;
             case R.id.menu_home_notice_search:
@@ -428,8 +445,32 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
 
     private void loadBackdrop() {
         final ImageView imageView = (ImageView) findViewById(R.id.backdrop);
-        Glide.with(this).load("https://unsplash.it/600/300/?random").centerCrop().into(imageView);
+
+        if (UserConfigSp.loadLike(this)){
+            Bitmap bitmap = loadLikeBk();
+            Log.i("123","bitmap = "+bitmap);
+            imageView.setImageBitmap(bitmap);
+        }else {
+            Glide.with(this).load("https://unsplash.it/600/300/?random").centerCrop().into(imageView);
 //        imageView.setImageDrawable(getDrawable(R.drawable.mm_bk));//FIXME I HATE THIS PICTURE AND SHOULD NEVER USE
+        }
+
+    }
+
+    private void saveLikeBk(){
+        ImageView imageView = (ImageView) findViewById(R.id.backdrop);
+        imageView.setDrawingCacheEnabled(true);
+        Bitmap bitmap = imageView.getDrawingCache();
+        SDCardUtils.saveBmp2Cach(this,bitmap,"like.jpeg");
+        imageView.setDrawingCacheEnabled(false);
+    }
+
+    private void removeLikeBk(){
+        SDCardUtils.removeBmpFromCach(this,"like.jpeg");
+    }
+
+    private Bitmap loadLikeBk(){
+       return BitmapFactory.decodeFile(SDCardUtils.getLikePath(this,"like.jpeg"));
     }
 
     private void fillFab() {

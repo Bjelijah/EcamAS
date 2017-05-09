@@ -79,7 +79,7 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
     protected boolean isShowSurfaceIcon = true;
     protected ICam mPlayMgr;
     protected boolean mIsAudioOpen = false;
-
+    protected boolean mIsTalk;
 
 
     protected Handler mHandler = new Handler(){
@@ -298,17 +298,19 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
 
-        super.onConfigurationChanged(newConfig);
-        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+
+        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){//2   heng
 
             showSurfaceIcon(false);
-
-        } else if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+//            if (mIsTalk)
+            mBtTalk.setVisibility(View.INVISIBLE);
+        } else if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){//1  shu
             showSurfaceIcon(true);
-
+//            if (mIsTalk)
+            mBtTalk.setVisibility(View.VISIBLE);
         }
 
-
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override

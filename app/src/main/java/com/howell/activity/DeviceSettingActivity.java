@@ -209,6 +209,7 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
     private void initView(){
         mDeviceName = (TextView) findViewById(R.id.camera_setting_name_tv);
         mRenameBtn = (Button) findViewById(R.id.camera_setting_name_btn);
+        mRenameBtn.setPadding(2,2,2,2);
         mResolutionSb = (SeekBar) findViewById(R.id.camera_setting_resolution_sb);
         mPictureSb = (SeekBar) findViewById(R.id.camera_setting_picture_sb);
 

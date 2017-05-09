@@ -261,6 +261,8 @@
     <string name="fingerprint_ok">Verification Successful!!  login..</string>
     <string name="fingerprint_save_ok">Verification Successful!!  save..</string>
     <string name="fingerprint_sign_error">sign in fail! plz use password to sign in</string>
+    <string name="fingerprint_no_support">Not Support Fingerprint</string>
+
 
     <string name="phone_info_send_title">register this Phone</string>
     <string name="phone_info_send_description">phone info has not be registered</string>
@@ -297,6 +299,7 @@
 
     <string name="home_setting_set">Setting</string>
     <string name="home_setting_help">Help</string>
+    <string name="home_setting_like">Like</string>
     <string name="home_setting_search">Search</string>
     <string name="home_setting_scope">Scope</string>
     <string name="home_setting_unread">Unread</string>

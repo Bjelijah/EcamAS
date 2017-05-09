@@ -7,6 +7,7 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -39,10 +40,12 @@ public class FingerPrintSaveFragment extends DialogFragment implements Fingerpri
 	private static final int MSG_SIGN_IN_OK 	= 0xa1;
 	public static final int MSG_ERROR_WAIT_OK		= 0xa2;
 	public static final int MSG_WAIT_SEC       = 0xa3;
+	public static final int MSG_FINGERPRINT_ERROR = 0xa4;
 	private BrokenView mBrokenView;
 	private BrokenTouchListener colorfulListener;
 	private OnCreateViewFinish o;
-	
+
+
 	TextView mTvCancel,mTvPassword,mTvFingerState,mTvFingerWait,mTvDescription;
 	FingerprintUiHelper m;
 	Context mContext;
@@ -350,6 +353,13 @@ public class FingerPrintSaveFragment extends DialogFragment implements Fingerpri
 	public void onFingerCancel() {
 		// TODO Auto-generated method stub
 		dismiss();
+	}
+
+	@Override
+	public void onFingerNoSupport() {
+		dismiss();
+//		Snackbar.make(getActivity().get,"no support",Snackbar.LENGTH_LONG).show();
+		mParentHandler.sendEmptyMessage(MSG_FINGERPRINT_ERROR);
 	}
 
 }

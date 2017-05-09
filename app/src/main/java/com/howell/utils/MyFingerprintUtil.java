@@ -44,12 +44,13 @@ public class MyFingerprintUtil {
 	}
 
 
-	public static MyFingerprintBeans getFingerprint(AuthenticationResult result) throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException{
+	public static MyFingerprintBeans getFingerprint(AuthenticationResult result) throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException,NullPointerException{
 		MyFingerprintBeans bean = new MyFingerprintBeans();
 		Class<AuthenticationResult> c = AuthenticationResult.class;
 		Method method1 = c.getMethod("getFingerprint");
 		method1.setAccessible(true);
 		Object o = method1.invoke(result);
+		Log.i("123","o.getClass().getName="+o.getClass().getName());
 		String className = o.getClass().getName();
 		Class fingerprint = Class.forName(className);
 		Method method2 = fingerprint.getMethod("getFingerId");

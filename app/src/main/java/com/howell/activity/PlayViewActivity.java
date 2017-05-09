@@ -2,6 +2,8 @@ package com.howell.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -307,21 +309,45 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
                 Log.i("123", "按下了   开始对讲");
                 AudioAction.getInstance().pauseAudio();
                 AudioAction.getInstance().startAudioRecord();
+//                mIsTalk = true;
+                setOrientation(true);
                 break;
             case MotionEvent.ACTION_UP:
                 Log.i("123", "ACTION_UP   停止对讲");
                 AudioAction.getInstance().stopAudioRecord();
                 AudioAction.getInstance().playAudio();
+                setOrientation(false);
                 break;
             case MotionEvent.ACTION_CANCEL:
                 Log.i("123", "ACTION_CANCEL   停止对讲");
                 AudioAction.getInstance().stopAudioRecord();
                 AudioAction.getInstance().playAudio();
+                setOrientation(false);
                 break;
             default:
                 break;
         }
     }
+
+    private void setOrientation(boolean isTalking){
+        int ro =getRequestedOrientation();
+        if (isTalking) {
+//            if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){//2   shu
+//
+//                showSurfaceIcon(false);
+////            if (mIsTalk)
+//            } else if(this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){//1  heng
+//                showSurfaceIcon(true);
+////            if (mIsTalk)
+//            }
+            Log.i("123","orientation    = "+this.getResources().getConfiguration().orientation);
+            setRequestedOrientation(this.getResources().getConfiguration().orientation);
+        }else{
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        }
+        Log.i("123","ro="+ro);
+    }
+
 
     private void ptzFun(int viewID,MotionEvent event){
         switch (viewID){

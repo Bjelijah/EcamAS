@@ -11,6 +11,7 @@ public class UserConfigSp {
 
     private static final String SP_NAME = "user_set";
     private static final String SET_SP_NAME = "set";
+    private static final String USER_LIKE_SP = "like_set";
     public static void saveUserInfo(Context context,String name,String pwd,boolean isCustom){
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
@@ -55,5 +56,17 @@ public class UserConfigSp {
         return sp.getBoolean("sound_mode",true);
 
     }
+
+    public static void saveLike(Context context,boolean isLike){
+        SharedPreferences sp = context.getSharedPreferences(USER_LIKE_SP,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean("isLike",isLike);
+        editor.commit();
+    }
+    public static boolean loadLike(Context context){
+        SharedPreferences sp = context.getSharedPreferences(USER_LIKE_SP,Context.MODE_PRIVATE);
+        return sp.getBoolean("isLike",false);
+    }
+
 
 }

@@ -91,6 +91,7 @@ public final class CaptureActivityHandler extends Handler {
         break;
       case R.id.decode_failed:
         // We're decoding as fast as possible, so when one decode fails, start another.
+        Log.i("123","CaptureActivityHandler decode_failed ");
         state = State.PREVIEW;
         CameraManager.get().requestPreviewFrame(decodeThread.getHandler(), R.id.decode);
         break;

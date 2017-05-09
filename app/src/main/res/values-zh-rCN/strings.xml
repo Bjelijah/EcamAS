@@ -249,7 +249,7 @@
 	<string name="fingerprint_ok">验证成功!!  正在登入..</string>
 	<string name="fingerprint_save_ok">验证成功!!  正在保存..</string>
 	<string name="fingerprint_sign_error">登入失败 请用密码登入 </string>
-
+	<string name="fingerprint_no_support">不支持指纹区分</string>
 	<!-- 唯一码发送 -->
 	<string name="phone_info_send_title">注册手机</string>
 	<string name="phone_info_send_description">手机信息未注册</string>
@@ -283,6 +283,7 @@
 	<string name="drawer_item_help">帮助</string>
 	<string name="home_setting_set">设置</string>
 	<string name="home_setting_help">帮助</string>
+	<string name="home_setting_like">喜欢</string>
 	<string name="home_setting_search">查询</string>
     <string name="home_setting_scope">范围</string>
     <string name="home_setting_unread">未读</string>

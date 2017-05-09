@@ -49,10 +49,10 @@ public class LogoActivity extends Activity implements TagAliasCallback,LoginActi
 		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectNetwork().build());
 
 		//推送服务初始化
-//		JPushInterface.init(getApplicationContext());
-//		setAlias();
-//		if(JPushInterface.isPushStopped(getApplicationContext()))
-//			JPushInterface.resumePush(getApplicationContext());
+		JPushInterface.init(getApplicationContext());
+		setAlias();
+		if(JPushInterface.isPushStopped(getApplicationContext()))
+			JPushInterface.resumePush(getApplicationContext());
 
 		//判断手机是否连接网络
 

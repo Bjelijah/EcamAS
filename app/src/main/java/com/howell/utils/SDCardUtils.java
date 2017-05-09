@@ -25,6 +25,10 @@ public class SDCardUtils {
 		return context.getFilesDir().getAbsolutePath();//put to /data/data/com...H265/files FIXME by CBJ
 	}
 
+	public static String getAppCachPath(Context context){
+		return getSDCardPath() + File.separator + "eCamera" + File.separator + "like_cache" ;
+//		return context.getCacheDir().getAbsolutePath();
+	}
 
 	public static void createCertificateDir(){
 		File eCameraDir = new File(getSDCardPath() + "/eCamera");
@@ -124,7 +128,7 @@ public class SDCardUtils {
 
 
 
-	public static void saveBmpToSd(Bitmap bm, String filename) {  
+	public static void saveBmpToSd(Bitmap bm, String filename) {
         if (bm == null) {  
         	Log.e("", "bm == null");
             return;  
@@ -148,7 +152,44 @@ public class SDCardUtils {
         }  
         Log.i("saveBmpToSd","create " + filename + " success");
     }  
-	
+
+    public static String getLikePath(Context c,String fileName){
+		return getAppCachPath(c)+File.separator+fileName;
+	}
+
+    public static void saveBmp2Cach(Context c,Bitmap bm,String fileName){
+		File eCameraDir = new File(getSDCardPath() + "/eCamera");
+		if (!eCameraDir.exists()) {
+			eCameraDir.mkdirs();
+		}
+		File likeCachDir = new File(getAppCachPath(c));
+		if (!likeCachDir.exists()){
+			likeCachDir.mkdir();
+		}
+		File file = new File(getAppCachPath(c)+File.separator+fileName);
+		try{
+			file.createNewFile();
+			OutputStream os = new FileOutputStream(file);
+			bm.compress(Bitmap.CompressFormat.JPEG,100,os);
+			os.flush();
+			os.close();
+		}catch (FileNotFoundException e){
+			e.printStackTrace();
+		}catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+
+    public static void removeBmpFromCach(Context c,String fileName){
+		File file = new File(getAppCachPath(c)+File.separator+fileName);
+		if(file.exists()) {
+			file.delete();
+		}
+	}
+
+
+
+
 	public static boolean isBitmapExist(String filename){
 		if(filename == null){
 			Log.e("isBitmapExist","filename == null");

@@ -14,6 +14,7 @@ import android.os.Vibrator;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
@@ -230,6 +231,7 @@ public class CaptureActivity extends AppCompatActivity implements Callback,OnCli
 		try{
 			decodeStr = new String(Base64.decode(str));
 			System.out.println("decodeStr:"+decodeStr);
+			Log.i("123","decodeStr="+decodeStr);
 		}catch(Exception e){
 			MessageUtiles.postToast(CaptureActivity.this, getResources().getString(R.string.invalid_code), 1000);
 			finish();
