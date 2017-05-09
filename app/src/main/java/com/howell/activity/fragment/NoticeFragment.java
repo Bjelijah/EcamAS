@@ -1,6 +1,5 @@
 package com.howell.activity.fragment;
 
-import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,15 +16,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.howell.action.NoticeAction;
-import com.howell.activity.BigImages;
 import com.howell.activity.BigImagesActivity;
-import com.howell.activity.VideoListActivity;
 import com.howell.adapter.NoticeRecyclerViewAdapter;
 import com.howell.bean.NoticeItemBean;
 import com.howell.datetime.JudgeDate;
 import com.howell.datetime.ScreenInfo;
 import com.howell.datetime.WheelMain;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.protocol.NoticeList;
 import com.howell.protocol.QueryNoticesRes;
 import com.howell.utils.SDCardUtils;

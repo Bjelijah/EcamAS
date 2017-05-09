@@ -26,7 +26,7 @@ import android.widget.TextView;
 import com.howell.datetime.JudgeDate;
 import com.howell.datetime.ScreenInfo;
 import com.howell.datetime.WheelMain;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.ehlib.MyListViewWithFoot;
 import com.howell.ehlib.MyListViewWithFoot.OnRefreshListener;
 import com.howell.entityclass.NodeDetails;

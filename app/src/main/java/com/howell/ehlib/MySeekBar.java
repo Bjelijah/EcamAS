@@ -11,7 +11,7 @@ import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 
 public class MySeekBar extends SeekBar {
 	private PopupWindow mPopupWindow;

@@ -1,10 +1,7 @@
 package com.howell.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -12,8 +9,6 @@ import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -22,15 +17,11 @@ import com.howell.action.LoginAction;
 import com.howell.action.PTZControlAction;
 import com.howell.action.PlayAction;
 import com.howell.adapter.MyPagerAdapter;
-import com.howell.ecam.R;
-import com.howell.protocol.SoapManager;
+import com.android.howell.webcam.R;
 import com.howell.transformer.CubeInTransformer;
 import com.howell.utils.AlerDialogUtils;
-import com.howell.utils.FileUtils;
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.UserConfigSp;
-
-import java.io.File;
 
 /**
  * Created by Administrator on 2016/12/16.

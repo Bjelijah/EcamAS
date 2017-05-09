@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.howell.bean.MediaItemBean;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.ScaleImageUtils;
 

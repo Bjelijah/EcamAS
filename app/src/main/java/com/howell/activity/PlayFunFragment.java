@@ -12,12 +12,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.howell.action.PlayAction;
-import com.howell.ecam.R;
-import com.howell.utils.FileUtils;
+import com.android.howell.webcam.R;
 import com.howell.utils.MessageUtiles;
 import com.howell.utils.SDCardUtils;
-
-import java.io.File;
 
 public class PlayFunFragment extends Fragment implements OnClickListener {
 	public static final int MSG_UPDATE_SOUND_STATE = 0x00;

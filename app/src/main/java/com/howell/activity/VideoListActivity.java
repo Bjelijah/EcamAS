@@ -1,25 +1,16 @@
 package com.howell.activity;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,17 +19,13 @@ import android.widget.ImageView;
 
 import com.howell.action.PlayBackVideoListAction;
 import com.howell.activity.fragment.VodFragment;
-import com.howell.adapter.DeviceRecyclerViewAdapter;
-import com.howell.adapter.VideoListRecyclerAdapter;
 import com.howell.bean.CameraItemBean;
 import com.howell.datetime.JudgeDate;
 import com.howell.datetime.ScreenInfo;
 import com.howell.datetime.WheelMain;
-import com.howell.ecam.R;
-import com.howell.entityclass.VODRecord;
+import com.android.howell.webcam.R;
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.ScaleImageUtils;
-import com.howell.utils.TimeTransform;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 
@@ -46,10 +33,7 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
 
 /**
  * Created by Administrator on 2017/1/3.

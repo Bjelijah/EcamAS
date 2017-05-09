@@ -1,7 +1,6 @@
 package com.howell.activity;
 
 import android.app.ProgressDialog;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,12 +16,10 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 
 import com.howell.action.HomeAction;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.utils.IConst;
 import com.howell.utils.ServerConfigSp;
 import com.howell.utils.Util;
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.iconics.IconicsDrawable;
 
 /**
  * Created by howell on 2016/12/6.

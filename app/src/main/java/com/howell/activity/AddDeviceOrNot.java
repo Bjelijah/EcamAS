@@ -9,7 +9,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 
 import com.howell.broadcastreceiver.HomeKeyEventBroadCastReceiver;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 
 
 public class AddDeviceOrNot extends Activity implements OnClickListener{

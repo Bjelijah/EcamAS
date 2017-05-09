@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.xququ.OfflineSDK.XQuquerService;
 import com.xququ.OfflineSDK.XQuquerService.XQuquerListener;
 

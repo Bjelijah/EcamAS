@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.howell.broadcastreceiver.HomeKeyEventBroadCastReceiver;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.protocol.SoapManager;
 import com.xququ.OfflineSDK.XQuquerService;
 import com.xququ.OfflineSDK.XQuquerService.XQuquerListener;

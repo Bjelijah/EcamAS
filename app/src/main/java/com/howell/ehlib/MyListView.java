@@ -19,7 +19,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 
 import java.util.Date;
 

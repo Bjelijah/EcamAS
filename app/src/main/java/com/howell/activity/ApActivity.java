@@ -1,7 +1,6 @@
 package com.howell.activity;
 
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -12,11 +11,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
 import com.howell.action.ApAction;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.Util;
-import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.iconics.IconicsDrawable;
 
 /**
  * Created by howell on 2016/12/2.

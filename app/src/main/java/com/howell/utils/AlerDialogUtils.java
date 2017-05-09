@@ -7,7 +7,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.util.Log;
 
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.entityclass.NodeDetails;
 import com.howell.protocol.SoapManager;
 import com.howell.protocol.UpgradeDevVerReq;

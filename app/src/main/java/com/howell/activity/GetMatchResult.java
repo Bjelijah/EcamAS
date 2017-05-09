@@ -20,7 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.howell.broadcastreceiver.HomeKeyEventBroadCastReceiver;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.protocol.GetDeviceMatchingResultReq;
 import com.howell.protocol.GetDeviceMatchingResultRes;
 import com.howell.protocol.SoapManager;

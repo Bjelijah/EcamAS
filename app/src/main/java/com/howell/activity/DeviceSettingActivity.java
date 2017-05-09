@@ -2,7 +2,6 @@ package com.howell.activity;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -22,16 +21,14 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.howell.action.SettingAction;
 import com.howell.bean.CameraItemBean;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.utils.AlerDialogUtils;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;

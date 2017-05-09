@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.nineoldandroids.view.ViewHelper;
 
 import pullrefreshview.layout.BaseHeaderView;

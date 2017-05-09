@@ -14,7 +14,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.utils.Util;
 
 import java.util.ArrayList;

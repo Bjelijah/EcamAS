@@ -14,7 +14,7 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 
 import java.io.BufferedInputStream;
 import java.io.File;

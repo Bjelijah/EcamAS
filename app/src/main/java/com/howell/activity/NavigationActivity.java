@@ -16,7 +16,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 
 import java.util.ArrayList;
 

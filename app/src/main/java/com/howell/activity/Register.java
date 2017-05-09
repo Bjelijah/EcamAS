@@ -13,7 +13,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.protocol.CreateAccountReq;
 import com.howell.protocol.CreateAccountRes;
 import com.howell.protocol.SoapManager;

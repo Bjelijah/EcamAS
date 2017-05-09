@@ -9,7 +9,6 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -17,28 +16,23 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.howell.action.AudioAction;
 import com.howell.action.PTZControlAction;
 import com.howell.action.PlayAction;
 import com.howell.action.YV12Renderer;
 import com.howell.bean.CamFactory;
 import com.howell.bean.ICam;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.ehlib.MySeekBar;
 import com.howell.utils.AlerDialogUtils;
-import com.howell.utils.FileUtils;
 import com.howell.utils.MessageUtiles;
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.UserConfigSp;
-
-import java.io.File;
 
 /**
  * Created by Administrator on 2016/12/16.

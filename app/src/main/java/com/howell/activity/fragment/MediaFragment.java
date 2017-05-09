@@ -14,11 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.howell.activity.BigImages;
 import com.howell.activity.BigImagesActivity;
 import com.howell.adapter.MediaRecyclerViewAdapter;
 import com.howell.bean.MediaItemBean;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 
 import java.io.File;
 import java.util.ArrayList;

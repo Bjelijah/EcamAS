@@ -4,7 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
     defaultConfig {
-        applicationId "com.howell.ecam"
+        applicationId "com.android.howell.webcam"
         minSdkVersion 22
         targetSdkVersion 22
         versionCode 29

@@ -24,7 +24,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.howell.broadcastreceiver.HomeKeyEventBroadCastReceiver;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.protocol.GetDeviceMatchingCodeReq;
 import com.howell.protocol.GetDeviceMatchingCodeRes;
 import com.howell.protocol.SoapManager;

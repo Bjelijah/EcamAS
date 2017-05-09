@@ -13,7 +13,7 @@ import android.widget.ImageButton;
 
 
 import com.howell.broadcastreceiver.HomeKeyEventBroadCastReceiver;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.entityclass.NodeDetails;
 import com.howell.utils.MessageUtiles;
 import com.howell.protocol.AddDeviceSharerReq;

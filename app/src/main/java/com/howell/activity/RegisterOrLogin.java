@@ -13,7 +13,7 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.howell.broadcastreceiver.HomeKeyEventBroadCastReceiver;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.protocol.GetNATServerReq;
 import com.howell.protocol.GetNATServerRes;
 import com.howell.protocol.LoginRequest;

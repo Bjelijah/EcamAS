@@ -38,15 +38,13 @@ import com.howell.action.FingerprintUiHelper;
 import com.howell.action.HomeAction;
 import com.howell.action.LoginAction;
 import com.howell.activity.fragment.DeviceFragment;
-import com.howell.activity.fragment.FingerPrintFragment;
 import com.howell.activity.fragment.FingerPrintSaveFragment;
 import com.howell.activity.fragment.HomeBaseFragment;
 import com.howell.activity.fragment.MediaFragment;
 import com.howell.activity.fragment.NoticeFragment;
 import com.howell.bean.UserLoginDBBean;
 import com.howell.db.UserLoginDao;
-import com.howell.ecam.R;
-import com.howell.ecamera.cameraupdatedetective.Observable;
+import com.android.howell.webcam.R;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.IConst;
 import com.howell.utils.SDCardUtils;
@@ -60,7 +58,6 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.holder.ImageHolder;
 import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
 import com.mikepenz.materialdrawer.model.ExpandableDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
@@ -75,14 +72,8 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.Callable;
 
-import io.reactivex.ObservableSource;
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableObserver;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by howell on 2016/11/15.
@@ -117,7 +108,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     private Toolbar toolbar;
     private int [] mUserIcon = {R.drawable.profile2,R.drawable.profile3,R.drawable.profile4,R.drawable.profile5,R.drawable.profile6};
     private boolean mbGuest;
-
+    private boolean mIsScope = false;
     private DrawerCheckedChangeListener onCheckedChangerListener = new DrawerCheckedChangeListener();
     private DrawerListener onDrawerListener = new DrawerListener();
     private DrawerItemClickListener onDrawerItemClickListener = new DrawerItemClickListener();
@@ -200,6 +191,11 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         fillFab();
         loadBackdrop();
         initFragment();
+
+        if(getIntent().getBooleanExtra("notification",false)){
+            mViewPager.setCurrentItem(2);
+        }
+
     }
 
     @Override
@@ -277,7 +273,16 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                 ((NoticeFragment)mFragments.get(2)).doSearchByTime();
                 break;
             case R.id.menu_home_scope:
-                item.setIcon(getDrawable(R.mipmap.ic_view_list_white_24dp));
+                if (!mIsScope){
+                    item.setIcon(getDrawable(R.mipmap.ic_view_list_white_24dp));
+                    mIsScope = true;
+                    //TODO
+                } else{
+                    item.setIcon(getDrawable(R.mipmap.ic_view_headline_white_24dp));
+                    mIsScope = false;
+                    //TODO
+                }
+
                 break;
             case R.id.menu_home_setting:
                 break;

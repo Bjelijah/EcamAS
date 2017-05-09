@@ -1,4 +1,4 @@
-package com.howell.ecam;
+package com.android.howell.webcam;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

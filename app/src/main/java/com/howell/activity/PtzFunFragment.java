@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.howell.action.PTZControlAction;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 
 public class PtzFunFragment extends Fragment implements OnTouchListener{
 

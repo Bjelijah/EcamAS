@@ -25,7 +25,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.howell.broadcastreceiver.HomeKeyEventBroadCastReceiver;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.entityclass.DeviceSharer;
 import com.howell.entityclass.NodeDetails;
 import com.howell.protocol.NullifyDeviceSharerReq;

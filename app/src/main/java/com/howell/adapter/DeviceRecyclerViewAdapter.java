@@ -23,7 +23,7 @@ import com.howell.action.LoginAction;
 import com.howell.activity.view.SwipeLinearLayout;
 import com.howell.bean.CameraItemBean;
 import com.howell.bean.PlayType;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.utils.IConst;
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.ScaleImageUtils;
@@ -155,29 +155,29 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
         holder.ivCamera.setLayoutParams(new FrameLayout.LayoutParams(imageWidth, imageHeight));
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 2;
-//        Bitmap bm = null;
-//
-//        try {
-//
-//            bm = ScaleImageUtils.decodeFile(imageWidth, imageHeight, new File(item.getPicturePath()));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        if(bm == null){
-////            holder.ivCamera.setImageResource(R.mipmap.card_camera_default_image);
-//            holder.ivCamera.setImageBitmap(null);
-//            holder.ivCamera.setBackgroundColor(mContext.getResources().getColor(R.color.item_camera_video));
-//        }else{
-//            holder.ivCamera.setImageBitmap(bm);
-//        }
+        Bitmap bm = null;
 
-        Message msg = new Message();
-        Bundle bundle = new Bundle();
-        bundle.putString("path",item.getPicturePath());
-        msg.what = MSG_DRAW_PIC;
-        msg.obj = holder.ivCamera;
-        msg.setData(bundle);
-        mHandle.sendMessage(msg);
+        try {
+
+            bm = ScaleImageUtils.decodeFile(imageWidth, imageHeight, new File(item.getPicturePath()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(bm == null){
+//            holder.ivCamera.setImageResource(R.mipmap.card_camera_default_image);
+            holder.ivCamera.setImageBitmap(null);
+            holder.ivCamera.setBackgroundColor(mContext.getResources().getColor(R.color.item_camera_video));
+        }else{
+            holder.ivCamera.setImageBitmap(bm);
+        }
+        //FIXME
+//        Message msg = new Message();
+//        Bundle bundle = new Bundle();
+//        bundle.putString("path",item.getPicturePath());
+//        msg.what = MSG_DRAW_PIC;
+//        msg.obj = holder.ivCamera;
+//        msg.setData(bundle);
+//        mHandle.sendMessage(msg);
 
         holder.tvName.setText(item.getCameraName());
 

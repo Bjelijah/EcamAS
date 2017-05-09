@@ -27,7 +27,7 @@ import com.howell.adapter.DeviceRecyclerViewAdapter;
 import com.howell.bean.APDeviceDBBean;
 import com.howell.bean.CameraItemBean;
 import com.howell.bean.PlayType;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.entityclass.NodeDetails;
 import com.howell.protocol.GetNATServerReq;
 import com.howell.protocol.SoapManager;
@@ -40,7 +40,6 @@ import com.zys.brokenview.BrokenView;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.disposables.CompositeDisposable;
 import pullrefreshview.layout.BaseFooterView;
 import pullrefreshview.layout.BaseHeaderView;
 import pullrefreshview.layout.PullRefreshLayout;

@@ -3,7 +3,6 @@ package com.howell.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -19,7 +18,7 @@ import android.widget.TextView;
 
 import com.howell.action.LoginAction;
 import com.howell.bean.NoticeItemBean;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.protocol.GetPictureReq;
 import com.howell.protocol.GetPictureRes;
 import com.howell.protocol.SoapManager;

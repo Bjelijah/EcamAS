@@ -27,7 +27,7 @@ import android.util.Log;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.wyy.twodimcode.CaptureActivity;
 import com.wyy.twodimcode.camera.CameraManager;
 import com.wyy.twodimcode.view.ViewfinderResultPointCallback;

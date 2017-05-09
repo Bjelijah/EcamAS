@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 import com.wyy.twodimcode.CaptureActivity;

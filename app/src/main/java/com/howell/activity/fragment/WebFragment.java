@@ -19,7 +19,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.howell.action.CenterAction;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.utils.ServerConfigSp;
 
 /**

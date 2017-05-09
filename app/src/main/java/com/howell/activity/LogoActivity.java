@@ -20,10 +20,9 @@ import com.howell.action.LoginAction;
 import com.howell.bean.Custom;
 import com.howell.bean.UserLoginDBBean;
 import com.howell.db.UserLoginDao;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.protocol.SoapManager;
 import com.howell.utils.NetWorkUtils;
-import com.howell.utils.ServerConfigSp;
 
 import java.util.List;
 import java.util.Set;
@@ -40,17 +39,19 @@ public class LogoActivity extends Activity implements TagAliasCallback,LoginActi
 
 	private String account;
 	private String password;
-
+	private boolean mIsFromNotification;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.logo);
 		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectNetwork().build());
-
+		init();
 		//推送服务初始化
 		JPushInterface.init(getApplicationContext());
+		JPushInterface.setDebugMode(true);//FIXME
 		setAlias();
+		Log.i("123","   is stoped = "+JPushInterface.isPushStopped(getApplicationContext()));
 		if(JPushInterface.isPushStopped(getApplicationContext()))
 			JPushInterface.resumePush(getApplicationContext());
 
@@ -87,6 +88,11 @@ public class LogoActivity extends Activity implements TagAliasCallback,LoginActi
 		}
 	}
 
+	private void init(){
+		mIsFromNotification = getIntent().getBooleanExtra("notification",false);
+	}
+
+
 	@Override
 	protected void onStop() {
 		// TODO Auto-generated method stub
@@ -97,6 +103,8 @@ public class LogoActivity extends Activity implements TagAliasCallback,LoginActi
 	@Override
 	public void onLoginSuccess() {
 		Intent intent = new Intent(LogoActivity.this, HomeExActivity.class);
+		//TODO notification flag
+		intent.putExtra("notification",mIsFromNotification);
 		startActivity(intent);
 		LoginAction.getInstance().unRegLoginResCallback();
 		finish();
@@ -204,6 +212,7 @@ public class LogoActivity extends Activity implements TagAliasCallback,LoginActi
 	//设置推送别名（老版本用ANDROID_ID作为别名）
 	private void setAlias(){
 		String alias = Secure.getString(getContentResolver(), Secure.ANDROID_ID);//"112233";
+		Log.i("123","alias="+alias);
 		JPushInterface.setAliasAndTags(getApplicationContext(), alias, null, this);
 	}
 
@@ -211,6 +220,7 @@ public class LogoActivity extends Activity implements TagAliasCallback,LoginActi
 	@Override
 	public void gotResult(int code, String alias, Set<String> tags) {
 		// TODO Auto-generated method stub
+		Log.e("123","get result  code="+code+"   alias="+alias);
 		/*
 		String logs ;
 		switch (code) {
@@ -225,5 +235,8 @@ public class LogoActivity extends Activity implements TagAliasCallback,LoginActi
 		}
 		ExampleUtil.showToast(logs, getApplicationContext());
 		 */
+
+
+
 	}
 }

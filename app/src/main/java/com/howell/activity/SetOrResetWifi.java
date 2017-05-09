@@ -14,7 +14,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.howell.broadcastreceiver.HomeKeyEventBroadCastReceiver;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 
 public class SetOrResetWifi extends Activity implements OnClickListener{
 	private FrameLayout setWifi,resetWifi;

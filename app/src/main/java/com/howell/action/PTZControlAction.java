@@ -16,14 +16,8 @@ import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 
 import com.howell.activity.BasePlayActivity;
-import com.howell.activity.PlayerActivity;
 import com.howell.bean.ICam;
-import com.howell.bean.PlayType;
-import com.howell.ecam.R;
-import com.howell.protocol.LensControlReq;
-import com.howell.protocol.LensControlRes;
-import com.howell.protocol.PtzControlReq;
-import com.howell.protocol.SoapManager;
+import com.android.howell.webcam.R;
 import com.howell.utils.PhoneConfig;
 
 /**

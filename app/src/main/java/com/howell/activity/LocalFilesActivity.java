@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.ScaleImageUtils;
 

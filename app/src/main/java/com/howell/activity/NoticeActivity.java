@@ -19,7 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.ehlib.MyListViewWithFoot;
 import com.howell.ehlib.MyListViewWithFoot.OnRefreshListener;
 import com.howell.protocol.GetPictureReq;

@@ -14,7 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.howell.broadcastreceiver.HomeKeyEventBroadCastReceiver;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.protocol.LoginResponse;
 import com.howell.protocol.SoapManager;
 import com.howell.protocol.UpdatePasswordReq;

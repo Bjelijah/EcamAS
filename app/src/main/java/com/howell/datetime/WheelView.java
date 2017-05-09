@@ -39,7 +39,7 @@ import android.view.View;
 import android.view.animation.Interpolator;
 import android.widget.Scroller;
 
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 
 import java.util.LinkedList;
 import java.util.List;

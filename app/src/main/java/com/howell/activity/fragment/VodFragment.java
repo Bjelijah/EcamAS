@@ -20,7 +20,7 @@ import com.howell.activity.PlayBackActivity;
 import com.howell.activity.RecycleViewDivider;
 import com.howell.adapter.VideoListRecyclerAdapter;
 import com.howell.bean.CameraItemBean;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.entityclass.VODRecord;
 import com.howell.utils.AlerDialogUtils;
 

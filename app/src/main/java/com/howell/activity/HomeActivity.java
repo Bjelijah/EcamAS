@@ -16,7 +16,7 @@ import android.view.View;
 
 import com.howell.activity.fragment.DeviceFragment;
 import com.howell.activity.fragment.MediaFragment;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 
 import java.util.ArrayList;
 import java.util.List;

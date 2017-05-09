@@ -1,4 +1,4 @@
-package com.howell.ecamera.cameraupdatedetective;
+package com.android.howell.webcamera.cameraupdatedetective;
 
 import java.util.HashMap;
 

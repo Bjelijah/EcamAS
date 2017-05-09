@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.SeekBar;
 
 import com.howell.action.PlayAction;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.jni.JniUtil;
 
 import java.text.SimpleDateFormat;

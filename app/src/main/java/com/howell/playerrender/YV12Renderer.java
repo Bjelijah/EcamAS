@@ -21,7 +21,7 @@ import android.util.Log;
 
 
 //import com.example.yuvtest.GraphicsUtil;
-//import com.howell.webcam.protocol.playerrender.R;
+//import com.howell.com.android.howell.webcam.protocol.playerrender.R;
 import com.howell.activity.PlayerActivity;
 
 /**

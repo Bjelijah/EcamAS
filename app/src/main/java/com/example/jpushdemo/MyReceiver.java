@@ -2,6 +2,7 @@ package com.example.jpushdemo;
 
 import com.howell.activity.LogoActivity;
 
+import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -23,8 +24,8 @@ public class MyReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
 		Log.e("123","MyReceiver   get receive from push");
-		Log.d(TAG, "onReceive - " + intent.getAction() + ", extras: " + printBundle(bundle));
-		
+		Log.e("123", "onReceive - " + intent.getAction() + ", extras: " + printBundle(bundle));
+
         if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
             String regId = bundle.getString(JPushInterface.EXTRA_REGISTRATION_ID);
             Log.d(TAG, "接收Registration Id : " + regId);
@@ -48,6 +49,7 @@ public class MyReceiver extends BroadcastReceiver {
             //打开自定义的Activity
         	Intent i = new Intent(context, LogoActivity.class);
         	i.putExtras(bundle);
+			i.putExtra("notification",true);
         	i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         	context.startActivity(i);
         	

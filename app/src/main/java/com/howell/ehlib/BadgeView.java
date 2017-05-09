@@ -23,7 +23,7 @@ import android.widget.FrameLayout;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.utils.PhoneConfig;
 
 //消息提示红色圆点

@@ -22,7 +22,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 //import com.example.yuvtest.GraphicsUtil;
-//import com.howell.webcam.player.R;
+//import com.howell.com.android.howell.webcam.player.R;
 
 /**
  * @class YV12Renderer

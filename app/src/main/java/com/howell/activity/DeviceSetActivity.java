@@ -28,7 +28,7 @@ import android.widget.Toast;
 
 import com.howell.action.UserPowerAction;
 import com.howell.broadcastreceiver.HomeKeyEventBroadCastReceiver;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.entityclass.NodeDetails;
 import com.howell.entityclass.VMDGrid;
 import com.howell.protocol.CodingParamReq;

@@ -21,7 +21,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.howell.action.RegisterAction;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 
 import java.util.List;
 

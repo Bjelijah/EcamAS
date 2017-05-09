@@ -21,7 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.howell.broadcastreceiver.HomeKeyEventBroadCastReceiver;
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.ehlib.HackyViewPager;
 import com.howell.utils.FileUtils;
 import com.howell.utils.PhoneConfig;

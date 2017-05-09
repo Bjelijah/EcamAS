@@ -3,7 +3,7 @@ package com.howell.datetime;
 import android.util.Log;
 import android.view.View;
 
-import com.howell.ecam.R;
+import com.android.howell.webcam.R;
 import com.howell.utils.TimeTransform;
 
 import java.text.ParseException;

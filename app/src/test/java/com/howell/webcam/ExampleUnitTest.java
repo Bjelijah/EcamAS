@@ -1,4 +1,4 @@
-package com.howell.ecam;
+package com.android.howell.webcam;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.howell.ecam;
+package com.android.howell.webcam;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.howell.ecam", appContext.getPackageName());
+        assertEquals("com.android.howell.webcam", appContext.getPackageName());
     }
 }

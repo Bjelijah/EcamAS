@@ -1,4 +1,4 @@
-package com.howell.ecamera.cameraupdatedetective;
+package com.android.howell.webcamera.cameraupdatedetective;
 
 import com.howell.activity.CameraList;
 
