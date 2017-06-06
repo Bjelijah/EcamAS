@@ -403,10 +403,11 @@ public class H265Mgr implements ICam {
     private void initServerInfo() throws NullPointerException {
         mTurnServiceIP = ServerConfigSp.loadServerIP(mContext);
         mIsTurnCrypto = ServerConfigSp.loadServerIsCrypto(mContext);
-        mTurnServicePort = mIsTurnCrypto?8862:8812;
+        mTurnServicePort = mIsTurnCrypto?8862:8812;//fixme
         if (mTurnServiceIP==null){
             throw new NullPointerException();
         }
+
     }
 
     class MyTimerTask extends TimerTask {

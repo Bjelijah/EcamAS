@@ -308,7 +308,8 @@
 	<string name="add_listen_device_tb_title">听一听</string>
 	<string name="add_listen_device_error_wifi">请选择您的WIFI</string>
 	<string name="add_ap_dialog_title">添加AP摄像机</string>
-
+	<string name="add_normal">添加普通摄像机</string>
+	<string name="add_fail">添加摄像机失败！！！</string>
 	<string name="add_ap_ip_title">IP:</string>
 	<string name="add_ap_ip">请输入您摄像机的IP地址</string>
 	<string name="add_ap_port_title">端口:</string>

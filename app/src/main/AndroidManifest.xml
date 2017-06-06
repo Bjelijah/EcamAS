@@ -272,10 +272,17 @@
             android:theme="@android:style/Theme.NoTitleBar" />
 
         <!--android:theme="@android:style/Theme.NoTitleBar"-->
-        <activity
-            android:name="com.wyy.twodimcode.CaptureActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/MyAppThemeScan" />
+        <!--<activity-->
+            <!--android:name="com.wyy.twodimcode.CaptureActivity"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:theme="@style/MyAppThemeScan" />-->
+
+        <activity android:name="io.github.xudaojie.qrcodelib.CaptureActivity"/>
+        <activity android:name="com.howell.activity.SimpleCaptureActivity"
+            android:theme="@style/MyAppThemeAdd"/>
+        <activity android:name="com.howell.activity.AddNormalCameraActivity"
+            android:theme="@style/MyAppThemeAp"/>
+
 
         <!-- Required SDK核心功能 -->
         <activity

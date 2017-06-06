@@ -15,7 +15,7 @@ import android.widget.RelativeLayout;
 import com.android.howell.webcam.R;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import com.wyy.twodimcode.CaptureActivity;
+
 
 /**
  * Created by howell on 2016/11/21.
@@ -84,7 +84,7 @@ public class AddNewCamera extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.add_camera_fab_flash://添加扫一扫
             case R.id.add_camera_btn_flash:
-                Intent captureIntent = new Intent(this,CaptureActivity.class);
+                Intent captureIntent = new Intent(this,SimpleCaptureActivity.class);
                 startActivity(captureIntent);
                 break;
             case R.id.add_camera_fab_listen://添加听一听

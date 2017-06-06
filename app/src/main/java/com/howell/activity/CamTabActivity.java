@@ -79,11 +79,11 @@ public class CamTabActivity extends TabActivity implements
         mNotices = (RadioButton)findViewById(R.id.rb_notices);
 
         mHost = getTabHost();
-        mHost.addTab(mHost
-                .newTabSpec("cameralist")
-                .setIndicator(getResources().getString(R.string.camera_list),
-                        getResources().getDrawable(R.mipmap.camera))
-                .setContent(new Intent(this, CameraList.class)));
+//        mHost.addTab(mHost
+//                .newTabSpec("cameralist")
+//                .setIndicator(getResources().getString(R.string.camera_list),
+//                        getResources().getDrawable(R.mipmap.camera))
+//                .setContent(new Intent(this, CameraList.class)));
         mHost.addTab(mHost
                 .newTabSpec("localfiles")
                 .setIndicator(getResources().getString(R.string.local_files),

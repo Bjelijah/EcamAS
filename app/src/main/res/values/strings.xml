@@ -309,15 +309,16 @@
     <!-- add -->
     <string name="add_camera_title">Add New Camera</string>
     <string name="add_ap">Add Ap</string>
+    <string name="add_normal">Add camera</string>
     <string name="add_flash">Scanning</string>
     <string name="add_listen">Listening</string>
-
+    <string name="add_fail">Add Camera Failed!!!</string>
     <string name="add_listen_subtitle">Name Device And Set WIFI</string>
     <string name="add_listen_no_ssid">Please select wifi</string>
     <string name="add_listen_no_name">Please style your new camera</string>
     <string name="add_listen_no_pwd">Please input wifi password</string>
     <string name="add_listen_open_location">Open Location</string>
-    <string name="add_listen_device_name_title">Style：</string>
+    <string name="add_listen_device_name_title">Name：</string>
     <string name="add_listen_device_name">Style Your New Camera</string>
     <string name="add_listen_device_password_title">Wifi Password:</string>
     <string name="add_listen_device_password">Input Your WIFI Password</string>

@@ -57,6 +57,7 @@ android {
 
 dependencies {
     compile project(':library')
+    compile project(':qrcodelib')
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -116,4 +117,7 @@ dependencies {
 
     compile 'com.fasterxml.jackson.core:jackson-core:2.7.2'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.7.2'
+
+    //compile 'com.github.XuDaojie:QRCode-Android:v0.4.2'
+
 }

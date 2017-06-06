@@ -73,6 +73,7 @@ public class RegisterOrLogin extends Activity implements OnClickListener{
 			break;
 
 		case R.id.btn_test:
+			/*
 			waitDialog = MessageUtiles.postWaitingDialog(RegisterOrLogin.this);
 			waitDialog.show();
 			new AsyncTask<Void, Integer, Void>() {
@@ -106,6 +107,7 @@ public class RegisterOrLogin extends Activity implements OnClickListener{
 				}
 
 			}.execute();
+			*/
 			break;
 
 		default:

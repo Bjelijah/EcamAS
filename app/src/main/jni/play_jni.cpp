@@ -1577,6 +1577,7 @@ void onStreamArrive(ecam_stream_req_t * req,ECAM_STREAM_REQ_FRAME_TYPE media_typ
         ret = hwplay_input_data(res->play_handle,(char*)&head, sizeof(head));
         if (ret!=1){
             LOGE("onStreamArrive play live  input data error\n");
+            return;
         }
         hwplay_input_data(res->play_handle, data ,len);
     }else{
@@ -1584,6 +1585,7 @@ void onStreamArrive(ecam_stream_req_t * req,ECAM_STREAM_REQ_FRAME_TYPE media_typ
         ret = hwplay_input_data(res->play_handle,(char*)&head, sizeof(head));
         if (ret!=1){
             LOGE("onStreamArrive play back  input data error\n");
+            return;
         }
         hwplay_input_data(res->play_handle,data,len);
 
