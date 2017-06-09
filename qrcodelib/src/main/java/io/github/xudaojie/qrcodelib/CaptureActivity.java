@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.provider.MediaStore;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -52,7 +53,7 @@ import io.github.xudaojie.qrcodelib.zxing.view.ViewfinderView;
  *
  * @author Ryan.Tang
  */
-public class CaptureActivity extends Activity implements Callback {
+public class CaptureActivity extends AppCompatActivity implements Callback {
 
     private static final String TAG = CaptureActivity.class.getSimpleName();
 

@@ -22,6 +22,7 @@ import com.howell.bean.UserLoginDBBean;
 import com.howell.db.UserLoginDao;
 import com.android.howell.webcam.R;
 import com.howell.protocol.SoapManager;
+import com.howell.service.MyService;
 import com.howell.utils.NetWorkUtils;
 
 import java.util.List;
@@ -47,6 +48,8 @@ public class LogoActivity extends Activity implements TagAliasCallback,LoginActi
 		setContentView(R.layout.logo);
 		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectNetwork().build());
 		init();
+		//开启service
+
 		//推送服务初始化
 		JPushInterface.init(getApplicationContext());
 		JPushInterface.setDebugMode(true);//FIXME

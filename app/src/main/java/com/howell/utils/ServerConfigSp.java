@@ -15,8 +15,27 @@ public class ServerConfigSp {
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("server_ip",ip);
         editor.putInt("server_port",port);
+
         editor.putBoolean("server_ssl",isSSL);
         editor.commit();
+    }
+
+    public static void saveTurnServerInfo(Context context,String ip,int port){
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("turn_ip",ip);
+        editor.putInt("turn_port",port);
+        editor.commit();
+    }
+
+    public static String loadTurnIP(Context context){
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        return sp.getString("turn_ip",null);
+    }
+
+    public static int loadTurnPort(Context context){
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        return sp.getInt("turn_port",0);
     }
 
     public static String loadServerIP(Context context){
@@ -84,4 +103,14 @@ public class ServerConfigSp {
         return sp.getInt("center_port",0);
     }
 
+    public static void savePushOnOff(Context context,boolean isOnOff){
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean("push_on_off",isOnOff);
+        editor.commit();
+    }
+    public static boolean loadPushOnOff(Context context){
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        return sp.getBoolean("push_on_off",false);
+    }
 }

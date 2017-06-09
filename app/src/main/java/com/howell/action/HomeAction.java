@@ -37,13 +37,20 @@ public class HomeAction {
     }
     private Context mContext;
     private String serviceIP;
-    private int servicePort;
+    private int servicePort,videoPort;
     private boolean isUseTurn;
     private boolean isUseCrypto;
     public HomeAction setServiceIPAndPort(String ip,int port){
         this.serviceIP = ip;
         this.servicePort = port;
         return this;
+    }
+    public HomeAction setServiceVideoPort(int videoPort){
+        this.videoPort = videoPort;
+        return this;
+    }
+    public int getServiceVideoPort(){
+        return videoPort;
     }
 
     public HomeAction init(){

@@ -30,6 +30,7 @@ import com.howell.bean.PlayType;
 import com.android.howell.webcam.R;
 import com.howell.entityclass.NodeDetails;
 import com.howell.protocol.GetNATServerReq;
+import com.howell.protocol.GetNATServerRes;
 import com.howell.protocol.SoapManager;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.IConst;
@@ -397,7 +398,8 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
                 GetNATServerReq req = new GetNATServerReq(LoginAction.getInstance().getmInfo().getAccount(),
                         LoginAction.getInstance().getmInfo().getLr().getLoginSession());
 
-                soapManager.getGetNATServerRes(req);
+                GetNATServerRes res = soapManager.getGetNATServerRes(req);
+                Log.e("123","GetNATServerRes="+res.toString());
                 return true;
             }
 

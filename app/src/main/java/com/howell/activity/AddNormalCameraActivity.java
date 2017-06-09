@@ -58,6 +58,12 @@ public class AddNormalCameraActivity extends AppCompatActivity {
         mDevId = intent.getStringExtra("devID");
         mDevKey = intent.getStringExtra("devKey");
         mSerial = intent.getStringExtra("serial");
+        //fixme for test
+//        mDevId = "007195c81ca747dc850e";
+//        mDevKey = "309d38100f32";
+
+
+
         Log.i("123","id="+mDevId+"  key="+mDevKey+"   serial="+mSerial);
         initView();
         initToolbar();

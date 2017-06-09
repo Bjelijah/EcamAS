@@ -87,19 +87,20 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
 
     private final static long ID_DRAWER_EXIT = 0xe0;
     private final static long ID_DRAWER_SERVER_ADDRESS = 0x10;
-    private final static long ID_DRAWER_SERVER_BIND = 0x11;
+    private final static long ID_DRAWER_TURN_ADDRESS = 0x11;
+    private final static long ID_DRAWER_SERVER_BIND = 0x110;
     private final static long ID_DRAWER_SERVER_TURN = 0x11a;
     private final static long ID_DRAWER_SERVER_ENCRYPT = 0x11b;
     private final static long ID_DRAWER_HELP = 0x12;
-
+    private final static long ID_DRAWER_PUSH = 0x13;
     private final static int MSG_HOME_EXIT = 0xf0;
     private final static int MSG_HOME_HOME = 0xf1;
     private final static int MSG_HOME_IP = 0xf2;
     private final static int MSG_HOME_BIND = 0xf3;
     private final static int MSG_HOME_HELP = 0xf4;
     private final static int MSG_HOME_CENTER = 0xf5;
-
-
+    private final static int MSG_HOME_TURN = 0xf6;
+    private final static int MSG_HOME_PUSH = 0xf7;
     private AccountHeader headerResult;
     private Drawer result;
     ViewPager mViewPager;
@@ -142,6 +143,12 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                     break;
                 case FingerPrintSaveFragment.MSG_FINGERPRINT_ERROR:
                     Snackbar.make(mViewPager,getString(R.string.fingerprint_no_support),Snackbar.LENGTH_LONG).show();
+                    break;
+                case MSG_HOME_TURN:
+                    funTurn();
+                    break;
+                case MSG_HOME_PUSH:
+                    funPush();
                     break;
                 default:
                     break;
@@ -423,7 +430,8 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
 //                        new PrimaryDrawerItem().withName(R.string.drawer_item_custom).withIcon(FontAwesome.Icon.faw_eye),
                         new SectionDrawerItem().withName(R.string.home_drawer_second_head),
                         new SecondaryDrawerItem().withName(R.string.home_drawer_server_address).withIcon(Octicons.Icon.oct_server).withIdentifier(ID_DRAWER_SERVER_ADDRESS),
-
+//fixme          //              new SecondaryDrawerItem().withName(R.string.home_drawer_turn_address).withIcon(Octicons.Icon.oct_server).withIdentifier(ID_DRAWER_TURN_ADDRESS),
+                        new SecondaryDrawerItem().withName(R.string.home_drawer_push_service).withIcon(Octicons.Icon.oct_alert).withIdentifier(ID_DRAWER_PUSH),
                         new ExpandableDrawerItem().withName(R.string.home_drawer_connect).withIcon(FontAwesome.Icon.faw_connectdevelop).withSelectable(false)
                         .withSubItems(
                                 new SwitchDrawerItem().withName(R.string.home_drawer_turn_server).withLevel(2).withIcon(Octicons.Icon.oct_tools).withChecked(isTurn).withOnCheckedChangeListener(onCheckedChangerListener).withSelectable(false).withIdentifier(ID_DRAWER_SERVER_TURN),
@@ -572,6 +580,15 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         startActivity(intent);
     }
 
+    private void funTurn(){
+
+    }
+
+    private void funPush(){
+        Intent intent = new Intent(this,PushSettingActivity.class);
+        startActivity(intent);
+    }
+
     private void funBind(){
         if (!Util.isNewApi() || !FingerprintUiHelper.isFingerAvailable(this)){
             //TODO not support
@@ -686,6 +703,10 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                 msg.what = MSG_HOME_BIND;
             } else if(drawerItem.getIdentifier() == ID_DRAWER_HELP){
                 msg.what = MSG_HOME_HELP;
+            } else if(drawerItem.getIdentifier() == ID_DRAWER_TURN_ADDRESS){
+                msg.what = MSG_HOME_TURN;
+            } else if(ID_DRAWER_PUSH == drawerItem.getIdentifier()){
+                msg.what = MSG_HOME_PUSH;
             }
             mHandler.sendMessageDelayed(msg,300);
             return false;

@@ -290,7 +290,9 @@
     <string name="home_drawer_connect">Communication Mode</string>
     <string name="home_drawer_turn_server">Turn Server</string>
     <string name="home_drawer_encrypt">encrypt</string>
-    <string name="home_drawer_server_address">Turn Server Address</string>
+    <string name="home_drawer_server_address">Server Address</string>
+    <string name="home_drawer_push_service">Push Service</string>
+    <string name="home_drawer_turn_address">Turn Setting</string>
     <string name="home_drawer_server_bind">Bind My Account</string>
     <string name="home_fragment_devices">DeviceList</string>
     <string name="home_fragment_medias">Media</string>
@@ -309,6 +311,7 @@
     <!-- add -->
     <string name="add_camera_title">Add New Camera</string>
     <string name="add_ap">Add Ap</string>
+    <string name="add_scan">Scan</string>
     <string name="add_normal">Add camera</string>
     <string name="add_flash">Scanning</string>
     <string name="add_listen">Listening</string>
@@ -358,7 +361,8 @@
     <string name="server_setting_port_title">ServerPort:</string>
     <string name="server_setting_port">Input Server Port</string>
     <string name="server_setting_ssl">Server Using SSL</string>
-
+    <string name="server_setting_video_port_title">Video Port:</string>
+    <string name="server_setting_video_port">Input Video Port</string>
     <string name="server_setting_default">Default</string>
     <string name="server_setting_btn">Save</string>
 
@@ -406,7 +410,12 @@
     <string name="center_setting_port_title">Center Port:</string>
     <string name="center_setting_port">Input Port</string>
 
+    <string name="push_setting_service_onoff">On/Off Push Service</string>
 
+
+    <string name="push_setting_open">ON</string>
+    <string name="push_setting_close">OFF</string>
+    <string name="push_settting_title">Push Setting</string>
 
     	<string name="lorem">
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit.

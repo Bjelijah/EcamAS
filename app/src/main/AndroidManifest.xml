@@ -57,6 +57,7 @@
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"/>
 
     <application
+        android:name="com.howell.App"
         android:allowBackup="true"
         android:icon="@mipmap/ecam_logo"
         android:label="@string/app_name"
@@ -277,12 +278,14 @@
             <!--android:screenOrientation="portrait"-->
             <!--android:theme="@style/MyAppThemeScan" />-->
 
-        <activity android:name="io.github.xudaojie.qrcodelib.CaptureActivity"/>
+        <activity android:name="io.github.xudaojie.qrcodelib.CaptureActivity"
+           />
         <activity android:name="com.howell.activity.SimpleCaptureActivity"
             android:theme="@style/MyAppThemeAdd"/>
         <activity android:name="com.howell.activity.AddNormalCameraActivity"
             android:theme="@style/MyAppThemeAp"/>
-
+        <activity android:name="com.howell.activity.PushSettingActivity"
+            android:theme="@style/MyAppThemeServerAddress"/>
 
         <!-- Required SDK核心功能 -->
         <activity
@@ -296,6 +299,22 @@
                 <category android:name="com.android.howell.webcam" />
             </intent-filter>
         </activity>
+
+        <!-- Myserver pushServer -->
+        <service android:name="com.howell.service.MyService"
+            android:enabled="true"
+            android:exported="false"
+            >
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.REGISTER" />
+                <action android:name="cn.jpush.android.intent.REPORT" />
+                <action android:name="cn.jpush.android.intent.PushService" />
+                <action android:name="cn.jpush.android.intent.PUSH_TIME" />
+            </intent-filter>
+        </service>
+
+
+
         <!-- Required  SDK核心功能 -->
         <service
             android:name="cn.jpush.android.service.DownloadService"

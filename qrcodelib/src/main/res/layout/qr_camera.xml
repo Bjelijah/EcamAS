@@ -25,10 +25,15 @@
         xdj:qr_offsetX="0"
         xdj:qr_offsetY="-120"/>
 
+
+
+
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="?android:attr/actionBarSize">
+        android:minHeight="?android:attr/actionBarSize"
+        android:visibility="gone">
 
         <ImageButton
             android:id="@+id/back_ibtn"
@@ -51,6 +56,24 @@
             android:textSize="16sp"
             tools:textColor="@android:color/black"/>
     </RelativeLayout>
+
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/add_scan_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            android:minHeight="64dp"
+            android:background="@color/qr_black"
+            >
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+
 
     <RelativeLayout
         android:layout_width="match_parent"

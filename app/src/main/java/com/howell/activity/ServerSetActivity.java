@@ -63,6 +63,7 @@ public class ServerSetActivity extends AppCompatActivity implements IConst{
     private void initView(){
         mIPView = (AutoCompleteTextView) findViewById(R.id.server_set_et_ip);
         mPortView = (AutoCompleteTextView) findViewById(R.id.server_set_et_port);
+
         mbtnSave = (Button) findViewById(R.id.server_set_btn);
         mbtnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,8 +75,10 @@ public class ServerSetActivity extends AppCompatActivity implements IConst{
         mbtnDefault.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mIPView.setText(DEFAULT_TURN_SERVER_IP);
-                mPortView.setText(DEFAULT_TURN_SERVER_PORT+"");
+                mIPView.setText(DEFAULT_SERVER_IP);
+                mPortView.setText(DEFAULT_SERVER_PORT_SSL+"");
+                mswSSL.setChecked(true);
+                mIsSSL = true;
             }
         });
         mswSSL = (Switch) findViewById(R.id.server_set_ssl);
@@ -146,6 +149,9 @@ public class ServerSetActivity extends AppCompatActivity implements IConst{
             mIPView.setError(getString(R.string.reg_field_empty));
             v = mIPView;
         }
+
+
+
         if (v!=null){
             Log.i("123","v!=null");
             v.requestFocus();

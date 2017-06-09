@@ -11,6 +11,7 @@ import com.howell.activity.BasePlayActivity;
 import com.howell.activity.PlayerActivity;
 import com.howell.entityclass.VODRecord;
 import com.howell.jni.JniUtil;
+import com.howell.utils.IConst;
 import com.howell.utils.JsonUtil;
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.SDCardUtils;
@@ -32,7 +33,7 @@ import java.util.concurrent.ExecutionException;
  * Created by Administrator on 2016/12/16.
  */
 
-public class H265Mgr implements ICam {
+public class H265Mgr implements ICam,IConst {
 
     Context mContext;
     CameraItemBean mBean;
@@ -403,7 +404,10 @@ public class H265Mgr implements ICam {
     private void initServerInfo() throws NullPointerException {
         mTurnServiceIP = ServerConfigSp.loadServerIP(mContext);
         mIsTurnCrypto = ServerConfigSp.loadServerIsCrypto(mContext);
-        mTurnServicePort = mIsTurnCrypto?8862:8812;//fixme
+//        mTurnServicePort = mIsTurnCrypto?8862:8812;//fixme
+        mTurnServicePort = mIsTurnCrypto?DEFAULT_TURN_SERVER_PORT_SSL:DEFAULT_TURN_SERVER_PORT_NOSSL;
+
+
         if (mTurnServiceIP==null){
             throw new NullPointerException();
         }

@@ -274,7 +274,9 @@
 	<string name="home_drawer_connect">通讯方式</string>
 	<string name="home_drawer_turn_server">流转</string>
 	<string name="home_drawer_encrypt">加密</string>
-	<string name="home_drawer_server_address">流转服务器地址</string>
+	<string name="home_drawer_server_address">服务器地址</string>
+	<string name="home_drawer_push_service">推送服务</string>
+	<string name="home_drawer_turn_address">流转设置</string>
 	<string name="home_drawer_server_bind">绑定账户</string>
 	<string name="home_fragment_devices">DeviceList</string>
 	<string name="home_fragment_medias">Media</string>
@@ -292,6 +294,7 @@
 	<string name="add_camera_title">添加新的摄像机</string>
 	<string name="add_ap">添加AP摄像机</string>
 	<string name="add_flash">扫一扫</string>
+	<string name="add_scan">扫一扫</string>
 	<string name="add_listen">听一听</string>
 	<string name="add_listen_subtitle">命名设备和设置wifi</string>
 	<string name="add_listen_no_ssid">请选择摄像机所在的wifi</string>
@@ -328,6 +331,8 @@
 	<string name="server_setting_port_title">服务器端口:</string>
 	<string name="server_setting_port">输入服务器的端口</string>
 	<string name="server_setting_ssl">服务器使用SSL</string>
+	<string name="server_setting_video_port_title">视频端口:</string>
+	<string name="server_setting_video_port">输入视频端口</string>
 	<string name="server_setting_default">默认</string>
 	<string name="server_setting_btn">保存</string>
 
@@ -372,4 +377,11 @@
 	<string name="center_setting_ip">输入IP或域名</string>
 	<string name="center_setting_port_title">中心端口:</string>
 	<string name="center_setting_port">输入端口</string>
+
+
+    <string name="push_setting_service_onoff">开/关 推送服务</string>
+
+    <string name="push_setting_open">开启</string>
+    <string name="push_setting_close">关闭</string>
+    <string name="push_settting_title">推送设置</string>
 </resources>

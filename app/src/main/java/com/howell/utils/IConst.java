@@ -35,11 +35,14 @@ public interface IConst {
 	final String TEST_TURN_SERVICE_IP = "180.166.7.214";//turn service ip 仅作 100868 登入
 //	final String TEST_IP = null;
 	
-	final int TEST_TURN_SERVICE_PORT = 8862;//turn service port
 
-	final String DEFAULT_TURN_SERVER_IP = "180.166.7.214";
-	final int DEFAULT_TURN_SERVER_PORT = 8862;
+	final String DEFAULT_SERVER_IP = "116.228.67.70";
+	final int DEFAULT_SERVER_PORT_SSL = 8850;
+	final int DEFAULT_SERVER_PORT_NOSSL = 8800;
 
+	final String DEFAULT_TURN_SERVER_IP = "116.228.67.70";//"180.166.7.214";
+	final int DEFAULT_TURN_SERVER_PORT_SSL = 8862;
+	final int DEFAULT_TURN_SERVER_PORT_NOSSL = 8812;
 	final String DEFAULT_CENTER_IP = "116.228.67.70";
 	final int DEFAULT_CENTER_PORT = 8800;
 
