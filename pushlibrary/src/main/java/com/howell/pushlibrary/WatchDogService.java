@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 
 import java.util.concurrent.TimeUnit;
 
@@ -29,7 +30,7 @@ public class WatchDogService extends Service {
      * 守护服务，运行在:watch子进程中
      */
     protected final int onStart(Intent intent, int flags, int startId) {
-
+        Log.i("547","watchDogService on start");
         if (!DaemonEnv.sInitialized) return START_STICKY;
 
         if (sDisposable != null && !sDisposable.isDisposed()) return START_STICKY;
@@ -64,6 +65,7 @@ public class WatchDogService extends Service {
                 .subscribe(new Consumer<Long>() {
                     @Override
                     public void accept(Long aLong) throws Exception {
+                        Log.i("547","rxjava start service:"+DaemonEnv.sApp.getClass().getName());
                         startService(new Intent(DaemonEnv.sApp, DaemonEnv.sServiceClass));
                     }
                 }, new Consumer<Throwable>() {
@@ -82,6 +84,7 @@ public class WatchDogService extends Service {
 
     @Override
     public final int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i("123","watch dog on start command");
         return onStart(intent, flags, startId);
     }
 

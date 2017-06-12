@@ -38,13 +38,72 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/push_setting_margin_vertcail_ctrl"
+                >
+                <TextView
+                    android:id="@+id/push_setting_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/push_setting_push_service"
+                    android:textSize="@dimen/push_setting_push_title"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:textStyle="bold"
+                    />
+                <!---->
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@mipmap/ic_warning_white_24dp"
+                    android:layout_toRightOf="@id/push_setting_title"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    />
+
+            </RelativeLayout>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/push_setting_margin_vertical_item"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/push_setting_card"
+
+                >
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp"
+                    >
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/push_setting_push_description"
+                        android:textSize="@dimen/push_setting_push_sub_item"
+                        />
+
+                </FrameLayout>
+
+
+
+            </android.support.v7.widget.CardView>
+
+
+
+
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:layout_marginTop="@dimen/add_listen_device_margin_vertcail_ctrl">
+                android:layout_marginTop="@dimen/push_setting_margin_vertcail_ctrl">
 
                 <TextView
                     android:id="@+id/push_set_tv"
@@ -53,7 +112,7 @@
                     android:text="@string/push_setting_service_onoff"
                     android:layout_alignParentLeft="true"
                     android:layout_centerHorizontal="true"
-                    android:textSize="20sp"
+                    android:textSize="@dimen/push_setting_push_item"
                     />
                 <Switch
                     android:id="@+id/push_set_sw"

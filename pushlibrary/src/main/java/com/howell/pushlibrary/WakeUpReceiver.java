@@ -29,6 +29,7 @@ public class WakeUpReceiver extends BroadcastReceiver {
         }
         if (!DaemonEnv.sInitialized) return;
         if (!DaemonEnv.mShouldWakeUp) return;
+        Log.d("123 547","wakeUp  we get Broadcast:"+intent.getAction());
         try {context.startService(new Intent(context, DaemonEnv.sServiceClass));} catch (Exception ignored) {}
     }
 

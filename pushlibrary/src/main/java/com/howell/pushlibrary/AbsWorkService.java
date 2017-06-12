@@ -124,15 +124,16 @@ public abstract class AbsWorkService extends Service {
         return onBind(intent, null);
     }
 
-    protected void onEnd(Intent rootIntent) {
+    protected boolean onEnd(Intent rootIntent) {
         onServiceKilled(rootIntent);
-        if (!DaemonEnv.sInitialized) return;
+        if (!DaemonEnv.sInitialized) return false;
         if (!DaemonEnv.mShouldWakeUp)  {
             if (shouldStopService()) stopService();
-            return;
+            return false;
         }
         try {startService(new Intent(DaemonEnv.sApp, DaemonEnv.sServiceClass));} catch (Exception ignored) {}
         try {startService(new Intent(DaemonEnv.sApp, WatchDogService.class));} catch (Exception ignored) {}
+        return true;
     }
 
     /**
@@ -149,7 +150,7 @@ public abstract class AbsWorkService extends Service {
      */
     @Override
     public void onDestroy() {
-        onEnd(null);
+        if (!onEnd(null)) super.onDestroy();
     }
 
     public static class WorkNotificationService extends Service {

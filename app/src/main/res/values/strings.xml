@@ -416,6 +416,17 @@
     <string name="push_setting_open">ON</string>
     <string name="push_setting_close">OFF</string>
     <string name="push_settting_title">Push Setting</string>
+    <string name="push_setting_push_service">Push Service</string>
+    <string name="push_setting_push_description">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+		In mollis est vitae erat laoreet consectetur. Mauris dui mauris,
+		dictum vel egestas vel, porta sed ante. Phasellus congue viverra ipsum,
+		in elementum arcu ultricies nec.Morbi tincidunt nisl lacinia, placerat nisi eget, luctus tortor.
+		Morbi efficitur dictum leo, sit amet volutpat lorem sodales nec. Quisque et erat et turpis fringilla condimentum.
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris auctor vulputate libero vitae iaculis.
+		Curabitur id blandit quam. Praesent massa ante, pulvinar vitae sagittis commodo, scelerisque porttitor eros.
+
+    </string>
 
     	<string name="lorem">
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit.

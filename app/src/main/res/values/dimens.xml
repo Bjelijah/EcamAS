@@ -46,4 +46,11 @@
     <!-- item vod  video list -->
     <dimen name="item_vod_padding_vertical">10dp</dimen>
     <dimen name="item_vod_padding_horizontal">20dp</dimen>
+
+    <!-- push setting -->
+    <dimen name="push_setting_push_title">23sp</dimen>
+    <dimen name="push_setting_margin_vertcail_ctrl">23dp</dimen>
+    <dimen name="push_setting_margin_vertical_item">10dp</dimen>
+    <dimen name="push_setting_push_item">20sp</dimen>
+    <dimen name="push_setting_push_sub_item">15sp</dimen>
 </resources>
