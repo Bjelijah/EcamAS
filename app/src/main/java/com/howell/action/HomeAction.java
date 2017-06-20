@@ -15,10 +15,13 @@ import com.howell.bean.UserLoginDBBean;
 import com.howell.db.ApDeviceDao;
 import com.howell.db.UserLoginDao;
 import com.howell.entityclass.NodeDetails;
-import com.howell.entityclass.StreamReqContext;
+
+
 import com.howell.protocol.QueryDeviceReq;
 import com.howell.protocol.SoapManager;
 import com.howell.utils.ServerConfigSp;
+
+
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,24 +1,24 @@
 package com.howell.service;
 
-import android.app.Service;
+
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.annotation.IntDef;
+
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.howell.bean.WSRes;
+
 import com.howell.pushlibrary.AbsWorkService;
 import com.howell.pushlibrary.DaemonEnv;
 import com.howell.utils.ServerConfigSp;
-import com.howell.websocket.WebSocketManager;
+
+import com.howellnet.bean.websocket.WSRes;
+import com.howellnet.protocol.autobahn.WebSocketException;
+import com.howellnet.protocol.websocket.WebSocketManager;
 
 import org.json.JSONException;
 
-import java.util.Date;
-
-import autobahn.WebSocketException;
 
 /**
  * Created by Administrator on 2017/6/8.
@@ -185,6 +185,8 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
     public void onWebSocketClose() {
 
     }
+
+
 
     @Override
     public void onGetMessage(WSRes res) {

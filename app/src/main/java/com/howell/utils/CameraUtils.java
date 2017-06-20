@@ -22,7 +22,7 @@ public class CameraUtils {
 	private void openCamera(){
 		try{
 			System.out.println("start open camera 1");	
-			camera = Camera.open();
+			camera = Camera.open(0);
 			System.out.println("start open camera 2");	
 			camera.startPreview();
 			System.out.println("start open camera 3");	
@@ -118,22 +118,26 @@ public class CameraUtils {
         @Override
         protected Void doInBackground(Void... params) {
             // TODO Auto-generated method stub
-        	System.out.println("start open camera");
+			Log.i("123","start open camera");
 			openCamera();
-			System.out.println("finish open camera");
+			Log.i("123","finish open camera");
 			//闪烁 500ms亮 500ms灭
 			System.out.println("start init timer");
 			
 			while(true){
 				System.out.println("1111111");
 				if(isCancelled()){
+					Log.e("123","is cancelled");
 					return null;
 				}
 				try {
+					Log.i("123","turnLight on");
 					turnLightOn(camera);
-					Thread.sleep(500);
+					Log.i("123","--------------------");
+					Thread.sleep(5000);
+					Log.i("123","turnLight off");
 					turnLightOff(camera);
-					Thread.sleep(500);
+					Thread.sleep(5000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -199,6 +203,9 @@ public class CameraUtils {
 			} else {
 			}
 		}
+
+
+
 	}
 	/**
 	 * 通过设置Camera关闭闪光灯
