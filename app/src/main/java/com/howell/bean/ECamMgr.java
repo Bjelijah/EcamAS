@@ -263,7 +263,7 @@ public class ECamMgr implements ICam,IConst {
     }
 
     @Override
-    public boolean zoomTeleStart() {
+    public boolean zoomTeleStart() {//放大
         LensControlReq req = new LensControlReq(mInfo.getAccount(),mInfo.getLoginSession(),mInfo.getDevID(),mInfo.getChannelNo(),"ZoomTele");
         LensControlRes res = mInfo.getSoapManager().getLensControlRes(req);
         return res.getResult().equalsIgnoreCase("OK")?true:false;
@@ -277,7 +277,7 @@ public class ECamMgr implements ICam,IConst {
     }
 
     @Override
-    public boolean zoomWideStart() {
+    public boolean zoomWideStart() {//缩小
         LensControlReq req = new LensControlReq(mInfo.getAccount(),mInfo.getLoginSession(),mInfo.getDevID(),mInfo.getChannelNo(),"ZoomWide");
         LensControlRes res = mInfo.getSoapManager().getLensControlRes(req);
         return res.getResult().equalsIgnoreCase("OK")?true:false;

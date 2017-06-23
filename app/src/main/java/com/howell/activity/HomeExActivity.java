@@ -175,6 +175,8 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         mAddbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Log.i("123","add btn click time="+System.currentTimeMillis());
                BulrTask task = new BulrTask(rootView);
                 task.execute();
             }
@@ -763,7 +765,9 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         }
         @Override
         protected Void doInBackground(Void... voids) {
+            Log.i("123","time="+System.currentTimeMillis());
             Bitmap bulrBitmap = bulrBitmap(bitmap);
+            Log.i("123","time after="+System.currentTimeMillis());
             sBkBitmap = bulrBitmap;
             return null;
         }

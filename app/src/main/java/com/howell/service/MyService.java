@@ -108,7 +108,8 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
 
     @Override
     public void onServiceKilled(Intent rootIntent) {
-        Log.e("547",TAG+":onServiceKilled");
+//        isWorking = false;
+        Log.e("547",TAG+":onServiceKilled  reborn in "+DaemonEnv.DEFAULT_WAKE_UP_INTERVAL+" ms");
     }
 
     @Override
@@ -125,7 +126,8 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
 
     @Override
     public void onDestroy() {
-        Log.e("547","my service on destroy");
+//        isWorking = false;
+        Log.e("547","my service on destroy reborn in "+DaemonEnv.DEFAULT_WAKE_UP_INTERVAL+" ms");
         super.onDestroy();
     }
 
@@ -143,6 +145,7 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
             @Override
             public void run() {
                 super.run();
+                Log.i("123","shouldWakeUp="+DaemonEnv.mShouldWakeUp);
                 while(DaemonEnv.mShouldWakeUp) {
                     try {
                         sleep(2000);
