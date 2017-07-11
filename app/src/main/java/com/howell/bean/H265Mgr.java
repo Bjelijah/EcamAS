@@ -1,14 +1,12 @@
 package com.howell.bean;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.util.Log;
 
 import com.howell.action.AudioAction;
 import com.howell.action.LoginAction;
 import com.howell.activity.BasePlayActivity;
-import com.howell.activity.PlayerActivity;
 import com.howell.entityclass.VODRecord;
 import com.howell.jni.JniUtil;
 import com.howell.utils.IConst;
@@ -24,10 +22,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.IllegalFormatException;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Administrator on 2016/12/16.
@@ -254,7 +250,7 @@ public class H265Mgr implements ICam,IConst {
     public boolean reLink(){
         //stop
         Log.d("123", "relink........");
-        mHandler.sendEmptyMessage(PlayerActivity.SHOWPROGRESSBAR);
+//        mHandler.sendEmptyMessage(PlayerActivity.SHOWPROGRESSBAR);//fixme
         new Thread(){
             public void run() {
                 stopViewCam();

@@ -7,7 +7,6 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.os.Handler;
 import android.util.Log;
 
-import com.howell.activity.PlayerActivity;
 import com.howell.jni.JniUtil;
 
 import java.io.BufferedReader;
@@ -89,10 +88,8 @@ public class YV12Renderer implements Renderer {
 	public static long time;
 	Handler handler;
 	public void setTime(long time){
-		if(PlayerActivity.stopSendMessage){
-			YV12Renderer.time = 0;
-			return;
-		}
+
+		YV12Renderer.time = 0;
 		this.time = time;
 	}
 
@@ -144,7 +141,7 @@ public class YV12Renderer implements Renderer {
 	private int frameNum = 0;
 	@Override
 	public void onDrawFrame(GL10 arg0) {
-		PlayerActivity.addFrames();
+//		PlayerActivity.addFrames();
 		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 		JniUtil.YUVLock();
 		for (int i = 0; i < 3; ++i) {

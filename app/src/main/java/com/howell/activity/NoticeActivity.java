@@ -493,7 +493,7 @@ public class NoticeActivity extends Activity implements OnRefreshListener,OnClic
 	}
 	
 	private void clickPiture(View v,int which){
-		Intent intent = new Intent(this, BigImages.class);
+		Intent intent = new Intent(this, BigImagesActivity.class);
 		intent.putExtra("position", which);
 		System.out.println("arrayList size:"+getPictures(Integer.valueOf(v.getTag().toString())).size());
 		intent.putStringArrayListExtra("arrayList", getPictures(Integer.valueOf(v.getTag().toString())));

@@ -270,8 +270,8 @@ public class GetMatchResult extends Activity implements OnClickListener{
 		                	if(mActivities.getmActivityList().containsKey("CamTabActivity")){
 		                		mActivities.getmActivityList().get("CamTabActivity").finish();
 							}
-		                	Intent intent = new Intent(GetMatchResult.this,CamTabActivity.class);
-		                	startActivity(intent);
+//		                	Intent intent = new Intent(GetMatchResult.this,CamTabActivity.class);//FIXME  back to home
+//		                	startActivity(intent);
 		                }   
 		            }).   
 		    create();   

@@ -75,41 +75,11 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" />
         <activity
-            android:name="com.howell.activity.RegisterOrLogin"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
-        <activity
-            android:name="com.howell.activity.DeviceShareToOther"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
-        <activity
-            android:name="com.howell.activity.AddSharerAccount"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
-            android:windowSoftInputMode="stateVisible|adjustPan" />
-        <activity
-            android:name="com.howell.activity.Register"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
-        <activity
             android:name="com.howell.activity.GetMatchResult"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" />
         <activity
-            android:name="com.howell.activity.InformationActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
-        <activity
-            android:name="com.howell.activity.ChangeDeviceName"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
-            android:windowSoftInputMode="stateVisible|adjustPan" />
-        <activity
             android:name="com.howell.activity.FlashLighting"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
-        <activity
-            android:name="com.howell.activity.AddDeviceOrNot"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" />
         <activity
@@ -118,58 +88,10 @@
             android:theme="@android:style/Theme.Black.NoTitleBar" />
         <!--android:theme="@android:style/Theme.Black.NoTitleBar"-->
         <activity
-            android:name="com.howell.activity.BigImages"
-            android:screenOrientation="portrait"
-            android:theme="@style/MyAppThemeHome.BigImage" />
-        <activity
-            android:name="com.howell.activity.ModifyPassword"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
-        <activity
-            android:name="com.howell.activity.ModifyPhoneNum"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
-        <activity
-            android:name="com.howell.activity.CameraProperty"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
-        <activity
-            android:name="com.howell.activity.LocalFilesActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
-        <activity
-            android:name="com.howell.activity.MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
             android:name="com.howell.activity.NavigationActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" />
-        <activity
-            android:name="com.howell.activity.CameraList"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
-        <activity
-            android:name="com.howell.activity.CamTabActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
-        <activity
-            android:name="com.howell.activity.Settings"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
-        <activity
-            android:name="com.howell.activity.AddCamera"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
-        <activity
-            android:name="com.howell.activity.PlayerActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
-        <activity
-            android:name="com.howell.activity.DeviceSetActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
+
         <activity
             android:name="com.howell.activity.NoticeActivity"
             android:screenOrientation="portrait"
@@ -265,12 +187,6 @@
             android:theme="@style/MyappThemePlay"
             />
 
-
-        <activity
-            android:name="com.howell.activity.VideoList"
-            android:label="@string/video_list"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" />
 
         <!--android:theme="@android:style/Theme.NoTitleBar"-->
         <!--<activity-->

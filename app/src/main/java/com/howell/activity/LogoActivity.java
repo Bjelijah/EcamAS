@@ -66,8 +66,8 @@ public class LogoActivity extends Activity implements TagAliasCallback,LoginActi
 			myLoginThread.start();
 		}else{
 			//清空存储设备信息单例对象
-			DeviceManager mDeviceManager = DeviceManager.getInstance();
-			mDeviceManager.clearMember();
+//			DeviceManager mDeviceManager = DeviceManager.getInstance();//FIXME
+//			mDeviceManager.clearMember();
 
 			//获取平台协议单例对象
 			mSoapManager = SoapManager.getInstance();

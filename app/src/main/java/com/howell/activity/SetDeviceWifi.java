@@ -230,9 +230,7 @@ public class SetDeviceWifi extends AppCompatActivity implements OnClickListener{
 //			Log.i("123","member "+i+"    "+Member[i]);
 //		}
 
-
 //		myAdapter.notifyDataSetChanged();
-
 		myAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,Member);
 		myAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
 

@@ -134,15 +134,16 @@ public class CameraUtils {
 					Log.i("123","turnLight on");
 					turnLightOn(camera);
 					Log.i("123","--------------------");
-					Thread.sleep(5000);
+					Thread.sleep(500);
 					Log.i("123","turnLight off");
 					turnLightOff(camera);
-					Thread.sleep(5000);
+					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
+
         }
         
         @Override

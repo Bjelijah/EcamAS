@@ -469,7 +469,6 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
             Glide.with(this).load("https://unsplash.it/600/300/?random").centerCrop().into(imageView);
 //        imageView.setImageDrawable(getDrawable(R.drawable.mm_bk));//FIXME I HATE THIS PICTURE AND SHOULD NEVER USE
         }
-
     }
 
     private void saveLikeBk(){

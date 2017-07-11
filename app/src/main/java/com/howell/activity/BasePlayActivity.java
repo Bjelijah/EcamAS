@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gles.GLESTextureView;
 import com.howell.action.PTZControlAction;
 import com.howell.action.PlayAction;
 import com.howell.action.YV12Renderer;
@@ -60,6 +61,7 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
 
     //控件
 //    protected GLSurfaceView mGlView;
+    protected GLESTextureView mGlView;
     protected Button mBtTalk;
     protected ImageButton mVodList,mCatchPicture,mSound,mPause,mBack;
     protected FrameLayout mTitle;
@@ -157,7 +159,7 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
 
 
     protected void initView(){
-//        mGlView = (GLSurfaceView)findViewById(R.id.glsurface_view);
+        mGlView = (GLESTextureView) findViewById(R.id.gl_texture_view);
         mBtTalk = (Button) findViewById(R.id.play_talk);
         mCatchPicture = (ImageButton)findViewById(R.id.catch_picture);
         mVodList = (ImageButton) findViewById(R.id.vedio_list);
@@ -181,10 +183,10 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
 //        mGlView.setRenderer(new YV12Renderer(this,mGlView,mHandler));
 //        mGlView.getHolder().addCallback(this);
 //        mGlView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-//        mGlView.setOnTouchListener(this);
-//        mGlView.setFocusable(true);
-//        mGlView.setClickable(true);
-//        mGlView.setLongClickable(true);
+        mGlView.setOnTouchListener(this);
+        mGlView.setFocusable(true);
+        mGlView.setClickable(true);
+        mGlView.setLongClickable(true);
 
         if (PhoneConfig.getPhoneHeight(this)<PhoneConfig.getPhoneWidth(this)){
             showSurfaceIcon(false);
@@ -271,15 +273,13 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
 
     @Override
     protected void onPause() {
-//        mGlView.onPause();
-
-
+        mGlView.onPause();
         super.onPause();
     }
 
     @Override
     protected void onResume() {
-//        mGlView.onResume();
+        mGlView.onResume();
         super.onResume();
     }
 
@@ -288,6 +288,7 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
         mPlayMgr.unregistStreamLenCallback();
         camStop();
         camDisconnect();
+        mGlView.onDestroy();
         super.onDestroy();
     }
 

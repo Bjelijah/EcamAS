@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -25,7 +26,10 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.android.howell.webcam.R;
+import com.howell.protocol.GetDeviceMatchingCodeReq;
+import com.howell.protocol.GetDeviceMatchingCodeRes;
 import com.howell.utils.NetWorkUtils;
+import com.howellnet.protocol.soap.SoapManager;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
@@ -122,6 +126,11 @@ public class DeviceWifiActivity extends AppCompatActivity {
 //        myAdapter =  new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,mWifiMember);
 //        myAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
 //        mSpinner.setAdapter(myAdapter);
+        //TODO send match code
+
+        SendMatchCodeTask task = new SendMatchCodeTask();
+        task.execute();
+
     }
 
     private void initToobar(){
@@ -216,6 +225,27 @@ public class DeviceWifiActivity extends AppCompatActivity {
                     //do something, permission was previously granted; or legacy device
                 }
             }
+        }
+    }
+
+    class SendMatchCodeTask extends AsyncTask<Void, Integer, Void> {
+        GetDeviceMatchingCodeRes res;
+        @Override
+        protected Void doInBackground(Void... params) {
+            // TODO Auto-generated method stub
+            com.howell.protocol.SoapManager mSoapManager = com.howell.protocol.SoapManager.getInstance();
+
+            System.out.println("call doInBackground");
+            GetDeviceMatchingCodeReq req = new GetDeviceMatchingCodeReq(mSoapManager.getLoginResponse().getAccount(),mSoapManager.getLoginResponse().getLoginSession());
+            res = mSoapManager.getGetDeviceMatchingCodeRes(req);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+            System.out.println(res.getResult()+","+res.getMatchingCode());
         }
     }
 

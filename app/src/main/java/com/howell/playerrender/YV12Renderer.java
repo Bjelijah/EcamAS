@@ -7,8 +7,6 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -22,7 +20,7 @@ import android.util.Log;
 
 //import com.example.yuvtest.GraphicsUtil;
 //import com.howell.com.android.howell.webcam.protocol.playerrender.R;
-import com.howell.activity.PlayerActivity;
+
 
 /**
  * @class YV12Renderer
@@ -98,10 +96,11 @@ public class YV12Renderer implements Renderer {
 	//public static native void setCatchPictureFlag(String path,int length);
 		
 	public void setTime(long time){
-		if(PlayerActivity.stopSendMessage){
-			YV12Renderer.time = 0;
-			return;
-		}
+//		if(PlayerActivity.stopSendMessage){
+//			YV12Renderer.time = 0;
+//			return;
+//		}
+		YV12Renderer.time = 0;
 		YV12Renderer.time = time;
 	}
 	
@@ -137,7 +136,7 @@ public class YV12Renderer implements Renderer {
 	@Override
 	public void onDrawFrame(GL10 arg0) {
 //		frames += 0.001f;
-		PlayerActivity.addFrames();
+//		PlayerActivity.addFrames();
 		//System.out.println("onDrawFrame");
 		 GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 		 
