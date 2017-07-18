@@ -158,8 +158,12 @@ public class SettingAction {
                     }
                     boolean bLamp = resAux.getAuxiliaryState().equals("Inactive")?false:true;
                     boolean bRotation = resVideo.getRotationDegree()==0?false:true;
-                    boolean bNeedUpdata = DeviceVersionUtils.needToUpdate(resDev.getCurDevVer(),resDev.getNewDevVer());
-
+                    boolean bNeedUpdata = false;
+                    try {
+                        bNeedUpdata = DeviceVersionUtils.needToUpdate(resDev.getCurDevVer(),resDev.getNewDevVer());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     Bundle bundle = new Bundle();
                     bundle.putString("frameSize",frameSize);
                     bundle.putInt("bitrate",bitrate);

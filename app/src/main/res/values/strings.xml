@@ -428,7 +428,11 @@
 
     </string>
 
-    	<string name="lorem">
+    <string name="version_unknow">Version Unknow</string>
+    <string name="version_update_title">New Version</string>
+    <string name="version_update_msg">Now Update My New Ecamera!!!</string>
+
+    <string name="lorem">
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 		In mollis est vitae erat laoreet consectetur. Mauris dui mauris,
 		dictum vel egestas vel, porta sed ante. Phasellus congue viverra ipsum,
@@ -447,6 +451,10 @@
 	</string>
 
 
+
+    <string name="share_title">Share</string>
+    <string name="share_name">Input Account who you want to share to:</string>
+    <string name="share_name_hint">Share Account</string>
 
 
 </resources>

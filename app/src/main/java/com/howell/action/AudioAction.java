@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.howell.jni.JniUtil;
 import com.howell.utils.TalkManager;
+import com.howell.utils.ThreadUtil;
 
 public class AudioAction {
 	private static AudioAction mInstance = null;
@@ -186,10 +187,10 @@ public class AudioAction {
 				return;
 		}
 		bAudioRecording = true;
-		new Thread(){
+
+		ThreadUtil.cachedThreadStart(new Runnable() {
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
 				byte[] buffer = new byte[recBufSize];
 				audioRecord.startRecording();//开始录制
 
@@ -210,9 +211,10 @@ public class AudioAction {
 				if(audioRecord!=null){
 					audioRecord.stop();
 				}
-				super.run();
 			}
-		}.start();
+		});
+
+
 	}
 
 	public void stopAudioRecord(){

@@ -1,7 +1,11 @@
 package com.howell.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,9 +30,13 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.howell.action.LoginAction;
 import com.howell.action.SettingAction;
 import com.howell.bean.CameraItemBean;
 import com.android.howell.webcam.R;
+import com.howell.protocol.SoapManager;
+import com.howell.protocol.UpgradeDevVerReq;
+import com.howell.protocol.UpgradeDevVerRes;
 import com.howell.utils.AlerDialogUtils;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -206,7 +214,7 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
     private void initView(){
         mDeviceName = (TextView) findViewById(R.id.camera_setting_name_tv);
         mRenameBtn = (Button) findViewById(R.id.camera_setting_name_btn);
-        mRenameBtn.setPadding(2,2,2,2);
+
         mResolutionSb = (SeekBar) findViewById(R.id.camera_setting_resolution_sb);
         mPictureSb = (SeekBar) findViewById(R.id.camera_setting_picture_sb);
 
@@ -221,6 +229,17 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
         mUpdataBtn = (Button) findViewById(R.id.camera_setting_updata_btn);
 
         mSharell = (RelativeLayout) findViewById(R.id.camera_setting_share_ll);
+        mSharell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DeviceSettingActivity.this,DeviceShareActivity.class);
+                intent.putExtra("devID",mBean.getDeviceId());
+                intent.putExtra("devName",mBean.getCameraName());
+                intent.putExtra("channelNo",mBean.getChannelNo());
+                startActivity(intent);
+
+            }
+        });
         mShareIv = (ImageView) findViewById(R.id.camera_setting_share_iv);
         mShareIv.setImageDrawable(new IconicsDrawable(this,GoogleMaterial.Icon.gmd_chevron_right).actionBar().colorRes(R.color.homeText));
     }
@@ -236,6 +255,9 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
         mUpdataBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.e("123","升级");
+                cameraUpdateDialogShow();
+
 
             }
         });
@@ -304,6 +326,22 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
         AlertDialog ad = adb.create();
         ad.show();
     }
+
+    private void cameraUpdateDialogShow(){
+//        AlerDialogUtils.postDialog(this,);
+       AlerDialogUtils.postDialogMsg(this, getString(R.string.camera_update), getString(R.string.camera_update_notice), new DialogInterface.OnClickListener() {
+           @Override
+           public void onClick(DialogInterface dialog, int which) {
+
+               UpgradeDevVerReq req = new UpgradeDevVerReq(LoginAction.getInstance().getmInfo().getAccount(),
+                       LoginAction.getInstance().getmInfo().getLr().getLoginSession(),mBean.getDeviceId());
+               UpgradeDevVerRes res = SoapManager.getInstance().getUpgradeDevVerRes(req);
+               Log.e("123",res.toString());
+           }
+       }, null);
+
+    }
+
 
 
     private void gainSet(){
@@ -381,6 +419,7 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
         mDetAlarmCb.setEnabled(bVmd);
 
         mUpdataBtn.setVisibility(bNeedUpdata?View.VISIBLE:View.GONE);
+
         String updataTv = bNeedUpdata?
                 getResources().getString(R.string.camera_setting_cur_version)+":("+curVer+") "+getResources().getString(R.string.camera_setting_new_version)+":("+newVer+")":
                 getResources().getString(R.string.camera_setting_no_new_version)+" ("+curVer+")";
@@ -491,4 +530,7 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
         }
         return super.onKeyDown(keyCode, event);
     }
+
+
+
 }

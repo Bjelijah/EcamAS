@@ -1,6 +1,8 @@
 package com.howell.utils;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -8,6 +10,8 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.WindowManager;
+
+import com.android.howell.webcam.R;
 
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
@@ -99,4 +103,46 @@ public class PhoneConfig {
 		Log.i("123", "name="+name);
 		return name;
 	}
+
+	private static String getAppVersion(Context context) throws PackageManager.NameNotFoundException {
+
+		PackageInfo pi = context.getPackageManager().getPackageInfo(context.getPackageName(),0);
+		return pi.versionName;
+
+	}
+
+	public static boolean isNewVersion(Context context,String version){
+		try {
+			String thisAPPVersion = getAppVersion(context);
+			Log.i("123","thisAppVersion="+thisAPPVersion+"    version="+version);
+			String [] str = version.split("\\.");
+			Log.e("123","len="+str.length);
+			int [] vers = new int[str.length];
+			for (int i=0;i<str.length;i++){
+				Log.i("123","~~~~~~~~~~~~  str="+str[i]);
+				vers[i] = Integer.valueOf(str[i]);
+			}
+			String [] thisStr = thisAPPVersion.split("\\.");
+			int [] thisVers = new int[thisStr.length];
+			for (int i=0;i<thisStr.length;i++){
+				thisVers[i] = Integer.valueOf(thisStr[i]);
+			}
+
+			int len = Math.min(vers.length,thisVers.length);
+			for (int i=0;i<len;i++){
+				if (vers[i]>thisVers[i]){
+					return true;
+				}
+			}
+		} catch (PackageManager.NameNotFoundException e) {
+			e.printStackTrace();
+			return false;
+		} catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return false;
+	}
+
+
 }

@@ -2,6 +2,7 @@ package com.howell.activity;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,6 +27,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,10 +47,16 @@ import com.howell.activity.fragment.NoticeFragment;
 import com.howell.bean.UserLoginDBBean;
 import com.howell.db.UserLoginDao;
 import com.android.howell.webcam.R;
+import com.howell.protocol.QueryClientVersionReq;
+import com.howell.protocol.QueryClientVersionRes;
+import com.howell.protocol.SoapManager;
 import com.howell.utils.AlerDialogUtils;
+import com.howell.utils.FileUtils;
 import com.howell.utils.IConst;
+import com.howell.utils.PhoneConfig;
 import com.howell.utils.SDCardUtils;
 import com.howell.utils.ServerConfigSp;
+import com.howell.utils.ThreadUtil;
 import com.howell.utils.UserConfigSp;
 import com.howell.utils.Util;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
@@ -101,6 +109,9 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     private final static int MSG_HOME_CENTER = 0xf5;
     private final static int MSG_HOME_TURN = 0xf6;
     private final static int MSG_HOME_PUSH = 0xf7;
+    private final static int MSG_HOME_UPDATA = 0xf8;
+    public final static int MSG_HOME_UPDATE_ERROR = 0xf9;
+
     private AccountHeader headerResult;
     private Drawer result;
     ViewPager mViewPager;
@@ -114,6 +125,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     private DrawerListener onDrawerListener = new DrawerListener();
     private DrawerItemClickListener onDrawerItemClickListener = new DrawerItemClickListener();
     public static Bitmap sBkBitmap;
+    private String mUpdataUrl=null;
     private List<HomeBaseFragment> mFragments;
     private final CompositeDisposable mDisposables = new CompositeDisposable();
     Handler mHandler = new Handler(){
@@ -149,6 +161,9 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                     break;
                 case MSG_HOME_PUSH:
                     funPush();
+                    break;
+                case MSG_HOME_UPDATA:
+                    funUpdata();
                     break;
                 default:
                     break;
@@ -204,7 +219,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         if(getIntent().getBooleanExtra("notification",false)){
             mViewPager.setCurrentItem(2);
         }
-
+        initHomeFun();
     }
 
     @Override
@@ -504,6 +519,11 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         mViewPager.addOnPageChangeListener(this);
     }
 
+    private void initHomeFun(){
+        funCheckVersion();
+    }
+
+
     private Bitmap getViewBitmap(View v){
         v.clearFocus();
         v.setPressed(false);
@@ -562,6 +582,8 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         return outBitmap;
     }
 
+
+
     private void funExit(){
         Intent intent = new Intent(HomeExActivity.this,LoginActivity.class);
         HomeExActivity.this.startActivity(intent);
@@ -608,6 +630,35 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
 
     }
 
+    private void funCheckVersion(){
+        ThreadUtil.cachedThreadStart(new Runnable() {
+            @Override
+            public void run() {
+                SoapManager s = SoapManager.getInstance();
+                QueryClientVersionRes res = s.getQueryClientVersionRes(new QueryClientVersionReq("Android"));
+                Log.i("123","!!!!!!!!!!!!!!!! version  res="+res.toString());
+                boolean needUpdata = PhoneConfig.isNewVersion(HomeExActivity.this,res.getVersion());
+
+                if (needUpdata){
+                    mUpdataUrl = new String(Base64.decode(res.getDownloadAddress(),0));
+                    Log.e("123","url="+mUpdataUrl);
+                    mHandler.sendEmptyMessage(MSG_HOME_UPDATA);
+                }
+            }
+        });
+
+    }
+
+    private void funUpdata(){
+        AlerDialogUtils.postDialogMsg(this, getString(R.string.version_update_title), getString(R.string.version_update_msg),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FileUtils.downLoadApk(HomeExActivity.this,mUpdataUrl);
+                    }
+                },null);
+
+    }
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         //add the values which need to be saved from the drawer to the bundle

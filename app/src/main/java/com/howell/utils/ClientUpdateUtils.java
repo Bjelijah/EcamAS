@@ -67,23 +67,27 @@ public class ClientUpdateUtils {
         pd = new  ProgressDialog(context);    
         pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);    
         pd.setMessage(context.getResources().getString(R.string.download_dialog_message));    
-        pd.show();    
-        new Thread(){    
-            @Override    
-            public void run() {    
-                try {    
-                    File file = getFileFromServer(httpUrl, pd);    
-                    //sleep(3000);    
-                    installApk(file,context);    
-                    pd.dismiss(); //�����������Ի���     
-                } catch (Exception e) {    
-                    Message msg = new Message();    
+        pd.show();
+
+        ThreadUtil.cachedThreadStart(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    File file = getFileFromServer(httpUrl, pd);
+                    //sleep(3000);
+                    installApk(file,context);
+                    pd.dismiss(); //�����������Ի���
+                } catch (Exception e) {
+                    Message msg = new Message();
                     msg.what = DOWN_ERROR;
                     msg.obj = context;
-                    handler.sendMessage(msg);    
-                    e.printStackTrace();    
-                }    
-            }}.start();    
+                    handler.sendMessage(msg);
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
     }  
     
     public static Handler handler = new Handler(){        

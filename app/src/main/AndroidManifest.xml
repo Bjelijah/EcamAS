@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.android.howell.webcam">
+    package="com.android.howell.webcam"
+    android:versionCode="29"
+    android:versionName="1.1.9"
+    >
 
     <!--<permission-->
         <!--android:name="com.android.howell.com.android.howell.webcam.permission.JPUSH_MESSAGE"-->
@@ -98,10 +101,14 @@
             android:theme="@android:style/Theme.Light.NoTitleBar" />
         <!--android:name="com.howell.activity.LogoActivity"-->
         <!--@android:style/Theme.NoTitleBar-->
+
+        <!--<activity android:name="com.howell.activity.DeviceShareActivity"-->
+        <!--android:theme="@style/MyAppThemeDeviceSetting.share"/>-->
+
         <activity
-            android:name="com.howell.activity.LogoActivity"
+            android:name="com.howell.activity.DeviceShareActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar"
+            android:theme="@style/MyAppThemeDeviceSetting.share"
            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -202,6 +209,10 @@
             android:theme="@style/MyAppThemeAp"/>
         <activity android:name="com.howell.activity.PushSettingActivity"
             android:theme="@style/MyAppThemeServerAddress"/>
+
+
+
+
 
         <!-- Required SDK核心功能 -->
         <activity

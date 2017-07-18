@@ -14,6 +14,7 @@ import com.howell.utils.JsonUtil;
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.SDCardUtils;
 import com.howell.utils.ServerConfigSp;
+import com.howell.utils.ThreadUtil;
 import com.howell.utils.TurnJsonUtil;
 
 import org.json.JSONException;
@@ -251,7 +252,8 @@ public class H265Mgr implements ICam,IConst {
         //stop
         Log.d("123", "relink........");
 //        mHandler.sendEmptyMessage(PlayerActivity.SHOWPROGRESSBAR);//fixme
-        new Thread(){
+        ThreadUtil.cachedThreadStart(new Runnable() {
+            @Override
             public void run() {
                 stopViewCam();
 //                logoutCam();
@@ -264,8 +266,8 @@ public class H265Mgr implements ICam,IConst {
                 }
 //                loginCam();
                 playViewCam();
-            };
-        }.start();
+            }
+        });
         return true;
     }
 

@@ -366,6 +366,8 @@
 	<string name="camera_setting_new_version">最新版本为</string>
 	<string name="camera_setting_save_title">保存设置</string>
 	<string name="camera_setting_save_msg">正在保存...</string>
+
+
 	<string name="vod_last_page">现在已经是最后一页了</string>
 	<string name="play_play_error_msg_title">播放失败</string>
 	<string name="play_play_error_msg_msg">播放失败，wifi信号弱，请稍后尝试</string>
@@ -389,4 +391,12 @@
 		在开启摄像机移动侦测时，如果摄像机侦测到了报警，远端服务器会将报警推送给E看客户端。\n这样，E看客户端将在第一时间收到报警，并且显示通知。无论此应用程序是否被开启，或者是否是在前台。\n为了程序能够在后台持续工作，您需要将程序设置为允许后台运行（打开推送服务就可以设置了），
 		当然，如果您不想让程序在后台运行或者不想再收到推送，您也可以关闭推送服务。
 	</string>
+
+	<string name="version_unknow">未知版本</string>
+
+	<string name="version_update_title">新版本</string>
+	<string name="version_update_msg">我们发布新版本啦，赶快升级吧!!!</string>
+	<string name="share_title">分享</string>
+	<string name="share_name">输入要分享的用户名:</string>
+	<string name="share_name_hint">分享的用户</string>
 </resources>

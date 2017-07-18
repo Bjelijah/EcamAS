@@ -9,6 +9,7 @@ import com.howell.bean.ICam;
 import com.howell.bean.PlayType;
 import com.howell.db.ApDeviceDao;
 import com.howell.jni.JniUtil;
+import com.howell.utils.ThreadUtil;
 
 import java.util.List;
 
@@ -75,10 +76,9 @@ public class ApAction {
 
 
     public void getApCameraList(final Context context,final String userName  ){
-        new Thread(){
+        ThreadUtil.cachedThreadStart(new Runnable() {
             @Override
             public void run() {
-                super.run();
                 List<APDeviceDBBean> apList = getAPCameraList(context,userName);
                 for (APDeviceDBBean b:apList){
                     b.setOnLine(isAPOnLine(b.getDeviceIP()));
@@ -88,7 +88,7 @@ public class ApAction {
                     mCb.onQueryApDevice(apList);
                 }
             }
-        }.start();
+        });
     }
 
     public interface QueryApDevice{

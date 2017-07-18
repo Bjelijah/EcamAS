@@ -1,7 +1,7 @@
 package com.howell.utils;
 
 public class DeviceVersionUtils {
-	public static boolean needToUpdate(String curVer,String newVer){
+	public static boolean needToUpdate(String curVer,String newVer) throws Exception{
 		String[] s = curVer.split("\\.");
 		String[] s2 = newVer.split("\\.");
 		int firstCurVerNum = Integer.valueOf(s[0]);

@@ -138,6 +138,13 @@
         <item name="colorAccent">@color/homeText</item>
     </style>
 
+
+    <style name="MyAppThemeDeviceSetting.share">
+        <item name="colorPrimary">@color/home_bk</item>
+        <item name="colorPrimaryDark">@color/home_bk_dark</item>
+    </style>
+
+
     <style name="MyStyleCameraSetting">
         <item name="android:layout_marginTop">2dp</item>
         <item name="android:layout_marginLeft">@dimen/camera_setting_margin_horizontal</item>
@@ -179,6 +186,10 @@
 
         <item name="android:background">@color/transparent</item>
     </style>
+
+
+
+
 
     <style name="MyAppThemeHome.replay">
         <item name="colorAccent">@color/register_bk</item>
@@ -318,6 +329,15 @@
     <item name="android:textSize">12sp</item>
     </style>
 
-
+    <style name="setting_btn_small">
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:paddingLeft">11dp</item>
+        <item name="android:paddingRight">11dp</item>
+        <item name="android:paddingTop">7dp</item>
+        <item name="android:paddingBottom">7dp</item>
+        <item name="android:textColor">@color/homeText</item>
+        <item name="android:textSize">12sp</item>
+    </style>
 
 </resources>
