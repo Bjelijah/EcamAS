@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -17,6 +18,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+		Log.e("123","DBHelp  onCreate");
 		// TODO Auto-generated method stub
 		//创建表
 		String sqlUserInfo = "create table userinfo(id integer primary key autoincrement,"
@@ -38,6 +40,15 @@ public class DBHelper extends SQLiteOpenHelper {
 				+"ip varchar(30),"
 				+"port integer);";
 		db.execSQL(sqlAPCam);
+
+		String sqlAddShare = "create table addshare("
+				+"id integer primary key autoincrement,"
+				+"sharename varchar(30),"
+				+"addtime varchar(30),"
+				+"devId varchar(80),"
+				+"devName varChar(80)"
+				+ ");";
+		db.execSQL(sqlAddShare);
 	}
 
 	@Override

@@ -241,6 +241,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
             case 0:
                 menu.findItem(R.id.menu_home_help).setVisible(true);
                 menu.findItem(R.id.menu_home_like).setVisible(true);
+                menu.findItem(R.id.menu_home_share).setVisible(true);
                 if(UserConfigSp.loadLike(this)) {menu.findItem(R.id.menu_home_like).setIcon(getDrawable(R.mipmap.ic_favorite_white_24dp));}else{
                     menu.findItem(R.id.menu_home_like).setIcon(getDrawable(R.mipmap.ic_favorite_border_white_24dp));}
                 menu.findItem(R.id.menu_home_notice_search).setVisible(false);
@@ -252,6 +253,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                 break;
 
             case 1:
+                menu.findItem(R.id.menu_home_share).setVisible(false);
                 menu.findItem(R.id.menu_home_like).setVisible(false);
                 menu.findItem(R.id.menu_home_help).setVisible(false);
                 menu.findItem(R.id.menu_home_notice_search).setVisible(false);
@@ -262,6 +264,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                 menu.findItem(R.id.menu_home_notice_all).setVisible(false);
                 break;
             case 2:
+                menu.findItem(R.id.menu_home_share).setVisible(false);
                 menu.findItem(R.id.menu_home_like).setVisible(false);
                 menu.findItem(R.id.menu_home_help).setVisible(false);
                 menu.findItem(R.id.menu_home_notice_search).setVisible(true);
@@ -290,6 +293,9 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                     saveLikeBk();
                 }
 
+                break;
+            case R.id.menu_home_share:
+                startActivity(new Intent(this,DeviceShareActivity.class));
                 break;
             case R.id.menu_home_help:
                 break;

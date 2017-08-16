@@ -12,6 +12,7 @@ public class UserConfigSp {
     private static final String SP_NAME = "user_set";
     private static final String SET_SP_NAME = "set";
     private static final String USER_LIKE_SP = "like_set";
+    private static final String SHARE_SP = "share_set";
     public static void saveUserInfo(Context context,String name,String pwd,boolean isCustom){
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
@@ -68,5 +69,15 @@ public class UserConfigSp {
         return sp.getBoolean("isLike",false);
     }
 
+    public static void saveShareMgrMode(Context context,int mode){
+        SharedPreferences sp = context.getSharedPreferences(SHARE_SP,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt("mode",mode);
+        editor.commit();
+    }
+    public static int loadShareMgrMode(Context context){
+        SharedPreferences sp = context.getSharedPreferences(SHARE_SP,Context.MODE_PRIVATE);
+        return sp.getInt("mode",0);
+    }
 
 }

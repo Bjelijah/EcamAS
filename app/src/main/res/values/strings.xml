@@ -302,6 +302,7 @@
     <string name="home_setting_set">Setting</string>
     <string name="home_setting_help">Help</string>
     <string name="home_setting_like">Like</string>
+    <string name="home_setting_share">Share</string>
     <string name="home_setting_search">Search</string>
     <string name="home_setting_scope">Scope</string>
     <string name="home_setting_unread">Unread</string>
@@ -453,8 +454,13 @@
 
 
     <string name="share_title">Share</string>
-    <string name="share_name">Input Account who you want to share to:</string>
+    <string name="share_dev">Which Device you want to share:</string>
+    <string name="share_name">Input Account who you want to share:</string>
     <string name="share_name_hint">Share Account</string>
-
-
+    <string name="share_history_share_to">Share To:</string>
+    <string name="share_history_share_dev">Device:</string>
+    <string name="share_error_no_choose_device">ERROR:no device!</string>
+    <string name="share_menu_del_add">delete history</string>
+    <string name="share_menu_del_app">delete history</string>
+    <string name="share_menu_mode">mode</string>
 </resources>

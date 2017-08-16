@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
  * Created by Administrator on 2017/7/14.
  */
 
-public class ShareBaseFragment extends Fragment {
+public abstract class ShareBaseFragment extends Fragment {
     String mDevID;
     String mDevName;
     int mChannelNo;
@@ -17,6 +17,6 @@ public class ShareBaseFragment extends Fragment {
       mDevName = devName;
       mChannelNo = channelNo;
     }
-
+    public abstract void fun(int flag);
 
 }

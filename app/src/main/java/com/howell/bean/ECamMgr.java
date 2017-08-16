@@ -495,6 +495,7 @@ public class ECamMgr implements ICam,IConst {
     private boolean invite() throws Exception{
         String dilogID = String.valueOf(random.nextInt());
         String localSDP = JniUtil.ecamPrepareSDP();
+
         String SDPMessage = Base64.encode(localSDP.getBytes());
         InviteResponse inviteRes = mSoapManager.getIviteRes(new InviteRequest(LoginAction.getInstance().getmInfo().getAccount(),
                 LoginAction.getInstance().getmInfo().getLr().getLoginSession(),

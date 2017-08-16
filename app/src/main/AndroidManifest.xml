@@ -102,13 +102,13 @@
         <!--android:name="com.howell.activity.LogoActivity"-->
         <!--@android:style/Theme.NoTitleBar-->
 
-        <!--<activity android:name="com.howell.activity.DeviceShareActivity"-->
-        <!--android:theme="@style/MyAppThemeDeviceSetting.share"/>-->
+        <activity android:name="com.howell.activity.DeviceShareActivity"
+        android:theme="@style/MyAppThemeDeviceSetting.share"/>
 
         <activity
-            android:name="com.howell.activity.DeviceShareActivity"
+            android:name="com.howell.activity.LogoActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/MyAppThemeDeviceSetting.share"
+            android:theme="@android:style/Theme.NoTitleBar"
            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -76,11 +76,12 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
     protected ICam mPlayMgr;
     protected boolean mIsAudioOpen = false;
     protected boolean mIsTalk;
-
+    protected boolean isDestory = false;
 
     protected Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
+            if (isDestory)return;
             super.handleMessage(msg);
             switch (msg.what){
                 case MSG_PTZ_SHAKE:
@@ -149,10 +150,12 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.glsurface);
+
         initView();
 
         initViewFun();
         initPlayer();
+        isDestory = false;
     }
 
 
@@ -279,6 +282,7 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
 
     @Override
     protected void onResume() {
+        isDestory = false;
         mGlView.onResume();
         super.onResume();
     }
@@ -289,6 +293,7 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
         camStop();
         camDisconnect();
         mGlView.onDestroy();
+        isDestory = true;
         super.onDestroy();
     }
 

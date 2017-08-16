@@ -22,7 +22,7 @@
     <string-array name="share_item">
         <item>Share Application</item>
         <item>Share Add</item>
-        <item>Share History</item>
+        <item>Share Manager</item>
     </string-array>
 
 </resources>

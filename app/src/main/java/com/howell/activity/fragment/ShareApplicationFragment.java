@@ -22,4 +22,9 @@ public class ShareApplicationFragment extends ShareBaseFragment {
         mView = inflater.inflate(R.layout.fragment_share1,container,false);
         return mView;
     }
+
+    @Override
+    public void fun(int flag) {
+
+    }
 }

@@ -6,17 +6,53 @@
     android:padding="10dp"
     >
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/share_name"
-
-        />
-
     <RelativeLayout
+        android:id="@+id/share_item_share_dev_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/share_itme_share_dev_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/share_dev"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            />
+
+        <Spinner
+            android:id="@+id/share_item2_sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/share_itme_share_dev_tv"
+            >
+        </Spinner>
+
+
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+
+        <TextView
+            android:id="@+id/share_item2_share_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/share_name"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            />
+
+
+
+
 
         <EditText
             android:id="@+id/share_item2_et"
@@ -24,7 +60,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/share_name_hint"
             android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
+            android:layout_below="@id/share_item2_share_name_tv"
             />
 
 
@@ -34,12 +70,35 @@
             android:layout_height="wrap_content"
             android:text="@string/share"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+            android:layout_alignBottom="@id/share_item2_et"
             style="@style/setting_btn_small"
             />
 
 
     </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/device_share_to_other_tips"
+        android:textSize="15sp"
+        android:textColor="@color/white"
+        android:layout_marginTop="35dp"
+        />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/share_item2_lv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:padding="2dp">
+
+
+
+
+    </android.support.v7.widget.RecyclerView>
 
 
 

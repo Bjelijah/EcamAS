@@ -22,7 +22,7 @@
     <string-array name="share_item">
         <item>申请分享</item>
         <item>添加分享</item>
-        <item>历史分享</item>
+        <item>管理分享</item>
     </string-array>
 
 </resources>
