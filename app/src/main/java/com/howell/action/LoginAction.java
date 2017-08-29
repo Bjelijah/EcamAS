@@ -2,6 +2,7 @@ package com.howell.action;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.howell.bean.Custom;
@@ -114,6 +115,9 @@ public class LoginAction {
             private boolean login(String account,String password){
                 String encodedPassword = DecodeUtils.getEncodedPassword(password);
                 LoginRequest loginReq = new LoginRequest(account, "Common",encodedPassword, "1.0.0.1");
+                String imei =  ((TelephonyManager)mContext.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+                mInfo.setImei(imei);
+                loginReq.setIEMI(imei);
                 try {
                     mLoginRes = mSoapManager.getUserLoginRes(loginReq);
                 } catch (Exception e) {
@@ -204,7 +208,7 @@ public class LoginAction {
         private LoginResponse lr;
         private AccountResponse ar;
         private Custom custom;
-
+        private String imei;
         public Custom getCustom() {
             return custom;
         }
@@ -235,6 +239,12 @@ public class LoginAction {
             return this;
         }
 
+        public String getImei(){
+            return imei;
+        }
+        public void setImei(String imei){
+            this.imei = imei;
+        }
         public AccountResponse getAr() {
             return ar;
         }

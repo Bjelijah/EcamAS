@@ -9,15 +9,19 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 
+import com.howell.action.LoginAction;
 import com.howell.pushlibrary.AbsWorkService;
 import com.howell.pushlibrary.DaemonEnv;
 import com.howell.utils.ServerConfigSp;
 
+import com.howell.utils.ThreadUtil;
 import com.howellnet.bean.websocket.WSRes;
 import com.howellnet.protocol.autobahn.WebSocketException;
 import com.howellnet.protocol.websocket.WebSocketManager;
 
 import org.json.JSONException;
+
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -46,6 +50,7 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
     public static boolean sShouldStopService=false;
     public static boolean isWorking = false;
     public static String TAG = MyService.class.getName();
+
     public static void stopService(){
         Log.i("547","myservice stop service");
         DaemonEnv.mShouldWakeUp = false;
@@ -74,7 +79,8 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
     public void startWork(Intent intent, int flags, int startId) {
         isWorking = true;
         Log.e("547",TAG+":start work");
-        myFun();
+//        myFun();
+        link();
     }
 
     @Override
@@ -82,7 +88,7 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
         isWorking = false;
         Log.e("547",TAG+":stop work");
         //TODO do work
-        link();
+        unLink();
 
     }
 
@@ -109,6 +115,7 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
     @Override
     public void onServiceKilled(Intent rootIntent) {
 //        isWorking = false;
+
         Log.e("547",TAG+":onServiceKilled  reborn in "+DaemonEnv.DEFAULT_WAKE_UP_INTERVAL+" ms");
     }
 
@@ -136,6 +143,7 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
         Log.e("547", TAG + ":on start command");
         DaemonEnv.mShouldWakeUp = true;
         sShouldStopService = false;
+
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -173,15 +181,40 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
         }
     }
     private void unLink(){
+        stopHeart();
         mgr.deInit();
     }
 
+    private void startHeart(long delaySec){
+        if (isAlive)return;
+        ThreadUtil.scheduledSingleThreadStart(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mgr.alarmAlive(getCseq(),0,0,0,false);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        },delaySec,delaySec, TimeUnit.SECONDS);
+        isAlive = true;
+    }
+
+    private void stopHeart(){
+        ThreadUtil.scheduledSingleThreadShutDown();
+        isAlive = false;
+    }
 
 
     @Override
     public void onWebSocketOpen() {
         mWsIsOpen = true;
-//        mgr.alarmLink(getCseq(),);
+        try {
+            mgr.alarmLink(getCseq(), LoginAction.getInstance().getmInfo().getLr().getLoginSession()
+                    ,LoginAction.getInstance().getmInfo().getImei());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -193,11 +226,39 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
 
     @Override
     public void onGetMessage(WSRes res) {
+        switch (res.getType()){
+            case ALARM_LINK:
+                //发送第一个心跳
+                try {
+                    mgr.alarmAlive(getCseq(),0,0,0,false);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+                break;
+            case ALARM_ALIVE:
+                //打开心跳
+                Log.i("123","get alive="+res.toString());
+                WSRes.AlarmAliveRes aRes = (WSRes.AlarmAliveRes) res.getResultObject();
+                startHeart(aRes.getHeartbeatinterval());
+                break;
+            case ALARM_EVENT:
+                //推送过来
+                Log.i("123","event come="+res.toString());
+                break;
+            case ALARM_NOTICE:
+                break;
+            default:
+                break;
+
+
+        }
 
     }
 
     @Override
     public void onError(int error) {
-
+        Log.e("123","on error  ="+error);
     }
 }

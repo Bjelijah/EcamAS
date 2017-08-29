@@ -8,8 +8,6 @@ import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
 
 /**
- * Created by PandaQ on 2016/12/9.
- * email : 767807368@qq.com
  */
 
 public class RxBus {

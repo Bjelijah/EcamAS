@@ -1,8 +1,6 @@
 package com.howell.rxbus;
 
 /**
- * Created by PandaQ on 2017/3/14.
- * rxbus 封装对象
  */
 
 public class Action {

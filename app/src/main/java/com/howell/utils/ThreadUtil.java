@@ -19,6 +19,7 @@ public class ThreadUtil {
     public static ExecutorService sCachedThreadPool=null;
     public static ExecutorService sFixedThreadPool=null;
     public static ScheduledExecutorService sScheduledThread=null;
+    public static ScheduledExecutorService sScheduledSingleThread=null;
     public static ExecutorService sSingleThread = null;
     /**
      * 大量短期小任务
@@ -78,6 +79,7 @@ public class ThreadUtil {
         }
         sScheduledThread.scheduleAtFixedRate(r,delay,period,t);
     }
+
     public static void scheduledThreadStart(Runnable r,long delay,TimeUnit t){
         if (sScheduledThread==null){
             sScheduledThread = Executors.newScheduledThreadPool(POOL_MAX);
@@ -90,6 +92,22 @@ public class ThreadUtil {
         sScheduledThread.shutdown();
         sScheduledThread = null;
     }
+
+    public static void scheduledSingleThreadStart(Runnable r,long delay,long period,TimeUnit t){
+        if (sScheduledSingleThread==null){
+            sScheduledSingleThread = Executors.newSingleThreadScheduledExecutor();
+        }
+        sScheduledSingleThread.scheduleAtFixedRate(r,delay,period,t);
+    }
+
+    public static void scheduledSingleThreadShutDown(){
+        if (sScheduledSingleThread==null)return;
+        sScheduledSingleThread.shutdown();
+        sScheduledSingleThread = null;
+    }
+
+
+
 
     public static void singleThreadStart(Runnable r){
         if (sSingleThread==null){

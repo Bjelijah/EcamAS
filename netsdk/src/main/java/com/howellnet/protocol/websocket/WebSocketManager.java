@@ -138,7 +138,8 @@ public class WebSocketManager {
      * @param useLongitudeOrLatitude if use it (if u set longitude or latitude 0:false; else true)
      * @throws JSONException
      */
-    public void alarmAlive(int cseq,long systemUpTime,double longitude,double latitude,boolean useLongitudeOrLatitude) throws JSONException {
+    public void
+    alarmAlive(int cseq,long systemUpTime,double longitude,double latitude,boolean useLongitudeOrLatitude) throws JSONException {
         if (!mIsOpen)sendError(ERROR_SEND);
         mConnect.sendTextMessage(JsonUtil.createAlarmAliveJsonObject(cseq,systemUpTime,longitude,latitude,useLongitudeOrLatitude).toString());
     }

@@ -15,13 +15,13 @@ import java.util.ArrayList;
  */
 
 public class JsonUtil {
-    public static JSONObject createAlarmPushConnectJsonObject(int cseq,String session,String username) throws JSONException {
+    public static JSONObject createAlarmPushConnectJsonObject(int cseq,String session,String deviceToken) throws JSONException {
         JSONObject obj = new JSONObject();
         obj.put("Message",0x0001);
         obj.put("CSeq",cseq);
         JSONObject request = new JSONObject();
         request.put("Session",session);
-        request.put("Username",username);
+        request.put("DeviceToken",deviceToken);
         obj.put("Request",request);
         return obj;
     }
