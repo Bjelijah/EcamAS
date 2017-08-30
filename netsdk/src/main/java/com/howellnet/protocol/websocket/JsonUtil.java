@@ -20,8 +20,8 @@ public class JsonUtil {
         obj.put("Message",0x0001);
         obj.put("CSeq",cseq);
         JSONObject request = new JSONObject();
-        request.put("Session",session);
-        request.put("Username",username);
+        if (session!=null) request.put("Session",session);
+        request.put("DeviceToken",username);
         obj.put("Request",request);
         return obj;
     }
@@ -93,8 +93,11 @@ public class JsonUtil {
                 return new WSRes(WSRes.WS_TYPE.ALARM_ALIVE,res);
             }
             case 0x0003:{ //s->c  c need to send ask back;
-                WSRes.AlarmEvent event = parseAlarmEventJsonObject(message,cseq,obj.getJSONObject("Request"));
-                return new WSRes(WSRes.WS_TYPE.ALARM_EVENT,event);
+//                WSRes.AlarmEvent event = parseAlarmEventJsonObject(message,cseq,obj.getJSONObject("Request"));
+//                return new WSRes(WSRes.WS_TYPE.ALARM_EVENT,event);
+                WSRes.PushMessage ps = parsePushMessageJsonObject(message,cseq,obj.getJSONObject("Request"));
+                return new WSRes(WSRes.WS_TYPE.PUSH_MESSAGE,ps);
+
             }
             case 0x0004:{//s->c
                 WSRes.AlarmNotice notice = parseAlarmNoticeJsonObject(message,cseq,obj.getJSONObject("Request"));
@@ -185,6 +188,12 @@ public class JsonUtil {
         alarmNotice.setComponentId(componentId);
         alarmNotice.setComponentName(componentName);
         return alarmNotice;
+    }
+
+    private static WSRes.PushMessage parsePushMessageJsonObject(int message,int cseq,JSONObject obj) throws JSONException {
+        JSONObject ps = obj.getJSONObject("PushMessage");
+        String content = ps.getString("Content");
+        return new WSRes.PushMessage(content);
     }
 
 }

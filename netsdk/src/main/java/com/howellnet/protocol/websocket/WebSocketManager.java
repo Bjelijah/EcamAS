@@ -2,6 +2,8 @@ package com.howellnet.protocol.websocket;
 
 
 
+import android.util.Log;
+
 import com.howellnet.bean.websocket.WSRes;
 import com.howellnet.protocol.autobahn.*;
 import com.howellnet.protocol.utils.SDKDebugLog;
@@ -76,10 +78,12 @@ public class WebSocketManager {
         mIsOpen = false;
         wsuri = "ws://"+serverIP+":8803/howell/ver10/ADC";
         mConnect = new WebSocketConnection();
+        Log.i("547","wsuri="+wsuri);
         mConnect.connect(wsuri,new WebSocketConnectionHandler(){
             @Override
             public void onOpen() {
                 super.onOpen();
+                Log.i("547","ws onOpen");
                 mIsOpen = true;
                 sendOpen();
             }
@@ -87,6 +91,7 @@ public class WebSocketManager {
             @Override
             public void onClose(int code, String reason) {
                 super.onClose(code, reason);
+                Log.i("547","ws onClose");
                 mIsOpen = false;
                 sendClose();
             }
@@ -94,6 +99,7 @@ public class WebSocketManager {
             @Override
             public void onTextMessage(String payload) {
                 super.onTextMessage(payload);
+                Log.i("547","onTextMessage="+payload);
                 try {
                     handleMessageJsonString(payload);
                 } catch (JSONException e) {
@@ -101,6 +107,8 @@ public class WebSocketManager {
                     e.printStackTrace();
                 }
             }
+
+
         });
         return this;
     }

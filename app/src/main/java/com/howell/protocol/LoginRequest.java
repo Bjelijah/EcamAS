@@ -9,13 +9,21 @@ public class LoginRequest implements Serializable{
     private String mPwdType;
     private String mPassword;
     private String mVersion;
-
+    private String mIMEI;
     public LoginRequest(String account, String pwdType, String password,
             String version) {
         mAccount = account;
         mPwdType = pwdType;
         mPassword = password;
         mVersion = version;
+    }
+
+    public String getmIMEI() {
+        return mIMEI;
+    }
+
+    public void setmIMEI(String mIMEI) {
+        this.mIMEI = mIMEI;
     }
 
     public String getAccount() {

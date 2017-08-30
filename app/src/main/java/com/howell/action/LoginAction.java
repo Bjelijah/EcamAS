@@ -2,6 +2,7 @@ package com.howell.action;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.howell.bean.Custom;
@@ -13,6 +14,7 @@ import com.howell.protocol.LoginRequest;
 import com.howell.protocol.LoginResponse;
 import com.howell.protocol.SoapManager;
 import com.howell.utils.DecodeUtils;
+import com.howell.utils.ServerConfigSp;
 import com.howell.utils.UserConfigSp;
 
 import java.util.List;
@@ -114,6 +116,9 @@ public class LoginAction {
             private boolean login(String account,String password){
                 String encodedPassword = DecodeUtils.getEncodedPassword(password);
                 LoginRequest loginReq = new LoginRequest(account, "Common",encodedPassword, "1.0.0.1");
+                String imei = ((TelephonyManager)mContext.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+                mInfo.setImei(imei);
+                loginReq.setmIMEI(imei);
                 try {
                     mLoginRes = mSoapManager.getUserLoginRes(loginReq);
                 } catch (Exception e) {
@@ -187,6 +192,12 @@ public class LoginAction {
 
     private void saveLogin2Sp(){
         UserConfigSp.saveUserInfo(mContext,mInfo.getAccount(),mInfo.getPassword(),mInfo.getCustom().isCustom());
+        if (mInfo.getCustom().isCustom()) {
+            ServerConfigSp.saveServerInfo(mContext, mInfo.getCustom().getCustomIP(), mInfo.getCustom().getCustomPort(),
+                    mInfo.getCustom().isSSL());
+        }else{
+            ServerConfigSp.saveServerInfo(mContext,"www.haoweis.com",8800,false);
+        }
     }
 
 
@@ -204,6 +215,15 @@ public class LoginAction {
         private LoginResponse lr;
         private AccountResponse ar;
         private Custom custom;
+        private String imei;
+
+        public String getImei() {
+            return imei;
+        }
+
+        public void setImei(String imei) {
+            this.imei = imei;
+        }
 
         public Custom getCustom() {
             return custom;

@@ -149,6 +149,15 @@ public class SoapManager implements Serializable {
         rpc.addProperty("PwdType", loginRequest.getPwdType());
         rpc.addProperty("Password", loginRequest.getPassword());
         rpc.addProperty("Version", loginRequest.getVersion());
+		rpc.addProperty("NetworkOperator","Other");
+		rpc.addProperty("NetType","Other");
+
+		SoapObject dev = new SoapObject(sNameSpace, "MCUDev");
+		dev.addProperty("UUID",loginRequest.getmIMEI());
+		dev.addProperty("Model","");
+		dev.addProperty("Type","CellPhone");
+		dev.addProperty("OSType","Android");
+		rpc.addProperty("MCUDev",dev);
 
         SoapObject object = initEnvelopAndTransport(rpc,"http://www.haoweis.com/HomeServices/MCU/userLogin");
 
