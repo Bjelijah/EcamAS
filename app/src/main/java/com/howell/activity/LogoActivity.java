@@ -242,4 +242,8 @@ public class LogoActivity extends Activity implements TagAliasCallback,LoginActi
 
 
 	}
+
+
+
+
 }

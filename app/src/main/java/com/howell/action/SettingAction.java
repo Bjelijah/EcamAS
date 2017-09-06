@@ -298,6 +298,7 @@ public class SettingAction {
         int ch = mBean.getChannelNo();
         SubscribeAndroidPushReq req = new SubscribeAndroidPushReq(account,session,bPush?0x01:0x00,devId,ch);
         SubscribeAndroidPushRes res = mSoapManager.getSubscribeAndroidPushRes(req);
+        Log.i("123","android push res="+res.toString());
         if (!res.getResult().equalsIgnoreCase("OK"))throw new IllegalStateException("save push param res="+res.getResult());
     }
 

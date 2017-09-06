@@ -1,6 +1,7 @@
 package com.howell.action;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -12,7 +13,12 @@ import com.howell.protocol.AccountRequest;
 import com.howell.protocol.AccountResponse;
 import com.howell.protocol.LoginRequest;
 import com.howell.protocol.LoginResponse;
+import com.howell.protocol.QueryAndroidTokenReq;
+import com.howell.protocol.QueryAndroidTokenRes;
 import com.howell.protocol.SoapManager;
+import com.howell.protocol.UpdateAndroidTokenReq;
+import com.howell.protocol.UpdateAndroidTokenRes;
+import com.howell.service.MyService;
 import com.howell.utils.DecodeUtils;
 import com.howell.utils.ServerConfigSp;
 import com.howell.utils.UserConfigSp;
@@ -82,7 +88,7 @@ public class LoginAction {
 
         SoapManager.initUrl(mContext,custom.isCustom(),custom.getCustomIP(),custom.getCustomPort(),custom.isSSL());
 
-
+        final String imei = ((TelephonyManager)mContext.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
 
         new AsyncTask<Void,Void,Boolean>(){
             int mError;
@@ -116,7 +122,8 @@ public class LoginAction {
             private boolean login(String account,String password){
                 String encodedPassword = DecodeUtils.getEncodedPassword(password);
                 LoginRequest loginReq = new LoginRequest(account, "Common",encodedPassword, "1.0.0.1");
-                String imei = ((TelephonyManager)mContext.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+
+                Log.e("123","IMEI="+imei);
                 mInfo.setImei(imei);
                 loginReq.setmIMEI(imei);
                 try {
@@ -136,6 +143,28 @@ public class LoginAction {
                 }
                 return true;
             }
+            private boolean androidToken(String account,String session,String uuid){
+                QueryAndroidTokenRes res = mSoapManager.GetQueryAndroidTokenRes(new QueryAndroidTokenReq(account, session,uuid));
+                Log.i("123","QueryAndroidTokenRes="+res.toString());
+                if (res.getResult().equalsIgnoreCase("ok")){
+                    return true;
+                }
+                //regist
+                UpdateAndroidTokenRes tokenRes = mSoapManager.GetUpdateAndroidTokenRes(new UpdateAndroidTokenReq(account,session,uuid,uuid,true));
+                Log.i("123","UpdateAndroidTokenRes="+tokenRes.toString());
+                if (!tokenRes.getResult().equalsIgnoreCase("ok"))   return false;
+                return true;
+            }
+
+            private void startPushService(){
+                boolean isPush = ServerConfigSp.loadPushOnOff(mContext);
+                if (isPush){
+                    mContext.startService(new Intent(mContext, MyService.class));
+                }
+            }
+
+
+
             @Override
             protected Boolean doInBackground(Void... voids) {
                 LoginRequest loginReq = null;
@@ -157,6 +186,11 @@ public class LoginAction {
                     mInfo.setAr(mAccountResponse);
                     saveLogin2DB();
                 }
+                //注册推送
+                if (!androidToken(account,mLoginRes.getLoginSession(),imei)){
+                    return false;
+                }
+                startPushService();
                 return true;
             }
             @Override

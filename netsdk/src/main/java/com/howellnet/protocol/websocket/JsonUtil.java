@@ -62,6 +62,17 @@ public class JsonUtil {
         return obj;
     }
 
+    public static JSONObject createPushResJsonObject(int cseq) throws JSONException {
+        JSONObject obj = new JSONObject();
+        obj.put("Message",0x8003);
+        obj.put("CSeq",cseq);
+        JSONObject res = new JSONObject();
+        res.put("Result",0);
+        obj.put("Response",res);
+        return obj;
+    }
+
+
     public static JSONObject createMCUSendMessage(WSRes.AlarmNotice n) throws JSONException {
         JSONObject obj = new JSONObject();
         obj.put("Message",0x0004);
@@ -193,7 +204,7 @@ public class JsonUtil {
     private static WSRes.PushMessage parsePushMessageJsonObject(int message,int cseq,JSONObject obj) throws JSONException {
         JSONObject ps = obj.getJSONObject("PushMessage");
         String content = ps.getString("Content");
-        return new WSRes.PushMessage(content);
+        return new WSRes.PushMessage(cseq,content);
     }
 
 }

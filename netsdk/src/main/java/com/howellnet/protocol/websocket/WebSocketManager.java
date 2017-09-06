@@ -108,8 +108,17 @@ public class WebSocketManager {
                 }
             }
 
+            @Override
+            public void onRawTextMessage(byte[] payload) {
+                super.onRawTextMessage(payload);
+            }
 
+            @Override
+            public void onBinaryMessage(byte[] payload) {
+                super.onBinaryMessage(payload);
+            }
         });
+
         return this;
     }
 
@@ -134,7 +143,9 @@ public class WebSocketManager {
      */
     public void alarmLink(int cseq,String session,String username) throws JSONException {
         if (!mIsOpen)sendError(ERROR_SEND);
-        mConnect.sendTextMessage(JsonUtil.createAlarmPushConnectJsonObject(cseq,session,username).toString());
+        String msg = JsonUtil.createAlarmPushConnectJsonObject(cseq,session,username).toString();
+        Log.i("547","alarm link  msg="+msg);
+        mConnect.sendTextMessage(msg);
     }
 
     /**
@@ -170,6 +181,12 @@ public class WebSocketManager {
         if (!mIsOpen)sendError(ERROR_SEND);
         mConnect.sendTextMessage(JsonUtil.createADCNoticeResJsonObject(cseq).toString());
     }
+
+    public void pushRes(int cseq) throws JSONException {
+        if (!mIsOpen)sendError(ERROR_SEND);
+        mConnect.sendTextMessage(JsonUtil.createPushResJsonObject(cseq).toString());
+    }
+
 
     /**
      * client send notice to server

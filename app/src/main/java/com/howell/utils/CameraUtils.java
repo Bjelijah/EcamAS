@@ -131,11 +131,11 @@ public class CameraUtils {
 					return null;
 				}
 				try {
-					Log.i("123","turnLight on");
+					Log.i("123","c  turnLight on");
 					turnLightOn(camera);
 					Log.i("123","--------------------");
 					Thread.sleep(500);
-					Log.i("123","turnLight off");
+					Log.i("123","c  turnLight off");
 					turnLightOff(camera);
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
@@ -204,9 +204,6 @@ public class CameraUtils {
 			} else {
 			}
 		}
-
-
-
 	}
 	/**
 	 * 通过设置Camera关闭闪光灯

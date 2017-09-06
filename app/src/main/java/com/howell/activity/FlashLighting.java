@@ -149,6 +149,7 @@ public class FlashLighting extends Activity implements OnClickListener{
     @Override
     protected void onDestroy() {
     	// TODO Auto-generated method stub
+		f.deInit();
     	super.onDestroy();
     	mActivities.removeActivity("FlashLighting");
     	unregisterReceiver(receiver);

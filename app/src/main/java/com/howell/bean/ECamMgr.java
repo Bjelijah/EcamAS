@@ -331,9 +331,12 @@ public class ECamMgr implements ICam,IConst {
             Log.i("123","pageConut = "+mVodSearchRes.getPageCount());
             return mVodSearchRes.getPageCount();
         }else{
-
+            mVodSearchRes = mSoapManager.getVodSearchReq(account, loginSession, devID,
+                    channelNo, mStreamType , nowPage,lastRefreshStartTime,lastRefreshEndTime,pageSize);
+            Log.i("123","pageConut = "+mVodSearchRes.getPageCount());
+            return mVodSearchRes.getPageCount();
         }
-        return 0;
+//        return 0;
     }
 
     @Override
@@ -505,6 +508,7 @@ public class ECamMgr implements ICam,IConst {
                 dilogID,
                 SDPMessage));
         if (!inviteRes.getResult().equalsIgnoreCase("OK")){
+            Log.e("123","error res="+inviteRes.toString());
             return false;
         }
 

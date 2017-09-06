@@ -64,7 +64,7 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
 
     private NotificationManager mNotificationManager;
     private Notification mNotification;
-
+    private int notificationId=0;
     public static void stopService(){
         Log.i("547","myservice stop service");
         DaemonEnv.mShouldWakeUp = false;
@@ -128,7 +128,8 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
 
     @Override
     public void onServiceKilled(Intent rootIntent) {
-//        isWorking = false;
+        isWorking = false;
+        unLink();
         Log.e("547",TAG+":onServiceKilled  reborn in "+DaemonEnv.DEFAULT_WAKE_UP_INTERVAL+" ms");
     }
 
@@ -146,7 +147,8 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
 
     @Override
     public void onDestroy() {
-//        isWorking = false;
+        isWorking = false;
+        unLink();
         Log.e("547","my service on destroy reborn in "+DaemonEnv.DEFAULT_WAKE_UP_INTERVAL+" ms");
         super.onDestroy();
     }
@@ -240,36 +242,69 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
         });
     }
 
+    private void sendPushAfk(final int cseq){
+        ThreadUtil.cachedThreadStart(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mgr.pushRes(cseq);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
+
+
+
     private void startHeart(long delaySec){
         ThreadUtil.scheduledSingleThreadStart(new Runnable() {
             @Override
             public void run() {
                 try {
+                    Log.e("123","start alarmAlive");
                     mgr.alarmAlive(getCseq(),0,0,0,false);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-        },delaySec,delaySec, TimeUnit.SECONDS);
+        },delaySec, TimeUnit.SECONDS);
     }
 
     private void initNotifcation(){
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
-    private void showNotification(String name){
-        Log.i("547","showNotification   name="+name);
+    private int getNotificationId(){
+        notificationId++;
+        if(notificationId>10){
+            notificationId = 0;
+        }
+        return notificationId;
+    }
+
+
+    private void showNotification(String content){
 
         Notification.Builder nb = new Notification.Builder(this);
         nb.setTicker("报警");
-        nb.setContentTitle(name + "入侵警报");
+        try {
+            String str[] = content.split(",");
+            String title = str[0];
+            String text = str[1];
+            nb.setContentTitle(title);
+            nb.setContentText(text);
+        }catch (Exception e){
+            nb.setContentTitle(content);
+        }
         nb.setSmallIcon(R.mipmap.logo);
         nb.setWhen(System.currentTimeMillis());
         nb.setAutoCancel(true);
         nb.setDefaults(Notification.DEFAULT_SOUND);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,0,new Intent(this,LogoActivity.class),PendingIntent.FLAG_UPDATE_CURRENT);
         nb.setContentIntent(pendingIntent);
-        mNotificationManager.notify(0,nb.build());
+        mNotificationManager.notify(getNotificationId(),nb.build());
 
     }
 
@@ -307,7 +342,10 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
             case ALARM_NOTICE:
                 break;
             case PUSH_MESSAGE:
+                //会送应答
                 WSRes.PushMessage ps = (WSRes.PushMessage) res.getResultObject();
+                sendPushAfk(ps.getCseq());
+
                 String content = new String(Base64.decode(ps.getContent(),0));
                 Log.i("547","content="+content);
                 //直接notficiation

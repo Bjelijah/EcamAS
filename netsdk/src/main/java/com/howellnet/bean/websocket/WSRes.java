@@ -447,13 +447,28 @@ public class WSRes {
     }
 
     public static class PushMessage{
+        int cseq;
         String content;
+
+        public PushMessage(int cseq, String content) {
+            this.cseq = cseq;
+            this.content = content;
+        }
 
         @Override
         public String toString() {
             return "PushMessage{" +
-                    "content='" + content + '\'' +
+                    "cseq=" + cseq +
+                    ", content='" + content + '\'' +
                     '}';
+        }
+
+        public int getCseq() {
+            return cseq;
+        }
+
+        public void setCseq(int cseq) {
+            this.cseq = cseq;
         }
 
         public String getContent() {
@@ -464,10 +479,7 @@ public class WSRes {
             this.content = content;
         }
 
-        public PushMessage(String content) {
 
-            this.content = content;
-        }
     }
 
 }

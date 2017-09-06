@@ -99,6 +99,14 @@ public class ThreadUtil {
         sScheduledSingleThread.scheduleAtFixedRate(r,delay,period,t);
     }
 
+    public static void scheduledSingleThreadStart(Runnable r,long delay,TimeUnit t){
+        if (sScheduledSingleThread == null){
+            sScheduledSingleThread =  Executors.newSingleThreadScheduledExecutor();
+        }
+        sScheduledSingleThread.schedule(r,delay,t);
+    }
+
+
     public static void scheduledSingleThreadShutDown(){
         if (sScheduledSingleThread==null)return;
         sScheduledSingleThread.shutdown();
