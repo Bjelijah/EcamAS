@@ -1,1 +1,1 @@
-include ':app', ':library', ':qrcodelib', ':pushlibrary', ':netsdk'
+include ':app', ':library', ':qrcodelib', ':pushlibrary', ':netsdk', ':howellsdk'

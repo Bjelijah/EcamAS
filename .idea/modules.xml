@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Ecam.iml" filepath="$PROJECT_DIR$/Ecam.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/howellsdk/howellsdk.iml" filepath="$PROJECT_DIR$/howellsdk/howellsdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
       <module fileurl="file://$PROJECT_DIR$/netsdk/netsdk.iml" filepath="$PROJECT_DIR$/netsdk/netsdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/pushlibrary/pushlibrary.iml" filepath="$PROJECT_DIR$/pushlibrary/pushlibrary.iml" />
