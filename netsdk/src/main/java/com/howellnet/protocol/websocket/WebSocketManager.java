@@ -93,7 +93,6 @@ public class WebSocketManager {
                 mConnect.disconnect();
                 mConnect = null;
             }
-            mIsOpen = false;
         }
     }
 
@@ -109,7 +108,11 @@ public class WebSocketManager {
                 Log.e("547", "initURL  mConnect is connect  we return");
                 return this;
             }
-            mIsOpen = false;
+            if(mIsOpen){
+                Log.e("547","init url misOpen we return");
+                return this;
+            }
+
             wsuri = "ws://" + serverIP + ":8803/howell/ver10/ADC";
             mConnect = new WebSocketConnection();
             Log.i("547", "connect~~~~~~~~~~~~~~   wsuri=" + wsuri);

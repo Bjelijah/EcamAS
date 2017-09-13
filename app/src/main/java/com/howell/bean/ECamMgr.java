@@ -389,6 +389,7 @@ public class ECamMgr implements ICam,IConst {
             }
 
             auType = JniUtil.ecamGetAudioType();
+            Log.i("123","autype="+auType);
         }else {
             Log.e("123","invite error");
             return false;
@@ -513,6 +514,7 @@ public class ECamMgr implements ICam,IConst {
         }
 
         String remoteSPD = new String(Base64.decode(inviteRes.getSDPMessage()));
+        Log.i("123","remoteSPD="+remoteSPD);
         JniUtil.ecamHandleRemoteSDP(dilogID,remoteSPD);
         return true;
     }

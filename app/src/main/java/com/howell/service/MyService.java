@@ -240,6 +240,7 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
             @Override
             public void run() {
                 try {
+                    Log.i("547","we send heart");
                     mgr.alarmAlive(getCseq(), 0, 0, 0, false);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -362,7 +363,7 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
             case ALARM_LINK:
                 WSRes.AlarmLinkRes alarmLinkRes = (WSRes.AlarmLinkRes) res.getResultObject();
                 Log.i("547"," alarmLinkRes.getResult()="+alarmLinkRes.getResult());
-                if (alarmLinkRes.getResult()==0) {
+                if (alarmLinkRes.getResult()==0 || (alarmLinkRes.getResult()+"").equalsIgnoreCase("0")) {
                     sendHeart();
                 }else{
 //                    sendLink();
