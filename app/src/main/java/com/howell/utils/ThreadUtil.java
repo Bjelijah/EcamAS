@@ -110,6 +110,9 @@ public class ThreadUtil {
     public static void scheduledSingleThreadShutDown(){
         if (sScheduledSingleThread==null)return;
         sScheduledSingleThread.shutdown();
+        if (!sScheduledSingleThread.isShutdown()){
+            sScheduledSingleThread.shutdownNow();
+        }
         sScheduledSingleThread = null;
     }
 

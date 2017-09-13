@@ -2,6 +2,7 @@ package com.howellnet.protocol.websocket;
 
 
 
+
 import android.util.Log;
 
 import com.howellnet.bean.websocket.WSRes;
@@ -10,8 +11,8 @@ import com.howellnet.protocol.utils.SDKDebugLog;
 
 import org.json.JSONException;
 
-import java.util.ArrayList;
 
+import java.util.HashSet;
 
 
 /**
@@ -25,14 +26,28 @@ public class WebSocketManager {
     public static final int ERROR_SEND = 0x01;
     public static final int ERROR_RECEIVE = 0x02;
 
+    private static WebSocketManager mInstance = null;
+    private WebSocketManager(){}
+    public static WebSocketManager getInstance(){
+        if (mInstance==null) {
+            synchronized (WebSocketManager.class) {
+                if (mInstance == null) {
+                    mInstance = new WebSocketManager();
+                }
+            }
+        }
+        return mInstance;
+    }
+
 
     private String wsuri;
     private WebSocketConnection mConnect;
-    ArrayList<IMessage> mCallback=null;
+    HashSet<IMessage> mCallback=null;
     private boolean mIsOpen = false;
     public WebSocketManager registMessage(IMessage c){
-        if (mCallback==null)mCallback = new ArrayList<IMessage>();
+        if (mCallback==null)mCallback = new HashSet<IMessage>();
         mCallback.add(c);
+        Log.i("547","mcallback  size="+mCallback.size());
         return this;
     }
     public void unregistMessage(IMessage c){
@@ -69,70 +84,82 @@ public class WebSocketManager {
     }
 
     /**
+     * deInit<br/>
+     * disconnect
+     */
+    public void deInit(){
+        synchronized (this) {
+            if (mConnect != null) {
+                mConnect.disconnect();
+                mConnect = null;
+            }
+            mIsOpen = false;
+        }
+    }
+
+    /**
      * init url
      * @param serverIP sever ip
      * @return this Manager
      * @throws WebSocketException
      */
     public WebSocketManager initURL(String serverIP) throws WebSocketException {
-        mIsOpen = false;
-        wsuri = "ws://"+serverIP+":8803/howell/ver10/ADC";
-        mConnect = new WebSocketConnection();
-        Log.i("547","wsuri="+wsuri);
-        mConnect.connect(wsuri,new WebSocketConnectionHandler(){
-            @Override
-            public void onOpen() {
-                super.onOpen();
-                Log.i("547","ws onOpen");
-                mIsOpen = true;
-                sendOpen();
-            }
 
-            @Override
-            public void onClose(int code, String reason) {
-                super.onClose(code, reason);
-                Log.i("547","ws onClose");
-                mIsOpen = false;
-                sendClose();
+            if (mConnect != null && mConnect.isConnected()) {
+                Log.e("547", "initURL  mConnect is connect  we return");
+                return this;
             }
-
-            @Override
-            public void onTextMessage(String payload) {
-                super.onTextMessage(payload);
-                Log.i("547","onTextMessage="+payload);
-                try {
-                    handleMessageJsonString(payload);
-                } catch (JSONException e) {
-                    sendError(ERROR_RECEIVE);
-                    e.printStackTrace();
+            mIsOpen = false;
+            wsuri = "ws://" + serverIP + ":8803/howell/ver10/ADC";
+            mConnect = new WebSocketConnection();
+            Log.i("547", "connect~~~~~~~~~~~~~~   wsuri=" + wsuri);
+            mConnect.connect(wsuri, new WebSocketConnectionHandler() {
+                @Override
+                public void onOpen() {
+                    super.onOpen();
+                    Log.i("547", "~~~~~~~~~~~~ws onOpen");
+                    mIsOpen = true;
+                    sendOpen();
                 }
-            }
 
-            @Override
-            public void onRawTextMessage(byte[] payload) {
-                super.onRawTextMessage(payload);
-            }
+                @Override
+                public void onClose(int code, String reason) {
+                    super.onClose(code, reason);
+                    Log.i("547", "ws onClose");
+                    mIsOpen = false;
+                    sendClose();
+                }
 
-            @Override
-            public void onBinaryMessage(byte[] payload) {
-                super.onBinaryMessage(payload);
-            }
-        });
+                @Override
+                public void onTextMessage(String payload) {
+                    super.onTextMessage(payload);
+                    Log.i("547", "onTextMessage=" + payload);
+                    try {
+                        handleMessageJsonString(payload);
+                    } catch (JSONException e) {
+                        sendError(ERROR_RECEIVE);
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onRawTextMessage(byte[] payload) {
+                    super.onRawTextMessage(payload);
+                }
+
+                @Override
+                public void onBinaryMessage(byte[] payload) {
+                    super.onBinaryMessage(payload);
+                }
+            });
 
         return this;
     }
 
-    /**
-     * deInit<br/>
-     * disconnect
-     */
-    public void deInit(){
-        if (mConnect!=null) {
-            mConnect.disconnect();
-        }
-        mIsOpen = false;
-
+    public boolean isOpen(){
+        return mIsOpen;
     }
+
 
     /**
      * send link information to server (like login protocol)

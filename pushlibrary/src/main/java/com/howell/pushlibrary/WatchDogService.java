@@ -31,9 +31,9 @@ public class WatchDogService extends Service {
      */
     protected final int onStart(Intent intent, int flags, int startId) {
         Log.i("547","watchDogService on start");
-        if (!DaemonEnv.sInitialized) return START_STICKY;
+        if (!DaemonEnv.sInitialized) {Log.e("547","!DaemonEnv.sInitialized  return")  ;return START_STICKY;}
 
-        if (sDisposable != null && !sDisposable.isDisposed()) return START_STICKY;
+        if (sDisposable != null && !sDisposable.isDisposed()) {Log.e("547","sDisposable isdispose  return");return START_STICKY;}
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N) {
             startForeground(HASH_CODE, new Notification());
@@ -60,12 +60,13 @@ public class WatchDogService extends Service {
         }
 
         //使用定时 Observable，避免 Android 定制系统 JobScheduler / AlarmManager 唤醒间隔不稳定的情况
+        Log.e("547", "disposable   scheduledThreadForDaemonStart  interval="+DaemonEnv.getWakeUpInterval()+"  ms");
         sDisposable = Flowable
                 .interval(DaemonEnv.getWakeUpInterval(), TimeUnit.MILLISECONDS)
                 .subscribe(new Consumer<Long>() {
                     @Override
                     public void accept(Long aLong) throws Exception {
-                        Log.i("547","rxjava start service:"+DaemonEnv.sApp.getClass().getName());
+                        Log.i("547","rxjava start service:"+DaemonEnv.sApp.getClass().getName()+"  start="+DaemonEnv.sServiceClass.getClass().getName());
                         startService(new Intent(DaemonEnv.sApp, DaemonEnv.sServiceClass));
                     }
                 }, new Consumer<Throwable>() {

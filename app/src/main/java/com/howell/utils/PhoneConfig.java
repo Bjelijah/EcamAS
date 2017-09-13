@@ -82,6 +82,10 @@ public class PhoneConfig {
 	}
 
 
+	public static String getIMEI(Context context){
+		return ((TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+	}
+
 	public static String getPhoneModel(){
 		Log.i("123", "getPhoneModel model = "+android.os.Build.MODEL);
 		return android.os.Build.MODEL;
