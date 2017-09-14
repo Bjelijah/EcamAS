@@ -40,6 +40,11 @@ public class UserConfigSp {
         return sp.getString("user_pwd",null);
     }
 
+    public static boolean loadUserFirstLogin(Context context){
+        SharedPreferences sp = context.getSharedPreferences(SET_SP_NAME, Context.MODE_PRIVATE);
+        return sp.getBoolean("isFirstLogin", true);
+    }
+
     public static boolean loadUserIsCustom(Context context){
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
         return sp.getBoolean("user_custom",false);

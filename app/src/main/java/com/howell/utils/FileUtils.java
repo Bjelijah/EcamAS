@@ -11,7 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.widget.Toast;
 
 import com.android.howell.webcam.R;
-import com.howellnet.protocol.utils.FileUtil;
+
 
 import java.io.BufferedInputStream;
 import java.io.File;

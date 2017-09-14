@@ -4,20 +4,15 @@ package com.howell.service;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
-
 import android.support.annotation.Nullable;
 import android.util.Log;
-
 
 import com.howell.action.LoginAction;
 import com.howell.pushlibrary.AbsWorkService;
 import com.howell.pushlibrary.DaemonEnv;
 import com.howell.utils.ServerConfigSp;
-
 import com.howell.utils.ThreadUtil;
-import com.howellnet.bean.websocket.WSRes;
-import com.howellnet.protocol.autobahn.WebSocketException;
-import com.howellnet.protocol.websocket.WebSocketManager;
+
 
 import org.json.JSONException;
 
@@ -28,8 +23,8 @@ import java.util.concurrent.TimeUnit;
  * Created by Administrator on 2017/6/8.
  */
 
-public class MyService extends AbsWorkService implements WebSocketManager.IMessage {
-    WebSocketManager mgr = new WebSocketManager();
+public class MyService extends AbsWorkService /*implements WebSocketManager.IMessage*/ {
+//    WebSocketManager mgr = new WebSocketManager();
     boolean mWsIsOpen = false;
     int mCseq = 0;
     Handler mHandler = new Handler();
@@ -37,11 +32,11 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
     Runnable heartRunnable = new Runnable() {
         @Override
         public void run() {
-            try {
-                mgr.alarmAlive(getCseq(),0,0,0,false);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                mgr.alarmAlive(getCseq(),0,0,0,false);
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
             mHandler.postDelayed(this,60*1000);
         }
     };
@@ -174,15 +169,15 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
 
     private void link(){
         String ip = ServerConfigSp.loadServerIP(this);
-        try {
-            mgr.registMessage(this).initURL(ip);
-        } catch (WebSocketException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            mgr.registMessage(this).initURL(ip);
+//        } catch (WebSocketException e) {
+//            e.printStackTrace();
+//        }
     }
     private void unLink(){
         stopHeart();
-        mgr.deInit();
+//        mgr.deInit();
     }
 
     private void startHeart(long delaySec){
@@ -190,11 +185,11 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
         ThreadUtil.scheduledSingleThreadStart(new Runnable() {
             @Override
             public void run() {
-                try {
-                    mgr.alarmAlive(getCseq(),0,0,0,false);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    mgr.alarmAlive(getCseq(),0,0,0,false);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
             }
         },delaySec,delaySec, TimeUnit.SECONDS);
         isAlive = true;
@@ -206,59 +201,59 @@ public class MyService extends AbsWorkService implements WebSocketManager.IMessa
     }
 
 
-    @Override
-    public void onWebSocketOpen() {
-        mWsIsOpen = true;
-        try {
-            mgr.alarmLink(getCseq(), LoginAction.getInstance().getmInfo().getLr().getLoginSession()
-                    ,LoginAction.getInstance().getmInfo().getImei());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
+//    @Override
+//    public void onWebSocketOpen() {
+//        mWsIsOpen = true;
+//        try {
+//            mgr.alarmLink(getCseq(), LoginAction.getInstance().getmInfo().getLr().getLoginSession()
+//                    ,LoginAction.getInstance().getmInfo().getImei());
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-    @Override
-    public void onWebSocketClose() {
-
-    }
-
-
-
-    @Override
-    public void onGetMessage(WSRes res) {
-        switch (res.getType()){
-            case ALARM_LINK:
-                //发送第一个心跳
-                try {
-                    mgr.alarmAlive(getCseq(),0,0,0,false);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+//    @Override
+//    public void onWebSocketClose() {
+//
+//    }
 
 
-                break;
-            case ALARM_ALIVE:
-                //打开心跳
-                Log.i("123","get alive="+res.toString());
-                WSRes.AlarmAliveRes aRes = (WSRes.AlarmAliveRes) res.getResultObject();
-                startHeart(aRes.getHeartbeatinterval());
-                break;
-            case ALARM_EVENT:
-                //推送过来
-                Log.i("123","event come="+res.toString());
-                break;
-            case ALARM_NOTICE:
-                break;
-            default:
-                break;
 
+//    @Override
+//    public void onGetMessage(WSRes res) {
+//        switch (res.getType()){
+//            case ALARM_LINK:
+//                //发送第一个心跳
+//                try {
+//                    mgr.alarmAlive(getCseq(),0,0,0,false);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//
+//
+//                break;
+//            case ALARM_ALIVE:
+//                //打开心跳
+//                Log.i("123","get alive="+res.toString());
+//                WSRes.AlarmAliveRes aRes = (WSRes.AlarmAliveRes) res.getResultObject();
+//                startHeart(aRes.getHeartbeatinterval());
+//                break;
+//            case ALARM_EVENT:
+//                //推送过来
+//                Log.i("123","event come="+res.toString());
+//                break;
+//            case ALARM_NOTICE:
+//                break;
+//            default:
+//                break;
+//
+//
+//        }
+//
+//    }
 
-        }
-
-    }
-
-    @Override
-    public void onError(int error) {
-        Log.e("123","on error  ="+error);
-    }
+//    @Override
+//    public void onError(int error) {
+//        Log.e("123","on error  ="+error);
+//    }
 }

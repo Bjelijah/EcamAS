@@ -11,6 +11,36 @@ public class Custom implements Serializable{
     String customIP;
     int customPort;
     boolean isSSL;
+    int mode;
+
+    @Override
+    public String toString() {
+        return "Custom{" +
+                "isCustom=" + isCustom +
+                ", customIP='" + customIP + '\'' +
+                ", customPort=" + customPort +
+                ", isSSL=" + isSSL +
+                ", mode=" + mode +
+                '}';
+    }
+
+    public String getURL(){
+        if (mode==0){//soap
+            return (isSSL?"https":"http")+"://"+customIP+":"+customPort+"/HomeService/HomeMCUService.svc?wsdl";
+        }else if(mode == 1){//http
+            return (isSSL?"https":"http")+"://"+customIP+":"+customPort;
+        }
+        return null;
+    }
+
+
+    public int getMode() {
+        return mode;
+    }
+
+    public void setMode(int mode) {
+        this.mode = mode;
+    }
 
     public boolean isCustom() {
         return isCustom;
@@ -48,13 +78,4 @@ public class Custom implements Serializable{
         isSSL = SSL;
     }
 
-    @Override
-    public String toString() {
-        return "Custom{" +
-                "isCustom=" + isCustom +
-                ", customIP='" + customIP + '\'' +
-                ", customPort=" + customPort +
-                ", isSSL=" + isSSL +
-                '}';
-    }
 }

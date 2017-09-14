@@ -10,6 +10,36 @@ import android.util.Log;
 
 public class ServerConfigSp {
     private static final String SP_NAME = "server_set";
+
+    public static void saveServerURL(Context context,String ip,int port,int serverMode,boolean isSSL){
+        String url = "";
+        if (serverMode==0){//soap
+            url=(isSSL?"https":"http")+"://"+ip+":"+port+"/HomeService/HomeMCUService.svc?wsdl";
+        }else if(serverMode == 1){//http
+            url=(isSSL?"https":"http")+"://"+ip+":"+port;
+        }
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("server_ip",ip);
+        editor.putInt("server_port",port);
+        editor.putString("server_url",url);
+        editor.putInt("server_mode",serverMode);
+        editor.putBoolean("server_ssl",isSSL);
+        editor.commit();
+    }
+
+    public static String loadServerURL(Context context){
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        return sp.getString("server_url","http://www.haoweis.com:8800/HomeService/HomeMCUService.svc?wsdl");//default: haoweis
+    }
+
+    public static int loadServerMode(Context context){
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        return sp.getInt("server_mode",0);//default: soap
+    }
+
+
+    @Deprecated
     public static void saveServerInfo(Context context, String ip, int port,boolean isSSL){
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();

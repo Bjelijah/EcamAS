@@ -29,7 +29,6 @@ import com.android.howell.webcam.R;
 import com.howell.protocol.GetDeviceMatchingCodeReq;
 import com.howell.protocol.GetDeviceMatchingCodeRes;
 import com.howell.utils.NetWorkUtils;
-import com.howellnet.protocol.soap.SoapManager;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 

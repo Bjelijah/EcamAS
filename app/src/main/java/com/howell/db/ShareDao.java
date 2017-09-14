@@ -3,14 +3,11 @@ package com.howell.db;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.howell.bean.ShareItem2Bean;
-import com.howellnet.bean.http.Fault;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Administrator on 2017/7/18.
