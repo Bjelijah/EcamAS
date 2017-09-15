@@ -4,6 +4,8 @@ public interface IConst {
 
 	final boolean IS_TEST = false;
 
+	String DEFAULT_IP = "www.haoweis.com";
+    int DEFAULT_PORT = 8800;
 
 	final String GUEST_NAME = "100868";
 	final String GUEST_PASSWORD = "100868";
@@ -36,7 +38,7 @@ public interface IConst {
 //	final String TEST_IP = null;
 	
 
-	final String DEFAULT_SERVER_IP = "116.228.67.70";
+	final String DEFAULT_SERVER_IP = "www.haoweis.com";//"116.228.67.70";
 	final int DEFAULT_SERVER_PORT_SSL = 8850;
 	final int DEFAULT_SERVER_PORT_NOSSL = 8800;
 

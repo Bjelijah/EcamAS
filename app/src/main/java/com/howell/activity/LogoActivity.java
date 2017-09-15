@@ -113,15 +113,19 @@ public class LogoActivity extends Activity implements ILoginContract.IView{
 			mPresenter = new LoginSoapPresenter();//// FIXME: 2017/9/14 add  http
 		}
 		mPresenter.bindView(this);
+		mPresenter.init(this);
 	}
 
 	@Override
 	public void unbindPresenter() {
-		mPresenter.unbindView();
+        if (mPresenter!=null) {
+            mPresenter.unbindView();
+        }
 	}
 
 	@Override
 	public void onError() {
+        Log.e("123","logo on error");
 		startActivity(new Intent(this,LoginActivity.class));
 	}
 
@@ -147,7 +151,6 @@ public class LogoActivity extends Activity implements ILoginContract.IView{
 	}
 
 	private void doLogin(){
-		mPresenter.init(this);
 		mPresenter.login(null,null,null);
 	}
 

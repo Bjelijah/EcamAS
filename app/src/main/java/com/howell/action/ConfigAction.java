@@ -1,6 +1,7 @@
 package com.howell.action;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.howell.utils.ServerConfigSp;
 import com.howell.utils.UserConfigSp;
@@ -45,6 +46,7 @@ public class ConfigAction {
         mName = UserConfigSp.loadUserName(c);
         mPassword = UserConfigSp.loadUserPwd(c);
         mIsFirst = UserConfigSp.loadUserFirstLogin(c);
+        Log.i("123","mName="+mName+" isfirst="+mIsFirst);
 
     }
 

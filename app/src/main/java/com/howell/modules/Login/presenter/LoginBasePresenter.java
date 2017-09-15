@@ -46,7 +46,7 @@ public class LoginBasePresenter extends BasePresenter implements ILoginContract.
     }
 
     @Override
-    public void login(@Nullable String name, @Nullable String pwd ,Custom custom) {
+    public void login(@Nullable String name, @Nullable String pwd ,@Nullable Custom custom) {
 
     }
 

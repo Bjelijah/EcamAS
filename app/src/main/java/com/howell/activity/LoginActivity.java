@@ -43,10 +43,14 @@ import com.howell.action.LoginAction;
 import com.howell.activity.fragment.FingerPrintFragment;
 import com.howell.bean.Custom;
 import com.android.howell.webcam.R;
+import com.howell.modules.Login.ILoginContract;
+import com.howell.modules.Login.bean.Type;
+import com.howell.modules.Login.presenter.LoginSoapPresenter;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.IConst;
 import com.howell.utils.ServerConfigSp;
 import com.howell.utils.Util;
+import com.howellsdk.net.http.utils.DecodeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +60,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>,OnClickListener,LoginAction.IloginRes,IConst {
+public class LoginActivity extends AppCompatActivity implements ILoginContract.IView,LoaderCallbacks<Cursor>,OnClickListener,LoginAction.IloginRes,IConst {
 
     private static final int MSG_LOGIN_SUCCESS = 0x01;
     private static final int MSG_LOGIN_CUSTOM_SERVER = 0x02;
@@ -92,6 +96,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean mIsGuest;
     private boolean mIsCustom = false;
+
+    private ILoginContract.IPresenter mPresenter;
+
     Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -108,14 +115,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     String userName = bundle.getString("userName");
                     String userPassword = bundle.getString("userPassword");
                     Custom c = (Custom) bundle.getSerializable("custom");
-
+                    if (!c.isCustom()){
+                        c.setCustomIP(DEFAULT_IP);
+                        c.setCustomPort(8800);
+                        c.setSSL(false);
+                    }
                     Log.i("123","userName="+userName+"  pwd="+userPassword+" custom="+c.isCustom()
                             +"  ip="+c.getCustomIP()+"  port="+c.getCustomPort()+"   ssl="+c.isSSL());
 
 
                     mIsGuest = userName.equals(GUEST_NAME)?true:false;
                     mProgressView.setVisibility(View.VISIBLE);
-                    LoginAction.getInstance().setContext(LoginActivity.this).regLoginResCallback(LoginActivity.this).Login(userName,userPassword,c);
+//                    LoginAction.getInstance().setContext(LoginActivity.this).regLoginResCallback(LoginActivity.this).Login(userName,userPassword,c);
+                    mPresenter.login(userName,userPassword,c);
 
                     break;
                 case FingerPrintFragment.MSG_FINGERPRINT_ERROR:
@@ -135,6 +147,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
+        bindPresenter();
+
         mUserNameView = (AutoCompleteTextView) findViewById(R.id.login_et_username);
 
 //        populateAutoComplete();
@@ -211,6 +225,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
         mCustomSw.setChecked(false);
         mCustomTv.setText(getString(R.string.login_server_select)+getString(R.string.login_server));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindPresenter();
     }
 
     private void populateAutoComplete() {
@@ -314,11 +334,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mProgressView.setVisibility(View.VISIBLE);
             Custom c = new Custom();
             c.setCustom(mIsCustom);
-            c.setCustomIP(mIsCustom?ServerConfigSp.loadServerIP(this):null);
-            c.setCustomPort(ServerConfigSp.loadServerPort(this));
-            c.setSSL(ServerConfigSp.loadServerSSL(this));
+            c.setCustomIP(mIsCustom?ServerConfigSp.loadServerIP(this):DEFAULT_IP);
+            c.setCustomPort(mIsCustom?ServerConfigSp.loadServerPort(this):DEFAULT_PORT);
+            c.setSSL(mIsCustom?ServerConfigSp.loadServerSSL(this):false);
 
-            LoginAction.getInstance().setContext(this).regLoginResCallback(this).Login(username,password,c);
+//            LoginAction.getInstance().setContext(this).regLoginResCallback(this).Login(username,password,c);
+
+            mPresenter.login(username,password,c);
+
         }
     }
 
@@ -494,8 +517,66 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void customFun(){
-        Intent intent = new Intent(LoginActivity.this,ServerSetActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(LoginActivity.this,ServerSetActivity.class));
+    }
+
+    @Override
+    public void bindPresenter() {
+        if (mPresenter==null){
+            mPresenter = new LoginSoapPresenter();
+        }
+        mPresenter.bindView(this);
+        mPresenter.init(this);
+    }
+
+    @Override
+    public void unbindPresenter() {
+        if (mPresenter!=null) {
+            mPresenter.unbindView();
+        }
+    }
+
+    @Override
+    public void onError() {
+        Snackbar.make(mLoginFormView,getString(R.string.login_error),Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onLoginResult(Type type) {
+        switch (type){
+            case OK:
+                Log.i("123","on login ok");
+                break;
+            case ACCOUNT_NOT_EXIST:
+                mUserNameView.requestFocus();
+                mUserNameView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mUserNameView.setError(getString(R.string.account_error));
+                    }
+                });
+                break;
+            case AUTHENCATION:
+                mPasswordView.requestFocus();
+                mPasswordView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPasswordView.setError(getString(R.string.password_error), null);
+                    }
+                });
+                break;
+            case ERROR:
+                Snackbar.make(mLoginFormView,getString(R.string.login_fail),Snackbar.LENGTH_LONG).show();
+                break;
+            default:
+                Snackbar.make(mLoginFormView,getString(R.string.login_fail),Snackbar.LENGTH_LONG).show();
+                break;
+        }
+    }
+
+    @Override
+    public void onLogoutResult(Type type) {
+
     }
 
 

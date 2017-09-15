@@ -3,10 +3,12 @@ package com.howell.modules.Login.presenter;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.howell.action.ConfigAction;
 import com.howell.bean.Custom;
 import com.howell.bean.UserLoginDBBean;
 import com.howell.db.UserLoginDao;
 import com.howell.modules.Login.bean.Type;
+import com.howell.utils.IConst;
 import com.howell.utils.UserConfigSp;
 import com.howellsdk.api.ApiManager;
 import com.howellsdk.net.soap.bean.AccountRes;
@@ -31,33 +33,40 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Administrator on 2017/9/14.
  */
 
-public class LoginSoapPresenter extends LoginBasePresenter {
+public class LoginSoapPresenter extends LoginBasePresenter implements IConst {
 
     String email;
-    Custom custom;
+    Custom mCustom;
     @Override
-    public void login(@Nullable String name,@Nullable String pwd,final Custom custom) {
+    public void login(@Nullable String name,@Nullable String pwd,@Nullable Custom custom) {
         Log.i("123","login ");
         if (name==null||pwd==null){
             if (mIsFirst) {Log.e("123","first return");mView.onLoginResult(Type.FIRST_LOGIN);return;}
             if (mName==null || mPwd==null) { Log.e("123","mName = null error");mView.onError();return;}
+            if (mName.equals(GUEST_NAME)){ Log.e("123","guest do not login auto  name="+mName);mView.onError();return;}
+            name = mName;
+            pwd = mPwd;
+        }else{
+            mName = name;
+            mPwd = pwd;
         }
-        this.custom = custom;
+        this.mCustom = custom;
         if (custom==null){
             //getFromDB
-            this.custom = loadCustomFromDB(name,pwd);
+            this.mCustom = loadCustomFromDB(name,pwd);
 
         }
-        if (this.custom==null){
+        if (this.mCustom==null){
+            Log.e("123","custom = null");
             mView.onError();
             return;
         }
-        Log.i("123","2222222");
+        Log.i("123","custom="+this.mCustom.toString());
 
         LoginRequest req = new LoginRequest(mName,mPwd);
         ApiManager.getInstance()
                 .initSoapClient(mContext,mIsSSL)
-                .getSoapService(this.custom.getURL())
+                .getSoapService(this.mCustom.getURL())
                 .userLogin(req)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -150,7 +159,7 @@ public class LoginSoapPresenter extends LoginBasePresenter {
     @Override
     protected void saveLoginInformation() {
         //save to db;
-        save2DB(mName,mPwd,email,custom);
+        save2DB(mName,mPwd,email,mCustom);
         //save to sp;
         save2SP();
     }
@@ -224,6 +233,8 @@ public class LoginSoapPresenter extends LoginBasePresenter {
     }
 
     private void save2SP(){
-        UserConfigSp.saveUserInfo(mContext,mName,mPwd,custom.isCustom());
+        UserConfigSp.saveUserInfo(mContext,mName,mPwd,mCustom.isCustom());
+        Log.i("123","save sp  name="+mName+"  pwd="+mPwd+"  custom="+mCustom);
+        ConfigAction.getInstance(mContext).refresh(mContext);
     }
 }

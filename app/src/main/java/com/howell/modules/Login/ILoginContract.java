@@ -21,7 +21,7 @@ public interface ILoginContract {
     }
     interface IPresenter extends ImpBasePresenter {
         void init(Context context);
-        void login(@Nullable String name, @Nullable String pwd,Custom custom);
+        void login(@Nullable String name, @Nullable String pwd,@Nullable Custom custom);
         void logout();
     }
 }
