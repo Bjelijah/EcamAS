@@ -12,6 +12,7 @@ import com.howell.utils.IConst;
 import com.howell.utils.UserConfigSp;
 import com.howellsdk.api.ApiManager;
 import com.howellsdk.net.soap.bean.AccountRes;
+import com.howellsdk.net.soap.bean.AndroidTokenReq;
 import com.howellsdk.net.soap.bean.LoginRequest;
 import com.howellsdk.net.soap.bean.LoginResponse;
 import com.howellsdk.net.soap.bean.LogoutRequest;
@@ -92,6 +93,7 @@ public class LoginSoapPresenter extends LoginBasePresenter implements IConst {
                             type = Type.OK;
                             //get account res
                             getAccountInfo();
+                            androidToken();
                         }else if(s.equalsIgnoreCase("AccountNotExist")){
                             type = Type.ACCOUNT_NOT_EXIST;
                         }else if(s.equalsIgnoreCase("Authencation")){
@@ -164,6 +166,9 @@ public class LoginSoapPresenter extends LoginBasePresenter implements IConst {
         save2SP();
     }
 
+
+
+
     private void getAccountInfo(){
         ApiManager.getInstance()
                 .getSoapService()
@@ -197,6 +202,12 @@ public class LoginSoapPresenter extends LoginBasePresenter implements IConst {
 
 
 
+    }
+
+    private void androidToken(){
+//        ApiManager.getInstance()
+//                .getSoapService()
+//                .queryAndroidToken(new AndroidTokenReq(mName,ApiManager.SoapHelp.getsSession(),))
     }
 
 

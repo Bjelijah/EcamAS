@@ -81,6 +81,9 @@ public class PhoneConfig {
 		return id;
 	}
 
+//	public static String getIMIE(Context context){
+//		return
+//	}
 
 	public static String getPhoneModel(){
 		Log.i("123", "getPhoneModel model = "+android.os.Build.MODEL);

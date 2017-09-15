@@ -62,6 +62,14 @@ public class LoginRequest implements Serializable {
         mVersion = "1.0.0.1";
     }
 
+    public LoginRequest(String account ,String password,String imei){
+        mAccount = account;
+        mPwdType = "Common";
+        mPassword = DecodeUtils.getEncodedPassword(password);
+        mVersion = "1.0.0.1";
+        mIMEI = imei;
+    }
+
 
     @Deprecated
     public LoginRequest(String account, String pwdType, String password,
