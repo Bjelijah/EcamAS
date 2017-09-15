@@ -61,7 +61,8 @@
                     android:inputType="textAutoComplete"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:textColor="@color/white"/>
+                    android:textColor="@color/white"
+                    />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -74,6 +75,7 @@
                 android:layout_height="wrap_content"
                 app:hintTextAppearance="@style/FloatingStyle"
                 app:errorTextAppearance="@style/errorStyle"
+                app:passwordToggleEnabled="true"
                 >
 
                 <EditText
@@ -90,7 +92,9 @@
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:textColor="@color/white"/>
+                    android:textColor="@color/white"
+
+                    />
 
             </android.support.design.widget.TextInputLayout>
 

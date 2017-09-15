@@ -1,5 +1,7 @@
 package com.howellsdk.net.soap.bean;
 
+import com.howellsdk.net.http.utils.DecodeUtils;
+
 public class CreateAccountReq {
 	private String account;
 	private String username;
@@ -26,7 +28,7 @@ public class CreateAccountReq {
 		super();
 		this.account = account;
 		this.username = username;
-		this.password = password;
+		this.password = DecodeUtils.getEncodedPassword(password);
 		this.email = email;
 		this.mobileTel = mobileTel;
 	}
@@ -36,14 +38,14 @@ public class CreateAccountReq {
 		super();
 		this.account = account;
 		this.username = username;
-		this.password = password;
+		this.password = DecodeUtils.getEncodedPassword(password);
 		this.email = email;
 	}
 	
 	public CreateAccountReq(String account, String password, String email) {
 		super();
 		this.account = account;
-		this.password = password;
+		this.password = DecodeUtils.getEncodedPassword(password);
 		this.email = email;
 	}
 	

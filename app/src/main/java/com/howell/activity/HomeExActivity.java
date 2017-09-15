@@ -207,8 +207,8 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
 //                .withHeaderBackground(R.mipmap.background_poly)
 //                .withSavedInstance(savedInstanceState)
 //                .build();
-//        mbGuest = getIntent().getBooleanExtra("isGuest",true);
-        mbGuest = LoginAction.getInstance().ismIsGuest();
+        mbGuest = getIntent().getBooleanExtra("isGuest",false);
+//        mbGuest = LoginAction.getInstance().ismIsGuest();
         HomeAction.getInstance().setContext(this).init();
         buildHead(false,savedInstanceState);
         buildDrawer(savedInstanceState);
@@ -371,25 +371,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
             }
         }
 
-
-//        for (UserLoginDBBean b:list){
-//            Log.e("123","~~~~~~dao list name="+b.getUserName()+" num="+b.getUserNum());
-//            for(int i=0;i<mList.size();i++){
-//                String nameInList = mList.get(i).getName().toString();
-//                Log.i("123","nameInlist="+nameInList);
-//                if (!b.getUserName().equals(userName) && !b.getUserName().equals(nameInList)){
-//                    Log.i("123"," b.username="+b.getUserName()+"  username="+userName);
-//                    IProfile profile = new ProfileDrawerItem().withName(b.getUserName()).withEmail(b.getUserEmail()).withIcon(getRamdomUserIcon());
-//                    mList.add(profile);
-//                    break;
-//                }
-//            }
-//        }
         dao.close();
-
-
-
-
         return mList;
     }
 

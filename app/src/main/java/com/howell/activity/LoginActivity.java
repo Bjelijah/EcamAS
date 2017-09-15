@@ -60,7 +60,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements ILoginContract.IView,LoaderCallbacks<Cursor>,OnClickListener,LoginAction.IloginRes,IConst {
+public class LoginActivity extends AppCompatActivity implements ILoginContract.IView,LoaderCallbacks<Cursor>,OnClickListener,IConst {
 
     private static final int MSG_LOGIN_SUCCESS = 0x01;
     private static final int MSG_LOGIN_CUSTOM_SERVER = 0x02;
@@ -337,11 +337,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginContract.I
             c.setCustomIP(mIsCustom?ServerConfigSp.loadServerIP(this):DEFAULT_IP);
             c.setCustomPort(mIsCustom?ServerConfigSp.loadServerPort(this):DEFAULT_PORT);
             c.setSSL(mIsCustom?ServerConfigSp.loadServerSSL(this):false);
-
 //            LoginAction.getInstance().setContext(this).regLoginResCallback(this).Login(username,password,c);
-
             mPresenter.login(username,password,c);
-
         }
     }
 
@@ -462,50 +459,6 @@ public class LoginActivity extends AppCompatActivity implements ILoginContract.I
         }
     }
 
-    @Override
-    public void onLoginSuccess() {
-        mProgressView.setVisibility(View.INVISIBLE);
-        LoginAction.getInstance().setmIsGuest(mIsGuest).unRegLoginResCallback();
-        mHandler.sendEmptyMessage(LoginActivity.MSG_LOGIN_SUCCESS);
-        //TODO:show camLIST activity
-        Intent intent = new Intent(this,HomeExActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    @Override
-    public void onLoginError(int e) {
-        mProgressView.setVisibility(View.INVISIBLE);
-        switch (e){
-            case LoginAction.ERROR_LOGIN_ACCOUNT:
-                mUserNameView.requestFocus();
-                mUserNameView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mUserNameView.setError(getString(R.string.account_error));
-                    }
-                });
-                break;
-            case LoginAction.ERROR_LOGIN_PWD:
-                mPasswordView.requestFocus();
-                mPasswordView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mPasswordView.setError(getString(R.string.password_error),null);
-                    }
-                });
-                break;
-            case LoginAction.ERROR_LOGIN_OTHER:
-                Snackbar.make(mLoginFormView,getString(R.string.login_fail),Snackbar.LENGTH_LONG).show();
-                break;
-            case LoginAction.ERROR_LINK_ERROR:
-                Snackbar.make(mLoginFormView,getString(R.string.login_error),Snackbar.LENGTH_LONG).show();
-                break;
-            default:
-                break;
-        }
-    }
-
     private void fingerprintFun(){
         if(!Util.isNewApi() || !FingerprintUiHelper.isFingerAvailable(this)){
             AlerDialogUtils.postDialogMsg(this,getString(R.string.login_other_fingerprint),getString(R.string.login_other_fingerprint_no_support),null);
@@ -538,14 +491,18 @@ public class LoginActivity extends AppCompatActivity implements ILoginContract.I
 
     @Override
     public void onError() {
+        mProgressView.setVisibility(View.INVISIBLE);
         Snackbar.make(mLoginFormView,getString(R.string.login_error),Snackbar.LENGTH_LONG).show();
     }
 
     @Override
     public void onLoginResult(Type type) {
+        mProgressView.setVisibility(View.INVISIBLE);
         switch (type){
             case OK:
                 Log.i("123","on login ok");
+                startActivity(new Intent(this,HomeExActivity.class).putExtra("isGuest",mIsGuest));
+                finish();
                 break;
             case ACCOUNT_NOT_EXIST:
                 mUserNameView.requestFocus();

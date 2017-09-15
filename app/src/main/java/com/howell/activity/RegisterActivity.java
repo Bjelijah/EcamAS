@@ -22,6 +22,9 @@ import android.widget.TextView;
 
 import com.howell.action.RegisterAction;
 import com.android.howell.webcam.R;
+import com.howell.modules.regist.IRegistContract;
+import com.howell.modules.regist.bean.Type;
+import com.howell.modules.regist.presenter.RegistPresenter;
 
 import java.util.List;
 
@@ -29,7 +32,7 @@ import java.util.List;
  * Created by howell on 2016/11/10.
  */
 
-public class RegisterActivity extends AppCompatActivity implements View.OnClickListener,RegisterAction.IRegisterRes {
+public class RegisterActivity extends AppCompatActivity implements IRegistContract.IVew,View.OnClickListener{
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -58,11 +61,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private TextView mTitle;
 
     private boolean mIsBindFinger;
-
+    private IRegistContract.IPresenter mPresenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        bindPresenter();
+
         // Set up the login form.
         mTitle = (TextView) findViewById(R.id.reg_title);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.reg_et_email);
@@ -81,7 +86,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mRegBtn = (Button) findViewById(R.id.reg_btn_reg);
         mRegBtn.setOnClickListener(this);
 
-
         mProgressView = findViewById(R.id.reg_progress);
         mRegFormView = findViewById(R.id.reg_reg_form);
         mRoot = findViewById(R.id.root_ll);
@@ -91,7 +95,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindPresenter();
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -149,9 +157,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         boolean cancel = false;
         View focusView = null;
 
-
-
-
         if (TextUtils.isEmpty(email)){
             mEmailView.setError(getString(R.string.reg_field_empty));
             focusView = mEmailView;
@@ -199,7 +204,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
             //register
             mProgressView.setVisibility(View.VISIBLE);
-            RegisterAction.getInstance().registerCallback(this).register(username,password,email);
+//            RegisterAction.getInstance().registerCallback(this).register(username,password,email);
+            mPresenter.register(username,password,email);
         }
     }
 
@@ -247,25 +253,40 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    @Override
-    public void registerSuccess() {
-        //
-        mProgressView.setVisibility(View.GONE);
-        RegisterAction.getInstance().unRegisterCallback();
-        //TODO:show camLIST activity
 
-        finish();
+
+
+
+    @Override
+    public void bindPresenter() {
+        if (mPresenter==null){
+            mPresenter = new RegistPresenter();
+        }
+        mPresenter.bindView(this);
     }
 
     @Override
-    public void registerError(int e) {
-        mProgressView.setVisibility(View.GONE);
+    public void unbindPresenter() {
+        if (mPresenter!=null){
+            mPresenter.unbindView();
+        }
+    }
 
-        switch (e){
-            case RegisterAction.ERROR_LINK_ERROR:
-                Snackbar.make(mRegFormView,getString(R.string.login_error),Snackbar.LENGTH_LONG).show();
+    @Override
+    public void onError() {
+        mProgressView.setVisibility(View.GONE);
+        Snackbar.make(mRegFormView,getString(R.string.login_error),Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onRegistResult(Type type) {
+        mProgressView.setVisibility(View.GONE);
+        switch (type){
+            case OK:
+                mProgressView.setVisibility(View.GONE);
+                finish();
                 break;
-            case RegisterAction.ERROR_REG_ACCOUNT:
+            case ERROR_REG_ACCOUNT:
                 mUserNameView.requestFocus();
                 mUserNameView.post(new Runnable() {
                     @Override
@@ -274,16 +295,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     }
                 });
                 break;
-            case RegisterAction.ERROR_REG_FORMAT:
-                mUserNameView.requestFocus();
-                mUserNameView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mUserNameView.setError(getString(R.string.register_activity_fail_account_format));
-                    }
-                });
-                break;
-            case RegisterAction.ERROR_REG_EMAIL:
+            case ERROR_REG_EMAIL:
                 mEmailView.requestFocus();
                 mEmailView.post(new Runnable() {
                     @Override
@@ -292,24 +304,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     }
                 });
                 break;
-            case RegisterAction.ERROR_REG_OTHER:
+            case ERROR_REG_FORMAT:
+                mUserNameView.requestFocus();
+                mUserNameView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mUserNameView.setError(getString(R.string.register_activity_fail_account_format));
+                    }
+                });
+                break;
+            case ERROR_REG_OTHER:
                 Snackbar.make(mRegFormView,getString(R.string.register_activity_fail),Snackbar.LENGTH_LONG).show();
                 break;
-            default:
-                break;
+            default:break;
         }
-
-    }
-
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
     }
 
 
