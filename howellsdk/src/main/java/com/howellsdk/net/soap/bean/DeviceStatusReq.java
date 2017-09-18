@@ -1,5 +1,7 @@
 package com.howellsdk.net.soap.bean;
 
+import com.howellsdk.net.http.bean.DeviceStatus;
+
 /**
  * Created by Administrator on 2017/6/19.
  */
@@ -74,4 +76,13 @@ public class DeviceStatusReq {
         this.searchID = searchID;
         this.pageSize = pageSize;
     }
+
+    public DeviceStatusReq(String account,String session){
+        this.account = account;
+        this.session = session;
+        pageNo=null;
+        searchID = null;
+        pageSize=null;
+    }
+
 }

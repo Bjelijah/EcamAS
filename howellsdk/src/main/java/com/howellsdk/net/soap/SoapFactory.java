@@ -1470,6 +1470,14 @@ public class SoapFactory {
                                 node.setAndroidPushSubscribedFlag(Integer.valueOf(o.getProperty("AndroidPushSubscribedFlag").toString()));
                                 node.setInfraredFlag(Integer.valueOf(o.getProperty("InfraredFlag").toString()));
                                 node.setWirelessFlag(Integer.valueOf(o.getProperty("WirelessFlag").toString()));
+                                DeviceStatusRes.WirelessNetwork network = new DeviceStatusRes.WirelessNetwork();
+                                try{
+                                    SoapObject so = (SoapObject) o.getProperty("WirelessNetwork");
+                                    network.setWirelessType(so.getProperty("WirelessType").toString());
+                                    network.setSsid(so.getProperty("SSID").toString());
+                                    network.setIntensity(Integer.valueOf(so.getProperty("Intensity").toString()));
+                                }catch (Exception ex){}
+                                node.setNetwork(network);
                                 nodes.add(node);
                             }
                             res.setNodes(nodes);

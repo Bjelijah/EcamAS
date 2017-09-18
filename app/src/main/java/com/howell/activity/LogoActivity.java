@@ -7,36 +7,18 @@ package com.howell.activity;
  */
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StrictMode;
-import android.provider.Settings.Secure;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.howell.action.ConfigAction;
-import com.howell.action.LoginAction;
-import com.howell.bean.Custom;
-import com.howell.bean.UserLoginDBBean;
-import com.howell.db.UserLoginDao;
 import com.android.howell.webcam.R;
-import com.howell.modules.Login.ILoginContract;
-import com.howell.modules.Login.bean.Type;
-import com.howell.modules.Login.presenter.LoginSoapPresenter;
+import com.howell.modules.login.ILoginContract;
+import com.howell.modules.login.bean.Type;
+import com.howell.modules.login.presenter.LoginSoapPresenter;
 import com.howell.protocol.SoapManager;
-import com.howell.service.MyService;
-import com.howell.utils.NetWorkUtils;
-
-import java.util.List;
-import java.util.Set;
-
-import cn.jpush.android.api.JPushInterface;
-import cn.jpush.android.api.TagAliasCallback;
-import retrofit2.http.Header;
 
 public class LogoActivity extends Activity implements ILoginContract.IView{
 
@@ -124,17 +106,9 @@ public class LogoActivity extends Activity implements ILoginContract.IView{
 	}
 
 	@Override
-	public void onError() {
-        Log.e("123","logo on error");
-		startActivity(new Intent(this,LoginActivity.class));
-	}
-
-	@Override
-	public void onLoginResult(Type type) {
+	public void onError(Type type) {
+		Log.e("123","logo on error type="+type);
 		switch (type){
-			case OK:
-				startActivity(new Intent(LogoActivity.this, HomeExActivity.class).putExtra("notification",mIsFromNotification));
-				break;
 			case FIRST_LOGIN:
 				startActivity(new Intent(this,NavigationActivity.class));
 				break;
@@ -142,6 +116,19 @@ public class LogoActivity extends Activity implements ILoginContract.IView{
 				startActivity(new Intent(this,LoginActivity.class));
 				break;
 		}
+		finish();
+
+
+	}
+
+	@Override
+	public void onLoginSuccess(String account,String email) {
+		startActivity(new Intent(LogoActivity.this, HomeExActivity.class)
+				.putExtra("notification",mIsFromNotification)
+				.putExtra("account",account)
+				.putExtra("email",email)
+				.putExtra("isGuest",false)
+		);
 		finish();
 	}
 

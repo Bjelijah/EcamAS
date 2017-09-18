@@ -344,9 +344,10 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
             mList.add(mine);
             return mList;
         }
-
-        String userName = LoginAction.getInstance().getmInfo().getAccount();
-        String usermail = LoginAction.getInstance().getmInfo().getAr().getEmail();
+        String userName = getIntent().getStringExtra("account");
+        String usermail = getIntent().getStringExtra("email");
+//        String userName = LoginAction.getInstance().getmInfo().getAccount();
+//        String usermail = LoginAction.getInstance().getmInfo().getAr().getEmail();
         IProfile mine = new ProfileDrawerItem().withName(userName).withEmail(usermail).withIcon(getRamdomUserIcon());
 
         mList.add(mine);

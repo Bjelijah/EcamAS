@@ -135,6 +135,7 @@ public class DeviceStatusRes {
         int androidPushSubscribedFlag;
         int infraredFlag;
         int wirelessFlag;
+        WirelessNetwork network;
 
         @Override
         public String toString() {
@@ -158,6 +159,7 @@ public class DeviceStatusRes {
                     ", androidPushSubscribedFlag=" + androidPushSubscribedFlag +
                     ", infraredFlag=" + infraredFlag +
                     ", wirelessFlag=" + wirelessFlag +
+                    ", network=" + network +
                     '}';
         }
 
@@ -185,6 +187,14 @@ public class DeviceStatusRes {
             this.androidPushSubscribedFlag = androidPushSubscribedFlag;
             this.infraredFlag = infraredFlag;
             this.wirelessFlag = wirelessFlag;
+        }
+
+        public WirelessNetwork getNetwork() {
+            return network;
+        }
+
+        public void setNetwork(WirelessNetwork network) {
+            this.network = network;
         }
 
         public String getDevID() {

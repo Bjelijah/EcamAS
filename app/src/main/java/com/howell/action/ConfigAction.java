@@ -3,6 +3,7 @@ package com.howell.action;
 import android.content.Context;
 import android.util.Log;
 
+import com.howell.utils.PhoneConfig;
 import com.howell.utils.ServerConfigSp;
 import com.howell.utils.UserConfigSp;
 
@@ -20,6 +21,7 @@ public class ConfigAction {
     String mName;
     String mPassword;
     boolean mIsFirst;
+    String mImei;
     private ConfigAction (Context c){
         //load
         load(c);
@@ -46,6 +48,7 @@ public class ConfigAction {
         mName = UserConfigSp.loadUserName(c);
         mPassword = UserConfigSp.loadUserPwd(c);
         mIsFirst = UserConfigSp.loadUserFirstLogin(c);
+        mImei = PhoneConfig.getIMEI(c);
         Log.i("123","mName="+mName+" isfirst="+mIsFirst);
 
     }
@@ -84,5 +87,9 @@ public class ConfigAction {
 
     public int getPort() {
         return mPort;
+    }
+
+    public String getImei() {
+        return mImei;
     }
 }

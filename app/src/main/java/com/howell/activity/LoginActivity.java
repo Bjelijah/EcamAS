@@ -39,18 +39,16 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.howell.action.FingerprintUiHelper;
-import com.howell.action.LoginAction;
 import com.howell.activity.fragment.FingerPrintFragment;
 import com.howell.bean.Custom;
 import com.android.howell.webcam.R;
-import com.howell.modules.Login.ILoginContract;
-import com.howell.modules.Login.bean.Type;
-import com.howell.modules.Login.presenter.LoginSoapPresenter;
+import com.howell.modules.login.ILoginContract;
+import com.howell.modules.login.bean.Type;
+import com.howell.modules.login.presenter.LoginSoapPresenter;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.IConst;
 import com.howell.utils.ServerConfigSp;
 import com.howell.utils.Util;
-import com.howellsdk.net.http.utils.DecodeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -490,20 +488,9 @@ public class LoginActivity extends AppCompatActivity implements ILoginContract.I
     }
 
     @Override
-    public void onError() {
-        mProgressView.setVisibility(View.INVISIBLE);
-        Snackbar.make(mLoginFormView,getString(R.string.login_error),Snackbar.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onLoginResult(Type type) {
+    public void onError(Type type) {
         mProgressView.setVisibility(View.INVISIBLE);
         switch (type){
-            case OK:
-                Log.i("123","on login ok");
-                startActivity(new Intent(this,HomeExActivity.class).putExtra("isGuest",mIsGuest));
-                finish();
-                break;
             case ACCOUNT_NOT_EXIST:
                 mUserNameView.requestFocus();
                 mUserNameView.post(new Runnable() {
@@ -523,12 +510,24 @@ public class LoginActivity extends AppCompatActivity implements ILoginContract.I
                 });
                 break;
             case ERROR:
-                Snackbar.make(mLoginFormView,getString(R.string.login_fail),Snackbar.LENGTH_LONG).show();
+                Snackbar.make(mLoginFormView,getString(R.string.login_error),Snackbar.LENGTH_LONG).show();
                 break;
             default:
                 Snackbar.make(mLoginFormView,getString(R.string.login_fail),Snackbar.LENGTH_LONG).show();
                 break;
         }
+    }
+
+    @Override
+    public void onLoginSuccess(String name,String email) {
+        mProgressView.setVisibility(View.INVISIBLE);
+        startActivity(new Intent(this,HomeExActivity.class)
+                .putExtra("notification",false)
+                .putExtra("isGuest",mIsGuest)
+                .putExtra("account",name)
+                .putExtra("email",email)
+        );
+        finish();
     }
 
     @Override
