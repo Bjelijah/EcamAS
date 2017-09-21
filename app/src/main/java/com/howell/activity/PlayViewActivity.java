@@ -18,10 +18,14 @@ import com.howell.action.PTZControlAction;
 import com.howell.action.PlayAction;
 import com.howell.adapter.MyPagerAdapter;
 import com.android.howell.webcam.R;
+import com.howell.modules.player.IPlayContract;
+import com.howell.modules.player.bean.VODRecord;
 import com.howell.transformer.CubeInTransformer;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.UserConfigSp;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2016/12/16.
@@ -34,6 +38,7 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
     private LinearLayout mPtzLeft,mPtzRight,mPtzUp,mPtzDown;
     private PlayFunViewPage mPlayFun;
     private boolean mIsShowPtz;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,6 +78,7 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
     protected void camPlay() {
         Log.i("123","play view cam play");
         super.camPlay();
+
     }
 
 
@@ -406,4 +412,6 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
     public boolean getSoundState() {
         return mIsAudioOpen;
     }
+
+
 }

@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.howell.action.ApAction;
+import com.howell.action.ConfigAction;
 import com.howell.action.HomeAction;
 import com.howell.action.LoginAction;
 import com.howell.action.PlayAction;
@@ -29,6 +30,8 @@ import com.howell.bean.CameraItemBean;
 import com.howell.bean.PlayType;
 import com.android.howell.webcam.R;
 import com.howell.entityclass.NodeDetails;
+import com.howell.modules.device.IDeviceContract;
+import com.howell.modules.device.presenter.DeviceSoapPresenter;
 import com.howell.protocol.GetNATServerReq;
 import com.howell.protocol.GetNATServerRes;
 import com.howell.protocol.SoapManager;
@@ -49,7 +52,7 @@ import pullrefreshview.layout.PullRefreshLayout;
  * Created by howell on 2016/11/11.
  */
 
-public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.OnRefreshListener,BaseFooterView.OnLoadListener, DeviceRecyclerViewAdapter.OnItemClickListener,HomeAction.QueryDeviceCallback,IConst,ApAction.QueryApDevice {
+public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.IVew,BaseHeaderView.OnRefreshListener,BaseFooterView.OnLoadListener, DeviceRecyclerViewAdapter.OnItemClickListener,HomeAction.QueryDeviceCallback,IConst,ApAction.QueryApDevice {
     public static final int MSG_RECEIVE_SIP = 0x0000;
     public static final int MSG_DEVICE_LIST_UPDATA = 0x0001;
     public static final int MSG_NET_SERVER_OK = 0x0002;
@@ -68,7 +71,7 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
     BrokenView mBrokenView;
     MyBrokenCallback mBrokenCallback = new MyBrokenCallback();
     private BrokenTouchListener mColorfulListener;
-
+    private IDeviceContract.IPresenter mPresenter;
 
     Handler mHandler = new Handler(){
         @Override
@@ -79,7 +82,6 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
                     break;
                 case MSG_DEVICE_LIST_UPDATA:
                     mbhv.stopRefresh();
-
                     adapter.setData(mList);
 //                    mBrokenView.reset();
                     break;
@@ -120,8 +122,8 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
                 .build();
         mBrokenView.setCallback(mBrokenCallback);
         mBrokenView.setEnable(true);
-
-
+        bindPresenter();
+        
 //        adapter = new DeviceRecyclerViewAdapter(getContext(),this,getActivity());
         adapter = new DeviceRecyclerViewAdapter(getContext(),this,mColorfulListener);
 //        adapter = new DeviceRecyclerViewAdapter(getContext(),this);
@@ -136,41 +138,19 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
 
 
 
-    private void getData(int n) {
-        //// FIXME: 2016/11/18 for test
-        List<String> datas = new ArrayList<>(n);
-        mList.clear();
 
-        for (int i=0;i<n;i++){
-            CameraItemBean b = new CameraItemBean()
-                    .setCameraName("test   "+i)
-                    .setIndensity(100)
-                    .setOnline(true)
-                    .setPtz(true)
-                    .setStore(true)
-                    .setPicturePath(null);
-            mList.add(b);
-        }
-        mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);
-    }
 
     @Override
     public void getData(){
-
-        if(IS_TEST){//FIXME TEST
-            getData(5);
-            return;
-        }
+  
         if (mList==null)return;
         mList.clear();
-
-
-        LoginAction.UserInfo info = LoginAction.getInstance().getmInfo();
+        mPresenter.queryDevices();
+//        LoginAction.UserInfo info = LoginAction.getInstance().getmInfo();
         //get ap list
-        HomeAction.getInstance().addApCam2List(getContext(),info.getAccount(),mList);
+//        HomeAction.getInstance().addApCam2List(getContext(),info.getAccount(),mList);
 //        HomeAction.getInstance().addApCam2List(getContext(),info.getAccount(),this);
-
-        HomeAction.getInstance().setContext(getContext()).registQueryDeviceCallback(this).queryDevice(info.getAccount(),info.getLr().getLoginSession());
+//        HomeAction.getInstance().setContext(getContext()).registQueryDeviceCallback(this).queryDevice(info.getAccount(),info.getLr().getLoginSession());
     }
 
 
@@ -331,10 +311,39 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
         mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);//updata ecam list and ap list
     }
 
+    @Override
+    public void bindPresenter() {
+        if (mPresenter==null){
+            mPresenter = new DeviceSoapPresenter();
+        }
+        mPresenter.bindView(this);
+        mPresenter.init(getContext());
+    }
+
+    @Override
+    public void unbindPresenter() {
+        if (mPresenter!=null) {
+            mPresenter.unbindView();
+            mPresenter = null;
+        }
+    }
+
+    @Override
+    public void onQueryResult(List<CameraItemBean> beanList) {
+        mList = beanList;
+        mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);//updata ecam list and ap list
+    }
+
+    @Override
+    public void onError() {
+        Log.e("123","Device Fragment on error");
+        //// TODO: 2017/9/18
+        
+    }
+
     class MyBrokenCallback extends BrokenCallback {
         @Override
         public void onStart(View v) {
-
             super.onStart(v);
             Log.e("123","BrokenCallback onStart");
         }

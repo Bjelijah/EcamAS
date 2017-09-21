@@ -14,11 +14,12 @@ import java.util.List;
 
 public interface IDeviceContract {
     interface IVew extends ImpBaseView{
-        void queryResult(List<CameraItemBean> beanList);
+        void onQueryResult(List<CameraItemBean> beanList);
+        void onError();
     }
 
     interface IPresenter extends ImpBasePresenter{
         void init(Context context);
-        void queryDevices(String account);
+        void queryDevices();
     }
 }

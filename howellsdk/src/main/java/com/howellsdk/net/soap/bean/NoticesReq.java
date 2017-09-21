@@ -96,7 +96,7 @@ public class NoticesReq {
 
 	}
 
-	public NoticesReq(String account, String loginSession, Integer pageNo, String searchID, Integer pageSize, String status, String time, String sender) {
+	public NoticesReq(String account, String loginSession, Integer pageNo, Integer pageSize, String searchID, String status, String time, String sender) {
 
 		this.account = account;
 		this.loginSession = loginSession;

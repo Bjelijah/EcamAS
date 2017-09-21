@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.howell.action.AudioAction;
+import com.howell.action.ConfigAction;
 import com.howell.action.LoginAction;
 import com.howell.activity.BasePlayActivity;
 import com.howell.db.ApDeviceDao;
@@ -94,7 +95,7 @@ public class ApCamMgr implements ICam {
     public boolean bind() {
         if (!checkInit())return false;
         return addAP2DB(mContext
-                ,LoginAction.getInstance().getmInfo().getAccount()
+                , ConfigAction.getInstance(mContext).getName()            /*LoginAction.getInstance().getmInfo().getAccount()*/
                 ,mCamBean.getCameraName()
                 ,mCamBean.getUpnpIP()
                 ,mCamBean.getUpnpPort());

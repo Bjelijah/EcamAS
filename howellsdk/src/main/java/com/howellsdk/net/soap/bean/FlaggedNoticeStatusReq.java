@@ -1,5 +1,7 @@
 package com.howellsdk.net.soap.bean;
 
+import java.util.Arrays;
+
 /**
  * @author 霍之昊 
  *
@@ -9,9 +11,9 @@ public class FlaggedNoticeStatusReq {
 	private String account;
 	private String loginSession;
 	private String status;
-	private String noticeID;
+	private String [] noticeID;
 	public FlaggedNoticeStatusReq(String account, String loginSession,
-                                  String status, String noticeID) {
+                                  String status, String [] noticeID) {
 		super();
 		this.account = account;
 		this.loginSession = loginSession;
@@ -39,11 +41,20 @@ public class FlaggedNoticeStatusReq {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public String getNoticeID() {
+	public String [] getNoticeID() {
 		return noticeID;
 	}
-	public void setNoticeID(String noticeID) {
+	public void setNoticeID(String [] noticeID) {
 		this.noticeID = noticeID;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "FlaggedNoticeStatusReq{" +
+				"account='" + account + '\'' +
+				", loginSession='" + loginSession + '\'' +
+				", status='" + status + '\'' +
+				", noticeID=" + Arrays.toString(noticeID) +
+				'}';
+	}
 }

@@ -20,6 +20,11 @@ import com.howell.modules.login.bean.Type;
 import com.howell.modules.login.presenter.LoginSoapPresenter;
 import com.howell.protocol.SoapManager;
 
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
+
 public class LogoActivity extends Activity implements ILoginContract.IView{
 
 	private static final int MSG_START = 0x01;
@@ -65,6 +70,19 @@ public class LogoActivity extends Activity implements ILoginContract.IView{
 
 		//判断手机是否连接网络
 		mHandler.sendEmptyMessageDelayed(MSG_START,1000);
+
+//		Observable.timer(1, TimeUnit.SECONDS)
+//				.subscribe(new Consumer<Long>() {
+//					@Override
+//					public void accept(Long aLong) throws Exception {
+//						doLogin();
+//					}
+//				}, new Consumer<Throwable>() {
+//					@Override
+//					public void accept(Throwable throwable) throws Exception {
+//
+//					}
+//				});
 
 	}
 

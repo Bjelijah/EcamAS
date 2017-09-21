@@ -30,16 +30,21 @@ import com.howell.bean.CamFactory;
 import com.howell.bean.ICam;
 import com.android.howell.webcam.R;
 import com.howell.ehlib.MySeekBar;
+import com.howell.modules.player.IPlayContract;
+import com.howell.modules.player.bean.VODRecord;
+import com.howell.modules.player.presenter.PlayEcamPresenter;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.MessageUtiles;
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.UserConfigSp;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2016/12/16.
  */
 
-public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.Callback,View.OnTouchListener,ICam.IStream{
+public class BasePlayActivity extends FragmentActivity implements IPlayContract.IVew,SurfaceHolder.Callback,View.OnTouchListener,ICam.IStream{
 
     public static final int MSG_PTZ_SHAKE               = 0xff00;
     public final static int MSG_PLAY_SOUND_MUTE         = 0xff01;
@@ -77,6 +82,9 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
     protected boolean mIsAudioOpen = false;
     protected boolean mIsTalk;
     protected boolean isDestory = false;
+
+    protected IPlayContract.IPresent mPresent;
+
 
     protected Handler mHandler = new Handler(){
         @Override
@@ -150,9 +158,8 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.glsurface);
-
+        bindPresenter();
         initView();
-
         initViewFun();
         initPlayer();
         isDestory = false;
@@ -289,11 +296,14 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
 
     @Override
     protected void onDestroy() {
+
         mPlayMgr.unregistStreamLenCallback();
         camStop();
         camDisconnect();
         mGlView.onDestroy();
         isDestory = true;
+
+        unbindPresenter();
         super.onDestroy();
     }
 
@@ -354,4 +364,36 @@ public class BasePlayActivity extends FragmentActivity implements SurfaceHolder.
             });
         }
     }
+
+    @Override
+    public void bindPresenter() {
+        if (mPresent==null){
+            mPresent = new PlayEcamPresenter();//// FIXME: 2017/9/20
+        }
+        mPresent.bindView(this);
+    }
+
+    @Override
+    public void unbindPresenter() {
+        if (mPresent!=null){
+            mPresent.unbindView();
+        }
+    }
+
+    @Override
+    public void onRecord(List<VODRecord> vodRecords) {
+
+    }
+
+    @Override
+    public void onError(int flag) {
+
+    }
+
+    @Override
+    public void onTime(int speed, long timestamp, long firstTimestamp) {
+
+    }
+
+
 }

@@ -9,6 +9,7 @@ import com.howell.protocol.FlaggedNoticeStatusRes;
 import com.howell.protocol.QueryNoticesReq;
 import com.howell.protocol.QueryNoticesRes;
 import com.howell.protocol.SoapManager;
+import com.howellsdk.api.ApiManager;
 
 import java.util.Date;
 
@@ -126,8 +127,10 @@ public class NoticeAction {
             FlaggedNoticeStatusRes res;
             @Override
             protected Void doInBackground(Void... params) {
-                String account = LoginAction.getInstance().getmInfo().getAccount();
-                String session = LoginAction.getInstance().getmInfo().getLr().getLoginSession();
+//                String account = LoginAction.getInstance().getmInfo().getAccount();
+//                String session = LoginAction.getInstance().getmInfo().getLr().getLoginSession();
+                String account = "10086012";
+                String session = ApiManager.SoapHelp.getsSession();
                 String [] ids = new String[1];
                 ids[0] = id;
                 try{

@@ -3,6 +3,7 @@ package com.howell.activity.fragment;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,6 +24,9 @@ import com.howell.datetime.JudgeDate;
 import com.howell.datetime.ScreenInfo;
 import com.howell.datetime.WheelMain;
 import com.android.howell.webcam.R;
+import com.howell.modules.device.presenter.DeviceSoapPresenter;
+import com.howell.modules.notice.INoticeContract;
+import com.howell.modules.notice.presenter.NoticeSoapPresenter;
 import com.howell.protocol.NoticeList;
 import com.howell.protocol.QueryNoticesRes;
 import com.howell.utils.SDCardUtils;
@@ -43,7 +47,7 @@ import pullrefreshview.layout.BaseHeaderView;
  * Created by howell on 2016/11/25.
  */
 
-public class NoticeFragment extends HomeBaseFragment implements BaseHeaderView.OnRefreshListener,BaseFooterView.OnLoadListener,NoticeRecyclerViewAdapter.OnItemClickListener,NoticeAction.OnNoticeRes {
+public class NoticeFragment extends HomeBaseFragment implements INoticeContract.IVew,BaseHeaderView.OnRefreshListener,BaseFooterView.OnLoadListener,NoticeRecyclerViewAdapter.OnItemClickListener {
     private final static int MSG_NOTICE_ERROR = 0x20;
     private final static int MSG_NOTICE_UPDATA = 0x21;
     private final static int MSG_NOTICE_END    = 0x22;
@@ -53,7 +57,11 @@ public class NoticeFragment extends HomeBaseFragment implements BaseHeaderView.O
     List<NoticeItemBean>mlist = new ArrayList<NoticeItemBean>();
     NoticeRecyclerViewAdapter mAdapter;
     RecyclerView mRv;
-    NoticeAction mNoticeAction;
+
+    INoticeContract.IPresenter mPresenter;
+
+    Boolean mIsRead = null;
+    String mTime = null;
 
 
     Handler mHandler = new Handler(){
@@ -62,6 +70,7 @@ public class NoticeFragment extends HomeBaseFragment implements BaseHeaderView.O
             super.handleMessage(msg);
             switch (msg.what){
                 case MSG_NOTICE_ERROR:
+//                    Snackbar.make(mView,"error",Snackbar.LENGTH_LONG).show();
                     break;
                 case MSG_NOTICE_UPDATA:
                     Log.i("123","updata notice");
@@ -84,6 +93,7 @@ public class NoticeFragment extends HomeBaseFragment implements BaseHeaderView.O
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        bindPresenter();
         mView = inflater.inflate(R.layout.fragment_notice,container,false);
         mHv = (BaseHeaderView) mView.findViewById(R.id.notice_header);
         mFv = (BaseFooterView) mView.findViewById(R.id.notice_footer);
@@ -93,7 +103,7 @@ public class NoticeFragment extends HomeBaseFragment implements BaseHeaderView.O
         mAdapter = new NoticeRecyclerViewAdapter(getContext(),this);
         mRv.setLayoutManager(new LinearLayoutManager(getContext()));
         mRv.setAdapter(mAdapter);
-        mNoticeAction = NoticeAction.getInstance().setListener(this).init();
+
         getData();
         return mView;
     }
@@ -110,19 +120,23 @@ public class NoticeFragment extends HomeBaseFragment implements BaseHeaderView.O
                 mFv.stopLoad();
             }
         },1000);
-        mNoticeAction.getNoticesTask();
+//        mNoticeAction.getNoticesTask();
+        mPresenter.queryNotice(null,mIsRead,mTime,null);
     }
 
     @Override
     public void onRefresh(BaseHeaderView baseHeaderView) {
-        mlist.clear();
+
         mHv.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mHv.stopRefresh();
             }
         },1000);
-        mNoticeAction.reset().getNoticesTask();
+//        mNoticeAction.reset().getNoticesTask();
+        mTime = null;
+        mIsRead = null;
+        getData();
     }
 
     @Override
@@ -162,20 +176,14 @@ public class NoticeFragment extends HomeBaseFragment implements BaseHeaderView.O
         boolean isRead = b.isHasRead();
         b.setHasRead(!isRead);
         isRead = !isRead;
-        Log.i("123","set read ="+isRead  +"  time="+b.getTime());
-        mNoticeAction.setNoticesStatus(id,isRead);
+        Log.i("123","pos="+pos+"   set read ="+isRead  +"  time="+b.getTime());
+//        mNoticeAction.setNoticesStatus(id,isRead);
+
+        mPresenter.setNoticeStatus(id,isRead);
+
     }
 
-    private void getData(int num){
-        mlist.clear();
-        for (int i=0;i<num;i++){
-            NoticeItemBean b = new NoticeItemBean("test title :"+i);
-            b.setDescription("test description");
-            b.setTime("time ");
-            mlist.add(b);
-        }
-        mHandler.sendEmptyMessage(MSG_NOTICE_UPDATA);
-    }
+
 
     public void doSearchByTime(){
         mView.post(new Runnable() {
@@ -188,16 +196,37 @@ public class NoticeFragment extends HomeBaseFragment implements BaseHeaderView.O
     }
 
     public void doSearchByState(final int status){
+
+        switch (status){
+            case 0:
+                mIsRead = false;
+                break;
+            case 1:
+                mIsRead = true;
+                break;
+            case 2:
+                mIsRead = null;
+                break;
+            default:
+                mIsRead = null;
+                break;
+        }
+
+
         mView.post(new Runnable() {
             @Override
             public void run() {
-                Log.i("123","do search by state action="+mNoticeAction);
+//                Log.i("123","do search by state action="+mNoticeAction);
                 mlist.clear();
                 Log.i("123","mlist size="+mlist.size());
-                if (mNoticeAction==null){
-                    mNoticeAction = NoticeAction.getInstance();
-                }
-                mNoticeAction.searchNotices(status);
+//                if (mNoticeAction==null){
+//                    mNoticeAction = NoticeAction.getInstance();
+//                }
+//                mNoticeAction.searchNotices(status);
+
+                mPresenter.reset();
+                mPresenter.queryNotice(null,mIsRead,mTime,null);
+
             }
         });
 
@@ -206,51 +235,15 @@ public class NoticeFragment extends HomeBaseFragment implements BaseHeaderView.O
     @Override
     public void getData(){
         mlist.clear();
-        mNoticeAction.reset();
-        mNoticeAction.getNoticesTask();
+//        mNoticeAction.reset();
+//        mNoticeAction.getNoticesTask();
+        mPresenter.reset().queryNotice(null,mIsRead,mTime,null);
     }
 
 
 
-    @Override
-    public void OnNoticeError() {
-        Log.e("123","on notice error");
-        mHandler.sendEmptyMessage(MSG_NOTICE_ERROR);
-    }
-
-    @Override
-    public void OnNoticeRes(QueryNoticesRes res) {
-        Log.e("123","on notice res");
-        if (res == null){
-            mHandler.sendEmptyMessage(MSG_NOTICE_END);
-        }
-        List<NoticeList> list = res.getNodeList();
-        Log.i("123","mlist="+mlist);
-      //  Log.i("123","node list size"+list.size()+"   mlist size="+mlist.size());
-        if (list==null){
-            mHandler.sendEmptyMessage(MSG_NOTICE_UPDATA);
-            return;
-        }
-        for (NoticeList o:list){
-            NoticeItemBean bean = new NoticeItemBean();
-            bean.setTitle(o.getName())
-                    .setDescription(o.getMessage()).setTime(o.getTime().substring(0, 10)+" "+o.getTime().substring(11,19))
-                    .setPicID(o.getPictureID())
-                    .setId(o.getiD())
-                    .setHasRead(o.getStatus().equals("Read")?true:false);
-            mlist.add(bean);
 
 
-
-//            holder.title.setText(notice.getName());
-//            holder.message.setText(notice.getMessage());
-//            holder.time.setText(notice.getTime().substring(0, 10)+" "+notice.getTime().substring(11,19));
-
-        }
-        mHandler.sendEmptyMessage(MSG_NOTICE_UPDATA);
-
-
-    }
 
 
     private void wheelTimeFun(){
@@ -286,21 +279,71 @@ public class NoticeFragment extends HomeBaseFragment implements BaseHeaderView.O
 //						now.setText(wheelMain.getTime());
                         //"yyyy-MM-dd'T'HH:mm:ss"
                         Date date = wheelMain.getTime();
-                        String time = Util.Date2ISODate(date);
-                        Log.i("123","time ="+time);
+                        mTime = Util.Date2ISODate(date);
+                        Log.i("123","time ="+mTime);
                         mlist.clear();
-                        mNoticeAction.searchNotices(time);
+//                        mNoticeAction.searchNotices(mTime);
+                        mPresenter.reset().queryNotice(null,mIsRead,mTime,null);
+
                     }
                 })
                 .setNeutralButton(getString(R.string.all), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mlist.clear();
-                        mNoticeAction.searchNotices(null);
+                        mTime = null;
+//                        mNoticeAction.searchNotices(null);
+                        mPresenter.reset().queryNotice(null,mIsRead,mTime,null);
                     }
                 })
                 .setNegativeButton(getResources().getString(R.string.cancel), null)
                 .show();
     }
+
+    @Override
+    public void bindPresenter() {
+        if (mPresenter==null){
+            mPresenter = new NoticeSoapPresenter();
+        }
+        mPresenter.bindView(this);
+        mPresenter.init(getContext());
+    }
+
+    @Override
+    public void unbindPresenter() {
+        if (mPresenter!=null) {
+            mPresenter.unbindView();
+        }
+        mPresenter = null;
+    }
+
+    @Override
+    public void onQueryResult(List<NoticeItemBean> lists) {
+        Log.i("123","on query result lists="+lists+"    mlist="+mlist);
+        if (lists!=null) {
+            mlist.addAll(lists);
+        }
+        mHandler.sendEmptyMessage(MSG_NOTICE_UPDATA);
+    }
+
+    @Override
+    public void onError(int flag) {
+        if (flag==0){
+            mHandler.sendEmptyMessage(MSG_NOTICE_END);
+        }else {
+            mHandler.sendEmptyMessage(MSG_NOTICE_ERROR);
+        }
+    }
+
+    @Override
+    public void onStatusError() {
+
+    }
+
+    @Override
+    public void onPicture(NoticeRecyclerViewAdapter.ViewHoder hoder, Bitmap bit, String path, int index) {
+
+    }
+
 
 }

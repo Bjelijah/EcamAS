@@ -7,6 +7,7 @@ import com.howellsdk.net.soap.bean.*;
 import com.howellsdk.utils.SDKDebugLog;
 
 import org.ksoap2.SoapEnvelope;
+import org.ksoap2.serialization.PropertyInfo;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
@@ -2023,12 +2024,18 @@ public class SoapFactory {
             rpc.addProperty("LoginSession", req.getLoginSession());
             if(req.getPageNo() != null) rpc.addProperty("PageNo", req.getPageNo());
             if (req.getPageSize()!=null) rpc.addProperty("PageSize", req.getPageSize());
+            if(req.getSearchID()!=null)rpc.addProperty("SearchID",req.getSearchID());
+            if (req.getStatus()!=null)rpc.addProperty("Status",req.getStatus());
+            if (req.getTime()!=null)rpc.addProperty("Time",req.getTime());
+            if (req.getSender()!=null)rpc.addProperty("Sender",req.getSender());
+            Log.e("123","rpc="+rpc.toString());
             return Observable.create(new ObservableOnSubscribe<NoticesRes>() {
                 @Override
                 public void subscribe(@NonNull ObservableEmitter<NoticesRes> e) throws Exception {
                     NoticesRes res = new NoticesRes();
                     try{
                         SoapObject obj = initEnvelopAndTransport(rpc,"http://www.haoweis.com/HomeServices/MCU/queryNotices");
+                        Log.e("123","obj="+obj.toString());
                         if (obj.getProperty("result").toString().equalsIgnoreCase("ok")){
                             res.setPageNo(Integer.valueOf(obj.getProperty("PageNo").toString()));
                             res.setPageCount(Integer.valueOf(obj.getProperty("PageCount").toString()));
@@ -2076,11 +2083,17 @@ public class SoapFactory {
 
         @Override
         public Observable<Result> flaggedNoticeStatusRes(FlaggedNoticeStatusReq req) {
-            final SoapObject rpc = new SoapObject(mNameSpace, "FlaggedNoticeStatusReq")
+            final SoapObject rpc = new SoapObject(mNameSpace, "flaggedNoticeStatusReq")
                     .addProperty("Account", req.getAccount())
                     .addProperty("LoginSession", req.getLoginSession())
-                    .addProperty("Status", req.getStatus())
-                    .addProperty("NoticeID", req.getNoticeID());
+                    .addProperty("Status", req.getStatus());
+
+            PropertyInfo p = new PropertyInfo();
+            for (int i=0;i<req.getNoticeID().length;i++){
+                p.setName("NoticeID");
+                p.setValue(req.getNoticeID()[i]);
+            }
+            rpc.addProperty(p);
             return Observable.create(new ObservableOnSubscribe<Result>() {
                 @Override
                 public void subscribe(@NonNull ObservableEmitter<Result> e) throws Exception {

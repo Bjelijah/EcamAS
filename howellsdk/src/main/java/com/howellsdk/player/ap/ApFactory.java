@@ -5,9 +5,11 @@ import android.support.annotation.Nullable;
 import com.howell.jni.JniUtil;
 import com.howellsdk.api.HWPlayApi;
 import com.howellsdk.audio.AudioAction;
+
 import com.howellsdk.player.HwBasePlay;
 import com.howellsdk.player.ap.bean.ApTimeBean;
 import com.howellsdk.player.turn.bean.PTZ_CMD;
+import com.howellsdk.utils.Util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -125,6 +127,10 @@ public class ApFactory {
         @Override
         public boolean getRecordedFiles(String beg, String end,@Nullable Integer nowPage,@Nullable Integer pageSize) {
 
+            ApTimeBean [] timeBeen = phaseTime(beg,end);
+
+
+
 
             return false;
         }
@@ -192,4 +198,42 @@ public class ApFactory {
             return 0;
         }
     }
+
+    private ApTimeBean [] phaseTime(String startTime,String endTime){
+        ApTimeBean [] beans = new ApTimeBean[2];
+        Date dateStart = null;
+        Date dateEnd = null;
+        Calendar calendar = Calendar.getInstance();
+//        SimpleDateFormat sdf = new SimpleDateFormat(
+//                "yyyy-MM-dd'T'HH:mm:ss");
+//        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+//
+//        try {
+//            dateStart = sdf.parse(startTime);
+//            dateEnd  = sdf.parse(endTime);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+        dateStart = Util.ISODateString2ISODate(startTime);
+        dateEnd = Util.ISODateString2ISODate(endTime);
+
+
+        calendar.setTime(dateEnd);
+        beans[1] = new ApTimeBean((short) (calendar.get(calendar.YEAR)),(short)(1+calendar.get(calendar.MONTH)),
+                (short)(calendar.get(calendar.DAY_OF_WEEK)-1),(short)calendar.get(calendar.DAY_OF_MONTH),
+                (short)calendar.get(calendar.HOUR_OF_DAY),(short)calendar.get(calendar.MINUTE),
+                (short)calendar.get(calendar.SECOND),(short)calendar.get(calendar.MILLISECOND));
+        if (dateStart.getYear()==70){
+            calendar.add(Calendar.MONTH,-2);//2 month before
+        }else{
+            calendar.setTime(dateStart);
+        }
+
+        beans[0] = new ApTimeBean((short) (calendar.get(calendar.YEAR)),(short)(1+calendar.get(calendar.MONTH)),
+                (short)(calendar.get(calendar.DAY_OF_WEEK)-1),(short)calendar.get(calendar.DAY_OF_MONTH),
+                (short)calendar.get(calendar.HOUR_OF_DAY),(short)calendar.get(calendar.MINUTE),
+                (short)calendar.get(calendar.SECOND),(short)calendar.get(calendar.MILLISECOND));
+        return beans;
+    }
+
 }

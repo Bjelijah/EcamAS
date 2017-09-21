@@ -121,9 +121,9 @@ public class EcamFactory {
             String sdpMessage = Base64.encode(localSDP.getBytes());
             String s = mCB.getBase64RemoteSDP(isSub,dilogID,sdpMessage);
             if (s==null)return false;
-//            Log.i("123","s="+s);
+            Log.i("123","s="+s);
             String remoteSDP = new String(Base64.decode(s));
-//            Log.i("123","remoteSPD = "+remoteSDP);
+            Log.i("123","remoteSPD = "+remoteSDP);
             JniUtil.ecamHandleRemoteSDP(dilogID,remoteSDP);
             isInvited = true;
             return true;

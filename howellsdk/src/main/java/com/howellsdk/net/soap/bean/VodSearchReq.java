@@ -35,7 +35,7 @@ public class VodSearchReq {
     public VodSearchReq() {
     }
 
-    public VodSearchReq(String account, String session, String devID, int channelNo, int streamType, String startTime, String endTime, int pageNo, String searchID, int pageSize) {
+    public VodSearchReq(String account, String session, String devID, int channelNo, int streamType, String startTime, String endTime,String searchID, int pageNo,  int pageSize) {
 
         this.account = account;
         this.session = session;

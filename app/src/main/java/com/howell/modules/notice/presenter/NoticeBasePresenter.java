@@ -1,27 +1,24 @@
-package com.howell.modules.device.presenter;
+package com.howell.modules.notice.presenter;
 
 import android.content.Context;
 
 import com.howell.action.ConfigAction;
 import com.howell.modules.BasePresenter;
 import com.howell.modules.ImpBaseView;
-import com.howell.modules.device.IDeviceContract;
-import com.howell.utils.ServerConfigSp;
-import com.howell.utils.UserConfigSp;
+import com.howell.modules.notice.INoticeContract;
 
 /**
- * Created by Administrator on 2017/9/15.
+ * Created by Administrator on 2017/9/18.
  */
 
-public abstract class DeviceBasePresenter extends BasePresenter implements IDeviceContract.IPresenter {
-    IDeviceContract.IVew mView;
+public abstract class NoticeBasePresenter extends BasePresenter implements INoticeContract.IPresenter {
     Context mContext;
+    INoticeContract.IVew mView;
     String mURL;
-    boolean mIsTurn;
     String mAccount;
     @Override
     public void bindView(ImpBaseView view) {
-       mView = (IDeviceContract.IVew) view;
+        mView = (INoticeContract.IVew) view;
     }
 
     @Override
@@ -35,7 +32,6 @@ public abstract class DeviceBasePresenter extends BasePresenter implements IDevi
         mContext = context;
         ConfigAction cf = ConfigAction.getInstance(context);
         mURL = cf.getURL();
-        mIsTurn = ServerConfigSp.loadServerIsTurn(context);
-        mAccount = UserConfigSp.loadUserName(context);
+        mAccount = cf.getName();
     }
 }

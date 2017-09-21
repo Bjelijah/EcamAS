@@ -55,5 +55,15 @@ public class NoticesRes {
 	public void setNoticeList(ArrayList<NoticeList> noticeList) {
 		this.noticeList = noticeList;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "NoticesRes{" +
+				"result='" + result + '\'' +
+				", pageNo=" + pageNo +
+				", pageCount=" + pageCount +
+				", recordCount=" + recordCount +
+				", noticeList=" + noticeList +
+				'}';
+	}
 }

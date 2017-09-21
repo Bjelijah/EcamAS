@@ -75,10 +75,11 @@ public class DeviceSoapPresenter extends DeviceBasePresenter {
 
 
     @Override
-    public void queryDevices(final String account) {
+    public void queryDevices() {
+
         ApiManager.getInstance()
                 .getSoapService(mURL)
-                .queryDeviceStatus(new DeviceStatusReq(account,ApiManager.SoapHelp.getsSession()))
+                .queryDeviceStatus(new DeviceStatusReq(mAccount,ApiManager.SoapHelp.getsSession()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Function<DeviceStatusRes, ArrayList<DeviceStatusRes.Node>>() {
@@ -129,13 +130,14 @@ public class DeviceSoapPresenter extends DeviceBasePresenter {
                     private List<APDeviceDBBean> getAPCameraList(Context context, String userName){
                         ApDeviceDao dao = new ApDeviceDao(context,"user.db",1);
                         List<APDeviceDBBean> beanList =  dao.queryByName(userName);
+                        Log.i("123","beanList="+beanList.toString()+"  username="+userName);
                         dao.close();
                         return beanList;
                     }
 
                     @Override
                     public List<CameraItemBean> apply(@NonNull List<CameraItemBean> cameraItemBeen) throws Exception {
-                        List<APDeviceDBBean> apList = getAPCameraList(mContext,account);
+                        List<APDeviceDBBean> apList = getAPCameraList(mContext,mAccount);
                         for (APDeviceDBBean apBean : apList){
                             CameraItemBean camBean = new CameraItemBean()
                                     .setType(PlayType.HW5198)
@@ -164,7 +166,7 @@ public class DeviceSoapPresenter extends DeviceBasePresenter {
 
                     @Override
                     public void onSuccess(@NonNull List<CameraItemBean> cameraItemBean) {
-                        mView.queryResult(cameraItemBean);
+                        mView.onQueryResult(cameraItemBean);
                     }
 
                     @Override
