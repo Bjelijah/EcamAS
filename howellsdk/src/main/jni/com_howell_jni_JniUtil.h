@@ -367,6 +367,17 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetVideoListPageCount
 JNIEXPORT jobjectArray JNICALL Java_com_howell_jni_JniUtil_netGetVideoListAll
   (JNIEnv *, jclass, jint);
 
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    netGetStreamLenSomeTime
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetStreamLenSomeTime
+        (JNIEnv *, jclass);
+
+
+
 /*
  * Class:     com_howell_jni_JniUtil
  * Method:    netCloseVideoList

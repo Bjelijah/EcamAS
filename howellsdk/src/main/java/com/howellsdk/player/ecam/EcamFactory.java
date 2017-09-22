@@ -150,8 +150,10 @@ public class EcamFactory {
 
         @Override
         public void unBindCam() {
-            super.unBindCam();
+            JniUtil.releasePlay();
             JniUtil.ecamDeinit();
+            super.unBindCam();
+
 
         }
 

@@ -22,6 +22,7 @@ public abstract class PlayBasePresenter extends BasePresenter implements IPlayCo
     Context mContext;
     String mAccount;
     CameraItemBean mBean;
+    String mLastVODTime = "";
     protected static final int F_TIME = 1;//刷新率  s
     @Override
     public void bindView(ImpBaseView view) {

@@ -3,9 +3,12 @@ package com.howellsdk.api;
 import android.support.annotation.Nullable;
 
 import com.howellsdk.net.soap.bean.NATServerRes;
+import com.howellsdk.player.ap.bean.ReplayFile;
 import com.howellsdk.player.turn.bean.PTZ_CMD;
 import com.howellsdk.player.turn.bean.TurnGetRecordedFileAckBean;
 import com.howellsdk.player.turn.bean.TurnSubScribeAckBean;
+
+import java.util.ArrayList;
 
 /**
  * Created by Administrator on 2017/8/25.
@@ -31,7 +34,7 @@ public interface HWPlayApi {
     int getStreamLen();
     long getFirstTimestamp();
     long getTimestamp();
-
+    void catchPic(String path);
 
 
     interface ITurnCB{
@@ -47,6 +50,10 @@ public interface HWPlayApi {
         String getBase64RemoteSDP(boolean isSub,String dilogID,String sdpMessage);
         NATServerRes getNATServer();
         void onError(int flag);
+    }
+
+    interface IAPCamCB{
+        void onRecordFileList(ArrayList<ReplayFile> files);
     }
 
 }

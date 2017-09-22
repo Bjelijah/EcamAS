@@ -4,7 +4,7 @@ package com.howell.entityclass;
  *
  * 类说明
  */
-public class Crypto {
+public class Crypto extends com.howellsdk.player.ecam.bean.Crypto {
 	private int enable;
 
 	public Crypto(int enable) {

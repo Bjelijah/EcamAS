@@ -239,8 +239,9 @@ public class TurnFactory {
 
         @Override
         public void unBindCam() {
-            super.unBindCam();
+            JniUtil.releasePlay();
             deinit();
+            super.unBindCam();
         }
 
         @Override

@@ -17,8 +17,9 @@ import java.util.List;
 
 public interface IPlayContract {
     interface IVew extends ImpBaseView{
+        void onConnect(boolean isSuccess);
         void onRecord(List<VODRecord> vodRecords);
-        void onError(int flag);
+        void onError(int flag);//0 error  1 need relink
         void onTime(int speed,long timestamp,long firstTimestamp);
     }
     interface IPresent extends ImpBasePresenter{

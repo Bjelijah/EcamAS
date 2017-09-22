@@ -1,21 +1,18 @@
 package com.howell.bean;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Handler;
 
-import android.provider.MediaStore;
 import android.util.Log;
 
 import com.howell.action.AudioAction;
 import com.howell.action.LoginAction;
-import com.howell.action.PTZControlAction;
 import com.howell.action.PlayAction;
 import com.howell.activity.BasePlayActivity;
 import com.howell.entityclass.Crypto;
-import com.howell.entityclass.StreamReqContext;
-import com.howell.entityclass.StreamReqIceOpt;
-import com.howell.entityclass.VODRecord;
+
+
+
 import com.howell.jni.JniUtil;
 import com.howell.protocol.GetDevVerReq;
 import com.howell.protocol.GetDevVerRes;
@@ -33,13 +30,14 @@ import com.howell.protocol.SoapManager;
 import com.howell.protocol.VodSearchRes;
 import com.howell.utils.DeviceVersionUtils;
 import com.howell.utils.IConst;
+import com.howellsdk.player.ecam.bean.StreamReqContext;
+import com.howellsdk.player.ecam.bean.StreamReqIceOpt;
 
 import org.kobjects.base64.Base64;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.Timer;
@@ -337,7 +335,7 @@ public class ECamMgr implements ICam,IConst {
     }
 
     @Override
-    public ArrayList<VODRecord> getVideoList() {
+    public ArrayList<com.howell.entityclass.VODRecord> getVideoList() {
         return mVodSearchRes==null?null:mVodSearchRes.getRecord();
     }
 

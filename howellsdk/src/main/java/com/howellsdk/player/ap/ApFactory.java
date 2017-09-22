@@ -8,11 +8,13 @@ import com.howellsdk.audio.AudioAction;
 
 import com.howellsdk.player.HwBasePlay;
 import com.howellsdk.player.ap.bean.ApTimeBean;
+import com.howellsdk.player.ap.bean.ReplayFile;
 import com.howellsdk.player.turn.bean.PTZ_CMD;
 import com.howellsdk.utils.Util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -25,15 +27,18 @@ public class ApFactory {
     String ip;
     int slot;
     int isCrypto;
-    private ApFactory(String ip,int slot,int isCrypto){
+    HWPlayApi.IAPCamCB cb;
+    private ApFactory(String ip,int slot,int isCrypto,HWPlayApi.IAPCamCB cb){
         this.ip = ip;
         this.slot = slot;
         this.isCrypto = isCrypto;
+        this.cb = cb;
     }
     public static final class Builder{
         String ip;
         int slot;
         int isCrypto;
+        HWPlayApi.IAPCamCB cb;
         public Builder setIP(String ip){
             this.ip = ip;
             return this;
@@ -46,9 +51,13 @@ public class ApFactory {
             isCrypto = crypto;
             return this;
         }
+        public Builder setCallback(HWPlayApi.IAPCamCB cb){
+            this.cb = cb;
+            return this;
+        }
 
         public ApFactory build(){
-            return new ApFactory(ip,slot,isCrypto);
+            return new ApFactory(ip,slot,isCrypto,cb);
         }
     }
     public HWPlayApi create(){
@@ -57,7 +66,7 @@ public class ApFactory {
 
     public final class ApProduct extends HwBasePlay{
         boolean lastIsPlayback = false;
-        int mCurCount;
+
         @Override
         public HWPlayApi bindCam() {
             super.bindCam();
@@ -128,11 +137,20 @@ public class ApFactory {
         public boolean getRecordedFiles(String beg, String end,@Nullable Integer nowPage,@Nullable Integer pageSize) {
 
             ApTimeBean [] timeBeen = phaseTime(beg,end);
+            int count = 0;
+            if (nowPage==null||pageSize==null){
+                count = JniUtil.netGetVideoListCount(timeBeen[0],timeBeen[1]);
+            }else{
+                count = JniUtil.netGetVideoListPageCount(timeBeen[0],timeBeen[1],nowPage,pageSize);
+            }
+            ReplayFile[] replayFiles = JniUtil.netGetVideoListAll(count);
+            ArrayList<ReplayFile> lists = new ArrayList<>();
+            for (int i=0;i<replayFiles.length;i++){
+                lists.add(replayFiles[i]);
+            }
+            cb.onRecordFileList(lists);
 
-
-
-
-            return false;
+            return true;
         }
 
         @Override
@@ -185,17 +203,17 @@ public class ApFactory {
 
         @Override
         public int getStreamLen() {
-            return 0;
+            return JniUtil.netGetStreamLenSomeTime();
         }
 
         @Override
         public long getFirstTimestamp() {
-            return 0;
+            return JniUtil.getFirstTimeStamp();
         }
 
         @Override
         public long getTimestamp() {
-            return 0;
+            return JniUtil.getTimeStamp();
         }
     }
 

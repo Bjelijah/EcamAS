@@ -875,7 +875,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_howell_jni_JniUtil_netGetVideoListAll
     if(res == NULL) return NULL;
     if (res->file_list_handle==-1)return NULL;
     SYSTEMTIME beg,end;
-    jclass clz              = env->FindClass("com/howellsdk/player/ap/bean/ReplayFile");
+    jclass clz              = env->FindClass("com/howell/bean/ReplayFile");
     jfieldID _begYearId     = env->GetFieldID(clz,"begYear","S");
     jfieldID _begMounthId   = env->GetFieldID(clz,"begMonth","S");
     jfieldID _begDayId      = env->GetFieldID(clz,"begDay","S");

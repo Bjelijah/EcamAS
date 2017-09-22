@@ -19,6 +19,7 @@
 #include <ecamstreamreq.h>
 #include <g711/g711.h>
 #include <protocol_type.h>
+#include <stream_type.h>
 
 
 #define LOGI(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_INFO, "JNI", __VA_ARGS__):(void)NULL)
@@ -94,6 +95,8 @@ struct StreamResource
     int isFirstTime;
     long firstTimestamp;
     long timestamp;
+    int stream_len;
+
 };
 static struct StreamResource * res = NULL;
 
@@ -689,7 +692,7 @@ void hi265InputData(const char *buf,int len){
 
 void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* buf,int len,long userdata){
     //__android_log_print(ANDROID_LOG_INFO, "jni", "-------------stream_type %d-len %d",stream_type,len);
-//    res->stream_len += len;
+    res->stream_len += len;
     if(res == NULL){
         return;
     }
@@ -708,7 +711,7 @@ void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* bu
 }
 
 void on_file_stream_fun(FILE_STREAM_HANDLE handle,const char *buf,int len,long userdata){
-//    res->stream_len += len;
+    res->stream_len += len;
     if(res == NULL){
         return;
     }
@@ -769,6 +772,7 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netInit
         res->firstTimestamp = 0;
         res->timestamp = 0;
         res->file_list_handle = -1;
+        res->stream_len = 0;
         pthread_mutex_init(&res->lock_play,NULL);
         sem_init(&res->sem_play,0,0);
     }
@@ -1004,8 +1008,14 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
     LOGE(" code= 0x%x",media_head.vdec_code);
     if (isCrypto==1){
         media_head.vdec_code = VDEC_H264_ENCRYPT;//加密  用于bao VDEC_H264     VDEC_H264_ENCRYPT INZ_200系列
-    }else{
+    }else if(isCrypto == 0){
         media_head.vdec_code = VDEC_H264;//未加密 用于 ap
+    }else if(isCrypto == 2){
+        media_head.vdec_code = VDEC_HIS_H265;//h265
+    }else if(isCrypto == 3){
+        media_head.vdec_code = VDEC_HISH265_ENCRYPT;//h265 加密
+    }else {
+        media_head.vdec_code = VDEC_H264;//默认 未加密 h264 用于 ap
     }
 
     PLAY_HANDLE  ph = hwplay_open_stream((char*)&media_head,sizeof(media_head),1024*1024,isPlayBack,area);
@@ -1068,7 +1078,7 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netStopPlay
         hwnet_close_file_stream(res->file_stream_handle);
         res->file_stream_handle = -1;
     }
-//    res->stream_len = 0;
+    res->stream_len = 0;
 }
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_stopView
@@ -1189,14 +1199,99 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetVideoListCount
     return res->total_file_list_count;
 }
 
-JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetVideoListPageCount
-        (JNIEnv *, jclass, jobject, jobject, jint, jint){
+void netCloseFileListNecessary(){
+    if (res==NULL)return;
+    if (res->file_list_handle==-1)return;
+    hwnet_close_file_list(res->file_list_handle);
+    res->file_list_handle = -1;
+}
 
-
-
+JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netCloseVideoList
+        (JNIEnv *, jclass){
+    netCloseFileListNecessary();
 }
 
 
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetStreamLenSomeTime
+        (JNIEnv *, jclass){
+    if (res == NULL)return -1;
+    int len = res->stream_len;
+    res->stream_len=0;
+    return len;
+}
+
+
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetVideoListPageCount
+        (JNIEnv *env, jclass, jobject begObj, jobject endObj, jint pageSize, jint curPageNo){
+    if(res==NULL)return -1;
+    if (res->play_handle==-1)return -1;
+    SYSTEMTIME beg,end;
+    memset(&beg,0,sizeof(beg));
+    memset(&end,0,sizeof(end));
+    fill_net_time(env,begObj,&beg);
+    fill_net_time(env,endObj,&end);
+    Pagination page;
+    memset(&page,0,sizeof(page));
+    page.page_size = pageSize;
+    page.page_no = curPageNo;
+
+    netCloseFileListNecessary();
+
+    res->file_list_handle = hwnet_get_file_list_by_page(res->play_handle,0,1,beg,end,0,1,0,&page);
+    res->total_file_list_count = page.page_count;
+    return res->file_list_handle>-1?page.page_count:-1;
+}
+
+
+JNIEXPORT jobjectArray JNICALL Java_com_howell_jni_JniUtil_netGetVideoListAll
+        (JNIEnv *env, jclass, jint count){
+    if(res == NULL) return NULL;
+    if (res->file_list_handle==-1)return NULL;
+    SYSTEMTIME beg,end;
+    jclass clz              = env->FindClass("com/howellsdk/player/ap/bean/ReplayFile");
+    jfieldID _begYearId     = env->GetFieldID(clz,"begYear","S");
+    jfieldID _begMounthId   = env->GetFieldID(clz,"begMonth","S");
+    jfieldID _begDayId      = env->GetFieldID(clz,"begDay","S");
+    jfieldID _begHourId     = env->GetFieldID(clz,"begHour","S");
+    jfieldID _begMinId      = env->GetFieldID(clz,"begMin","S");
+    jfieldID _begSecId      = env->GetFieldID(clz,"begSec","S");
+
+    jfieldID _endYearId     = env->GetFieldID(clz,"endYear","S");
+    jfieldID _endMounthId   = env->GetFieldID(clz,"endMount","S");
+    jfieldID _endDayId      = env->GetFieldID(clz,"endDay","S");
+    jfieldID _endHourId     = env->GetFieldID(clz,"endHour","S");
+    jfieldID _endMinId      = env->GetFieldID(clz,"endMin","S");
+    jfieldID _endSecId      = env->GetFieldID(clz,"endSec","S");
+    jmethodID consId        = env->GetMethodID(clz,"<init>","()V");
+
+    jobjectArray arry = env->NewObjectArray(count,clz,NULL);
+    jobject obj;
+    int type = 0;
+    for(int i=0;i<count;i++){
+        memset(&beg,0,sizeof(beg));
+        memset(&end,0,sizeof(end));
+        if (hwnet_get_file_detail(res->file_list_handle,i,&beg,&end,&type)==1){
+            obj = env->NewObject(clz,consId);
+            env->SetShortField(obj,_begYearId,beg.wYear);
+            env->SetShortField(obj,_begMounthId,beg.wMonth);
+            env->SetShortField(obj,_begDayId,beg.wDay);
+            env->SetShortField(obj,_begHourId,beg.wHour);
+            env->SetShortField(obj,_begMinId,beg.wMinute);
+            env->SetShortField(obj,_begSecId,beg.wSecond);
+            env->SetShortField(obj,_endYearId,end.wYear);
+            env->SetShortField(obj,_endMounthId,end.wMonth);
+            env->SetShortField(obj,_endDayId,end.wDay);
+            env->SetShortField(obj,_endHourId,end.wHour);
+            env->SetShortField(obj,_endMinId,end.wMinute);
+            env->SetShortField(obj,_endSecId,end.wSecond);
+
+            env->SetObjectArrayElement(arry,i,obj);
+        }else {
+            break;
+        }
+    }
+    return arry;
+}
 
 
 

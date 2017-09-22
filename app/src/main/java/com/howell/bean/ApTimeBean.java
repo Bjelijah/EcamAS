@@ -4,7 +4,7 @@ package com.howell.bean;
  * Created by Administrator on 2017/1/11.
  */
 
-public class ApTimeBean {
+public class ApTimeBean extends com.howellsdk.player.ap.bean.ApTimeBean {
     short year;
     short month;
     short dayOfWeek;

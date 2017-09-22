@@ -9,6 +9,7 @@ import com.howellsdk.net.http.utils.MD5;
 import com.howellsdk.net.soap.SoapFactory;
 import com.howellsdk.net.soap.bean.NATServerRes;
 import com.howellsdk.net.websocket.WebSocketFactory;
+import com.howellsdk.player.ap.ApFactory;
 import com.howellsdk.player.ecam.EcamFactory;
 import com.howellsdk.player.turn.TurnFactory;
 import com.howellsdk.utils.SSLConection;
@@ -50,7 +51,7 @@ public class ApiManager {
     private HWHttpApi mHWHttpApi;
     private HWSoapApi mHWSoapApi;
     private HWWebSocketApi mHWWebSocketApi;
-    private HWPlayApi mHWTurnApi,mHWEcamApi;
+    private HWPlayApi mHWTurnApi,mHWEcamApi,mHWApcamApi;
     public ApiManager initHttpClient(Context context, boolean isSSL){
         if (mClient==null){
             try {
@@ -206,6 +207,23 @@ public class ApiManager {
     public HWPlayApi getEcamService(){
         if (mHWEcamApi==null) throw new NullPointerException("api=null");
         return mHWEcamApi;
+    }
+
+    public HWPlayApi getAPcamService(){
+        if (mHWApcamApi==null)throw new NullPointerException("api=null");
+        return mHWApcamApi;
+    }
+
+    public HWPlayApi getAPcamService(String ip,int slot,int crypto,HWPlayApi.IAPCamCB cb){
+        if (mHWApcamApi==null){
+            mHWApcamApi = new ApFactory.Builder()
+                    .setIP(ip)
+                    .setSlot(slot)
+                    .setCrypto(crypto)
+                    .setCallback(cb)
+                    .build().create();
+        }
+        return mHWApcamApi;
     }
 
 

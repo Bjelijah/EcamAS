@@ -60,6 +60,7 @@ public class JniUtil {
 	public static native int isPause();
 	public static native void netStopPlay();
 	public static native void stopView();
+	public static native int netGetStreamLenSomeTime();
 	public static native long getFirstTimeStamp();
 	public static native long getTimeStamp();
 

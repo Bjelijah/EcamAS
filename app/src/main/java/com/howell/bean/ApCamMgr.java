@@ -12,6 +12,7 @@ import com.howell.db.ApDeviceDao;
 import com.howell.entityclass.VODRecord;
 import com.howell.jni.JniUtil;
 import com.howell.utils.ServerConfigSp;
+import com.howellsdk.player.ap.bean.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -298,10 +299,10 @@ public class ApCamMgr implements ICam {
     @Override
     public ArrayList<VODRecord> getVideoList() {
         if (mCurCount<=0)return null;
-        ReplayFile[] replayFiles = JniUtil.netGetVideoListAll(mCurCount);
-        List<ReplayFile> list = Arrays.asList(replayFiles);
+        com.howellsdk.player.ap.bean.ReplayFile[] replayFiles = JniUtil.netGetVideoListAll(mCurCount);
+        List<com.howellsdk.player.ap.bean.ReplayFile> list = Arrays.asList(replayFiles);
         ArrayList<VODRecord> vodList = new ArrayList<VODRecord>();
-        for(ReplayFile f:list){
+        for(com.howellsdk.player.ap.bean.ReplayFile f:list){
             StringBuffer begSb = new StringBuffer()
                     .append(f.getBegYear()).append("-")
                     .append(f.getBegMonth()).append("-")

@@ -1,8 +1,10 @@
 package com.howell.jni;
 
-import com.howell.bean.ApTimeBean;
-import com.howell.bean.ReplayFile;
-import com.howell.entityclass.StreamReqContext;
+
+
+import com.howellsdk.player.ap.bean.ApTimeBean;
+import com.howellsdk.player.ap.bean.ReplayFile;
+import com.howellsdk.player.ecam.bean.StreamReqContext;
 
 public class JniUtil {
 	static{
@@ -42,7 +44,7 @@ public class JniUtil {
 	public static native boolean login(String ip);//no using
 	public static native boolean loginOut();//no using
 	public static native void setCallBackObj(Object o);
-	public static native void setPlayBackTime(ApTimeBean beg,ApTimeBean end);
+	public static native void setPlayBackTime(ApTimeBean beg, ApTimeBean end);
 	public static native boolean netReadyPlay(int isCrypto,int isPlayBack,int slot,int isSub);
 	public static native boolean readyPlay(Object CodecBean,int isPlayBack);//vCodeFlag:0 ap,1 ecam,2 h265  //aCodeFlag 0 aac ,1g711u
 	public static native void releasePlay();

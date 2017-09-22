@@ -23,6 +23,7 @@ import com.howellsdk.net.soap.bean.PtzControlReq;
 import com.howellsdk.net.soap.bean.Result;
 import com.howellsdk.net.soap.bean.VodSearchReq;
 import com.howellsdk.net.soap.bean.VodSearchRes;
+import com.howellsdk.utils.RxUtil;
 import com.howellsdk.utils.ThreadUtil;
 
 import org.kobjects.base64.Base64;
@@ -40,6 +41,7 @@ import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BooleanSupplier;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -55,7 +57,7 @@ public class PlayEcamPresenter extends PlayBasePresenter {
     private int mCurPage = 1;
     private final int mPageSize = 20;
     private int mTotalPage;
-    private String mLastVODTime = "";
+
 
     private PublishSubject mMission = null;
     private void login(){
@@ -67,7 +69,6 @@ public class PlayEcamPresenter extends PlayBasePresenter {
         if (mMission!=null){
             mMission.onNext(false);
             mMission=null;
-
         }
     }
 
@@ -115,69 +116,103 @@ public class PlayEcamPresenter extends PlayBasePresenter {
 
 
     @Override
-    public void init(Context context, CameraItemBean bean) {
+    public void init(Context context, final CameraItemBean bean) {
         super.init(context,bean);
-        ApiManager.getInstance().getEcamService(mAccount, bean.getUpnpIP(), bean.getUpnpPort(), bean.getMethodType(), new HWPlayApi.IEcamCB() {
-            String remoteSPD;
-            NATServerRes nat;
-            @Override
-            public String getBase64RemoteSDP(boolean isSub, String dilogID, String sdpMessage) {
-                ApiManager.getInstance().getSoapService()
-                        .invite(new InviteReq(
-                                mAccount,
-                                ApiManager.SoapHelp.getsSession(),
-                                mBean.getDeviceId(),
-                                mBean.getChannelNo(),
-                                isSub?"Sub":"Main",
-                                dilogID,
-                                sdpMessage
-                        ))
-                        .map(new Function<InviteRes, String>() {
-                            @Override
-                            public String apply(@NonNull InviteRes inviteRes) throws Exception {
-                                return inviteRes.getSdpMessage();
-                            }
-                        })
-                        .subscribe(new Consumer<String>() {
-                            @Override
-                            public void accept(String s) throws Exception {
-                                remoteSPD = s;
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                throwable.printStackTrace();
-                                remoteSPD = null;
-                            }
-                        });
-                return remoteSPD;
-            }
+
+        Observable.create(new ObservableOnSubscribe<Boolean>() {
 
             @Override
-            public NATServerRes getNATServer() {
-                ApiManager.getInstance().getSoapService()
-                        .getNATServer(new NATServerReq(mAccount,ApiManager.SoapHelp.getsSession()))
-                        .subscribe(new Consumer<NATServerRes>() {
-                            @Override
-                            public void accept(NATServerRes natServerRes) throws Exception {
-                                nat = natServerRes;
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                throwable.printStackTrace();
-                                nat = null;
-                            }
-                        });
-                return nat;
-            }
+            public void subscribe(@NonNull ObservableEmitter<Boolean> e) throws Exception {
+                boolean ret = ApiManager.getInstance().getEcamService(mAccount, bean.getUpnpIP(), bean.getUpnpPort(), bean.getMethodType(), new HWPlayApi.IEcamCB() {
+                    String remoteSPD;
+                    NATServerRes nat;
+                    @Override
+                    public String getBase64RemoteSDP(boolean isSub, String dilogID, String sdpMessage) {
+                        ApiManager.getInstance().getSoapService()
+                                .invite(new InviteReq(
+                                        mAccount,
+                                        ApiManager.SoapHelp.getsSession(),
+                                        mBean.getDeviceId(),
+                                        mBean.getChannelNo(),
+                                        isSub?"Sub":"Main",
+                                        dilogID,
+                                        sdpMessage
+                                ))
+                                .map(new Function<InviteRes, String>() {
+                                    @Override
+                                    public String apply(@NonNull InviteRes inviteRes) throws Exception {
+                                        return inviteRes.getSdpMessage();
+                                    }
+                                })
+                                .subscribe(new Consumer<String>() {
+                                    @Override
+                                    public void accept(String s) throws Exception {
+                                        remoteSPD = s;
+                                    }
+                                }, new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(Throwable throwable) throws Exception {
+                                        throwable.printStackTrace();
+                                        remoteSPD = null;
+                                    }
+                                });
+                        return remoteSPD;
+                    }
 
-            @Override
-            public void onError(int flag) {
-                Log.e("123","cb on error flag="+flag);
+                    @Override
+                    public NATServerRes getNATServer() {
+                        ApiManager.getInstance().getSoapService()
+                                .getNATServer(new NATServerReq(mAccount,ApiManager.SoapHelp.getsSession()))
+                                .subscribe(new Consumer<NATServerRes>() {
+                                    @Override
+                                    public void accept(NATServerRes natServerRes) throws Exception {
+                                        nat = natServerRes;
+                                    }
+                                }, new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(Throwable throwable) throws Exception {
+                                        throwable.printStackTrace();
+                                        nat = null;
+                                    }
+                                });
+                        return nat;
+                    }
+
+                    @Override
+                    public void onError(int flag) {
+                        Log.e("123","cb on error flag="+flag);
+                    }
+                })
+                        .bindCam().connect();
+                e.onNext(ret);
             }
         })
-                .bindCam().connect();
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        addDisposable(d);
+                    }
+
+                    @Override
+                    public void onNext(@NonNull Boolean aBoolean) {
+                        mView.onConnect(aBoolean);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        mView.onError(0);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i("123","ecam connect finish");
+                    }
+                });
+
+
+
 
     }
 
@@ -190,25 +225,35 @@ public class PlayEcamPresenter extends PlayBasePresenter {
 
     @Override
     public void play(final boolean isSub) {
-        Observable.create(new ObservableOnSubscribe<String>() {
+        Observable.create(new ObservableOnSubscribe<Boolean>() {
             @Override
-            public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
+            public void subscribe(@NonNull ObservableEmitter<Boolean> e) throws Exception {
                 ApiManager.getInstance().getEcamService()
                         .play(isSub);
-                e.onNext("play ok");
+                e.onNext(true);
             }
         })      .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
+                .subscribe(new Observer<Boolean>() {
                     @Override
-                    public void accept(String s) throws Exception {
-                        Log.i("123",s);
+                    public void onSubscribe(@NonNull Disposable d) {
+                        addDisposable(d);
+                    }
+
+                    @Override
+                    public void onNext(@NonNull Boolean aBoolean) {
                         startTimeTask();
                     }
-                }, new Consumer<Throwable>() {
+
                     @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        throwable.printStackTrace();
+                    public void onError(@NonNull Throwable e) {
+                        e.printStackTrace();
+                        mView.onError(1);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
                     }
                 });
 
@@ -216,26 +261,36 @@ public class PlayEcamPresenter extends PlayBasePresenter {
 
     @Override
     public void playback(final boolean isSub, final String beg, final String end) {
-        Observable.create(new ObservableOnSubscribe<String>() {
+        Observable.create(new ObservableOnSubscribe<Boolean>() {
             @Override
-            public void subscribe(@NonNull ObservableEmitter<String> e) throws Exception {
+            public void subscribe(@NonNull ObservableEmitter<Boolean> e) throws Exception {
                 ApiManager.getInstance().getEcamService()
                         .playback(isSub,beg,end);
-                e.onNext("play back ok");
+                e.onNext(true);
             }
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
+                .subscribe(new Observer<Boolean>() {
                     @Override
-                    public void accept(String s) throws Exception {
-                        Log.i("123",s);
+                    public void onSubscribe(@NonNull Disposable d) {
+                        addDisposable(d);
+                    }
+
+                    @Override
+                    public void onNext(@NonNull Boolean aBoolean) {
                         startTimeTask();
                     }
-                }, new Consumer<Throwable>() {
+
                     @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        throwable.printStackTrace();
+                    public void onError(@NonNull Throwable e) {
+                        e.printStackTrace();
+                        mView.onError(0);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
                     }
                 });
 
@@ -243,10 +298,16 @@ public class PlayEcamPresenter extends PlayBasePresenter {
 
     @Override
     public void stop() {
-        ApiManager.getInstance()
-                .getEcamService()
-                .stop();
-        stopTimeTask();
+        RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<Object>() {
+            @Override
+            public void doTask() {
+                ApiManager.getInstance()
+                        .getEcamService()
+                        .stop();
+                stopTimeTask();
+            }
+        });
+
     }
 
     @Override
@@ -257,10 +318,16 @@ public class PlayEcamPresenter extends PlayBasePresenter {
     }
 
     @Override
-    public void playMoveTo(boolean isSub, String beg, String end) {
-        ApiManager.getInstance()
-                .getEcamService()
-                .reLink(true,beg,end);
+    public void playMoveTo(boolean isSub, final String beg, final String end) {
+        RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<Object>() {
+            @Override
+            public void doTask() {
+                ApiManager.getInstance()
+                        .getEcamService()
+                        .reLink(true,beg,end);
+            }
+        });
+
     }
 
     @Override

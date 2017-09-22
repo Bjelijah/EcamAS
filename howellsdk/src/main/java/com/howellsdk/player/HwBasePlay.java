@@ -90,4 +90,9 @@ public class HwBasePlay implements HWPlayApi {
     public long getTimestamp() {
         return 0;
     }
+
+    @Override
+    public void catchPic(String path) {
+        JniUtil.catchPic(path);
+    }
 }
