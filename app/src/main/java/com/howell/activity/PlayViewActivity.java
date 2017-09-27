@@ -43,7 +43,7 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
     private LinearLayout mPtzLeft,mPtzRight,mPtzUp,mPtzDown;
     private PlayFunViewPage mPlayFun;
     private boolean mIsShowPtz;
-
+    private boolean mVodShowFun=false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,6 +57,15 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
     protected void onDestroy() {
         AudioAction.getInstance().deInitAudioRecord();
         super.onDestroy();
+
+        if (mVodShowFun) {
+            //goto activity
+            Intent intent = new Intent(this, VideoListActivity.class);
+            intent.putExtra("bean", mCam);
+            startActivity(intent);
+            mVodShowFun = false;
+        }
+
     }
 
     @Override
@@ -248,11 +257,14 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
             return;
         }
         //stop
+        Log.i("123","finish");
+//        mVodShowFun = true;
         finish();
-        //goto activity
+
         Intent intent = new Intent(this, VideoListActivity.class);
-        intent.putExtra("bean",mCam);
+        intent.putExtra("bean", mCam);
         startActivity(intent);
+        mVodShowFun = false;
     }
 
 
@@ -273,6 +285,7 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
         mSD.setOnClickListener(this);
         mStreamChange.setOnClickListener(this);
         mBack.setOnClickListener(this);
+        mVodShowFun = false;
 //        PlayAction.getInstance().setPlayBack(false);
     }
 

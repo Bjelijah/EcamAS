@@ -1,5 +1,7 @@
 package com.howell.utils;
 
+import android.util.Log;
+
 public class DeviceVersionUtils {
 	public static boolean needToUpdate(String curVer,String newVer) throws Exception{
 		String[] s = curVer.split("\\.");
@@ -41,11 +43,16 @@ public class DeviceVersionUtils {
 	
 	//判断设备版本是否小于3.0.0
 	public static boolean isNewVersionDevice(String curVer){
-		String[] s = curVer.split("\\.");
-		int firstCurVerNum = Integer.valueOf(s[0]);
-		if(firstCurVerNum < 3){
-			return false;
-		}else{
+		Log.i("123","curver="+curVer);
+		try {
+			String[] s = curVer.split("\\.");
+			int firstCurVerNum = Integer.valueOf(s[0]);
+			if (firstCurVerNum < 3) {
+				return false;
+			} else {
+				return true;
+			}
+		}catch (Exception e){
 			return true;
 		}
 	}

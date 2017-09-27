@@ -144,7 +144,7 @@ public class EcamFactory {
         public HWPlayApi bindCam() {
             super.bindCam();
             isInvited = false;
-
+            Log.i("123","bindcam ecam init");
             JniUtil.ecamInit(mAccount);
 
             return this;
@@ -152,6 +152,7 @@ public class EcamFactory {
 
         @Override
         public void unBindCam() {
+            Log.i("123","unbindcam ecam deinit");
             JniUtil.releasePlay();
             JniUtil.ecamDeinit();
             super.unBindCam();

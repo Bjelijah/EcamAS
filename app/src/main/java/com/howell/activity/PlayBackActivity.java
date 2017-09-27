@@ -209,8 +209,6 @@ public class PlayBackActivity extends BasePlayActivity implements View.OnClickLi
         PlayAction.getInstance().playBackRePlay(mCurBeg,progress);
         Log.i("123","~~~~~~~~mcur beg="+Util.Date2ISODate(new Date(mCurBeg)));
 
-        ;
-
 //        long curSec = mCurBeg +progress/1000;
         long curSec = Util.ISODateString2ISODate(mBegTime).getTime() +progress/1000;
         long curEnd = Util.ISODateString2ISODate(mEndTime).getTime();
@@ -218,8 +216,7 @@ public class PlayBackActivity extends BasePlayActivity implements View.OnClickLi
         String end = Util.Date2ISODate(new Date(curEnd));
 
         Log.i("123","beg="+beg +"  beg="+ Util.ISODateString2Date(beg)+"  end="+Util.ISODateString2Date(end));
-        mPresent.playMoveTo(mIsSub,curSec,curEnd);
-
+        mPresent.playMoveTo(mIsSub,beg,end);
     }
 
     @Override
@@ -235,7 +232,7 @@ public class PlayBackActivity extends BasePlayActivity implements View.OnClickLi
         if (!bWait && mKeepProgress && !mUseProgress){
             mKeepProgress = false;
             mHandler.removeMessages(MSG_PLAY_PLAY_BACK_FUN);
-            mHandler.sendEmptyMessage(MSG_PLAY_PLAY_BACK_FUN);
+            mHandler.sendEmptyMessageDelayed(MSG_PLAY_PLAY_BACK_FUN,1000);
         }
 
 

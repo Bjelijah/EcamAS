@@ -1021,8 +1021,8 @@ public class SoapFactory {
                         if (obj.getProperty("result").toString().equalsIgnoreCase("Ok")){
                             res.setUserName(obj.getProperty("Username").toString());
                             res.setEmail(obj.getProperty("Email").toString());
-                            res.setMobileTel(obj.getProperty("MobileTel").toString());
-                            res.setCountry(obj.getProperty("MobileTel").toString());
+                            try{res.setMobileTel(obj.getProperty("MobileTel").toString());}catch (Exception ex){}
+                            try{res.setCountry(obj.getProperty("MobileTel").toString());}catch (Exception ex){}
                             res.setCountryTelCode(obj.getProperty("CountryTelCode").toString());
                             try{res.setIDCard(obj.getProperty("IDCard").toString());}catch (Exception ex){}
                         }

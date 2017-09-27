@@ -2111,11 +2111,12 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_ecamInit
 
         g_ecamMgr->context = (ecam_stream_req_context *) malloc(sizeof(struct ecam_stream_req_context));
         memset(g_ecamMgr->context,0,sizeof(struct ecam_stream_req_context));
+        const char * _account= env->GetStringUTFChars(account,NULL);
+        g_ecamMgr->req = ecam_stream_req_new(_account);
+        env->ReleaseStringUTFChars(account,_account);
+        ecam_stream_req_regist_stream_cb(g_ecamMgr->req,onStreamArrive);
     }
-    const char * _account= env->GetStringUTFChars(account,NULL);
-    g_ecamMgr->req = ecam_stream_req_new(_account);
-    env->ReleaseStringUTFChars(account,_account);
-    ecam_stream_req_regist_stream_cb(g_ecamMgr->req,onStreamArrive);
+
 }
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_ecamDeinit

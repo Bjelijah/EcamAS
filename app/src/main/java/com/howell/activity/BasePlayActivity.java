@@ -334,13 +334,13 @@ public abstract class BasePlayActivity extends FragmentActivity implements IPlay
 
 //        mPlayMgr.unregistStreamLenCallback();
 
-        ThreadUtil.cachedThreadStart(new Runnable() {
-            @Override
-            public void run() {
+//        ThreadUtil.cachedThreadStart(new Runnable() {
+//            @Override
+//            public void run() {
                 camStop();//ecam stop play stop
                 camDisconnect(); // release play
-            }
-        });
+//            }
+//        });
         
         mGlView.onDestroy();
         isDestory = true;

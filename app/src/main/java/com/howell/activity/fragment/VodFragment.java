@@ -296,7 +296,7 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
         if (isSuccess){
             if (mBean.isStore()){
                 initNowTime();
-                mPresent.getVODRecord(IS_SUB,mBeg,mEnd);
+                mPresent.vodReset().getVODRecord(IS_SUB,mBeg,mEnd);
             }else{
                 AlerDialogUtils.postDialogMsg(getContext(),
                         getResources().getString(R.string.no_estore),

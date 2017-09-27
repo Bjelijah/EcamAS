@@ -13,6 +13,7 @@ import com.howell.modules.player.bean.VODRecord;
 import com.howell.protocol.InviteRequest;
 import com.howell.protocol.InviteResponse;
 
+import com.howell.utils.DeviceVersionUtils;
 import com.howell.utils.FileUtils;
 import com.howell.utils.Util;
 import com.howellsdk.api.ApiManager;
@@ -393,6 +394,8 @@ public class PlayEcamPresenter extends PlayBasePresenter {
         return this;
     }
 
+
+
     @Override
     public void getVODRecord(boolean isSub,String beg, String end) {
         if (mCurPage>mTotalPage){
@@ -400,7 +403,8 @@ public class PlayEcamPresenter extends PlayBasePresenter {
 //            mView.onError(0);
 //            return;
         }
-
+//        final boolean isNew = DeviceVersionUtils.isNewVersionDevice(mBean.getDeVer());
+        Log.i("123","~~~~~~~~~~~mCurPage="+mCurPage+"   tot="+mTotalPage);
         ApiManager.getInstance().getSoapService()
                 .vodSearch(new VodSearchReq(
                         mAccount,
@@ -427,10 +431,12 @@ public class PlayEcamPresenter extends PlayBasePresenter {
                             mView.onError(1);
                             return null;
                         }
-                        if (mCurPage==1) {
+
+                        if (mCurPage == 1) {
                             mTotalPage = vodSearchRes.getPageCount();
                         }
                         mCurPage++;
+
                         return  vodSearchRes.getRecord();
                     }
                 })
