@@ -148,6 +148,10 @@ public class ApiManager {
         return mHWSoapApi;
     }
 
+    public ApiManager resetSoapService(){
+        mHWSoapApi = null;
+        return this;
+    }
 
     public HWWebSocketApi getWebSocketService(String url,HWWebSocketApi.IWebSocketCB cb){
         if (mHWWebSocketApi==null){
@@ -164,6 +168,10 @@ public class ApiManager {
         return mHWWebSocketApi;
     }
 
+    public ApiManager resetWebSocketService(){
+        mHWWebSocketApi = null;
+        return this;
+    }
 
 
     public HWPlayApi getTurnService(){
@@ -174,7 +182,7 @@ public class ApiManager {
     public HWPlayApi getTurnService(Context c, String ip, int port
             ,String deviceId,int channel,boolean isSub
             , String name, String pwd, boolean ssl, String imei, HWPlayApi.ITurnCB cb){
-        if (mHWTurnApi==null){
+//        if (mHWTurnApi==null){
             mHWTurnApi = new TurnFactory.Builder()
                     .setContext(c)
                     .setIP(ip)
@@ -188,19 +196,25 @@ public class ApiManager {
                     .setChannel(channel)
                     .build()
                     .create();
-        }
+//        }
         return mHWTurnApi;
     }
 
+    public ApiManager resetTurnService(){
+        mHWTurnApi = null;
+        return this;
+    }
+
+
     public HWPlayApi getEcamService(String name, String ip, int port, int method,HWPlayApi.IEcamCB cb){
-        if (mHWEcamApi==null){
+//        if (mHWEcamApi==null){
             mHWEcamApi = new EcamFactory.Builder()
                     .setAccount(name)
                     .setUpnp(ip,port)
                     .setMethodType(method)
                     .setEcamCB(cb)
                     .build().create();
-        }
+//        }
         return mHWEcamApi;
     }
 
@@ -209,24 +223,33 @@ public class ApiManager {
         return mHWEcamApi;
     }
 
+    public ApiManager resetEcamService(){
+        mHWEcamApi = null;
+        return this;
+    }
+
+
     public HWPlayApi getAPcamService(){
         if (mHWApcamApi==null)throw new NullPointerException("api=null");
         return mHWApcamApi;
     }
 
     public HWPlayApi getAPcamService(String ip,int slot,int crypto,HWPlayApi.IAPCamCB cb){
-        if (mHWApcamApi==null){
+//        if (mHWApcamApi==null){
             mHWApcamApi = new ApFactory.Builder()
                     .setIP(ip)
                     .setSlot(slot)
                     .setCrypto(crypto)
                     .setCallback(cb)
                     .build().create();
-        }
+//        }
         return mHWApcamApi;
     }
 
-
+    public ApiManager resetApService(){
+        mHWApcamApi = null;
+        return this;
+    }
 
 
 

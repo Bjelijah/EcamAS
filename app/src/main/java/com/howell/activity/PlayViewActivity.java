@@ -12,18 +12,23 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.howell.action.AudioAction;
+
 import com.howell.action.LoginAction;
 import com.howell.action.PTZControlAction;
+//import com.howell.action.PlayAction;
+//import com.howell.action.PlayAction;
 import com.howell.action.PlayAction;
 import com.howell.adapter.MyPagerAdapter;
 import com.android.howell.webcam.R;
 import com.howell.modules.player.IPlayContract;
+import com.howell.modules.player.bean.PTZ;
 import com.howell.modules.player.bean.VODRecord;
 import com.howell.transformer.CubeInTransformer;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.UserConfigSp;
+import com.howellsdk.audio.AudioAction;
+import com.howellsdk.utils.RxUtil;
 
 import java.util.List;
 
@@ -64,28 +69,23 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
 
     }
 
-    @Override
-    protected void camConnect() {
-        super.camConnect();
-    }
 
-    @Override
-    protected void camDisconnect() {
-        super.camDisconnect();
-    }
+
 
     @Override
     protected void camPlay() {
         Log.i("123","play view cam play");
         super.camPlay();
-
+        mPresent.play(mIsSub);
     }
-
 
     @Override
-    protected void camStop() {
-        super.camStop();
+    protected void camReLink() {
+        super.camReLink();
+        mPresent.relink(mIsSub);
     }
+
+
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
@@ -113,9 +113,9 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 
-        if (!PlayAction.getInstance().getPlayBean().isPtz()){
-           // return false;
-        }
+//        if (!PlayAction.getInstance().getPlayBean().isPtz()){
+//           // return false;
+//        }
 
         final int hMax = PhoneConfig.getPhoneHeight(this);
         final int wMax = PhoneConfig.getPhoneWidth(this);
@@ -193,11 +193,17 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
         switch (v.getId()){
             case R.id.pop_layout_sd:
                 mPopupWindow.dismiss();
-                PlayAction.getInstance().rePlay(1);
+//                PlayAction.getInstance().rePlay(1);
+                mIsSub = true;
+                camReLink();
+                mStreamChange.setText("标清");
                 break;
             case R.id.pop_layout_hd:
                 mPopupWindow.dismiss();
-                PlayAction.getInstance().rePlay(0);
+//                PlayAction.getInstance().rePlay(0);
+                mIsSub = false;
+                camReLink();
+                mStreamChange.setText("高清");
                 break;
             case R.id.sound:
                 this.soundFun();
@@ -206,13 +212,15 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
                 showVodFun();
                 break;
             case R.id.catch_picture:
-                PlayAction.getInstance().catchPic();
+//                PlayAction.getInstance().catchPic();
+                mPresent.catchPic();
                 break;
             case R.id.player_change_stream:
                 mPopupWindow.showAsDropDown(v);
                 break;
             case R.id.player_imagebutton_back:
-                PlayAction.getInstance().catchPic("/sdcard/eCamera/cache");
+//                PlayAction.getInstance().catchPic("/sdcard/eCamera/cache");
+                mPresent.catchPic("/sdcard/eCamera/cache");
                 //TODO: stop play
 
                 finish();
@@ -226,13 +234,14 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode==KeyEvent.KEYCODE_BACK){
             PlayAction.getInstance().catchPic("/sdcard/eCamera/cache");
+            mPresent.catchPic("/sdcard/eCamera/cache");
         }
         return super.onKeyDown(keyCode, event);
     }
 
     private void showVodFun(){
         //if
-        if (!PlayAction.getInstance().getPlayBean().isStore()){
+        if (!mCam.isStore()){
             AlerDialogUtils.postDialogMsg(this,
                     getResources().getString(R.string.no_estore),
                     getResources().getString(R.string.no_sdcard),null);
@@ -242,7 +251,7 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
         finish();
         //goto activity
         Intent intent = new Intent(this, VideoListActivity.class);
-        intent.putExtra("bean",PlayAction.getInstance().getPlayBean());
+        intent.putExtra("bean",mCam);
         startActivity(intent);
     }
 
@@ -264,7 +273,7 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
         mSD.setOnClickListener(this);
         mStreamChange.setOnClickListener(this);
         mBack.setOnClickListener(this);
-        PlayAction.getInstance().setPlayBack(false);
+//        PlayAction.getInstance().setPlayBack(false);
     }
 
     private void fragmentPtzInit(){
@@ -277,12 +286,13 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
         mPtzRight.setOnTouchListener(this);
         mPtzUp.setOnTouchListener(this);
         mPtzDown.setOnTouchListener(this);
-        Log.i("123","mPlayMgr="+mPlayMgr);
-        PTZControlAction.getInstance().setCam(mPlayMgr).setHandle(mHandler).setPtzInfo(
-                LoginAction.getInstance().getmInfo().getAccount(),
-                LoginAction.getInstance().getmInfo().getLr().getLoginSession(),
-                PlayAction.getInstance().getPlayBean().getDeviceId(),
-                PlayAction.getInstance().getPlayBean().getChannelNo());
+        PTZControlAction.getInstance().setHandle(mHandler);
+//        Log.i("123","mPlayMgr="+mPlayMgr);
+//        PTZControlAction.getInstance().setCam(mPlayMgr).setHandle(mHandler).setPtzInfo(
+//                LoginAction.getInstance().getmInfo().getAccount(),
+//                LoginAction.getInstance().getmInfo().getLr().getLoginSession(),
+//                PlayAction.getInstance().getPlayBean().getDeviceId(),
+//                PlayAction.getInstance().getPlayBean().getChannelNo());
         mIsShowPtz = false;
     }
 
@@ -304,21 +314,24 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 Log.i("123", "按下了   开始对讲");
-                AudioAction.getInstance().pauseAudio();
-                AudioAction.getInstance().startAudioRecord();
+//                AudioAction.getInstance().pauseAudio();
+//                AudioAction.getInstance().startAudioRecord();
+                mPresent.talkFun(true);
 //                mIsTalk = true;
                 setOrientation(true);
                 break;
             case MotionEvent.ACTION_UP:
                 Log.i("123", "ACTION_UP   停止对讲");
-                AudioAction.getInstance().stopAudioRecord();
-                AudioAction.getInstance().playAudio();
+//                AudioAction.getInstance().stopAudioRecord();
+//                AudioAction.getInstance().playAudio();
+                mPresent.talkFun(false);
                 setOrientation(false);
                 break;
             case MotionEvent.ACTION_CANCEL:
                 Log.i("123", "ACTION_CANCEL   停止对讲");
-                AudioAction.getInstance().stopAudioRecord();
-                AudioAction.getInstance().playAudio();
+//                AudioAction.getInstance().stopAudioRecord();
+//                AudioAction.getInstance().playAudio();
+                mPresent.talkFun(false);
                 setOrientation(false);
                 break;
             default:
@@ -350,30 +363,38 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
         switch (viewID){
             case R.id.play_ptz_left:
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    PTZControlAction.getInstance().ptzMoveStart("Left");
+//                    PTZControlAction.getInstance().ptzMoveStart("Left");
+                    mPresent.ptzCtrl(PTZ.PTZ_LEFT);
                 }else if(event.getAction() == MotionEvent.ACTION_UP){
-                    PTZControlAction.getInstance().ptzMoveStop();
+//                    PTZControlAction.getInstance().ptzMoveStop();
+                    mPresent.ptzCtrl(PTZ.PTZ_STOP);
                 }
                 break;
             case R.id.play_ptz_right:
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    PTZControlAction.getInstance().ptzMoveStart("Right");
+//                    PTZControlAction.getInstance().ptzMoveStart("Right");
+                    mPresent.ptzCtrl(PTZ.PTZ_RIGHT);
                 }else if(event.getAction() == MotionEvent.ACTION_UP){
-                    PTZControlAction.getInstance().ptzMoveStop();
+//                    PTZControlAction.getInstance().ptzMoveStop();
+                    mPresent.ptzCtrl(PTZ.PTZ_STOP);
                 }
                 break;
             case R.id.play_ptz_top:
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    PTZControlAction.getInstance().ptzMoveStart("Up");
+//                    PTZControlAction.getInstance().ptzMoveStart("Up");
+                    mPresent.ptzCtrl(PTZ.PTZ_UP);
                 }else if(event.getAction() == MotionEvent.ACTION_UP){
-                    PTZControlAction.getInstance().ptzMoveStop();
+//                    PTZControlAction.getInstance().ptzMoveStop();
+                    mPresent.ptzCtrl(PTZ.PTZ_STOP);
                 }
                 break;
             case R.id.play_ptz_bottom:
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    PTZControlAction.getInstance().ptzMoveStart("Down");
+//                    PTZControlAction.getInstance().ptzMoveStart("Down");
+                    mPresent.ptzCtrl(PTZ.PTZ_DOWN);
                 }else if(event.getAction() == MotionEvent.ACTION_UP){
-                    PTZControlAction.getInstance().ptzMoveStop();
+//                    PTZControlAction.getInstance().ptzMoveStop();
+                    mPresent.ptzCtrl(PTZ.PTZ_STOP);
                 }
                 break;
             default:
@@ -382,17 +403,16 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
     }
 
     private void start(){
+        Log.i("123","play start");
         this.camConnect();
     }
 
-    private void end(){
 
-    }
 
     @Override
     protected void soundFun() {
         super.soundFun();
-        UserConfigSp.saveSoundState(PlayViewActivity.this,mIsAudioOpen);
+//        UserConfigSp.saveSoundState(PlayViewActivity.this,mIsAudioOpen);
         mPlayFun.updataAllView();
     }
 
@@ -400,12 +420,18 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
     public void clickSound() {
         if (mIsAudioOpen){
             mIsAudioOpen = false;
-            PlayAction.getInstance().mute();
+//            PlayAction.getInstance().mute();
+//            AudioAction.getInstance().audioSoundMute();
+//            mHandler.sendEmptyMessage(BasePlayActivity.MSG_PLAY_SOUND_MUTE);
+            mPresent.setSoundMute(true);
         }else{
             mIsAudioOpen = true;
-            PlayAction.getInstance().unmute();
+//            PlayAction.getInstance().unmute();
+//            AudioAction.getInstance().audioSoundUnmute();
+//            mHandler.sendEmptyMessage(BasePlayActivity.MSG_PLAY_SOUND_UNMUTE);
+            mPresent.setSoundMute(false);
         }
-        UserConfigSp.saveSoundState(PlayViewActivity.this,mIsAudioOpen);
+//        UserConfigSp.saveSoundState(PlayViewActivity.this,mIsAudioOpen);
     }
 
     @Override
@@ -413,5 +439,19 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
         return mIsAudioOpen;
     }
 
-
+    @Override
+    public void onTime(final int speed, long timestamp, long firstTimestamp, final boolean bWait) {
+        super.onTime(speed, timestamp, firstTimestamp, bWait);
+        RxUtil.doInUIThread(new RxUtil.RxSimpleTask<Object>() {
+            @Override
+            public void doTask() {
+                mStreamLen.setText(speed+" kbit/s");
+                if (bWait){
+                    mWaitProgressBar.setVisibility(View.VISIBLE);
+                }else{
+                    mWaitProgressBar.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+    }
 }

@@ -18,6 +18,7 @@ import com.howellsdk.player.ecam.bean.StreamReqIceOpt;
 import com.howellsdk.player.turn.TurnFactory;
 import com.howellsdk.player.turn.bean.PTZ_CMD;
 import com.howellsdk.utils.RxUtil;
+import com.howellsdk.utils.ThreadUtil;
 import com.howellsdk.utils.Util;
 
 import org.codehaus.jackson.map.util.ISO8601DateFormat;
@@ -91,6 +92,7 @@ public class EcamFactory {
                 mNAT = mCB.getNATServer();
             }
             if (mNAT == null) return null;
+            Log.i("123","mNat="+mNAT.toString());
             NATServerRes.STUNServer s = mNAT.getStunServers().get(0);
             NATServerRes.TURNServer t = mNAT.getTurnServers().get(0);
             StreamReqIceOpt opt = new StreamReqIceOpt(1, s.getIPv4Address(), s.getPort(),
@@ -115,7 +117,7 @@ public class EcamFactory {
 
         private boolean invite(boolean isSub){
             if (mCB==null)throw new NullPointerException("mcb==null");
-            if (isInvited)return true;
+//            if (isInvited)return true;
             String dilogID = String.valueOf(random.nextInt());
             String localSDP = JniUtil.ecamPrepareSDP();
             String sdpMessage = Base64.encode(localSDP.getBytes());
@@ -125,7 +127,7 @@ public class EcamFactory {
             String remoteSDP = new String(Base64.decode(s));
             Log.i("123","remoteSPD = "+remoteSDP);
             JniUtil.ecamHandleRemoteSDP(dilogID,remoteSDP);
-            isInvited = true;
+//            isInvited = true;
             return true;
         }
 
@@ -169,22 +171,24 @@ public class EcamFactory {
 
 
         @Override
-        public void play(final boolean isSub) {
+        public void play( boolean isSub) {
 
             mIsPlayBack = false;
             StreamReqContext c = fillStreamReqContext(mIsPlayBack?1:0,0,0,0,mModeType,isSub?1:0);
-            if (c==null)                {mCB.onError(0);return;}
+            if (c==null)                {Log.e("123","c==null");mCB.onError(0);return;}
             JniUtil.ecamSetContextObj(c);
-            if(!invite(isSub))          {mCB.onError(0);return;}
+            if(!invite(isSub))          {Log.e("123","invite error");mCB.onError(0);return;}
             //ready
 
             long [] sdpTime = JniUtil.ecamGetSdpTime();
             Log.i("123","sdptime  beg="+sdpTime[0]+"   end="+sdpTime[1]);
 
             Log.i("123","ready  0");
-            if(!ready(0))               {mCB.onError(0);return;}
+            if(!ready(0))               {Log.e("123","read error");mCB.onError(0);return;}
             //申请
-            if(JniUtil.ecamStart()!=0)  {mCB.onError(0);return;}
+            Log.i("123","ecamer start");
+            if(JniUtil.ecamStart()!=0)  {Log.e("123","start error");mCB.onError(0);return;}
+            Log.i("123","play");
             //play
             super.play(isSub);
         }
@@ -200,6 +204,7 @@ public class EcamFactory {
             if (!invite(isSub))             {mCB.onError(0);return;}
             long sdp[] = JniUtil.ecamGetSdpTime();
             Log.i("123","beg="+beg+"   end="+end+"  sdp beg="+sdp[0]+"   sdp end="+sdp[1]);//// FIXME: 2017/9/1
+            mCB.onPlayBackBegEndTime(sdp[0],sdp[1]);
             if(!ready(1))                   {mCB.onError(0);return;}
             if(JniUtil.ecamStart()!=0)      {mCB.onError(0);return;}
 
@@ -221,18 +226,31 @@ public class EcamFactory {
         @Override
         public void reLink(final boolean isSub, @Nullable final String begTime, @Nullable final String endTime) {
             //// STOP
+            ThreadUtil.cachedThreadStart(new Runnable() {
+                @Override
+                public void run() {
+                    stop();
+                    JniUtil.ecamDeinit();
+                    //play
+                    JniUtil.ecamInit(mAccount);
+                    play(isSub);
+                }
+            });
+
+        }
+
+        @Override
+        public void playbackReLink(boolean isSub, long beg, long end) {
+            super.playbackReLink(isSub, beg, end);
             stop();
-            //play
-            long beg = Util.ISODateString2ISODate(begTime).getTime()/1000;
-            long end = Util.ISODateString2ISODate(endTime).getTime()/1000;
             StreamReqContext c = fillStreamReqContext(mIsPlayBack?1:0,beg,end,1,mModeType,isSub?1:0);
             if (c==null){mCB.onError(0);return;}
             JniUtil.ecamSetContextObj(c);
-            if(!invite(isSub)){mCB.onError(0);return;}
+//            if(!invite(isSub)){mCB.onError(0);return;}
             if(JniUtil.ecamStart()!=0){mCB.onError(0);return;}
+            Log.i("123","ecam Start");
             super.play(isSub);
         }
-
 
         @Override
         public boolean getRecordedFiles(String beg, String end ,@Nullable Integer nowPage,@Nullable Integer pageSize) {
@@ -258,6 +276,12 @@ public class EcamFactory {
         @Override
         public long getTimestamp() {
             return JniUtil.getTimeStamp();
+        }
+
+        @Override
+        public boolean soundSendBuf(byte[] buf, int len) {
+            super.soundSendBuf(buf, len);
+            return JniUtil.ecamSendAudioData(buf,len)==0?true:false;
         }
     }
 

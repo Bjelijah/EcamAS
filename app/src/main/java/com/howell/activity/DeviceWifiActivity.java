@@ -126,9 +126,9 @@ public class DeviceWifiActivity extends AppCompatActivity {
 //        myAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
 //        mSpinner.setAdapter(myAdapter);
         //TODO send match code
-
-        SendMatchCodeTask task = new SendMatchCodeTask();
-        task.execute();
+        //// FIXME: 2017/9/25
+//        SendMatchCodeTask task = new SendMatchCodeTask();
+//        task.execute();
 
     }
 

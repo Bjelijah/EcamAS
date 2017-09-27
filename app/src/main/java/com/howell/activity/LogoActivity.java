@@ -15,6 +15,7 @@ import android.os.StrictMode;
 import android.util.Log;
 
 import com.android.howell.webcam.R;
+import com.howell.jni.JniUtil;
 import com.howell.modules.login.ILoginContract;
 import com.howell.modules.login.bean.Type;
 import com.howell.modules.login.presenter.LoginSoapPresenter;
@@ -87,6 +88,8 @@ public class LogoActivity extends Activity implements ILoginContract.IView{
 	}
 
 	private void init(){
+
+		JniUtil.logEnable(true);
 		mIsFromNotification = getIntent().getBooleanExtra("notification",false);
 
 	}

@@ -735,6 +735,14 @@ static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, in
 //    int ret = hwplay_is_pause(handle);
 //    LOGE("on source callback is pause=%d\n",ret);
     if (res!=NULL){
+        if (res->is_exit){
+            LOGE("is  exit return");
+            return;
+        }
+    }
+
+
+    if (res!=NULL){
         if (res->isFirstTime){
             res->isFirstTime = 0;
             res->firstTimestamp = timestamp;
@@ -934,6 +942,9 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayTurnLive
     PLAY_HANDLE  ph = hwplay_open_stream((const char*)&media_head,sizeof(media_head),1024*1024,isPlayback,area);
     res->play_handle = ph;
     res->isFirstTime = 1;
+    res->firstTimestamp = 0;
+    res->timestamp = 0;
+    res->stream_len=0;
     hwplay_open_sound(ph);
     //  LOGI("ph=%d",ph);
 
@@ -1633,7 +1644,7 @@ int on_my_data_fun(int type,const char *data,int len){
     if(g_transMgr!=NULL){
         g_transMgr->transDataLen += len;
     }
-    pthread_mutex_lock(&res->lock_play);
+//    pthread_mutex_lock(&res->lock_play);
 
     int num = 0;
     int ret = 0;
@@ -1656,7 +1667,7 @@ int on_my_data_fun(int type,const char *data,int len){
     ret = hwplay_input_data(res->play_handle, data ,len);
     hwplay_get_stream_buf_remain(res->play_handle,&remain);
 //    LOGI("after   ret=%d  remain=%d  len=%d\n",ret,remain,len);
-    pthread_mutex_unlock(&res->lock_play);
+//    pthread_mutex_unlock(&res->lock_play);
     g_num = 0;
     return 0;
 
@@ -1927,6 +1938,7 @@ static void global_init(void)
 }
 
 void onStreamArrive(ecam_stream_req_t * req,ECAM_STREAM_REQ_FRAME_TYPE media_type,const char * data, size_t len, uint32_t timestamp){
+
     if (res==NULL|| g_ecamMgr==NULL)
         return;
     if(res->play_handle==-1){
@@ -2205,6 +2217,7 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamStop
         (JNIEnv *, jclass){
     if (g_ecamMgr==NULL) return -1;
     g_ecamMgr->ecamDataLen = 0;
+    LOGI("ecam_stream stop");
     return ecam_stream_req_stop(g_ecamMgr->req,3000);
 }
 

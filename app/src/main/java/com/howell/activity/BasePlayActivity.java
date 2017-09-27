@@ -22,21 +22,28 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gles.GLESTextureView;
+
 import com.howell.action.PTZControlAction;
 import com.howell.action.PlayAction;
 import com.howell.action.YV12Renderer;
 import com.howell.bean.CamFactory;
+import com.howell.bean.CameraItemBean;
 import com.howell.bean.ICam;
 import com.android.howell.webcam.R;
+import com.howell.bean.PlayType;
 import com.howell.ehlib.MySeekBar;
 import com.howell.modules.player.IPlayContract;
 import com.howell.modules.player.bean.VODRecord;
+import com.howell.modules.player.presenter.PlayApPresenter;
 import com.howell.modules.player.presenter.PlayEcamPresenter;
+import com.howell.modules.player.presenter.PlayTurnPresenter;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.MessageUtiles;
 import com.howell.utils.PhoneConfig;
+import com.howell.utils.ThreadUtil;
 import com.howell.utils.UserConfigSp;
+import com.howellsdk.api.player.GLESTextureView;
+import com.howellsdk.utils.RxUtil;
 
 import java.util.List;
 
@@ -44,7 +51,7 @@ import java.util.List;
  * Created by Administrator on 2016/12/16.
  */
 
-public class BasePlayActivity extends FragmentActivity implements IPlayContract.IVew,SurfaceHolder.Callback,View.OnTouchListener,ICam.IStream{
+public abstract class BasePlayActivity extends FragmentActivity implements IPlayContract.IVew,SurfaceHolder.Callback,View.OnTouchListener,ICam.IStream{
 
     public static final int MSG_PTZ_SHAKE               = 0xff00;
     public final static int MSG_PLAY_SOUND_MUTE         = 0xff01;
@@ -78,12 +85,17 @@ public class BasePlayActivity extends FragmentActivity implements IPlayContract.
     protected PopupWindow mPopupWindow;
     protected TextView mStreamLen;
     protected boolean isShowSurfaceIcon = true;
-    protected ICam mPlayMgr;
+//    protected ICam mPlayMgr;
     protected boolean mIsAudioOpen = false;
     protected boolean mIsTalk;
     protected boolean isDestory = false;
 
     protected IPlayContract.IPresent mPresent;
+    protected CameraItemBean mCam;
+    protected boolean mIsSub = true;
+    protected int mSpeed;
+    protected long mBegTimeStamp,mCurTimeStamp;
+
 
 
     protected Handler mHandler = new Handler(){
@@ -146,7 +158,7 @@ public class BasePlayActivity extends FragmentActivity implements IPlayContract.
     };
 
 
-    private void playErrorFun(){
+    protected void playErrorFun(){
         mWaitProgressBar.setVisibility(View.GONE);
         AlerDialogUtils.postDialogMsg(BasePlayActivity.this,
                 getResources().getString(R.string.play_play_error_msg_title),
@@ -158,10 +170,11 @@ public class BasePlayActivity extends FragmentActivity implements IPlayContract.
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.glsurface);
-        bindPresenter();
+
         initView();
         initViewFun();
         initPlayer();
+        bindPresenter();
         isDestory = false;
     }
 
@@ -202,9 +215,18 @@ public class BasePlayActivity extends FragmentActivity implements IPlayContract.
             showSurfaceIcon(false);
         }
         mIsAudioOpen = UserConfigSp.loadSoundState(this);
-        mSound.setImageDrawable(getResources().getDrawable(mIsAudioOpen?R.mipmap.img_sound:R.mipmap.img_no_sound));
+        updateSoundView(!mIsAudioOpen);
     }
 
+    protected void updateSoundView(boolean isMute){
+        mSound.setImageDrawable(getResources().getDrawable(!isMute?R.mipmap.img_sound:R.mipmap.img_no_sound));
+        mIsAudioOpen = !isMute;
+    }
+
+    @Override
+    public void onSoundMute(boolean isMute) {
+        updateSoundView(isMute);
+    }
 
     protected void initPopupWindow(){
         View v = LayoutInflater.from(this).inflate(R.layout.popup_window,null);
@@ -220,11 +242,15 @@ public class BasePlayActivity extends FragmentActivity implements IPlayContract.
 
     protected void initPlayer(){
 
-        mPlayMgr = CamFactory.buildCam(PlayAction.getInstance().getPlayBean().getType());
-        mPlayMgr.init(this,PlayAction.getInstance().getPlayBean());
-        mPlayMgr.setHandler(mHandler);
-        mPlayMgr.registStreamLenCallback(this);
-        PlayAction.getInstance().setHandler(mHandler).setCam(mPlayMgr);
+//        mPlayMgr = CamFactory.buildCam(PlayAction.getInstance().getPlayBean().getType());
+//        mPlayMgr.init(this,PlayAction.getInstance().getPlayBean());
+//        mPlayMgr.setHandler(mHandler);
+//        mPlayMgr.registStreamLenCallback(this);
+//        PlayAction.getInstance().setHandler(mHandler).setCam(mPlayMgr);
+
+        mCam = (CameraItemBean) getIntent().getSerializableExtra("CameraItem");
+        Log.i("123","base play activity mCam = "+mCam.toString());
+
 
     }
 
@@ -246,37 +272,46 @@ public class BasePlayActivity extends FragmentActivity implements IPlayContract.
 
 
     protected void camConnect(){
-        PlayAction.getInstance().camLogin();
+//        PlayAction.getInstance().camLogin();
+        Log.i("123","mCam="+mCam.toString());
+        mPresent.init(this,mCam);
     }
 
 
 
 
     protected void soundFun(){
-        if (PlayAction.getInstance().isMute()){
-            PlayAction.getInstance().unmute();
-            mIsAudioOpen = true;
-        }else{
-            PlayAction.getInstance().mute();
-            mIsAudioOpen = false;
-        }
+//        if (PlayAction.getInstance().isMute()){
+//            PlayAction.getInstance().unmute();
+//            mIsAudioOpen = true;
+//        }else{
+//            PlayAction.getInstance().mute();
+//            mIsAudioOpen = false;
+//        }
+        mPresent.setSoundMute(mIsAudioOpen);
+        mIsAudioOpen = !mIsAudioOpen;
     }
 
     protected void camReLink(){
-        PlayAction.getInstance().reLink();
+        Log.i("123","relink");
+//        PlayAction.getInstance().reLink();
+
     }
 
     protected void camPlay(){
-        Log.i("123","base play cam play");
-        PlayAction.getInstance().camViewPlay();
+        Log.i("123","base play cam play maybe playback");
+//        PlayAction.getInstance().camViewPlay();
+//        mPresent.play(mIsSub);
     }
 
     protected void camStop(){
-        PlayAction.getInstance().camViewStop();
+//        PlayAction.getInstance().camViewStop();
+        mPresent.stop();
     }
 
     protected void camDisconnect(){
-        PlayAction.getInstance().camLogout();
+//        PlayAction.getInstance().camLogout();
+        mPresent.deInit();
     }
 
 
@@ -297,12 +332,18 @@ public class BasePlayActivity extends FragmentActivity implements IPlayContract.
     @Override
     protected void onDestroy() {
 
-        mPlayMgr.unregistStreamLenCallback();
-        camStop();
-        camDisconnect();
+//        mPlayMgr.unregistStreamLenCallback();
+
+        ThreadUtil.cachedThreadStart(new Runnable() {
+            @Override
+            public void run() {
+                camStop();//ecam stop play stop
+                camDisconnect(); // release play
+            }
+        });
+        
         mGlView.onDestroy();
         isDestory = true;
-
         unbindPresenter();
         super.onDestroy();
     }
@@ -368,7 +409,18 @@ public class BasePlayActivity extends FragmentActivity implements IPlayContract.
     @Override
     public void bindPresenter() {
         if (mPresent==null){
-            mPresent = new PlayEcamPresenter();//// FIXME: 2017/9/20
+            switch (mCam.getType()){
+                case ECAM:
+                    Log.i("123","new ecam presenter");
+                    mPresent = new PlayEcamPresenter();//// FIXME: 2017/9/20
+                    break;
+                case HW5198:
+                    mPresent = new PlayApPresenter();
+                    break;
+                case TURN:
+                    mPresent = new PlayTurnPresenter();
+                    break;
+            }
         }
         mPresent.bindView(this);
     }
@@ -380,6 +432,16 @@ public class BasePlayActivity extends FragmentActivity implements IPlayContract.
         }
     }
 
+
+    @Override
+    public void onConnect(boolean isSuccess) {
+        if (isSuccess){
+            camPlay();
+        }else{
+            playErrorFun();
+        }
+    }
+
     @Override
     public void onRecord(List<VODRecord> vodRecords) {
 
@@ -387,13 +449,23 @@ public class BasePlayActivity extends FragmentActivity implements IPlayContract.
 
     @Override
     public void onError(int flag) {
+        if (flag==0) {
+            playErrorFun();
+        }else if(flag == 1){
+            camReLink();
+        }
+    }
+
+    @Override
+    public void onTime(final int speed, long timestamp, long firstTimestamp, final boolean bWait) {
+        mSpeed = speed;
+        mBegTimeStamp = firstTimestamp;
+        mCurTimeStamp = timestamp;
 
     }
 
     @Override
-    public void onTime(int speed, long timestamp, long firstTimestamp) {
-
+    public void onPlaybackStartEndTime(long beg, long end) {
+        Log.i("123","base play  onPlaybackStartEndTime");
     }
-
-
 }

@@ -1,8 +1,9 @@
 package com.howell.protocol;
 
+import com.howell.modules.player.bean.VODRecord;
+
 import java.util.ArrayList;
 
-import com.howell.entityclass.VODRecord;
 
 public class VodSearchRes {
 

@@ -6,20 +6,27 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
 import com.howell.action.ApAction;
 import com.android.howell.webcam.R;
+import com.howell.bean.CameraItemBean;
+import com.howell.bean.PlayType;
+import com.howell.modules.device.IDeviceContract;
+import com.howell.modules.device.presenter.DeviceSoapPresenter;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.Util;
+
+import java.util.List;
 
 /**
  * Created by howell on 2016/12/2.
  */
 
-public class ApActivity extends AppCompatActivity {
+public class ApActivity extends AppCompatActivity implements IDeviceContract.IVew {
 
 //    ImageButton mBack;
     Toolbar mTb;
@@ -27,14 +34,23 @@ public class ApActivity extends AppCompatActivity {
     Button mBtn;
     MyPostListener mMyPostListener = new MyPostListener();
     boolean mSuccess = false;
+    IDeviceContract.IPresenter mPresenter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ap);
+        bindPresenter();
         initView();
         initToolbar();
     }
-    
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindPresenter();
+    }
+
     private void initView(){
 //        mBack = (ImageButton) findViewById(R.id.add_ap_ib_back);
 //        mBack.setOnClickListener(new View.OnClickListener() {
@@ -112,13 +128,49 @@ public class ApActivity extends AppCompatActivity {
             return;
         }
         //// TODO: 2016/12/2
+        Log.i("123","add device");
+        mPresenter.addDevice(new CameraItemBean()
+                                .setType(PlayType.HW5198)
+                                .setUpnpIP(ip).setUpnpPort(Integer.valueOf(port))
+                                .setCameraName(name));
+    }
 
-        if ( ApAction.getInstance().addAP2DB(this,name,ip,port)){
-            mSuccess = true;
-        }else{
-            mSuccess = false;
+    @Override
+    public void bindPresenter() {
+        if (mPresenter==null){
+            mPresenter = new DeviceSoapPresenter();
         }
+        mPresenter.bindView(this);
+        mPresenter.init(this);
+    }
+
+    @Override
+    public void unbindPresenter() {
+        if (mPresenter!=null){
+            mPresenter.unbindView();
+        }
+    }
+
+    @Override
+    public void onQueryResult(List<CameraItemBean> beanList) {
+
+    }
+
+    @Override
+    public void onAddResult(boolean isSuccess, PlayType type) {
+        if (type!=PlayType.HW5198)return;
+        mSuccess = isSuccess;
         AlerDialogUtils.postDialogMsg(this,getString(R.string.add_ap_dialog_title),getString(R.string.match_activity_success_dialog_title),mMyPostListener);
+    }
+
+    @Override
+    public void onRemoveResult(boolean isSuccess, int pos) {
+
+    }
+
+    @Override
+    public void onError() {
+
     }
 
     class MyPostListener implements DialogInterface.OnClickListener{
@@ -128,7 +180,7 @@ public class ApActivity extends AppCompatActivity {
             if (mSuccess){
                 finish();
             }else{
-
+                finish();
             }
         }
     }

@@ -13,8 +13,11 @@ import com.howell.modules.player.bean.VODRecord;
 import com.howell.protocol.InviteRequest;
 import com.howell.protocol.InviteResponse;
 
+import com.howell.utils.FileUtils;
+import com.howell.utils.Util;
 import com.howellsdk.api.ApiManager;
 import com.howellsdk.api.HWPlayApi;
+import com.howellsdk.audio.AudioAction;
 import com.howellsdk.net.soap.bean.InviteReq;
 import com.howellsdk.net.soap.bean.InviteRes;
 import com.howellsdk.net.soap.bean.NATServerReq;
@@ -28,6 +31,7 @@ import com.howellsdk.utils.ThreadUtil;
 
 import org.kobjects.base64.Base64;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -115,10 +119,11 @@ public class PlayEcamPresenter extends PlayBasePresenter {
     }
 
 
+
+
     @Override
     public void init(Context context, final CameraItemBean bean) {
         super.init(context,bean);
-
         Observable.create(new ObservableOnSubscribe<Boolean>() {
 
             @Override
@@ -128,12 +133,13 @@ public class PlayEcamPresenter extends PlayBasePresenter {
                     NATServerRes nat;
                     @Override
                     public String getBase64RemoteSDP(boolean isSub, String dilogID, String sdpMessage) {
+                        Log.i("123","thisAccount="+mAccount);
                         ApiManager.getInstance().getSoapService()
                                 .invite(new InviteReq(
                                         mAccount,
                                         ApiManager.SoapHelp.getsSession(),
-                                        mBean.getDeviceId(),
-                                        mBean.getChannelNo(),
+                                        bean.getDeviceId(),
+                                        bean.getChannelNo(),
                                         isSub?"Sub":"Main",
                                         dilogID,
                                         sdpMessage
@@ -182,6 +188,12 @@ public class PlayEcamPresenter extends PlayBasePresenter {
                     public void onError(int flag) {
                         Log.e("123","cb on error flag="+flag);
                     }
+
+                    @Override
+                    public void onPlayBackBegEndTime(final long beg, final long end) {
+                        mView.onPlaybackStartEndTime(beg,end);
+                        Log.e("123","~~~~~~~~~~~~~~~onPlayBackBegEndTime  ok");
+                    }
                 })
                         .bindCam().connect();
                 e.onNext(ret);
@@ -197,6 +209,7 @@ public class PlayEcamPresenter extends PlayBasePresenter {
 
                     @Override
                     public void onNext(@NonNull Boolean aBoolean) {
+                        Log.i("123","onConnect view="+mView.getClass().getName());
                         mView.onConnect(aBoolean);
                     }
 
@@ -298,15 +311,11 @@ public class PlayEcamPresenter extends PlayBasePresenter {
 
     @Override
     public void stop() {
-        RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<Object>() {
-            @Override
-            public void doTask() {
-                ApiManager.getInstance()
-                        .getEcamService()
-                        .stop();
-                stopTimeTask();
-            }
-        });
+        ApiManager.getInstance()
+                .getEcamService()
+                .stop();
+        stopTimeTask();
+
 
     }
 
@@ -318,16 +327,36 @@ public class PlayEcamPresenter extends PlayBasePresenter {
     }
 
     @Override
-    public void playMoveTo(boolean isSub, final String beg, final String end) {
+    public void playMoveTo(final boolean isSub, final String beg, final String end) {
+        final long _beg = com.howellsdk.utils.Util.ISODateString2ISODate(beg).getTime();
+        final long _end = com.howellsdk.utils.Util.ISODateString2ISODate(end).getTime();
+
         RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<Object>() {
             @Override
             public void doTask() {
                 ApiManager.getInstance()
                         .getEcamService()
-                        .reLink(true,beg,end);
+                        .playbackReLink(isSub,_beg,_end);
             }
         });
 
+    }
+
+    @Override
+    public void playMoveTo(boolean isSub, long beg, long end) {
+        super.playMoveTo(isSub, beg, end);
+        ApiManager.getInstance().getEcamService().playbackReLink(isSub,beg,end);
+    }
+
+    @Override
+    public void relink(final boolean isSub) {
+        RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<Object>() {
+            @Override
+            public void doTask() {
+                ApiManager.getInstance().getEcamService()
+                        .reLink(isSub,null,null);
+            }
+        });
     }
 
     @Override
@@ -378,7 +407,7 @@ public class PlayEcamPresenter extends PlayBasePresenter {
                         ApiManager.SoapHelp.getsSession(),
                         mBean.getDeviceId(),
                         mBean.getChannelNo(),
-                        isSub?1:0,
+                        isSub?"Sub":"Main",
                         beg,
                         end,
                         null,
@@ -422,6 +451,8 @@ public class PlayEcamPresenter extends PlayBasePresenter {
                         return new VODRecord(
                                 record.getStartTime(),
                                 record.getEndTime(),
+                                Util.ISODateString2Date(record.getStartTime()),
+                                Util.ISODateString2Date(record.getEndTime()),
                                 record.getFileSize(),
                                 record.getDesc(),
                                 hasTitle);
@@ -449,6 +480,91 @@ public class PlayEcamPresenter extends PlayBasePresenter {
                 });
     }
 
+    @Override
+    public void catchPic() {
+        File destDir = new File("/sdcard/eCamera");
+        if (!destDir.exists()) {
+            destDir.mkdirs();
+        }
+        final String nameDirPath = "/sdcard/eCamera/"+ FileUtils.getFileName()+".jpg";
+        RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<String>(nameDirPath) {
+            @Override
+            public void doTask() {
+                ApiManager.getInstance().getEcamService().catchPic(getT());
+            }
+        });
+    }
+
+    @Override
+    public void catchPic(String path) {
+        File destDir = new File(path);
+        if (!destDir.exists()){
+            destDir.mkdirs();
+        }
+        String nameDirPath = path+"/"+mBean.getDeviceId()+".jpg";
+        RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<String>(nameDirPath) {
+            @Override
+            public void doTask() {
+                ApiManager.getInstance().getEcamService().catchPic(getT());
+            }
+        });
+    }
+
+    @Override
+    public void setSoundMute(final boolean setMute) {
+        super.setSoundMute(setMute);
+        Observable.create(new ObservableOnSubscribe<Boolean>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<Boolean> e) throws Exception {
+                if (setMute){
+                    AudioAction.getInstance().audioSoundMute();
+                }else{
+                    AudioAction.getInstance().audioSoundUnmute();
+                }
+                e.onNext(setMute);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        addDisposable(d);
+                    }
+
+                    @Override
+                    public void onNext(@NonNull Boolean aBoolean) {
+                        mView.onSoundMute(aBoolean);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    @Override
+    public void talkFun(boolean bTalking) {
+        super.talkFun(bTalking);
+        if (bTalking) {
+            AudioAction.getInstance().pauseAudio();
+            AudioAction.getInstance().startAudioRecord(new AudioAction.AudioRecordHelp() {
+                @Override
+                public void sendAudioData(byte[] buf, int len) {
+                    ApiManager.getInstance().getEcamService().soundSendBuf(buf,len);
+                }
+            });
+        }else{
+            AudioAction.getInstance().stopAudioRecord();
+            AudioAction.getInstance().playAudio();
+        }
+    }
 
     @Override
     protected void startTimeTask() {
@@ -456,11 +572,21 @@ public class PlayEcamPresenter extends PlayBasePresenter {
         ThreadUtil.scheduledSingleThreadStart(new Runnable() {
             @Override
             public void run() {
+                boolean bWait = true;
                 int streamLen = ApiManager.getInstance().getEcamService().getStreamLen();
+                if (streamLen!=0){
+                    bWait = false;
+                    mWaiteNum = 0;
+                }else{
+                    mWaiteNum++;
+                    if (mWaiteNum==3){
+                        bWait = true;
+                    }
+                }
                 int speed = streamLen*8/1024/F_TIME;
                 long timestamp = ApiManager.getInstance().getEcamService().getTimestamp();
                 long firstTimestamp = ApiManager.getInstance().getEcamService().getFirstTimestamp();
-                mView.onTime(speed,timestamp,firstTimestamp);
+                mView.onTime(speed,timestamp,firstTimestamp,bWait);
             }
         },0,F_TIME, TimeUnit.SECONDS);
     }

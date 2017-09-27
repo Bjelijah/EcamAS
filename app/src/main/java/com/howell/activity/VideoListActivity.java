@@ -24,6 +24,8 @@ import com.howell.datetime.JudgeDate;
 import com.howell.datetime.ScreenInfo;
 import com.howell.datetime.WheelMain;
 import com.android.howell.webcam.R;
+import com.howell.modules.player.IPlayContract;
+import com.howell.modules.player.bean.VODRecord;
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.ScaleImageUtils;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -34,6 +36,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/1/3.
@@ -54,6 +57,7 @@ public class VideoListActivity extends AppCompatActivity implements AppBarLayout
     CameraItemBean mBean;
     int imageWidth,imageHeight;
     VodFragment mFragment;
+
     private com.howell.datetime.WheelMain wheelMain;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -168,9 +172,6 @@ public class VideoListActivity extends AppCompatActivity implements AppBarLayout
     }
 
 
-
-
-
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
         if (mMaxScrollSize == 0)
@@ -194,5 +195,6 @@ public class VideoListActivity extends AppCompatActivity implements AppBarLayout
             }
         }
     }
+
 
 }

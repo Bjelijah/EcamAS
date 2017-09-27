@@ -11,22 +11,22 @@ android {
         versionName "1.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        ndk{
-            abiFilters 'armeabi','armeabi-v7a'
-        }
+//        ndk{
+//            abiFilters 'armeabi','armeabi-v7a'
+//        }
     }
 
-    externalNativeBuild{
-        ndkBuild{
-            path 'src/main/jni/Android.mk'
-        }
-    }
+//    externalNativeBuild{
+//        ndkBuild{
+//            path 'src/main/jni/Android.mk'
+//        }
+//    }
 
-    sourceSets{
-        main{
-            jniLibs.srcDirs=['libs']
-        }
-    }
+//    sourceSets{
+//        main{
+//            jniLibs.srcDirs=['libs']
+//        }
+//    }
 
     buildTypes {
         release {

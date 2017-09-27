@@ -10,6 +10,9 @@ import com.howell.service.MyService;
  */
 
 public class App extends Application {
+
+
+
     @Override
     public void onCreate() {
         super.onCreate();

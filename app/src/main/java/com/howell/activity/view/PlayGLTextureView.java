@@ -3,7 +3,7 @@ package com.howell.activity.view;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.howell.action.GLESRendererImpl;
+import com.howellsdk.api.player.GLESRendererImpl;
 
 /**
  * Created by Administrator on 2017/6/23.

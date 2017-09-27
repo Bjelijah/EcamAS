@@ -17,15 +17,21 @@ import android.widget.Button;
 
 import com.android.howell.webcam.R;
 import com.howell.action.LoginAction;
+import com.howell.bean.CameraItemBean;
+import com.howell.bean.PlayType;
+import com.howell.modules.device.IDeviceContract;
+import com.howell.modules.device.presenter.DeviceSoapPresenter;
 import com.howell.protocol.AddDeviceReq;
 import com.howell.protocol.AddDeviceRes;
 import com.howell.protocol.SoapManager;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2017/6/5.
  */
 
-public class AddNormalCameraActivity extends AppCompatActivity {
+public class AddNormalCameraActivity extends AppCompatActivity implements IDeviceContract.IVew {
     private static final int MSG_OK = 0xa0;
     private static final int MSG_FAIL = 0xa1;
     String mDevId,mDevKey,mSerial;
@@ -33,6 +39,7 @@ public class AddNormalCameraActivity extends AppCompatActivity {
     Toolbar mTb;
     AutoCompleteTextView mName;
     Button mBtn;
+    IDeviceContract.IPresenter mPresenter;
 
     Handler mHandler = new Handler(){
         @Override
@@ -105,33 +112,56 @@ public class AddNormalCameraActivity extends AppCompatActivity {
 
     private void addFun(){
         final String devName = mName.getText().toString();
-        new AsyncTask<Void,Void,Boolean>(){
-            @Override
-            protected Boolean doInBackground(Void... params) {
-                String account = LoginAction.getInstance().getmInfo().getAccount();
-                String session = LoginAction.getInstance().getmInfo().getLr().getLoginSession();
-                AddDeviceRes res =  SoapManager.getInstance().getAddDeviceRes(new AddDeviceReq(account,session,mDevId,mDevKey,devName,false));
-                Log.i("123","add fun res = "+res.getResult());
-                String result = res.getResult();
-                if (result.equalsIgnoreCase("ok")){
-                    return true;
-                }else{
-                    return false;
-                }
-            }
 
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                if (aBoolean){
-                    mHandler.sendEmptyMessage(MSG_OK);
-                }else{
-                    mHandler.sendEmptyMessage(MSG_FAIL);
-                }
-            }
-        }.execute();
+        mPresenter.addDevice(new CameraItemBean()
+                .setType(PlayType.ECAM)
+                .setDeviceId(mDevId)
+                .setDevKey(mDevKey)
+                .setCameraName(devName)
+        );
+
+
     }
 
 
+    @Override
+    public void bindPresenter() {
+        if (mPresenter==null){
+            mPresenter = new DeviceSoapPresenter();
+        }
+        mPresenter.bindView(this);
+        mPresenter.init(this);
+    }
 
+    @Override
+    public void unbindPresenter() {
+        if (mPresenter!=null){
+            mPresenter.unbindView();
+            mPresenter = null;
+        }
+    }
+
+    @Override
+    public void onQueryResult(List<CameraItemBean> beanList) {
+
+    }
+
+    @Override
+    public void onAddResult(boolean isSuccess, PlayType type) {
+        if (isSuccess) {
+            mHandler.sendEmptyMessage(MSG_OK);
+        } else {
+            mHandler.sendEmptyMessage(MSG_FAIL);
+        }
+    }
+
+    @Override
+    public void onRemoveResult(boolean isSuccess, int pos) {
+
+    }
+
+    @Override
+    public void onError() {
+
+    }
 }

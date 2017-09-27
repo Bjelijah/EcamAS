@@ -37,9 +37,21 @@ public class VODRecord implements Serializable {
         Desc = desc;
         isWatched = false;
         hasTitle = isTitle;
+        TimeZoneStartTime = startTime;
+        TimeZoneEndTime = endTime;
     }
 
-
+    public VODRecord(String startTime,String endTime,String begTimeZone,String endTimeZone,long fileSize,String desc,boolean isTitle){
+        super();
+        StartTime = startTime;
+        EndTime = endTime;
+        FileSize = fileSize;
+        Desc = desc;
+        isWatched = false;
+        hasTitle = isTitle;
+        TimeZoneStartTime = begTimeZone;
+        TimeZoneEndTime = endTimeZone;
+    }
 
     public VODRecord() {
         super();

@@ -6,6 +6,7 @@ import com.howell.bean.CameraItemBean;
 import com.howell.modules.player.IPlayContract;
 import com.howell.modules.player.bean.PTZ;
 import com.howell.modules.player.bean.VODRecord;
+import com.howell.utils.FileUtils;
 import com.howellsdk.api.ApiManager;
 import com.howellsdk.api.HWPlayApi;
 import com.howellsdk.player.ap.bean.ReplayFile;
@@ -13,6 +14,7 @@ import com.howellsdk.player.turn.bean.PTZ_CMD;
 import com.howellsdk.utils.RxUtil;
 import com.howellsdk.utils.ThreadUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -259,11 +261,21 @@ public class PlayApPresenter extends PlayBasePresenter {
         ThreadUtil.scheduledSingleThreadStart(new Runnable() {
             @Override
             public void run() {
-                int streamLen = ApiManager.getInstance().getEcamService().getStreamLen();
+                boolean bWait = true;
+                int streamLen = ApiManager.getInstance().getAPcamService().getStreamLen();
+                if (streamLen!=0){
+                    bWait = false;
+                    mWaiteNum = 0;
+                }else{
+                    mWaiteNum++;
+                    if (mWaiteNum==3){
+                        bWait = true;
+                    }
+                }
                 int speed = streamLen*8/1024/F_TIME;
-                long timestamp = ApiManager.getInstance().getEcamService().getTimestamp();
-                long firstTimestamp = ApiManager.getInstance().getEcamService().getFirstTimestamp();
-                mView.onTime(speed,timestamp,firstTimestamp);
+                long timestamp = ApiManager.getInstance().getAPcamService().getTimestamp();
+                long firstTimestamp = ApiManager.getInstance().getAPcamService().getFirstTimestamp();
+                mView.onTime(speed,timestamp,firstTimestamp,bWait);
             }
         },0,F_TIME, TimeUnit.SECONDS);
     }
@@ -272,5 +284,35 @@ public class PlayApPresenter extends PlayBasePresenter {
     protected void stopTimeTask() {
         super.stopTimeTask();
         ThreadUtil.scheduledThreadShutDown();
+    }
+
+    @Override
+    public void catchPic() {
+        File destDir = new File("/sdcard/eCamera");
+        if (!destDir.exists()) {
+            destDir.mkdirs();
+        }
+        final String nameDirPath = "/sdcard/eCamera/"+ FileUtils.getFileName()+".jpg";
+        RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<String>(nameDirPath) {
+            @Override
+            public void doTask() {
+                ApiManager.getInstance().getAPcamService().catchPic(getT());
+            }
+        });
+    }
+
+    @Override
+    public void catchPic(final String path) {
+        File destDir = new File(path);
+        if (!destDir.exists()){
+            destDir.mkdirs();
+        }
+        String nameDirPath = path+"/"+mBean.getDeviceId()+".jpg";
+        RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<String>(nameDirPath) {
+            @Override
+            public void doTask() {
+                ApiManager.getInstance().getAPcamService().catchPic(getT());
+            }
+        });
     }
 }

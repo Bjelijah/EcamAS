@@ -30,6 +30,7 @@ public class RxUtil {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
                         uiTask.doTaskError(throwable);
                     }
                 }, new Action() {

@@ -9,7 +9,7 @@ public class VodSearchReq {
     String session;
     String devID;
     int channelNo;
-    int streamType;
+    String streamType;
     String startTime;
     String endTime;
     int pageNo;
@@ -35,7 +35,7 @@ public class VodSearchReq {
     public VodSearchReq() {
     }
 
-    public VodSearchReq(String account, String session, String devID, int channelNo, int streamType, String startTime, String endTime,String searchID, int pageNo,  int pageSize) {
+    public VodSearchReq(String account, String session, String devID, int channelNo, String streamType, String startTime, String endTime,String searchID, int pageNo,  int pageSize) {
 
         this.account = account;
         this.session = session;
@@ -82,11 +82,11 @@ public class VodSearchReq {
         this.channelNo = channelNo;
     }
 
-    public int getStreamType() {
+    public String getStreamType() {
         return streamType;
     }
 
-    public void setStreamType(int streamType) {
+    public void setStreamType(String streamType) {
         this.streamType = streamType;
     }
 

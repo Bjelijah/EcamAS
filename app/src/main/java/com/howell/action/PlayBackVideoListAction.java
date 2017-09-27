@@ -9,7 +9,8 @@ import com.howell.activity.fragment.VodFragment;
 import com.howell.bean.CamFactory;
 import com.howell.bean.CameraItemBean;
 import com.howell.bean.ICam;
-import com.howell.entityclass.VODRecord;
+
+import com.howell.modules.player.bean.VODRecord;
 import com.howell.protocol.GetDevVerReq;
 import com.howell.protocol.GetDevVerRes;
 import com.howell.protocol.SoapManager;

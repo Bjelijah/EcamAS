@@ -3,7 +3,8 @@ package com.howell.bean;
 import android.content.Context;
 import android.os.Handler;
 
-import com.howell.entityclass.VODRecord;
+
+import com.howell.modules.player.bean.VODRecord;
 
 import java.util.ArrayList;
 

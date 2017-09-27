@@ -14,6 +14,7 @@ import com.howell.entityclass.Crypto;
 
 
 import com.howell.jni.JniUtil;
+import com.howell.modules.player.bean.VODRecord;
 import com.howell.protocol.GetDevVerReq;
 import com.howell.protocol.GetDevVerRes;
 import com.howell.protocol.GetNATServerReq;
@@ -30,6 +31,7 @@ import com.howell.protocol.SoapManager;
 import com.howell.protocol.VodSearchRes;
 import com.howell.utils.DeviceVersionUtils;
 import com.howell.utils.IConst;
+import com.howellsdk.api.ApiManager;
 import com.howellsdk.player.ecam.bean.StreamReqContext;
 import com.howellsdk.player.ecam.bean.StreamReqIceOpt;
 
@@ -216,8 +218,8 @@ public class ECamMgr implements ICam,IConst {
 
         CodecBean codec = new CodecBean();
         codec.setVideoCodec(0).setAudioCodec(auType).setAudioBitwidth(16).setAudioChannels(1).setAudioSamples(8000);
-        JniUtil.readyPlay(codec,mIsPlayBack);
-        JniUtil.keepTimestamp();
+//        JniUtil.readyPlay(codec,mIsPlayBack);
+//        JniUtil.keepTimestamp();
         JniUtil.playView();
 
         return JniUtil.ecamStart()==0?true:false;
@@ -228,7 +230,7 @@ public class ECamMgr implements ICam,IConst {
         long curSec = begOffset+curProgress/1000;
         mPlayBackStartTime = curSec;
         mPlayBackRe = 1;
-        JniUtil.pause(bPause);
+//        JniUtil.pause(bPause);
         if (bPause){
             JniUtil.ecamStop();
         }else{
@@ -317,8 +319,11 @@ public class ECamMgr implements ICam,IConst {
 
     @Override
     public int getVideoListPageCount(int nowPage,int pageSize) {
-        String account = LoginAction.getInstance().getmInfo().getAccount();
-        String loginSession = LoginAction.getInstance().getmInfo().getLr().getLoginSession();
+        String account = "10086012";//LoginAction.getInstance().getmInfo().getAccount();
+        String loginSession = ApiManager.SoapHelp.getsSession();//LoginAction.getInstance().getmInfo().getLr().getLoginSession();
+
+
+
         String devID = mCamBean.getDeviceId();
         int channelNo = mCamBean.getChannelNo();
         Log.i("123","getVideoListPageCount");
@@ -335,13 +340,14 @@ public class ECamMgr implements ICam,IConst {
     }
 
     @Override
-    public ArrayList<com.howell.entityclass.VODRecord> getVideoList() {
+    public ArrayList<VODRecord> getVideoList() {
         return mVodSearchRes==null?null:mVodSearchRes.getRecord();
     }
 
     @Override
     public boolean playPause(boolean b) {
-        return JniUtil.pause(b);
+//        return JniUtil.pause(b);
+        return true;
     }
 
     @Override
@@ -350,8 +356,8 @@ public class ECamMgr implements ICam,IConst {
     }
 
     private boolean checkVerIsNew(){
-        String account = LoginAction.getInstance().getmInfo().getAccount();
-        String session = LoginAction.getInstance().getmInfo().getLr().getLoginSession();
+        String account = "10086012";//LoginAction.getInstance().getmInfo().getAccount();
+        String session = ApiManager.SoapHelp.getsSession();//LoginAction.getInstance().getmInfo().getLr().getLoginSession();
         String devId = mCamBean.getDeviceId();
         GetDevVerReq req = new GetDevVerReq(account,session,devId);
         GetDevVerRes res = SoapManager.getInstance().getGetDevVerRes(req);
@@ -392,10 +398,10 @@ public class ECamMgr implements ICam,IConst {
         codec.setAudioSamples(8000).setVideoCodec(0).setAudioBitwidth(16)
                 .setAudioChannels(1).setAudioCodec(auType);
 
-        if(!JniUtil.readyPlay(codec,mIsPlayBack)){
-            Log.e("123","readplay live error");
-            return false;
-        }//解码器 初始化
+//        if(!JniUtil.readyPlay(codec,mIsPlayBack)){
+//            Log.e("123","readplay live error");
+//            return false;
+//        }//解码器 初始化
 
         AudioAction.getInstance().initAudio();
         Log.e("123","init audio");

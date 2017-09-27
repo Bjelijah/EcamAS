@@ -27,6 +27,7 @@ public interface HWPlayApi {
     boolean playPause();
     void stop();//停止
     void reLink(boolean isSub, @Nullable String begTime,@Nullable String endTime);//重连
+    void playbackReLink(boolean isSub,long beg,long end);
 
     //fun
     boolean getRecordedFiles(String beg,String end,@Nullable Integer nowPage,@Nullable Integer pageSize);
@@ -35,7 +36,7 @@ public interface HWPlayApi {
     long getFirstTimestamp();
     long getTimestamp();
     void catchPic(String path);
-
+    boolean soundSendBuf(byte [] buf,int len);
 
     interface ITurnCB{
         void onConnect(String sessionId);
@@ -50,6 +51,7 @@ public interface HWPlayApi {
         String getBase64RemoteSDP(boolean isSub,String dilogID,String sdpMessage);
         NATServerRes getNATServer();
         void onError(int flag);
+        void onPlayBackBegEndTime(long beg,long end);
     }
 
     interface IAPCamCB{

@@ -3,6 +3,7 @@ package com.howellsdk.api.player;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.TextureView;
 
 import com.howellsdk.view.gles.helper.gles.IGLESRenderer;
@@ -64,6 +65,7 @@ public class GLESTextureView extends TextureView implements TextureView.SurfaceT
         if (mRendererMode != RENDERMODE_WHEN_DIRTY) {
             return;
         }
+        if (mGLThread==null){Log.e("123","mglThread="+mGLThread);return;}
         mGLThread.requestRender();
     }
 

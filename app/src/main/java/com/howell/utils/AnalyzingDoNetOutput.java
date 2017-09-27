@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.TimeZone;
 
 import com.howell.entityclass.Device;
-import com.howell.entityclass.VODRecord;
+import com.howell.modules.player.bean.VODRecord;
+
 
 public class AnalyzingDoNetOutput {
     private static int findPosition(String strAll, String str) {

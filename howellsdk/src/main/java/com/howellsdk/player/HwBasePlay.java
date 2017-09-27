@@ -44,7 +44,7 @@ public class HwBasePlay implements HWPlayApi {
     public void playback(boolean isSub, String begTime, String endTime) {
         AudioAction.getInstance().initAudio();
         AudioAction.getInstance().playAudio();
-       JniUtil.playView();
+        JniUtil.playView();
     }
 
     @Override
@@ -63,6 +63,11 @@ public class HwBasePlay implements HWPlayApi {
 
     @Override
     public void reLink(boolean isSub, @Nullable String begTime, @Nullable String endTime) {
+
+    }
+
+    @Override
+    public void playbackReLink(boolean isSub, long beg, long end) {
 
     }
 
@@ -94,5 +99,10 @@ public class HwBasePlay implements HWPlayApi {
     @Override
     public void catchPic(String path) {
         JniUtil.catchPic(path);
+    }
+
+    @Override
+    public boolean soundSendBuf(byte[] buf, int len) {
+        return true;
     }
 }

@@ -7,7 +7,8 @@ import android.util.Log;
 import com.howell.entityclass.Device;
 import com.howell.entityclass.DeviceSharer;
 import com.howell.entityclass.NodeDetails;
-import com.howell.entityclass.VODRecord;
+
+import com.howell.modules.player.bean.VODRecord;
 import com.howell.utils.AnalyzingDoNetOutput;
 import com.howell.utils.SSLConection;
 import com.howell.utils.ServerConfigSp;
@@ -133,8 +134,9 @@ public class SoapManager implements Serializable {
 			Log.e("", "Exception");
 		    e.printStackTrace();
 		}
-
+		Log.i("123","body="+envelope.bodyIn.toString());
         SoapObject soapObject = (SoapObject) envelope.bodyIn;
+
         return soapObject;
     }
 

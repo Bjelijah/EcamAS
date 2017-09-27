@@ -12,7 +12,7 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import com.android.howell.webcam.R;
-import com.gles.GLESTextureView;
+import com.howellsdk.api.player.GLESTextureView;
 
 
 //GLTextureView

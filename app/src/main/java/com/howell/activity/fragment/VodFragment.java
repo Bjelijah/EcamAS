@@ -21,10 +21,21 @@ import com.howell.activity.RecycleViewDivider;
 import com.howell.adapter.VideoListRecyclerAdapter;
 import com.howell.bean.CameraItemBean;
 import com.android.howell.webcam.R;
-import com.howell.entityclass.VODRecord;
-import com.howell.utils.AlerDialogUtils;
 
+import com.howell.modules.player.IPlayContract;
+import com.howell.modules.player.bean.VODRecord;
+import com.howell.modules.player.presenter.PlayApPresenter;
+import com.howell.modules.player.presenter.PlayEcamPresenter;
+import com.howell.modules.player.presenter.PlayTurnPresenter;
+import com.howell.utils.AlerDialogUtils;
+import com.howellsdk.utils.Util;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
 
 import pullrefreshview.layout.BaseFooterView;
 import pullrefreshview.layout.BaseHeaderView;
@@ -35,13 +46,13 @@ import pullrefreshview.support.view.LockHeaderView;
  * Created by Administrator on 2017/1/6.
  */
 
-public class VodFragment extends Fragment implements VideoListRecyclerAdapter.OnItemClick,LockHeaderView.OnRefreshListener,LockFooterView.OnLoadListener{
+public class VodFragment extends Fragment implements IPlayContract.IVew,VideoListRecyclerAdapter.OnItemClick,LockHeaderView.OnRefreshListener,LockFooterView.OnLoadListener{
 
     public static final int MSG_VIDEO_LIST_DATA_UPDATE          = 0xfe00;
     public static final int MSG_VIDEO_LIST_DATA_UPDATE_ERROR    = 0xfe01;
     public static final int MSG_VIDEO_LIST_DATA_REFREASH        = 0xfe02;
     public static final int MSG_VIDEO_LIST_DATA_LAST            = 0xfe03;
-
+    private static final boolean IS_SUB = true;
 
     RecyclerView mRv;
     VideoListRecyclerAdapter mAdapter;
@@ -50,7 +61,8 @@ public class VodFragment extends Fragment implements VideoListRecyclerAdapter.On
     LockFooterView mlfv;
     ArrayList<VODRecord> mList = new ArrayList<>();
     CameraItemBean mBean;
-
+    IPlayContract.IPresent mPresent;
+    String mBeg,mEnd;
 
     Handler mHandler = new Handler(){
         @Override
@@ -101,6 +113,11 @@ public class VodFragment extends Fragment implements VideoListRecyclerAdapter.On
         return mView;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbindPresenter();
+    }
 
     private void initView(){
         mRv = (RecyclerView) mView.findViewById(R.id.fragment_vod_rv);
@@ -115,37 +132,71 @@ public class VodFragment extends Fragment implements VideoListRecyclerAdapter.On
         mRv.setLayoutManager(new LinearLayoutManager(getContext()));
         mRv.setAdapter(mAdapter);
         mRv.addItemDecoration(new RecycleViewDivider(getContext(),LinearLayoutManager.HORIZONTAL,2,getResources().getColor(R.color.black)));
-        PlayBackVideoListAction.getInstance().setHandler(mHandler);
-        if (PlayBackVideoListAction.getInstance().hasVod()) {
-            getData();
-        }else{
-            AlerDialogUtils.postDialogMsg(getContext(),
-                    getResources().getString(R.string.no_estore),
-                    getResources().getString(R.string.no_sdcard),null);
-        }
+//        PlayBackVideoListAction.getInstance().setHandler(mHandler);
+//        if (PlayBackVideoListAction.getInstance().hasVod()) {
+//            getData(null,null);
+//        }else{
+//            AlerDialogUtils.postDialogMsg(getContext(),
+//                    getResources().getString(R.string.no_estore),
+//                    getResources().getString(R.string.no_sdcard),null);
+//        }
+//         getData(null,null);
     }
 
-    private void getData(){
+    private void getData(String beg,String end){
 
         PlayBackVideoListAction.getInstance().searchVODList();
+//        mPresent.getVODRecord(IS_SUB,beg,end);
     }
 
     public void searchList(String startTime,String endTime){
         mList.clear();
-        PlayBackVideoListAction.getInstance().reset();
-        PlayBackVideoListAction.getInstance().setSearchTime(startTime,endTime);
-        if (PlayBackVideoListAction.getInstance().hasVod()) {
-            getData();
+//        PlayBackVideoListAction.getInstance().reset();
+//        PlayBackVideoListAction.getInstance().setSearchTime(startTime,endTime);
+//        if (PlayBackVideoListAction.getInstance().hasVod()) {
+//            getData(startTime,endTime);
+//        }else{
+//            AlerDialogUtils.postDialogMsg(getContext(),
+//                    getResources().getString(R.string.no_estore),
+//                    getResources().getString(R.string.no_sdcard),null);
+//        }
+        mBeg = startTime;
+        mEnd = endTime;
+        mPresent.vodReset();
+        if (mBean.isStore()) {
+            mPresent.vodReset();
+            mPresent.getVODRecord(IS_SUB, startTime, endTime);
         }else{
             AlerDialogUtils.postDialogMsg(getContext(),
                     getResources().getString(R.string.no_estore),
                     getResources().getString(R.string.no_sdcard),null);
         }
+
+
     }
+
+    private void initNowTime(){
+        Date endDate = new Date();
+        Date begDate = new Date(1970 - 1900, 1 - 1, 1, 0, 0, 0);
+
+        Date dateNow = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(endDate);
+        calendar.add(Calendar.DAY_OF_MONTH,-1);
+//        calendar.add(Calendar.DAY_OF_MONTH,-1);
+        Date dateBefore = calendar.getTime();
+
+        mBeg = Util.Date2ISODate(begDate);
+        mEnd = Util.Date2ISODate(endDate);
+    }
+
+
 
     public void setBean(CameraItemBean b){
         mBean = b;
+        bindPresenter();
     }
+
 
 
     private void getData(int n){
@@ -170,9 +221,11 @@ public class VodFragment extends Fragment implements VideoListRecyclerAdapter.On
         String startTime = record.getStartTime();
         String endTime = record.getEndTime();
         Log.i("123","startTime="+startTime+"  zoneTime="+record.getTimeZoneStartTime());
-        PlayAction.getInstance().setPlayBean(mBean);
+//        PlayAction.getInstance().setPlayBean(mBean);
 
         Intent intent = new Intent(getContext(), PlayBackActivity.class);
+        Log.e("123","mBean="+mBean.toString());
+        intent.putExtra("CameraItem",mBean);
         intent.putExtra("startTime",startTime);
         intent.putExtra("endTime",endTime);
 
@@ -181,7 +234,8 @@ public class VodFragment extends Fragment implements VideoListRecyclerAdapter.On
 
     @Override
     public void onLoad(BaseFooterView baseFooterView) {
-        PlayBackVideoListAction.getInstance().loadVODList();
+//        PlayBackVideoListAction.getInstance().loadVODList();
+        mPresent.getVODRecord(IS_SUB,mBeg,mEnd);
         baseFooterView.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -193,12 +247,91 @@ public class VodFragment extends Fragment implements VideoListRecyclerAdapter.On
     @Override
     public void onRefresh(BaseHeaderView baseHeaderView) {
          mList.clear();
-         PlayBackVideoListAction.getInstance().refreashVODList();
-         baseHeaderView.postDelayed(new Runnable() {
-             @Override
-             public void run() {
-                 mlhv.stopRefresh();
-             }
-         },1000);
+//         PlayBackVideoListAction.getInstance().refreashVODList();
+
+
+        initNowTime();
+        mPresent.vodReset();
+        mPresent.getVODRecord(IS_SUB,mBeg,mEnd);
+        baseHeaderView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mlhv.stopRefresh();
+            }
+        },1000);
+
+    }
+
+    @Override
+    public void bindPresenter() {
+        if (mPresent==null){
+            switch (mBean.getType()){
+                case ECAM:
+                    mPresent = new PlayEcamPresenter();
+                    break;
+                case HW5198:
+                    mPresent = new PlayApPresenter();
+                    break;
+                case TURN:
+                    mPresent = new PlayTurnPresenter();
+                    break;
+            }
+            mPresent.bindView(this);
+            mPresent.init(getContext(),mBean);
+        }
+    }
+
+    @Override
+    public void unbindPresenter() {
+        if (mPresent!=null){
+            mPresent.unbindView();
+            mPresent.deInit();
+            mPresent = null;
+        }
+    }
+
+    @Override
+    public void onConnect(boolean isSuccess) {
+        Log.i("123","onConnect ="+isSuccess);
+        if (isSuccess){
+            if (mBean.isStore()){
+                initNowTime();
+                mPresent.getVODRecord(IS_SUB,mBeg,mEnd);
+            }else{
+                AlerDialogUtils.postDialogMsg(getContext(),
+                        getResources().getString(R.string.no_estore),
+                        getResources().getString(R.string.no_sdcard),null);
+            }
+        }else{
+            Log.e("123","MSG_VIDEO_LIST_DATA_UPDATE_ERROR");
+        }
+    }
+
+    @Override
+    public void onSoundMute(boolean isMute) {
+
+    }
+
+    @Override
+    public void onRecord(List<com.howell.modules.player.bean.VODRecord> vodRecords) {
+        mList.addAll(vodRecords);
+        mAdapter.setData(mList);
+        mlfv.stopLoad();
+        mlhv.stopRefresh();
+    }
+
+    @Override
+    public void onError(int flag) {
+
+    }
+
+    @Override
+    public void onTime(int speed, long timestamp, long firstTimestamp, boolean bWait) {
+
+    }
+
+    @Override
+    public void onPlaybackStartEndTime(long beg, long end) {
+        Log.i("123","vod fragment on onPlaybackStartEndTime ");
     }
 }

@@ -9,8 +9,9 @@ import com.howell.action.ConfigAction;
 import com.howell.action.LoginAction;
 import com.howell.activity.BasePlayActivity;
 import com.howell.db.ApDeviceDao;
-import com.howell.entityclass.VODRecord;
+
 import com.howell.jni.JniUtil;
+import com.howell.modules.player.bean.VODRecord;
 import com.howell.utils.ServerConfigSp;
 import com.howellsdk.player.ap.bean.*;
 
@@ -88,7 +89,7 @@ public class ApCamMgr implements ICam {
     public void setPlayBackTime(String startTime, String endTime) {
         //单个回放录像的时间
         ApTimeBean [] beans = phaseTime(startTime,endTime);
-        JniUtil.setPlayBackTime(beans[0],beans[1]);
+//        JniUtil.setPlayBackTime(beans[0],beans[1]);
     }
 
 
@@ -334,7 +335,8 @@ public class ApCamMgr implements ICam {
 
     @Override
     public boolean playPause(boolean b) {
-        return JniUtil.pause(b);
+        return true;
+//        return JniUtil.pause(b);
     }
 
     @Override

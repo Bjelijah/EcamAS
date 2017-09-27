@@ -83,7 +83,7 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
     };
 
 
-    MyBrokenCallback mBrokenCallback = new MyBrokenCallback();
+
 
     public DeviceRecyclerViewAdapter(){}
 
@@ -217,7 +217,7 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
         holder.llDelete.setBackground(new IconicsDrawable(mContext,    Octicons.Icon.oct_trashcan).actionBar().colorRes(R.color.item_camera_detele_bk));
 
         holder.ivDelete.setVisibility(View.GONE );
-        holder.llDelete.setVisibility(LoginAction.getInstance().ismIsGuest() ? View.GONE : View.VISIBLE);
+        holder.llDelete.setVisibility((LoginAction.getInstance().ismIsGuest()&&false) ? View.GONE : View.VISIBLE);
 
        // GoogleMaterial.Icon.
 
@@ -275,10 +275,9 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
 //            }
 //        });
 
-        if (!LoginAction.getInstance().ismIsGuest()){
-            holder.getItemView().setTag(pos);
-            holder.getItemView().setOnTouchListener(mBrokenTouchListener);
-        }
+        holder.getItemView().setTag(pos);
+        holder.getItemView().setOnTouchListener(mBrokenTouchListener);
+
     }
 
 
@@ -355,8 +354,7 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
         ImageView ivCamera;
         ImageView ivWifi;
         ImageView ivInOffLine;
-        BrokenView mBrokenView;
-        BrokenTouchListener mColorfulListener;
+
         //back
         FloatingActionButton ivReplay,ivSetting,ivInfo,ivDelete;
         LinearLayout llDelete;
@@ -381,52 +379,6 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
             ivCamera = (ImageView) itemView.findViewById(R.id.item_camera_iv_picture);
             ivWifi = (ImageView) itemView.findViewById(R.id.item_camera_iv_wifi_idensity);
             ivInOffLine = (ImageView) itemView.findViewById(R.id.item_camera_iv_offline);
-        }
-    }
-
-
-
-    class MyBrokenCallback extends BrokenCallback {
-        @Override
-        public void onStart(View v) {
-
-            super.onStart(v);
-            Log.e("123","BrokenCallback onStart");
-        }
-
-        @Override
-        public void onCancel(View v) {
-            super.onCancel(v);
-            Log.e("123","BrokenCallback onCancel");
-        }
-
-        @Override
-        public void onRestart(View v) {
-            super.onRestart(v);
-        }
-
-        @Override
-        public void onFalling(View v) {
-            super.onFalling(v);
-            Log.e("123","BrokenCallback onFalling");
-            //开始删除
-            //FIXME no use
-
-        }
-
-        @Override
-        public void onFallingEnd(View v) {
-            super.onFallingEnd(v);
-            Log.e("123","BrokenCallback onFallingEnd");
-            //更新adapter
-            //FIXME no use
-
-        }
-
-        @Override
-        public void onCancelEnd(View v) {
-            super.onCancelEnd(v);
-            Log.e("123","BrokenCallback onCancelEnd");
         }
     }
 

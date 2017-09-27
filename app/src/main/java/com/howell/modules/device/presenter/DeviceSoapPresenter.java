@@ -12,10 +12,13 @@ import com.howell.utils.ServerConfigSp;
 import com.howell.utils.UserConfigSp;
 import com.howellsdk.api.ApiManager;
 import com.howellsdk.net.http.bean.DeviceStatus;
+import com.howellsdk.net.soap.bean.AddDeviceReq;
 import com.howellsdk.net.soap.bean.DeviceStatusReq;
 import com.howellsdk.net.soap.bean.DeviceStatusRes;
 import com.howellsdk.net.soap.bean.LoginRequest;
 import com.howellsdk.net.soap.bean.LoginResponse;
+import com.howellsdk.net.soap.bean.NullifyDeviceReq;
+import com.howellsdk.net.soap.bean.Result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,7 +133,7 @@ public class DeviceSoapPresenter extends DeviceBasePresenter {
                     private List<APDeviceDBBean> getAPCameraList(Context context, String userName){
                         ApDeviceDao dao = new ApDeviceDao(context,"user.db",1);
                         List<APDeviceDBBean> beanList =  dao.queryByName(userName);
-                        Log.i("123","beanList="+beanList.toString()+"  username="+userName);
+                        Log.i("123","!!!!! ap beanList="+beanList.toString()+"  username="+userName);
                         dao.close();
                         return beanList;
                     }
@@ -176,12 +179,101 @@ public class DeviceSoapPresenter extends DeviceBasePresenter {
                 });
     }
 
+    @Override
+    public void addDevice(CameraItemBean bean) {
+        super.addDevice(bean);
+        if (bean.getType()!=PlayType.ECAM)return;
+        //add ecam
+        ApiManager.getInstance().getSoapService()
+                .addDevice(new AddDeviceReq(mAccount,
+                        ApiManager.SoapHelp.getsSession(),
+                        bean.getDeviceId(),
+                        bean.getDevKey(),
+                        bean.getCameraName(),
+                        false))
+                .map(new Function<Result, Boolean>() {
+                    @Override
+                    public Boolean apply(@NonNull Result result) throws Exception {
+                        if (result.getResult().equalsIgnoreCase("SessionExpired")){
+                            login();
+                            return false;
+                        }
+                        return result.getResult().equalsIgnoreCase("ok");
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        addDisposable(d);
+                    }
 
+                    @Override
+                    public void onNext(@NonNull Boolean aBoolean) {
+                        mView.onAddResult(aBoolean,PlayType.ECAM);
+                    }
 
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        e.printStackTrace();
+                        mView.onAddResult(false,PlayType.ECAM);
+                    }
 
+                    @Override
+                    public void onComplete() {
+                        Log.i("123","add ecam finish");
+                    }
+                });
+    }
 
+    @Override
+    public void removeDevice(CameraItemBean bean, final int pos) {
+        super.removeDevice(bean,pos);
+        if (bean.getType()!=PlayType.ECAM)return;
+        ApiManager.getInstance().getSoapService()
+                .nullifyDevice(new NullifyDeviceReq(
+                        mAccount,
+                        ApiManager.SoapHelp.getsSession(),
+                        bean.getDeviceId(),
+                        bean.getDeviceId()))
+                .map(new Function<Result, Boolean>() {
 
+                    @Override
+                    public Boolean apply(@NonNull Result result) throws Exception {
+                        if (result.getResult().equalsIgnoreCase("SessionExpired")){
+                            login();
+                            return false;
+                        }
+                        return result.getResult().equalsIgnoreCase("ok");
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        addDisposable(d);
+                    }
 
+                    @Override
+                    public void onNext(@NonNull Boolean aBoolean) {
+                        mView.onRemoveResult(aBoolean,pos);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        e.printStackTrace();
+                        mView.onRemoveResult(false,pos);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i("123","remove finish");
+                    }
+                });
+
+    }
 
 
 

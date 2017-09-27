@@ -8,6 +8,7 @@ import com.howell.bean.CameraItemBean;
 import com.howell.modules.player.IPlayContract;
 import com.howell.modules.player.bean.PTZ;
 import com.howell.modules.player.bean.VODRecord;
+import com.howell.utils.FileUtils;
 import com.howellsdk.api.ApiManager;
 import com.howellsdk.api.HWPlayApi;
 import com.howellsdk.player.turn.bean.PTZ_CMD;
@@ -16,6 +17,7 @@ import com.howellsdk.player.turn.bean.TurnSubScribeAckBean;
 import com.howellsdk.utils.RxUtil;
 import com.howellsdk.utils.ThreadUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -314,16 +316,56 @@ public class PlayTurnPresenter extends PlayBasePresenter {
     }
 
     @Override
+    public void catchPic() {
+        File destDir = new File("/sdcard/eCamera");
+        if (!destDir.exists()) {
+            destDir.mkdirs();
+        }
+        final String nameDirPath = "/sdcard/eCamera/"+ FileUtils.getFileName()+".jpg";
+        RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<String>(nameDirPath) {
+            @Override
+            public void doTask() {
+                ApiManager.getInstance().getTurnService().catchPic(getT());
+            }
+        });
+    }
+
+    @Override
+    public void catchPic(String path) {
+        File destDir = new File(path);
+        if (!destDir.exists()){
+            destDir.mkdirs();
+        }
+        String nameDirPath = path+"/"+mBean.getDeviceId()+".jpg";
+        RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<String>(nameDirPath) {
+            @Override
+            public void doTask() {
+                ApiManager.getInstance().getTurnService().catchPic(getT());
+            }
+        });
+    }
+
+    @Override
     protected void startTimeTask() {
         super.startTimeTask();
         ThreadUtil.scheduledSingleThreadStart(new Runnable() {
             @Override
             public void run() {
+                boolean bWait = true;
                 int streamLen = ApiManager.getInstance().getTurnService().getStreamLen();
+                if (streamLen!=0){
+                    bWait = false;
+                    mWaiteNum = 0;
+                }else{
+                    mWaiteNum++;
+                    if (mWaiteNum==3){
+                        bWait = true;
+                    }
+                }
                 int speed = streamLen*8/1024/F_TIME;
                 long timestamp = ApiManager.getInstance().getTurnService().getTimestamp();
                 long firstTimestamp = ApiManager.getInstance().getTurnService().getFirstTimestamp();
-                mView.onTime(speed,timestamp,firstTimestamp);
+                mView.onTime(speed,timestamp,firstTimestamp,bWait);
             }
         },0,F_TIME, TimeUnit.SECONDS);
     }
@@ -333,4 +375,6 @@ public class PlayTurnPresenter extends PlayBasePresenter {
         super.stopTimeTask();
         ThreadUtil.scheduledThreadShutDown();
     }
+
+
 }

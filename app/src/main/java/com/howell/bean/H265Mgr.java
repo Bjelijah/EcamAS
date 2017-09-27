@@ -7,8 +7,9 @@ import android.util.Log;
 import com.howell.action.AudioAction;
 import com.howell.action.LoginAction;
 import com.howell.activity.BasePlayActivity;
-import com.howell.entityclass.VODRecord;
+
 import com.howell.jni.JniUtil;
+import com.howell.modules.player.bean.VODRecord;
 import com.howell.utils.IConst;
 import com.howell.utils.JsonUtil;
 import com.howell.utils.PhoneConfig;
@@ -117,7 +118,7 @@ public class H265Mgr implements ICam,IConst {
         Log.i("123", "doinback");
         JniUtil.netInit();
         transInit(mTurnServiceIP,mTurnServicePort);
-        JniUtil.transSetUseSSL(mIsTurnCrypto);
+//        JniUtil.transSetUseSSL(mIsTurnCrypto);
         mIsTransDeinit = false;
         JniUtil.transSetCallBackObj(H265Mgr.this, 0);
         JniUtil.transSetCallbackMethodName("onConnect", 0);
@@ -194,7 +195,7 @@ public class H265Mgr implements ICam,IConst {
 
 
     private void transInit(String ip,int port){
-        JniUtil.transInit(ip, port);
+//        JniUtil.transInit(ip, port);
     }
 
     private void transDeInit(){
@@ -205,7 +206,8 @@ public class H265Mgr implements ICam,IConst {
     }
 
     private boolean transConnect(int type,String id,String name,String pwd){
-        return JniUtil.transConnect(type, id, name, pwd);
+        return true;
+//        return JniUtil.transConnect(type, id, name, pwd);
     }
 
     private void transSubscribe(String jsonStr,int jsonLen){
@@ -351,7 +353,8 @@ public class H265Mgr implements ICam,IConst {
 
     @Override
     public boolean playPause(boolean b) {
-        return JniUtil.pause(b);
+//        return JniUtil.pause(b);
+        return true;
     }
 
     @Override
@@ -389,12 +392,12 @@ public class H265Mgr implements ICam,IConst {
                 .setAudioBitwidth(bean.getAudioBitwidth())
                 .setAudioSamples(bean.getAudioSamples());
 
-        if(JniUtil.readyPlay(codec,mIsSub)){
-            JniUtil.playView();
-            startTimerTask();
-        }else{
-            Log.e("123", "ready play live error");
-        }
+//        if(JniUtil.readyPlay(codec,mIsSub)){
+//            JniUtil.playView();
+//            startTimerTask();
+//        }else{
+//            Log.e("123", "ready play live error");
+//        }
     }
 
 

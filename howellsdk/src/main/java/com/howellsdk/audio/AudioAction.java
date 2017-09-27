@@ -180,7 +180,11 @@ public class AudioAction {
 		releaseAEC();
 	}
 
-	public void startAudioRecord(){
+	public interface AudioRecordHelp{
+		void sendAudioData(byte [] buf,int len);
+	}
+
+	public void startAudioRecord(final AudioRecordHelp h){
 		if(bAudioRecording) {
 //			Log.i("123","bAudioRecording alreadly  bAudioRecording");
 				return;
@@ -201,6 +205,7 @@ public class AudioAction {
 //					boolean ret = JniUtil.nativeAudioSetdata(buffer,bufferReadResult);
 //					Log.i("123","buffer readResult="+bufferReadResult);
 //					boolean ret = PlayAction.getInstance().soundSendBuf(buffer,bufferReadResult);
+					h.sendAudioData(buffer,bufferReadResult);
 //					Log.i("123","send ret=   "+ret);
 //					if (!ret) {
 //						bAudioRecording = false;

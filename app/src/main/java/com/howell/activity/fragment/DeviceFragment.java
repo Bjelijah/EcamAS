@@ -236,7 +236,7 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
                     getResources().getString(R.string.not_online_message),null);
             return;
         }
-        getNetServer(pos);
+        getContext().startActivity(new Intent(getContext(),PlayViewActivity.class).putExtra("CameraItem",bean));
     }
 
 
@@ -250,18 +250,14 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
 //                    getResources().getString(R.string.no_sdcard),null);
 //            return;
 //        }
-        Intent intent = new Intent(this.getContext(), VideoListActivity.class);
-        intent.putExtra("bean",bean);
-        this.getContext().startActivity(intent);
+        this.getContext().startActivity(new Intent(this.getContext(), VideoListActivity.class).putExtra("bean",bean));
     }
 
     @Override
     public void onItemSettingClickListener(View v, int pos) {
         //TODO: camera setting
         CameraItemBean bean = mList.get(pos);
-        Intent intent = new Intent(getContext(), DeviceSettingActivity.class);
-        intent.putExtra("bean",bean);
-        startActivity(intent);
+        startActivity(new Intent(getContext(),DeviceSettingActivity.class).putExtra("bean",bean));
     }
 
     @Override
@@ -278,12 +274,13 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
         AlerDialogUtils.postDialogMsg(getContext(), getString(R.string.device_item_remove_title), getString(R.string.device_item_remove_msg), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if(HomeAction.getInstance().removeCam(getContext(),bean)){
-                    mList.remove(pos);
-                    mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);
-                }else{
-                    Snackbar.make(mView,getString(R.string.device_item_remove_fail),Snackbar.LENGTH_LONG).show();
-                }
+//                if(HomeAction.getInstance().removeCam(getContext(),bean)){
+//                    mList.remove(pos);
+//                    mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);
+//                }else{
+//                    Snackbar.make(mView,getString(R.string.device_item_remove_fail),Snackbar.LENGTH_LONG).show();
+//                }
+                mPresenter.removeDevice(bean,pos);
             }
         }, null);
     }
@@ -335,6 +332,21 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
     }
 
     @Override
+    public void onAddResult(boolean isSuccess, PlayType type) {
+        Log.i("123","!!!!!!!!DeviceFragment onAddresult");
+    }
+
+    @Override
+    public void onRemoveResult(boolean isSuccess, int pos) {
+        if (isSuccess){
+            mList.remove(pos);
+            mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);
+        }else{
+            Snackbar.make(mView,getString(R.string.device_item_remove_fail),Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
     public void onError() {
         Log.e("123","Device Fragment on error");
         //// TODO: 2017/9/18
@@ -366,12 +378,12 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
             //开始删除
             int pos = (int) v.getTag();
             Log.i("123","pos="+pos);
-            final CameraItemBean bean = mList.get(pos);
-            if(HomeAction.getInstance().removeCam(getContext(),bean)){
-              //  mList.remove(pos);
-            }else{
-                Snackbar.make(mView,getString(R.string.device_item_remove_fail),Snackbar.LENGTH_LONG).show();
-            }
+//            final CameraItemBean bean = mList.get(pos);
+//            if(HomeAction.getInstance().removeCam(getContext(),bean)){
+//              //  mList.remove(pos);
+//            }else{
+//                Snackbar.make(mView,getString(R.string.device_item_remove_fail),Snackbar.LENGTH_LONG).show();
+//            }
 //            Snackbar.make(mView,getString(R.string.device_item_remove_fail),Snackbar.LENGTH_LONG).show();
         }
 
@@ -380,9 +392,11 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
             Log.e("123","BrokenCallback onFallingEnd");
             //更新
             int pos = (int) v.getTag();
-            mList.remove(pos);
-            adapter.removeSllData(pos);
-            adapter.setData(mList);
+            final CameraItemBean bean = mList.get(pos);
+            mPresenter.removeDevice(bean,pos);
+//            mList.remove(pos);
+//            adapter.removeSllData(pos);
+//            adapter.setData(mList);
 
 //            mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);
 
@@ -398,33 +412,6 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
         }
     }
 
-    private void getNetServer(final int pos){
-        new AsyncTask<Void,Void,Boolean>(){
-
-            @Override
-            protected Boolean doInBackground(Void... params) {
-                SoapManager soapManager = SoapManager.getInstance();
-                GetNATServerReq req = new GetNATServerReq(LoginAction.getInstance().getmInfo().getAccount(),
-                        LoginAction.getInstance().getmInfo().getLr().getLoginSession());
-
-                GetNATServerRes res = soapManager.getGetNATServerRes(req);
-                Log.e("123","GetNATServerRes="+res.toString());
-                return true;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                if (aBoolean){
-                    Message msg = new Message();
-                    msg.what = MSG_NET_SERVER_OK;
-                    msg.arg1 = pos;
-
-                    mHandler.sendMessage(msg);
-                }
-            }
-        }.execute();
-    }
 
     private void doPlay(int pos){
         CameraItemBean bean = getUpdataBean(pos);

@@ -11,7 +11,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.howell.webcam.R;
-import com.howell.entityclass.VODRecord;
+
+import com.howell.modules.player.bean.VODRecord;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 

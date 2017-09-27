@@ -22,6 +22,16 @@ public class CameraItemBean implements Serializable {
     private String upnpIP; // for ap
     private int upnpPort;
     private int methodType;//ecam turn =0; ap 0 h264,  1 h264Crypto, 2 h265,  3 h265crypto
+    private String devKey;//just ecam add need;
+
+    public String getDevKey() {
+        return devKey;
+    }
+
+    public CameraItemBean setDevKey(String devKey) {
+        this.devKey = devKey;
+        return this;
+    }
 
     public int getMethodType() {
         return methodType;
@@ -158,4 +168,25 @@ public class CameraItemBean implements Serializable {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "CameraItemBean{" +
+                "type=" + type +
+                ", cameraName='" + cameraName + '\'' +
+                ", cameraDescription='" + cameraDescription + '\'' +
+                ", deviceId='" + deviceId + '\'' +
+                ", channelNo=" + channelNo +
+                ", isOnline=" + isOnline +
+                ", isPtz=" + isPtz +
+                ", isStore=" + isStore +
+                ", deVer='" + deVer + '\'' +
+                ", model='" + model + '\'' +
+                ", indensity=" + indensity +
+                ", picturePath='" + picturePath + '\'' +
+                ", upnpIP='" + upnpIP + '\'' +
+                ", upnpPort=" + upnpPort +
+                ", methodType=" + methodType +
+                ", devKey='" + devKey + '\'' +
+                '}';
+    }
 }

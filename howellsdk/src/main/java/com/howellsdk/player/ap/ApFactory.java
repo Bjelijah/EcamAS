@@ -215,6 +215,7 @@ public class ApFactory {
         public long getTimestamp() {
             return JniUtil.getTimeStamp();
         }
+
     }
 
     private ApTimeBean [] phaseTime(String startTime,String endTime){

@@ -69,6 +69,7 @@ public class SoapFactory {
             envelope.dotNet = true;
             envelope.encodingStyle = "UTF-8";
             envelope.setOutputSoapObject(rpc);
+            Log.i("123","url="+mUrl);
             if (mTransport==null){
                 mTransport = new HttpTransportSE(mUrl);
                 mTransport.debug = true;
@@ -834,27 +835,32 @@ public class SoapFactory {
                 public void subscribe(@NonNull ObservableEmitter<VodSearchRes> e) throws Exception {
                     VodSearchRes res = new VodSearchRes();
                     try{
+                        Log.i("123","rpc="+rpc.toString());
+                        SDKDebugLog.LogEnable(true);
                         SoapObject obj = initEnvelopAndTransport(rpc,"http://www.haoweis.com/HomeServices/MCU/vodSearch");
-                        if (obj.getProperty("Result").toString().equalsIgnoreCase("ok")){
+                        if (obj.getProperty("result").toString().equalsIgnoreCase("ok")){
                             res.setPageNo(Integer.valueOf(obj.getProperty("PageNo").toString()));
                             res.setPageCount(Integer.valueOf(obj.getProperty("PageCount").toString()));
                             res.setRecordCount(Integer.valueOf(obj.getProperty("RecordCount").toString()));
-                            SoapObject record = (SoapObject) obj.getProperty("Record");
-                            int conunt = record.getPropertyCount();
+
+//                            SoapObject record = (SoapObject) obj.getProperty("Record");
+
+                            int conunt = obj.getPropertyCount();
+                            Log.i("123","count="+conunt);
                             ArrayList<VodSearchRes.Record> records = new ArrayList<>();
-                            for (int i=0;i<conunt;i++){
+                            for (int i=4;i<conunt;i++){
                                 SoapObject o = (SoapObject) obj.getProperty(i);
                                 records.add(new VodSearchRes.Record(
                                         o.getProperty("StartTime").toString(),
                                         o.getProperty("EndTime").toString(),
                                         Long.valueOf( o.getProperty("FileSize").toString()),
-                                        o.getProperty("ContentType").toString(),
+                                        "",//o.getProperty("ContentType").toString(),
                                         o.getProperty("Desc").toString()
                                 ));
                             }
                             res.setRecord(records);
                         }
-                        res.setResult(obj.getProperty("Result").toString());
+                        res.setResult(obj.getProperty("result").toString());
                         e.onNext(res);
                     }catch (Exception ex){
                         e.onError(ex);
@@ -951,6 +957,7 @@ public class SoapFactory {
                     DeviceRes res = new DeviceRes();
                     try{
                         SoapObject obj = initEnvelopAndTransport(rpc,"http://www.haoweis.com/HomeServices/MCU/queryDevice");
+                        Log.i("123","query device="+obj.toString());
                         if (obj.getProperty("result").toString().equalsIgnoreCase("ok")) {
                             SoapObject nodeList = (SoapObject) obj.getProperty("NodeList");
                             int count = nodeList.getPropertyCount();

@@ -6,7 +6,8 @@ import android.util.Log;
 import com.howell.bean.Subscribe;
 import com.howell.bean.TurnGetCamBean;
 import com.howell.bean.TurnGetRecordedFilesBean;
-import com.howell.entityclass.VODRecord;
+import com.howell.modules.player.bean.VODRecord;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
