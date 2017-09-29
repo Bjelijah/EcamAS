@@ -34,10 +34,19 @@ import com.howell.action.LoginAction;
 import com.howell.action.SettingAction;
 import com.howell.bean.CameraItemBean;
 import com.android.howell.webcam.R;
+import com.howell.modules.param.IParamContract;
+import com.howell.modules.param.presenter.ParamSoapPresenter;
 import com.howell.protocol.SoapManager;
 import com.howell.protocol.UpgradeDevVerReq;
 import com.howell.protocol.UpgradeDevVerRes;
 import com.howell.utils.AlerDialogUtils;
+import com.howell.utils.DeviceVersionUtils;
+import com.howellsdk.net.soap.bean.AuxiliaryRes;
+import com.howellsdk.net.soap.bean.CodingParamRes;
+import com.howellsdk.net.soap.bean.DevVerRes;
+import com.howellsdk.net.soap.bean.DeviceStatusRes;
+import com.howellsdk.net.soap.bean.VMDParamRes;
+import com.howellsdk.net.soap.bean.VideoParamRes;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 
@@ -45,7 +54,7 @@ import com.mikepenz.iconics.IconicsDrawable;
  * Created by howell on 2016/12/8.
  */
 
-public class DeviceSettingActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener,SeekBar.OnSeekBarChangeListener {
+public class DeviceSettingActivity extends AppCompatActivity implements IParamContract.IVew,CompoundButton.OnCheckedChangeListener,SeekBar.OnSeekBarChangeListener {
 
     public static final int MSG_SETTING_GAIN_ERROR          = 0x00;
     public static final int MSG_SETTING_WAIT_DISSHOW        = 0x01;
@@ -64,6 +73,8 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
 
     boolean mIsSaved,mIsTurn,mIsLamp,mIsRec,mIsAlarm,mIsRename=false;
     int mResolution,mPicture;
+    IParamContract.IPresenter mPresenter;
+    private boolean mIsGetCodefinish,mIsGetVmdFinish,mIsGetAuxFinish,mIsGetVideoFinish,mIsGetVerFinish,mIsGetPush;
 
     private ProgressDialog mPd;
 
@@ -147,58 +158,16 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
 
     @Override
     protected void onDestroy() {
-        //
 
-
-
+        unbindPresenter();
         super.onDestroy();
     }
 
     private void initToolbar(){
         mTb = (Toolbar) findViewById(R.id.camera_setting_toolbar);
-
-//        Octicons.Icon.oct_chevron_left
-//        GoogleMaterial.Icon.gmd_arrow_left_bottom
-
-//                gmd_chevron_left
-//        mTb.setNavigationIcon(new IconicsDrawable(this, GoogleMaterial.Icon.gmd_chevron_left).actionBar().color(Color.WHITE));
-//        mTb.setOverflowIcon(new IconicsDrawable(this,GoogleMaterial.Icon.gmd_refresh_sync).actionBar().color(Color.WHITE));
-//        mTb.setNavigationIcon(getResources().getDrawable(R.mipmap.ic_theaters_white_24dp));
         mTb.showOverflowMenu();
         mTb.setTitle(getString(R.string.camera_settting_title));
-
-
-
         mTb.inflateMenu(R.menu.camera_setting_action_menu);
-//        mTb.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem item) {
-//                switch (item.getItemId()){
-//                    case R.id.camera_setting_action_refresh:
-//                        //TODO refresh:
-//                        Log.i("123","refresh");
-//                        gainSet();
-//                        waitShow(getResources().getString(R.string.gain_set),getResources().getString(R.string.please_wait));
-//                        break;
-//                    case R.id.camera_setting_action_save:
-//                        Log.i("123","save it");
-//                        mIsSaved = true;
-//                        //TODO save:
-//                        saveSet(false);
-//                        break;
-//                    default:
-//                        break;
-//                }
-//                return true;
-//            }
-//        });
-
-
-
-
-//        mTb.getMenu().findItem(R.id.camera_setting_action_refresh);//.setIcon(new IconicsDrawable(this,GoogleMaterial.Icon.gmd_chevron_left).actionBar().color(Color.WHITE));
-
-//        mTb.setSubtitle(getString(R.string.add_listen_subtitle));
         setSupportActionBar(mTb);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -245,6 +214,7 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
     }
 
     private void initFun(){
+        bindPresenter();
         mIsSaved = false;
         mTurnCb.setOnCheckedChangeListener(this);
         mLampCb.setOnCheckedChangeListener(this);
@@ -257,8 +227,6 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
             public void onClick(View v) {
                 Log.e("123","升级");
                 cameraUpdateDialogShow();
-
-
             }
         });
         mRenameBtn.setOnClickListener(new View.OnClickListener() {
@@ -274,7 +242,7 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
         mFrameSizeValues = getResources().getStringArray(R.array.FrameSize);
         mImageQualityTexts = getResources().getStringArray(R.array.ImageQualityText);
 
-        SettingAction.getInstance().setHandler(mHandler).setBean(mBean);
+//        SettingAction.getInstance().setHandler(mHandler).setBean(mBean);
 
         //send msg
 
@@ -342,10 +310,37 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
 
     }
 
+    private void checkGain(){
+        if (mIsGetCodefinish&& mIsGetVmdFinish&& mIsGetAuxFinish&&mIsGetVideoFinish&&mIsGetVerFinish&&mIsGetPush) {
+            mHandler.sendEmptyMessage(MSG_SETTING_WAIT_DISSHOW);
+        }
+    }
+
+    private void gainError(){
+        mHandler.sendEmptyMessage(MSG_SETTING_WAIT_DISSHOW);
+        mHandler.sendEmptyMessage(MSG_SETTING_GAIN_ERROR);
+    }
+
+    private void checkSave(){
+
+    }
 
 
     private void gainSet(){
-        SettingAction.getInstance().loadSetting();
+//        SettingAction.getInstance().loadSetting();
+//
+        mIsGetCodefinish = false;
+        mIsGetVmdFinish  = false;
+        mIsGetAuxFinish  = false;
+        mIsGetVideoFinish= false;
+        mIsGetVerFinish  = false;
+        mIsGetPush       = false;
+        mPresenter.getCodingParam();
+        mPresenter.getVMDParam();
+        mPresenter.getAuxiliaryParam();
+        mPresenter.getVideoParam();
+        mPresenter.getVersionParam();
+        mPresenter.getPushParam();
     }
 
     private void saveSet(boolean bExit){
@@ -447,21 +442,58 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
 
 
     private void doSaveParam(){
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("bSaveEncode",mResoIndex==mResolutionSb.getProgress()&&mQualityIndex==mPictureSb.getProgress()?false:true);
-        bundle.putInt("resoIndex",mResolutionSb.getProgress());
-        bundle.putInt("qualityIndex",mPictureSb.getProgress());
-        bundle.putBoolean("bSaveTurn",mTurnCb.isChecked()!=mBRotation);
-        bundle.putBoolean("bTurn",mTurnCb.isChecked());
-        bundle.putBoolean("bSaveLamp",mLampCb.isChecked()!=mBLamp);
-        bundle.putBoolean("bLamp",mLampCb.isChecked());
-        bundle.putBoolean("bSaveVmd",mDetRecCb.isChecked()!=mBVmd);
-        bundle.putBoolean("bVmd",mDetRecCb.isChecked());
-        bundle.putBoolean("bSavePush",mDetAlarmCb.isChecked()!=mBPush);
-        bundle.putBoolean("bPush",mDetAlarmCb.isChecked());
-        bundle.putBoolean("bRename",mIsRename);
-        bundle.putString("newName",renameNewName);
-        SettingAction.getInstance().saveSetting(bundle);
+//
+//        Bundle bundle = new Bundle();
+//        bundle.putBoolean("bSaveEncode",mResoIndex==mResolutionSb.getProgress()&&mQualityIndex==mPictureSb.getProgress()?false:true);
+//        bundle.putInt("resoIndex",mResolutionSb.getProgress());
+//        bundle.putInt("qualityIndex",mPictureSb.getProgress());
+//        bundle.putBoolean("bSaveTurn",mTurnCb.isChecked()!=mBRotation);
+//        bundle.putBoolean("bTurn",mTurnCb.isChecked());
+//        bundle.putBoolean("bSaveLamp",mLampCb.isChecked()!=mBLamp);
+//        bundle.putBoolean("bLamp",mLampCb.isChecked());
+//        bundle.putBoolean("bSaveVmd",mDetRecCb.isChecked()!=mBVmd);
+//        bundle.putBoolean("bVmd",mDetRecCb.isChecked());
+//        bundle.putBoolean("bSavePush",mDetAlarmCb.isChecked()!=mBPush);
+//        bundle.putBoolean("bPush",mDetAlarmCb.isChecked());
+//        bundle.putBoolean("bRename",mIsRename);
+//        bundle.putString("newName",renameNewName);
+//        SettingAction.getInstance().saveSetting(bundle);
+
+       if (!(mResoIndex==mResolutionSb.getProgress()&&mQualityIndex==mPictureSb.getProgress())){
+           Log.e("123","save encode");
+           int resoIndex = mResolutionSb.getProgress();
+           int qualityIndex = mPictureSb.getProgress();
+           int bitrate = reso_bitrate_map_[resoIndex][qualityIndex];
+           String streamType=resoIndex==0?"Sub":"Main";
+           streamType = "Sub";
+
+           mPresenter.setEncodeParam(bitrate,streamType,mFrameSizeValues[resoIndex]);
+       }
+
+       if (mTurnCb.isChecked()!=mBRotation){
+           Log.e("123","save video");
+           mPresenter.setTurn180(mTurnCb.isChecked());
+       }
+
+       if (mLampCb.isChecked()!=mBLamp){
+           Log.e("123","save aux");
+           mPresenter.setLampOnOff(mLampCb.isChecked());
+       }
+
+       if(mDetRecCb.isChecked()!=mBVmd){
+           Log.e("123","save vmd");
+           mPresenter.setVMDOnOff(mDetRecCb.isChecked());
+       }
+
+       if (mDetAlarmCb.isChecked()!=mBPush){
+           Log.e("123","save push");
+           mPresenter.setPush(mDetAlarmCb.isChecked());
+       }
+
+       if (mIsRename){
+           Log.e("123","save name");
+           mPresenter.setNewCameraName(renameNewName);
+       }
 
     }
 
@@ -532,5 +564,153 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
     }
 
 
+    @Override
+    public void bindPresenter() {
+        if(mPresenter == null){
+            mPresenter = new ParamSoapPresenter();
+        }
+        mPresenter.bindView(this);
+        mPresenter.init(this,mBean);
+    }
 
+    @Override
+    public void unbindPresenter() {
+        if (mPresenter!=null){
+            mPresenter.unbindView();
+            mPresenter = null;
+        }
+    }
+
+    @Override
+    public void onCodeRes(CodingParamRes res) {
+        mIsGetCodefinish = true;
+        checkGain();
+        if (!res.getResult().equalsIgnoreCase("ok")){
+            gainError();
+            return;
+        }
+        String frameSize = res.getFrameSize();
+        int bitrate = res.getBitRate();
+        Log.i("123","coding res="+res.toString());
+        mResoIndex = getResoIndex(frameSize);
+        mResolutionSb.setProgress(mResoIndex);
+        mResolutionTv.setText(mResolutionTexts[mResoIndex]);
+        mQualityIndex = getQualityIndex(mResoIndex,bitrate);
+        mPictureSb.setProgress(mQualityIndex);
+        mPictureTv.setText(mImageQualityTexts[mQualityIndex]);
+    }
+
+    @Override
+    public void onVMDRes(VMDParamRes res) {
+        mIsGetVmdFinish = true;
+        checkGain();
+        if (!res.getResult().equalsIgnoreCase("ok")){
+            gainError();
+            return;
+        }
+        Log.i("123","res="+res.toString());
+        mBVmd = res.getEnable();
+        mDetRecCb.setChecked(mBVmd);
+        mDetAlarmCb.setEnabled(mBVmd);
+    }
+
+    @Override
+    public void onAuxiliaryRes(AuxiliaryRes res) {
+        mIsGetAuxFinish = true;
+        checkGain();
+        if (!res.getResult().equalsIgnoreCase("ok")){
+            gainError();
+            return;
+        }
+        mBLamp = res.getAuxiliaryState().equalsIgnoreCase("Inactive")?false:true;
+        mLampCb.setChecked(mBLamp);
+    }
+
+    @Override
+    public void onAndroidPushRes(DeviceStatusRes res) {
+        mIsGetPush = true;
+        checkGain();
+        if (!res.getResult().equalsIgnoreCase("ok")){
+            gainError();
+            return;
+        }
+        for(DeviceStatusRes.Node n:res.getNodes()){
+            if (n.getDevID().equals(mBean.getDeviceId())){
+                mBPush = n.getAndroidPushSubscribedFlag()==0?false:true;
+            }
+        }
+        mDetAlarmCb.setChecked(mBPush);
+    }
+
+    @Override
+    public void onVideoParamRes(VideoParamRes res) {
+        mIsGetVideoFinish = true;
+        checkGain();
+        if (!res.getResult().equalsIgnoreCase("ok")){
+            gainError();
+            return;
+        }
+        mBRotation = res.getRotationDegree()==0?false:true;
+        mTurnCb.setChecked(mBRotation);
+    }
+
+    @Override
+    public void onVersionRes(DevVerRes res) {
+        mIsGetVerFinish = true;
+        checkGain();
+        if (!res.getResult().equalsIgnoreCase("ok")){
+            gainError();
+            return;
+        }
+        boolean bNeedUpdata = false;
+        String curVer = res.getCurDevVer();
+        String newVer = res.getNewDevVer();
+        try {
+            bNeedUpdata = DeviceVersionUtils.needToUpdate(curVer,newVer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mUpdataBtn.setVisibility(bNeedUpdata?View.VISIBLE:View.GONE);
+        String updataTv = bNeedUpdata?
+                getResources().getString(R.string.camera_setting_cur_version)+":("+curVer+") "+getResources().getString(R.string.camera_setting_new_version)+":("+newVer+")":
+                getResources().getString(R.string.camera_setting_no_new_version)+" ("+curVer+")";
+        mUpdataTv.setText(updataTv);
+    }
+
+    @Override
+    public void onSetCodeRes(boolean isOk) {
+
+    }
+
+    @Override
+    public void onSetVideoRes(boolean isOk) {
+
+    }
+
+    @Override
+    public void onSetAuxiliaryRes(boolean isOk) {
+
+    }
+
+    @Override
+    public void onSetVmdRes(boolean isOk) {
+
+    }
+
+    @Override
+    public void onSetPushRes(boolean isOk,boolean isPush) {
+        if (isOk){
+            mBean.setAndroidPush(isPush);
+        }
+    }
+
+    @Override
+    public void onSetNewNameRes(boolean isOk) {
+
+    }
+
+    @Override
+    public void onError() {
+
+    }
 }

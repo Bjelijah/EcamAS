@@ -126,6 +126,7 @@ public class DeviceSoapPresenter extends DeviceBasePresenter {
                                 .setUpnpPort(node.getUpnpPort())
                                 .setMethodType(0)
                                 .setDeVer(node.getDevVer())
+                                .setAndroidPush(node.getAndroidPushSubscribedFlag()==0?false:true)
                                 .setPicturePath("/sdcard/eCamera/cache/"+node.getDevID()+".jpg");
                     }
                 })

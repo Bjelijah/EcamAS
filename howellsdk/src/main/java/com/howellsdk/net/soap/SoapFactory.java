@@ -361,7 +361,7 @@ public class SoapFactory {
                     CodingParamRes res = new CodingParamRes();
                     try{
                         SoapObject obj = initEnvelopAndTransport(rpc,"http://www.haoweis.com/HomeServices/MCU/getCodingParam");
-                        String result = obj.getProperty("Result").toString();
+                        String result = obj.getProperty("result").toString();
                         if (result.equalsIgnoreCase("OK")){
                             try{res.setFrameSize( obj.getProperty("FrameSize").toString());}catch (Exception e){}
                             try{res.setFrameRate(Integer.valueOf(obj.getProperty("FrameRate").toString()));}catch (Exception e){}
@@ -395,11 +395,13 @@ public class SoapFactory {
             if (req.getBitRate()!=null)rpc.addProperty("BitRate",req.getBitRate());
             if (req.getImageQuality()!=null)rpc.addProperty("ImageQuality",req.getImageQuality());
             if (req.getAudioInput()!=null)rpc.addProperty("AudioInput",req.getAudioInput());
+            Log.i("123","rpc="+rpc.toString());
             return Observable.create(new ObservableOnSubscribe<Result>() {
                 @Override
                 public void subscribe(@NonNull ObservableEmitter<Result> e) throws Exception {
                     try{
                         SoapObject obj = initEnvelopAndTransport(rpc,"http://www.haoweis.com/HomeServices/MCU/setCodingParam");
+                        Log.i("123","obj="+obj.toString());
                         e.onNext(new Result(obj.getProperty("result").toString()));
                     }catch (Exception ex){
                         e.onError(ex);
@@ -499,7 +501,7 @@ public class SoapFactory {
                     VideoParamRes res = new VideoParamRes();
                     try{
                         SoapObject obj = initEnvelopAndTransport(rpc,"http://www.haoweis.com/HomeServices/MCU/getVideoParam");
-                        if (obj.getProperty("Result").toString().equalsIgnoreCase("ok")){
+                        if (obj.getProperty("result").toString().equalsIgnoreCase("ok")){
                             try{res.setVideoStandard(obj.getProperty("VideoStandard").toString());}catch (Exception e){}
                             try{res.setRotationDegree(Integer.valueOf(obj.getProperty("RotationDegree").toString()));}catch (Exception e){}
                             try{res.setBrightness(Integer.valueOf(obj.getProperty("Brightness").toString()));}catch (Exception e){}
@@ -508,7 +510,7 @@ public class SoapFactory {
                             try{res.setHue(Integer.valueOf(obj.getProperty("Hue").toString()));}catch (Exception e){}
                             try{res.setInfrared(Boolean.valueOf(obj.getProperty("Infrared").toString()) );}catch (Exception e){}
                         }
-                        res.setResult(obj.getProperty("Result").toString());
+                        res.setResult(obj.getProperty("result").toString());
                         em.onNext(res);
                     }catch (Exception ex){
                         em.onError(ex);
@@ -681,7 +683,7 @@ public class SoapFactory {
                     VMDParamRes res = new VMDParamRes();
                     try{
                         SoapObject obj = initEnvelopAndTransport(rpc,"http://www.haoweis.com/HomeServices/MCU/getVMDParam");
-                        if (obj.getProperty("Result").toString().equalsIgnoreCase("OK")){
+                        if (obj.getProperty("result").toString().equalsIgnoreCase("OK")){
                             try{res.setEnable(Boolean.valueOf(obj.getProperty("Enabled").toString()));}catch (Exception e){}
                             try{res.setSensitivity(Integer.valueOf(obj.getProperty("Sensitivity").toString()));}catch (Exception e){}
                             try{res.setStartTriggerTime(Integer.valueOf(obj.getProperty("StartTriggerTime").toString()));}catch (Exception e){}
@@ -700,7 +702,7 @@ public class SoapFactory {
                                 res.setWorkSheet(new VMDParamRes.WorkSheet(enable,bitString));
                             }catch (Exception e){}
                         }
-                        res.setResult(obj.getProperty("Result").toString());
+                        res.setResult(obj.getProperty("result").toString());
                         em.onNext(res);
                     }catch (Exception ex){
                         em.onError(ex);
@@ -724,8 +726,10 @@ public class SoapFactory {
             if (req.getEndTriggerTime()!=null)rpc.addProperty("EndTriggerTime",req.getEndTriggerTime());
             if (req.getVmdGrid()!=null){
                 SoapObject vmdGrid = new SoapObject(mNameSpace,"VMDGrid");
-                vmdGrid.addProperty("Row",req.getVmdGrid().getRow());
-                rpc.addProperty("VMDGrid",vmdGrid);
+                for (String s:req.getVmdGrid().getRow()){
+                    vmdGrid.addProperty("Row",s);
+                }
+                rpc.addProperty("Grid",vmdGrid);
             }
             if (req.getWorkSheet()!=null){
                 SoapObject workSheet = new SoapObject(mNameSpace,"WorkSheet");
@@ -733,6 +737,7 @@ public class SoapFactory {
                         .addProperty("BitString",req.getWorkSheet().getBitString());
                 rpc.addProperty("WorkSheet",workSheet);
             }
+            Log.i("123","save vmd="+rpc.toString());
             return Observable.create(new ObservableOnSubscribe<Result>() {
                 @Override
                 public void subscribe(@NonNull ObservableEmitter<Result> e) throws Exception {
@@ -1075,10 +1080,10 @@ public class SoapFactory {
                     AuxiliaryRes res = new AuxiliaryRes();
                     try{
                         SoapObject obj = initEnvelopAndTransport(rpc,"http://www.haoweis.com/HomeServices/MCU/getAuxiliary");
-                        if (obj.getProperty("Result").toString().equalsIgnoreCase("ok")){
+                        if (obj.getProperty("result").toString().equalsIgnoreCase("ok")){
                             res.setAuxiliaryState(obj.getProperty("AuxiliaryState").toString());
                         }
-                        res.setResult(obj.getProperty("Result").toString());
+                        res.setResult(obj.getProperty("result").toString());
                         e.onNext(res);
                     }catch (Exception ex){
                         e.onError(ex);
@@ -1441,13 +1446,14 @@ public class SoapFactory {
             if (req.getPageNo()!=null)rpc.addProperty("PageNo",req.getPageNo());
             if (req.getSearchID()!=null)rpc.addProperty("SearchID",req.getSearchID());
             if (req.getPageSize()!=null)rpc.addProperty("PageSize",req.getPageSize());
+
             return Observable.create(new ObservableOnSubscribe<DeviceStatusRes>() {
                 @Override
                 public void subscribe(@NonNull ObservableEmitter<DeviceStatusRes> e) throws Exception {
                     DeviceStatusRes res = new DeviceStatusRes();
                     try{
                         SoapObject obj = initEnvelopAndTransport(rpc,"http://www.haoweis.com/HomeServices/MCU/queryDeviceStatus");
-                        Log.i("123","obj="+obj.toString());
+
                         if (obj.getProperty("result").toString().equalsIgnoreCase("ok")){
                             res.setPageNo(Integer.valueOf(obj.getProperty("PageNo").toString()));
                             res.setPageCount(Integer.valueOf(obj.getProperty("PageCount").toString()));
@@ -1717,6 +1723,7 @@ public class SoapFactory {
                 public void subscribe(@NonNull ObservableEmitter<Result> e) throws Exception {
                     try{
                         SoapObject obj = initEnvelopAndTransport(rpc,"http://www.haoweis.com/HomeServices/MCU/subscribeAndroidPush");
+                        Log.i("123","~~~~~ obj = =="+obj.toString());
                         e.onNext(new Result(obj.getProperty("result").toString()));
                     }catch (Exception ex){
                         e.onError(ex);

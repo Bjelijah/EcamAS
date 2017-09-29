@@ -131,7 +131,7 @@ public class VMDParamReq {
     }
 
     public static class VMDGrid{
-        String row;
+        String [] row;
 
         @Override
         public String toString() {
@@ -143,17 +143,17 @@ public class VMDParamReq {
         public VMDGrid() {
         }
 
-        public VMDGrid(String row) {
+        public VMDGrid(String [] row) {
 
             this.row = row;
         }
 
-        public String getRow() {
+        public String [] getRow() {
 
             return row;
         }
 
-        public void setRow(String row) {
+        public void setRow(String [] row) {
             this.row = row;
         }
     }

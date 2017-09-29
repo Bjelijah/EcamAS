@@ -31,6 +31,7 @@ import com.howell.protocol.UpdateChannelNameRes;
 import com.howell.protocol.VMDParamReq;
 import com.howell.protocol.VMDParamRes;
 import com.howell.utils.DeviceVersionUtils;
+import com.howellsdk.api.ApiManager;
 
 /**
  * Created by Administrator on 2016/12/30.
@@ -100,8 +101,8 @@ public class SettingAction {
             QueryDeviceRes queryDeviceRes;
             @Override
             protected Boolean doInBackground(Void... params) {
-                String account = LoginAction.getInstance().getmInfo().getAccount();
-                String session =  LoginAction.getInstance().getmInfo().getLr().getLoginSession();
+                String account = "10086012";LoginAction.getInstance().getmInfo().getAccount();
+                String session = ApiManager.SoapHelp.getsSession();//LoginAction.getInstance().getmInfo().getLr().getLoginSession();
                 String devId = mBean.getDeviceId();
                 int ch = mBean.getChannelNo();
 

@@ -85,4 +85,13 @@ public class DeviceStatusReq {
         pageSize=null;
     }
 
+    public DeviceStatusReq(String account,String session,String searchId){
+        this.account = account;
+        this.session = session;
+        pageNo = null;
+        pageSize = null;
+        this.searchID = searchId;
+    }
+
+
 }

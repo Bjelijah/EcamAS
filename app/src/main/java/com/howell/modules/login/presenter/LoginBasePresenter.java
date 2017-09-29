@@ -43,6 +43,7 @@ public abstract class LoginBasePresenter extends BasePresenter implements ILogin
         mPwd = config.getPassword();
         mIsSSL = config.isSSL();
         mIsFirst = config.isFirst();
+
     }
 
 

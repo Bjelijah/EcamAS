@@ -23,6 +23,16 @@ public class CameraItemBean implements Serializable {
     private int upnpPort;
     private int methodType;//ecam turn =0; ap 0 h264,  1 h264Crypto, 2 h265,  3 h265crypto
     private String devKey;//just ecam add need;
+    private boolean androidPush;
+
+    public boolean isAndroidPush() {
+        return androidPush;
+    }
+
+    public CameraItemBean setAndroidPush(boolean androidPush) {
+        this.androidPush = androidPush;
+        return this;
+    }
 
     public String getDevKey() {
         return devKey;
