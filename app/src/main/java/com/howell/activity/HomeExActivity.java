@@ -36,6 +36,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.howell.action.ConfigAction;
 import com.howell.action.FingerprintUiHelper;
 import com.howell.action.HomeAction;
 import com.howell.action.LoginAction;
@@ -47,9 +48,14 @@ import com.howell.activity.fragment.NoticeFragment;
 import com.howell.bean.UserLoginDBBean;
 import com.howell.db.UserLoginDao;
 import com.android.howell.webcam.R;
+import com.howell.modules.login.ILoginContract;
+import com.howell.modules.login.bean.Type;
+import com.howell.modules.login.presenter.LoginSoapPresenter;
 import com.howell.protocol.QueryClientVersionReq;
 import com.howell.protocol.QueryClientVersionRes;
 import com.howell.protocol.SoapManager;
+import com.howell.rxbus.RxBus;
+import com.howell.rxbus.RxConstants;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.FileUtils;
 import com.howell.utils.IConst;
@@ -81,13 +87,23 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import io.reactivex.Flowable;
+import io.reactivex.FlowableOnSubscribe;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by howell on 2016/11/15.
  */
 
-public class HomeExActivity extends AppCompatActivity implements HomeAction.ChangeUser,IConst, ViewPager.OnPageChangeListener {
+public class HomeExActivity extends AppCompatActivity implements ILoginContract.IView,HomeAction.ChangeUser,IConst, ViewPager.OnPageChangeListener {
 
     private final static long ID_DRAWER_UID = 0x00;
     private final static long ID_DRAWER_HOME = 0x01;
@@ -128,6 +144,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     private String mUpdataUrl=null;
     private List<HomeBaseFragment> mFragments;
     private final CompositeDisposable mDisposables = new CompositeDisposable();
+    ILoginContract.IPresenter mPresenter;
     Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -176,6 +193,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_ex);
+        bindPresenter();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.showOverflowMenu();
         toolbar.inflateMenu(R.menu.center_setting_action_menu);
@@ -192,8 +210,13 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
             public void onClick(View view) {
 
                 Log.i("123","add btn click time="+System.currentTimeMillis());
-               BulrTask task = new BulrTask(rootView);
-                task.execute();
+//                BulrTask task = new BulrTask(rootView);
+//                task.execute();
+                sBkBitmap = getViewBitmap(rootView);
+                Log.i("123","add btn 2 click time="+System.currentTimeMillis());
+                Intent intent = new Intent(HomeExActivity.this,AddNewCamera.class);
+                HomeExActivity.this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(HomeExActivity.this,mAddbtn,"mybtn").toBundle());
+
             }
         });
 //        profile = new ProfileDrawerItem().withName("test name").withEmail("test email")
@@ -226,6 +249,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     protected void onDestroy() {
         mHandler = null;
         mDisposables.clear();
+        unbindPresenter();
         super.onDestroy();
     }
 
@@ -346,6 +370,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         }
         String userName = getIntent().getStringExtra("account");
         String usermail = getIntent().getStringExtra("email");
+        ConfigAction.getInstance(this).setEmail(usermail);
 //        String userName = LoginAction.getInstance().getmInfo().getAccount();
 //        String usermail = LoginAction.getInstance().getmInfo().getAr().getEmail();
         IProfile mine = new ProfileDrawerItem().withName(userName).withEmail(usermail).withIcon(getRamdomUserIcon());
@@ -411,7 +436,8 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                         if (current)return false;
                         Log.i("123","on profile changed current="+current+" emal="+profile.getEmail()+" name="+profile.getName());
                         //FIXME change to new user
-                        HomeAction.getInstance().changeUser(HomeExActivity.this,profile.getName().toString(),profile.getEmail().toString());
+//                        HomeAction.getInstance().changeUser(HomeExActivity.this,profile.getName().toString(),profile.getEmail().toString());
+                        mPresenter.changeUser(profile.getName().toString(),profile.getEmail().toString());
                         return false;
                     }
                 })
@@ -439,10 +465,10 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
 //fixme          //              new SecondaryDrawerItem().withName(R.string.home_drawer_turn_address).withIcon(Octicons.Icon.oct_server).withIdentifier(ID_DRAWER_TURN_ADDRESS),
                         new SecondaryDrawerItem().withName(R.string.home_drawer_push_service).withIcon(Octicons.Icon.oct_alert).withIdentifier(ID_DRAWER_PUSH),
                         new ExpandableDrawerItem().withName(R.string.home_drawer_connect).withIcon(FontAwesome.Icon.faw_connectdevelop).withSelectable(false)
-                        .withSubItems(
-                                new SwitchDrawerItem().withName(R.string.home_drawer_turn_server).withLevel(2).withIcon(Octicons.Icon.oct_tools).withChecked(isTurn).withOnCheckedChangeListener(onCheckedChangerListener).withSelectable(false).withIdentifier(ID_DRAWER_SERVER_TURN),
-                                new SwitchDrawerItem().withName(R.string.home_drawer_encrypt).withLevel(2).withIcon(Octicons.Icon.oct_tools).withChecked(isCrypto).withOnCheckedChangeListener(onCheckedChangerListener).withSelectable(false).withIdentifier(ID_DRAWER_SERVER_ENCRYPT)
-                        ),
+                                .withSubItems(
+                                        new SwitchDrawerItem().withName(R.string.home_drawer_turn_server).withLevel(2).withIcon(Octicons.Icon.oct_tools).withChecked(isTurn).withOnCheckedChangeListener(onCheckedChangerListener).withSelectable(false).withIdentifier(ID_DRAWER_SERVER_TURN),
+                                        new SwitchDrawerItem().withName(R.string.home_drawer_encrypt).withLevel(2).withIcon(Octicons.Icon.oct_tools).withChecked(isCrypto).withOnCheckedChangeListener(onCheckedChangerListener).withSelectable(false).withIdentifier(ID_DRAWER_SERVER_ENCRYPT)
+                                ),
                         new SecondaryDrawerItem().withName(R.string.home_drawer_server_bind).withIcon(GoogleMaterial.Icon.gmd_8tracks).withIdentifier(ID_DRAWER_SERVER_BIND),
 //                        new SecondaryDrawerItem().withName(R.string.drawer_item_settings).withIcon(FontAwesome.Icon.faw_cog),
                         new SecondaryDrawerItem().withName(R.string.drawer_item_help).withIcon(FontAwesome.Icon.faw_question).withEnabled(false).withIdentifier(ID_DRAWER_HELP)
@@ -488,7 +514,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     }
 
     private Bitmap loadLikeBk(){
-       return BitmapFactory.decodeFile(SDCardUtils.getLikePath(this,"like.jpeg"));
+        return BitmapFactory.decodeFile(SDCardUtils.getLikePath(this,"like.jpeg"));
     }
 
     private void fillFab() {
@@ -540,36 +566,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         return bitmap;
     }
 
-    private Bitmap bulrBitmap(Bitmap bitmap){
-        //Let's create an empty bitmap with the same size of the bitmap we want to blur
-        Bitmap outBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(),Bitmap.Config.ARGB_8888);
-        //Instantiate a new Renderscript
-        RenderScript rs = RenderScript.create(getApplicationContext());
 
-        //Create an Intrinsic Blur Script using the Renderscript
-        ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
-
-        //Create the Allocations (in/out) with the Renderscript and the in/out bitmaps
-        Allocation allIn = Allocation.createFromBitmap(rs, bitmap);
-        Allocation allOut = Allocation.createFromBitmap(rs, outBitmap);
-
-        //Set the radius of the blur
-        blurScript.setRadius(25.f);
-
-        //Perform the Renderscript
-        blurScript.setInput(allIn);
-        blurScript.forEach(allOut);
-
-        //Copy the final bitmap created by the out Allocation to the outBitmap
-        allOut.copyTo(outBitmap);
-
-        //recycle the original bitmap
-        bitmap.recycle();
-
-        //After finishing everything, we destroy the Renderscript.
-        rs.destroy();
-        return outBitmap;
-    }
 
 
 
@@ -609,11 +606,10 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         }
         FingerPrintSaveFragment fragment = new FingerPrintSaveFragment();
 
-
         fragment.setHandler(mHandler)
-                .setUserName(LoginAction.getInstance().getmInfo().getAccount())
-                .setUserPassword(LoginAction.getInstance().getmInfo().getPassword())
-                .setUserEmail(LoginAction.getInstance().getmInfo().getAr().getEmail());
+                .setUserName(ConfigAction.getInstance(this).getName())
+                .setUserPassword(ConfigAction.getInstance(this).getPassword())
+                .setUserEmail(ConfigAction.getInstance(this).getEmail());
         fragment.show(getFragmentManager(), "fingerSave");
 
 
@@ -683,6 +679,42 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     public void onPageScrollStateChanged(int state) {
     }
 
+    @Override
+    public void bindPresenter() {
+        if (mPresenter==null){
+            mPresenter = new LoginSoapPresenter();
+        }
+        mPresenter.bindView(this);
+        mPresenter.init(this);
+    }
+
+    @Override
+    public void unbindPresenter() {
+        if (mPresenter!=null){
+            mPresenter.unbindView();
+            mPresenter = null;
+        }
+    }
+
+    @Override
+    public void onError(Type type) {
+
+    }
+
+    @Override
+    public void onLoginSuccess(String account, String email) {
+        Log.e("123","on changeOK  rx send");
+        RxBus.getDefault().postWithCode(RxConstants.RX_CONFIG_CODE,"");
+        for(HomeBaseFragment fragment:mFragments){
+            fragment.getData();
+        }
+    }
+
+    @Override
+    public void onLogoutResult(Type type) {
+
+    }
+
     class DrawerCheckedChangeListener implements OnCheckedChangeListener {
         @Override
         public void onCheckedChanged(IDrawerItem drawerItem, CompoundButton buttonView, boolean isChecked) {
@@ -710,9 +742,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
             //TODO:1 save to sp  2 do
             ServerConfigSp.saveCommunicationInfo(HomeExActivity.this, HomeAction.getInstance().isUseTurn(), HomeAction.getInstance().isUseCrypto());
             //TODO to set all device list if is TurnType and isUseCrypto
-
             onUpdataBean();
-
         }
 
         @Override
@@ -724,8 +754,6 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     private void onUpdataBean(){
 
     }
-
-
 
 
     class DrawerItemClickListener implements Drawer.OnDrawerItemClickListener{
@@ -791,32 +819,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
         }
     }
 
-    class BulrTask extends AsyncTask<Void,Void,Void>{
-        View v;
-        Bitmap bitmap;
-        BulrTask(View v){
-            this.v = v;
-        }
-        @Override
-        protected void onPreExecute() {
-            bitmap = getViewBitmap(v);
-            super.onPreExecute();
-        }
-        @Override
-        protected Void doInBackground(Void... voids) {
-            Log.i("123","time="+System.currentTimeMillis());
-            Bitmap bulrBitmap = bulrBitmap(bitmap);
-            Log.i("123","time after="+System.currentTimeMillis());
-            sBkBitmap = bulrBitmap;
-            return null;
-        }
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            Intent intent = new Intent(HomeExActivity.this,AddNewCamera.class);
-            HomeExActivity.this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(HomeExActivity.this,mAddbtn,"mybtn").toBundle());
-        }
-    }
+
 
 
 }

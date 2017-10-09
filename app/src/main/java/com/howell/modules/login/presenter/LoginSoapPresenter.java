@@ -1,10 +1,13 @@
 package com.howell.modules.login.presenter;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.howell.action.ConfigAction;
+import com.howell.action.HomeAction;
+import com.howell.action.LoginAction;
 import com.howell.bean.Custom;
 import com.howell.bean.UserLoginDBBean;
 import com.howell.db.UserLoginDao;
@@ -166,6 +169,14 @@ public class LoginSoapPresenter extends LoginBasePresenter implements IConst {
 
     }
 
+    @Override
+    public void changeUser(String userName, String email) {
+        Bundle bundle = getUserPwdByDB(userName,email);
+        String userPwd = bundle.getString("pwd");
+        Custom c = (Custom) bundle.getSerializable("custom");
+        login(userName,userPwd,c);
+    }
+
 
     @Override
     protected void saveLoginInformation() {
@@ -175,7 +186,21 @@ public class LoginSoapPresenter extends LoginBasePresenter implements IConst {
         save2SP();
     }
 
-
+    private Bundle getUserPwdByDB(String name,String email){
+        String pwd = null;
+        Custom c = null;
+        UserLoginDao dao = new UserLoginDao(mContext, "user.db", 1);
+        List<UserLoginDBBean> b = dao.queryByNameAndEmail(name,email);
+        dao.close();
+        if (b.size()>0){
+            pwd = b.get(0).getUserPassword();
+            c = b.get(0).getC();
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString("pwd",pwd);
+        bundle.putSerializable("custom",c);
+        return bundle;
+    }
 
 
     private void getAccountInfo(){

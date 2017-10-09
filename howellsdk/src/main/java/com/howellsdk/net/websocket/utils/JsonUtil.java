@@ -3,6 +3,7 @@ package com.howellsdk.net.websocket.utils;
 
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.howellsdk.net.websocket.bean.WSRes;
 
@@ -22,9 +23,11 @@ public class JsonUtil {
         obj.put("Message",0x0001);
         obj.put("CSeq",cseq);
         JSONObject request = new JSONObject();
-        request.put("Session",session);
+        if (session!=null){request.put("Session",session);}
         request.put("Username",username);
+        request.put("DeviceToken",username);
         obj.put("Request",request);
+        Log.i("547",obj.toString());
         return obj;
     }
 
@@ -93,8 +96,14 @@ public class JsonUtil {
                 return new WSRes(WSRes.WS_TYPE.ALARM_ALIVE,res);
             }
             case 0x0003:{ //s->c  c need to send ask back;
-                WSRes.AlarmEvent event = parseAlarmEventJsonObject(message,cseq,obj.getJSONObject("Request"));
-                return new WSRes(WSRes.WS_TYPE.ALARM_EVENT,event);
+                if (obj.getJSONObject("Request").getJSONObject("PushMessage")!=null){
+                    WSRes.PushMessage ps = parsePushMessageJsonObject(message,cseq,obj.getJSONObject("Request"));
+                    return new WSRes(WSRes.WS_TYPE.PUSH_MESSAGE,ps);
+                }
+                if (obj.getJSONObject("Request").getJSONObject("EventNotify")!=null){
+                    WSRes.AlarmEvent event = parseAlarmEventJsonObject(message,cseq,obj.getJSONObject("Request"));
+                    return new WSRes(WSRes.WS_TYPE.ALARM_EVENT,event);
+                }
             }
             case 0x0004:{//s->c
                 WSRes.AlarmNotice notice = parseAlarmNoticeJsonObject(message,cseq,obj.getJSONObject("Request"));
@@ -186,5 +195,13 @@ public class JsonUtil {
         alarmNotice.setComponentName(componentName);
         return alarmNotice;
     }
+
+    private static WSRes.PushMessage parsePushMessageJsonObject(int message,int cseq,JSONObject obj) throws JSONException {
+        JSONObject ps = obj.getJSONObject("PushMessage");
+        String content = ps.getString("Content");
+        return new WSRes.PushMessage(cseq,content);
+    }
+
+
 
 }

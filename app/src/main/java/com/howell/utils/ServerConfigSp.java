@@ -70,7 +70,7 @@ public class ServerConfigSp {
 
     public static String loadServerIP(Context context){
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
-        return sp.getString("server_ip",null);
+        return sp.getString("server_ip","www.haoweis.com");
     }
 
     public static int loadServerPort(Context context){

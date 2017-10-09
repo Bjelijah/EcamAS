@@ -22,6 +22,16 @@ public class ConfigAction {
     String mPassword;
     boolean mIsFirst;
     String mImei;
+    String mEmail;
+
+    public String getEmail() {
+        return mEmail;
+    }
+
+    public void setEmail(String mEmail) {
+        this.mEmail = mEmail;
+    }
+
     private ConfigAction (Context c){
         //load
         load(c);

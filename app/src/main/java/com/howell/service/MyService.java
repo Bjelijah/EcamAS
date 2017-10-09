@@ -8,8 +8,12 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.howell.action.LoginAction;
+import com.howell.modules.player.IPlayContract;
+import com.howell.modules.push.IPushContract;
+import com.howell.modules.push.presenter.PushPresenter;
 import com.howell.pushlibrary.AbsWorkService;
 import com.howell.pushlibrary.DaemonEnv;
+import com.howell.utils.PhoneConfig;
 import com.howell.utils.ServerConfigSp;
 import com.howell.utils.ThreadUtil;
 
@@ -23,23 +27,12 @@ import java.util.concurrent.TimeUnit;
  * Created by Administrator on 2017/6/8.
  */
 
-public class MyService extends AbsWorkService /*implements WebSocketManager.IMessage*/ {
-//    WebSocketManager mgr = new WebSocketManager();
-    boolean mWsIsOpen = false;
-    int mCseq = 0;
-    Handler mHandler = new Handler();
+public class MyService extends AbsWorkService implements IPushContract.IVew{
 
-    Runnable heartRunnable = new Runnable() {
-        @Override
-        public void run() {
-//            try {
-//                mgr.alarmAlive(getCseq(),0,0,0,false);
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-            mHandler.postDelayed(this,60*1000);
-        }
-    };
+
+    IPushContract.IPresenter mPresenter;
+
+
 
     private static boolean isAlive = false;
     public static boolean sShouldStopService=false;
@@ -109,9 +102,11 @@ public class MyService extends AbsWorkService /*implements WebSocketManager.IMes
 
     @Override
     public void onServiceKilled(Intent rootIntent) {
-//        isWorking = false;
-
+        isWorking = false;
         Log.e("547",TAG+":onServiceKilled  reborn in "+DaemonEnv.DEFAULT_WAKE_UP_INTERVAL+" ms");
+        unLink();
+        unbindPresenter();
+
     }
 
     @Override
@@ -129,7 +124,9 @@ public class MyService extends AbsWorkService /*implements WebSocketManager.IMes
     @Override
     public void onDestroy() {
 //        isWorking = false;
-        Log.e("547","my service on destroy reborn in "+DaemonEnv.DEFAULT_WAKE_UP_INTERVAL+" ms");
+        Log.e("547","ondestroy  my service on destroy reborn in "+DaemonEnv.DEFAULT_WAKE_UP_INTERVAL+" ms");
+        unLink();
+        unbindPresenter();
         super.onDestroy();
     }
 
@@ -138,122 +135,38 @@ public class MyService extends AbsWorkService /*implements WebSocketManager.IMes
         Log.e("547", TAG + ":on start command");
         DaemonEnv.mShouldWakeUp = true;
         sShouldStopService = false;
-
+        bindPresenter();
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private long num = 0;
-    private void myFun(){
-        new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                Log.i("123","shouldWakeUp="+DaemonEnv.mShouldWakeUp);
-                while(DaemonEnv.mShouldWakeUp) {
-                    try {
-                        sleep(2000);
-                        num++;
-                        Log.e("547", "i am alive!!  num="+num);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }.start();
-    }
-
-
-    private int getCseq(){
-        return mCseq++;
-    }
-
     private void link(){
-        String ip = ServerConfigSp.loadServerIP(this);
-//        try {
-//            mgr.registMessage(this).initURL(ip);
-//        } catch (WebSocketException e) {
-//            e.printStackTrace();
-//        }
+        String url =  "ws://" + ServerConfigSp.loadServerIP(this) + ":8803/howell/ver10/ADC";
+        Log.i("123","server link url="+url);
+        mPresenter.init(this,url, PhoneConfig.getIMEI(this)).connect();
     }
+
     private void unLink(){
-        stopHeart();
-//        mgr.deInit();
-    }
-
-    private void startHeart(long delaySec){
-        if (isAlive)return;
-        ThreadUtil.scheduledSingleThreadStart(new Runnable() {
-            @Override
-            public void run() {
-//                try {
-//                    mgr.alarmAlive(getCseq(),0,0,0,false);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-            }
-        },delaySec,delaySec, TimeUnit.SECONDS);
-        isAlive = true;
-    }
-
-    private void stopHeart(){
-        ThreadUtil.scheduledSingleThreadShutDown();
-        isAlive = false;
+        Log.i("547","unLink");
+        if (mPresenter!=null) {
+            mPresenter.disconnect();
+        }
     }
 
 
-//    @Override
-//    public void onWebSocketOpen() {
-//        mWsIsOpen = true;
-//        try {
-//            mgr.alarmLink(getCseq(), LoginAction.getInstance().getmInfo().getLr().getLoginSession()
-//                    ,LoginAction.getInstance().getmInfo().getImei());
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    @Override
+    public void bindPresenter() {
+        if (mPresenter==null){
+            mPresenter = new PushPresenter();
+        }
+        mPresenter.bindView(this);
+    }
 
-//    @Override
-//    public void onWebSocketClose() {
-//
-//    }
-
-
-
-//    @Override
-//    public void onGetMessage(WSRes res) {
-//        switch (res.getType()){
-//            case ALARM_LINK:
-//                //发送第一个心跳
-//                try {
-//                    mgr.alarmAlive(getCseq(),0,0,0,false);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//
-//
-//                break;
-//            case ALARM_ALIVE:
-//                //打开心跳
-//                Log.i("123","get alive="+res.toString());
-//                WSRes.AlarmAliveRes aRes = (WSRes.AlarmAliveRes) res.getResultObject();
-//                startHeart(aRes.getHeartbeatinterval());
-//                break;
-//            case ALARM_EVENT:
-//                //推送过来
-//                Log.i("123","event come="+res.toString());
-//                break;
-//            case ALARM_NOTICE:
-//                break;
-//            default:
-//                break;
-//
-//
-//        }
-//
-//    }
-
-//    @Override
-//    public void onError(int error) {
-//        Log.e("123","on error  ="+error);
-//    }
+    @Override
+    public void unbindPresenter() {
+        Log.i("547","unbind presenter");
+        if (mPresenter!=null){
+            mPresenter.unbindView();
+            mPresenter = null;
+        }
+    }
 }

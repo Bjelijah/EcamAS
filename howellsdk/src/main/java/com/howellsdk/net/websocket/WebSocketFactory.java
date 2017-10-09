@@ -1,6 +1,8 @@
 package com.howellsdk.net.websocket;
 
 
+import android.util.Log;
+
 import com.howellsdk.api.HWWebSocketApi;
 import com.howellsdk.net.websocket.bean.WSRes;
 import com.howellsdk.net.websocket.utils.JsonUtil;
@@ -79,6 +81,10 @@ public class WebSocketFactory {
         @Override
         public void connect() {
 
+            if (mConnect!=null && mConnect.isConnected()){
+                return;
+            }
+
             mConnect = new WebSocketConnection();
             try {
                 mConnect.connect(url,new WebSocketConnectionHandler(){
@@ -97,6 +103,7 @@ public class WebSocketFactory {
                     @Override
                     public void onTextMessage(String payload) {
                         super.onTextMessage(payload);
+                        Log.i("547","payload="+payload);
                         try {
                             handleMessageJsonString(payload);
                         } catch (JSONException e) {
@@ -159,7 +166,7 @@ public class WebSocketFactory {
 
         @Override
         public void disconnect() {
-            if (mConnect.isConnected()) {
+            if (mConnect!=null && mConnect.isConnected()) {
                 mConnect.disconnect();
                 mConnect = null;
             }

@@ -23,5 +23,6 @@ public interface ILoginContract {
         void init(Context context);
         void login(@Nullable String name, @Nullable String pwd,@Nullable Custom custom);
         void logout();
+        void changeUser(String userName,String email);
     }
 }

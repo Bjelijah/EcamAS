@@ -51,6 +51,7 @@ public class WSRes {
         ALARM_ALIVE,
         ALARM_EVENT,
         ALARM_NOTICE,
+        PUSH_MESSAGE,
     }
 
     public static class AlarmLinkRes{
@@ -446,6 +447,39 @@ public class WSRes {
         }
     }
 
+    public static class PushMessage{
+        int cseq;
+        String content;
 
+        @Override
+        public String toString() {
+            return "PushMessage{" +
+                    "cseq=" + cseq +
+                    ", content='" + content + '\'' +
+                    '}';
+        }
+
+        public PushMessage(int cseq, String content) {
+            this.cseq = cseq;
+            this.content = content;
+        }
+
+        public int getCseq() {
+
+            return cseq;
+        }
+
+        public void setCseq(int cseq) {
+            this.cseq = cseq;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+    }
 
 }

@@ -180,11 +180,14 @@
 
     <style name="MyAppThemeAdd" parent="MaterialDrawerTheme.TranslucentStatus">
 
-        <item name="colorPrimary">@color/home_bk</item>
-        <item name="colorPrimaryDark">@color/home_bk_dark</item>
+        <item name="colorPrimary">@color/transparent</item>
+        <item name="colorPrimaryDark">@color/transparent</item>
         <item name="colorAccent">@color/home_accent</item>
 
         <item name="android:background">@color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/anim_window_no</item>
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
 

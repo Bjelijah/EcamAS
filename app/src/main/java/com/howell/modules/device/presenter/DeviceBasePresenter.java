@@ -12,6 +12,8 @@ import com.howell.db.ApDeviceDao;
 import com.howell.modules.BasePresenter;
 import com.howell.modules.ImpBaseView;
 import com.howell.modules.device.IDeviceContract;
+import com.howell.rxbus.RxBus;
+import com.howell.rxbus.RxConstants;
 import com.howell.utils.ServerConfigSp;
 import com.howell.utils.UserConfigSp;
 
@@ -36,25 +38,71 @@ public abstract class DeviceBasePresenter extends BasePresenter implements IDevi
     String mURL;
     boolean mIsTurn;
     String mAccount;
+    Disposable mDisposable;
     @Override
     public void bindView(ImpBaseView view) {
        mView = (IDeviceContract.IVew) view;
+        registEvent();
     }
 
     @Override
     public void unbindView() {
         dispose();
         mView = null;
+        unregistEvent();
     }
 
     @Override
     public void init(Context context) {
         mContext = context;
-        ConfigAction cf = ConfigAction.getInstance(context);
-        mURL = cf.getURL();
-        mIsTurn = ServerConfigSp.loadServerIsTurn(context);
-        mAccount = UserConfigSp.loadUserName(context);
+        initConfig();
     }
+
+    protected void initConfig(){
+        ConfigAction cf = ConfigAction.getInstance(mContext);
+        mURL = cf.getURL();
+        mIsTurn = ServerConfigSp.loadServerIsTurn(mContext);
+        mAccount = UserConfigSp.loadUserName(mContext);
+    }
+
+    protected void registEvent(){
+        if (mDisposable!=null)mDisposable.dispose();
+        Log.i("123"," device base present regist event");
+        RxBus.getDefault()
+                .toObservableWithCode(RxConstants.RX_CONFIG_CODE,String.class)
+                .subscribeWith(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        mDisposable = d;
+                    }
+
+                    @Override
+                    public void onNext(@NonNull String s) {
+                        Log.i("123"," ~~~~~ device presenter get RX_CONFIG_CODE");
+                        initConfig();
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+
+    }
+
+    protected void unregistEvent(){
+        if (mDisposable!=null&&!mDisposable.isDisposed()){
+            mDisposable.dispose();
+            mDisposable=null;
+        }
+    }
+
 
     @Override
     public void addDevice(final CameraItemBean bean) {

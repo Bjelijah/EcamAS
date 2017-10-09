@@ -5,5 +5,5 @@ package com.howell.rxbus;
  */
 
 public class RxConstants {
-
+    public final static int RX_CONFIG_CODE = 0xff01;
 }

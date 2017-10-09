@@ -79,7 +79,7 @@ public class DeviceSoapPresenter extends DeviceBasePresenter {
 
     @Override
     public void queryDevices() {
-
+        Log.e("123","!!!!!!!!!!!!!1 query devices  mAccount="+mAccount);
         ApiManager.getInstance()
                 .getSoapService(mURL)
                 .queryDeviceStatus(new DeviceStatusReq(mAccount,ApiManager.SoapHelp.getsSession()))

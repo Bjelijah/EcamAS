@@ -240,8 +240,6 @@
             </intent-filter>
         </service>
 
-
-
         <!-- Required  SDK核心功能 -->
         <service
             android:name="cn.jpush.android.service.DownloadService"
@@ -249,62 +247,63 @@
             android:exported="false" />
 
         <!-- Required SDK 核心功能 -->
-        <service
-            android:name="cn.jpush.android.service.PushService"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="cn.jpush.android.intent.REGISTER" />
-                <action android:name="cn.jpush.android.intent.REPORT" />
-                <action android:name="cn.jpush.android.intent.PushService" />
-                <action android:name="cn.jpush.android.intent.PUSH_TIME" />
-            </intent-filter>
-        </service>
+        <!--<service-->
+            <!--android:name="cn.jpush.android.service.PushService"-->
+            <!--android:enabled="true"-->
+            <!--android:exported="false">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="cn.jpush.android.intent.REGISTER" />-->
+                <!--<action android:name="cn.jpush.android.intent.REPORT" />-->
+                <!--<action android:name="cn.jpush.android.intent.PushService" />-->
+                <!--<action android:name="cn.jpush.android.intent.PUSH_TIME" />-->
+            <!--</intent-filter>-->
+        <!--</service>-->
 
         <!-- Required SDK核心功能 -->
-        <receiver
-            android:name="cn.jpush.android.service.PushReceiver"
-            android:enabled="true">
-            <intent-filter android:priority="1000">
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" /> <!-- Required  显示通知栏 -->
-                <category android:name="com.android.howell.webcam" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.USER_PRESENT" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-            <!-- Optional -->
-            <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_ADDED" />
-                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+        <!--<receiver-->
+            <!--android:name="cn.jpush.android.service.PushReceiver"-->
+            <!--android:enabled="true">-->
+            <!--<intent-filter android:priority="1000">-->
+                <!--<action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" /> &lt;!&ndash; Required  显示通知栏 &ndash;&gt;-->
+                <!--<category android:name="com.android.howell.webcam" />-->
+            <!--</intent-filter>-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.USER_PRESENT" />-->
+                <!--<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />-->
+            <!--</intent-filter>-->
+            <!--&lt;!&ndash; Optional &ndash;&gt;-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.PACKAGE_ADDED" />-->
+                <!--<action android:name="android.intent.action.PACKAGE_REMOVED" />-->
 
-                <data android:scheme="package" />
-            </intent-filter>
-        </receiver>
+                <!--<data android:scheme="package" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
 
         <!-- Required SDK核心功能 -->
-        <receiver android:name="cn.jpush.android.service.AlarmReceiver" />
+        <!--<receiver android:name="cn.jpush.android.service.AlarmReceiver" />-->
 
 <!--//fixme my receiver-->
-        <receiver android:name="com.example.jpushdemo.MyReceiver"
-            android:enabled="true">
-            <intent-filter
-                android:priority="999">
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED"/>
-                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED"/>
-                <category android:name="com.android.howell.webcam"/>
-            </intent-filter>
-        </receiver>
+        <!--<receiver android:name="com.example.jpushdemo.MyReceiver"-->
+            <!--android:enabled="true">-->
+            <!--<intent-filter-->
+                <!--android:priority="999">-->
+                <!--<action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED"/>-->
+                <!--<action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED"/>-->
+                <!--<category android:name="com.android.howell.webcam"/>-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
 
 
 
         <!-- Required  . Enable it you can get statistics data with channel -->
-        <meta-data
-            android:name="JPUSH_CHANNEL"
-            android:value="developer-default" />
-        <meta-data
-            android:name="JPUSH_APPKEY"
-            android:value="1b9c3f4c57a765c3696cb696" /> <!-- </>值来自开发者平台取得的AppKey -->
+        <!--<meta-data-->
+            <!--android:name="JPUSH_CHANNEL"-->
+            <!--android:value="developer-default" />-->
+        <!--<meta-data-->
+            <!--android:name="JPUSH_APPKEY"-->
+            <!--android:value="1b9c3f4c57a765c3696cb696" /> -->
+        <!-- </>值来自开发者平台取得的AppKey -->
         <!--<activity-->
             <!--android:name="com.howell.activity.LoginActivity"-->
             <!--android:label="@string/title_activity_login" />-->
