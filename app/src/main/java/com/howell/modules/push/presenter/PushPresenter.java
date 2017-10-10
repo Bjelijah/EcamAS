@@ -66,6 +66,7 @@ public class PushPresenter extends BasePresenter implements IPushContract.IPrese
         ApiManager.getInstance().getWebSocketService(url, new HWWebSocketApi.IWebSocketCB() {
             @Override
             public void onWebSocketOpen() {
+                mView.onWebSocketOpen();
                 mIsOpen = true;
                 sendLink();
             }
@@ -75,8 +76,8 @@ public class PushPresenter extends BasePresenter implements IPushContract.IPrese
                 mIsOpen = false;
                 Log.i("547","on web socket close");
                 stopHeart();
-                if (!NetWorkUtils.isNetworkConnected(mContext)){Log.e("547","on socket close  network not link  we not link");return;}
-                if (!mIsServiceWork){Log.e("547","on socket close  server stop  we not link");return;}
+                if (!NetWorkUtils.isNetworkConnected(mContext)){Log.e("547","on socket close  network not link  we not link");mView.onWebSocketClose();return;}
+                if (!mIsServiceWork){Log.e("547","on socket close  server stop  we not link");mView.onWebSocketClose();return;}
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {

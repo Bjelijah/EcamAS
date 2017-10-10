@@ -90,6 +90,7 @@ public class MyService extends AbsWorkService implements IPushContract.IVew{
 
     @Override
     public Boolean isWorkRunning(Intent intent, int flags, int startId) {
+
         return isWorking;
     }
 
@@ -168,5 +169,15 @@ public class MyService extends AbsWorkService implements IPushContract.IVew{
             mPresenter.unbindView();
             mPresenter = null;
         }
+    }
+
+    @Override
+    public void onWebSocketOpen() {
+        isWorking = true;
+    }
+
+    @Override
+    public void onWebSocketClose() {
+        isWorking = false;
     }
 }

@@ -54,6 +54,7 @@ import com.howell.modules.login.presenter.LoginSoapPresenter;
 import com.howell.protocol.QueryClientVersionReq;
 import com.howell.protocol.QueryClientVersionRes;
 import com.howell.protocol.SoapManager;
+import com.howell.rxbus.Action;
 import com.howell.rxbus.RxBus;
 import com.howell.rxbus.RxConstants;
 import com.howell.utils.AlerDialogUtils;
@@ -145,6 +146,9 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
     private List<HomeBaseFragment> mFragments;
     private final CompositeDisposable mDisposables = new CompositeDisposable();
     ILoginContract.IPresenter mPresenter;
+
+    private boolean bTypeTurn,bTypeCrypto,bSaveType=false;
+
     Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -232,7 +236,11 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
 //                .build();
         mbGuest = getIntent().getBooleanExtra("isGuest",false);
 //        mbGuest = LoginAction.getInstance().ismIsGuest();
-        HomeAction.getInstance().setContext(this).init();
+//        HomeAction.getInstance().setContext(this).init();
+        bTypeTurn = ConfigAction.getInstance(this).isTurn();
+        bTypeCrypto = ConfigAction.getInstance(this).isCrypto();
+
+
         buildHead(false,savedInstanceState);
         buildDrawer(savedInstanceState);
         fillFab();
@@ -447,8 +455,8 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
 
     @SuppressLint("NewApi")
     private void buildDrawer(Bundle savedInstanceState){
-        final boolean isTurn = HomeAction.getInstance().isUseTurn();
-        final boolean isCrypto = HomeAction.getInstance().isUseCrypto();
+        final boolean isTurn = bTypeTurn;//HomeAction.getInstance().isUseTurn();
+        final boolean isCrypto = bTypeCrypto;//HomeAction.getInstance().isUseCrypto();
         HomeAction.getInstance().registChangerUserCallback(this);
         result = new DrawerBuilder()
                 .withActivity(this)
@@ -720,10 +728,14 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
         public void onCheckedChanged(IDrawerItem drawerItem, CompoundButton buttonView, boolean isChecked) {
             if (drawerItem.getIdentifier()==ID_DRAWER_SERVER_TURN){
                 //TODO isChecked:
-                HomeAction.getInstance().setUseTurn(isChecked);
+                bTypeTurn = isChecked;
+                bSaveType = true;
+//                HomeAction.getInstance().setUseTurn(isChecked);
             }else if(drawerItem.getIdentifier()==ID_DRAWER_SERVER_ENCRYPT){
                 //TODO isChecked:
-                HomeAction.getInstance().setUseCrypto(isChecked);
+                bTypeCrypto = isChecked;
+                bSaveType = true;
+//                HomeAction.getInstance().setUseCrypto(isChecked);
             }
         }
     }
@@ -740,9 +752,10 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
         public void onDrawerClosed(View drawerView) {
             Log.i("123","on drawer close");
             //TODO:1 save to sp  2 do
-            ServerConfigSp.saveCommunicationInfo(HomeExActivity.this, HomeAction.getInstance().isUseTurn(), HomeAction.getInstance().isUseCrypto());
+            ServerConfigSp.saveCommunicationInfo(HomeExActivity.this, bTypeTurn, bTypeCrypto);
             //TODO to set all device list if is TurnType and isUseCrypto
             onUpdataBean();
+            bSaveType = false;
         }
 
         @Override
@@ -752,7 +765,14 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
     }
 
     private void onUpdataBean(){
-
+        Log.i("123","on Updata bean bSavetype="+bSaveType);
+       if (bSaveType){
+           Log.i("123","rx send RX_PLAY_TYPE_CODE");
+           final Bundle b = new Bundle();
+           b.putBoolean("isTurn",bTypeTurn);
+           b.putBoolean("isCrypto",bTypeCrypto);
+           RxBus.getDefault().postWithCode(RxConstants.RX_PLAY_TYPE_CODE,b);
+       }
     }
 
 

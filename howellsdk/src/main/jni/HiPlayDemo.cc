@@ -2228,18 +2228,18 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamGetMethod
     int req = ecam_stream_req_get_transfer_method(g_ecamMgr->req);
     switch (req){
         case 0:
-            return 0;
+            return 0;//other
         case 1:
-            return 3;
+            return 3;//upnp
         case 2:
         {
             int ice_flag = ice_get_type(ecam_stream_req_get_ice(g_ecamMgr->req));
             if (ice_flag==0){
-                return 0;
+                return 0;//other
             } else if(ice_flag == 1){
-                return 2;
+                return 2;//stun
             }else if (ice_flag == 2){
-                return 1;
+                return 1;//turn
             }
         }
             break;

@@ -11,7 +11,8 @@ import com.howell.modules.ImpBaseView;
 
 public interface IPushContract {
     interface IVew extends ImpBaseView{
-
+        void onWebSocketOpen();
+        void onWebSocketClose();
     }
     interface IPresenter extends ImpBasePresenter{
         IPresenter init(Context c,String url, String imei);

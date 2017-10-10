@@ -53,7 +53,7 @@ public class JniUtil {
 	public static native boolean readyPlayTurnLive(Object turnSubScribeAckBean, int isPlayback);
 	public static native boolean readyPlayPlayback();//fixme same to readyPlayLive
 	public static native void netSetPlayBackTime(ApTimeBean beg, ApTimeBean end);
-	public static native boolean netReadyPlay(int isCrypto,int isPlayBack,int slot,int isSub);
+	public static native boolean netReadyPlay(int isCrypto,int isPlayBack,int slot,int isSub);//isCrypto 0h264 1h264c  2h265  3h265c
 	public static native void releasePlay();
 	public static native void playView();
 	public static native void pauseAndPlayView();

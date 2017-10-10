@@ -142,7 +142,7 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
         this.mContext = context;
         int width = PhoneConfig.getPhoneWidth(mContext);
         requiredWidthSize  = (width-32)/4;
-        bindPresenter();
+//        bindPresenter();
     }
 
     @Override
@@ -310,7 +310,9 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
         if (mPresent == null){
             mPresent = new NoticeSoapPresenter();
         }
+        Log.e("123","Notice RecyclerView adapter bindView");
         mPresent.bindView(this);
+        Log.e("123","Notice RecyclerView adapter bindView finish");
         mPresent.init(mContext);
     }
 

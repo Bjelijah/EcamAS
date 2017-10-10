@@ -305,7 +305,9 @@ public class NoticeFragment extends HomeBaseFragment implements INoticeContract.
         if (mPresenter==null){
             mPresenter = new NoticeSoapPresenter();
         }
+        Log.e("123","notice fragment bindview");
         mPresenter.bindView(this);
+        Log.e("123","notice framge bindView finish");
         mPresenter.init(getContext());
     }
 

@@ -164,4 +164,9 @@ public class AddNormalCameraActivity extends AppCompatActivity implements IDevic
     public void onError() {
 
     }
+
+    @Override
+    public void onUpdateCamBean(@Nullable Boolean isTurn, @Nullable Boolean isCrypto) {
+
+    }
 }

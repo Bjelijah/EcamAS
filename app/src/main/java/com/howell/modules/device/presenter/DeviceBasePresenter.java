@@ -1,6 +1,7 @@
 package com.howell.modules.device.presenter;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.howell.action.ConfigAction;
@@ -16,8 +17,10 @@ import com.howell.rxbus.RxBus;
 import com.howell.rxbus.RxConstants;
 import com.howell.utils.ServerConfigSp;
 import com.howell.utils.UserConfigSp;
+import com.howellsdk.utils.RxUtil;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -25,7 +28,10 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.disposables.Disposables;
+import io.reactivex.internal.subscriptions.BooleanSubscription;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -38,18 +44,17 @@ public abstract class DeviceBasePresenter extends BasePresenter implements IDevi
     String mURL;
     boolean mIsTurn;
     String mAccount;
-    Disposable mDisposable;
+
     @Override
     public void bindView(ImpBaseView view) {
        mView = (IDeviceContract.IVew) view;
-        registEvent();
+       initEvent();
     }
 
     @Override
     public void unbindView() {
         dispose();
         mView = null;
-        unregistEvent();
     }
 
     @Override
@@ -65,20 +70,17 @@ public abstract class DeviceBasePresenter extends BasePresenter implements IDevi
         mAccount = UserConfigSp.loadUserName(mContext);
     }
 
-    protected void registEvent(){
-        if (mDisposable!=null)mDisposable.dispose();
-        Log.i("123"," device base present regist event");
-        RxBus.getDefault()
-                .toObservableWithCode(RxConstants.RX_CONFIG_CODE,String.class)
+    protected void initEvent(){
+
+        RxBus.getDefault().toObservableWithCode(RxConstants.RX_CONFIG_CODE,String.class)
                 .subscribeWith(new Observer<String>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
-                        mDisposable = d;
+                        addDisposable(d);
                     }
 
                     @Override
                     public void onNext(@NonNull String s) {
-                        Log.i("123"," ~~~~~ device presenter get RX_CONFIG_CODE");
                         initConfig();
                     }
 
@@ -93,15 +95,40 @@ public abstract class DeviceBasePresenter extends BasePresenter implements IDevi
                     }
                 });
 
+        RxBus.getDefault()
+                .toObservableWithCode(RxConstants.RX_PLAY_TYPE_CODE,Bundle.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new Observer<Bundle>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        addDisposable(d);
+                    }
+
+                    @Override
+                    public void onNext(@NonNull Bundle bundle) {
+                        Boolean isTurn ,isCrypto;
+                        try{isTurn= bundle.getBoolean("isTurn");}catch (Exception e){isTurn = null;}
+                        try{ isCrypto = bundle.getBoolean("isCrypto");}catch (Exception e){isCrypto = null;}
+                        mIsTurn = isTurn;
+                        mView.onUpdateCamBean(isTurn,isCrypto);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i("123","on complete");
+                    }
+                });
+
 
     }
 
-    protected void unregistEvent(){
-        if (mDisposable!=null&&!mDisposable.isDisposed()){
-            mDisposable.dispose();
-            mDisposable=null;
-        }
-    }
+
 
 
     @Override

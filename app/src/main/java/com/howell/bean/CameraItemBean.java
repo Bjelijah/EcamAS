@@ -21,7 +21,7 @@ public class CameraItemBean implements Serializable {
     private String picturePath;
     private String upnpIP; // for ap
     private int upnpPort;
-    private int methodType;//ecam turn =0; ap 0 h264,  1 h264Crypto, 2 h265,  3 h265crypto
+    private int methodType;// ecam turn == 0    ; ap:0 h264  1 h265  2 h264 Crypto  3 h265 Crypto
     private String devKey;//just ecam add need;
     private boolean androidPush;
 

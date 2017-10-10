@@ -35,6 +35,7 @@ import com.howell.modules.device.presenter.DeviceSoapPresenter;
 import com.howell.protocol.GetNATServerReq;
 import com.howell.protocol.GetNATServerRes;
 import com.howell.protocol.SoapManager;
+import com.howell.rxbus.RxBus;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.IConst;
 import com.zys.brokenview.BrokenCallback;
@@ -44,6 +45,11 @@ import com.zys.brokenview.BrokenView;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import pullrefreshview.layout.BaseFooterView;
 import pullrefreshview.layout.BaseHeaderView;
 import pullrefreshview.layout.PullRefreshLayout;
@@ -104,6 +110,7 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        bindPresenter();
         mView = inflater.inflate(R.layout.fragment_device,container,false);
         ((PullRefreshLayout)mView).setHasFooter(true);
         mRV = (RecyclerView) mView.findViewById(R.id.device_rv);
@@ -122,7 +129,7 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
                 .build();
         mBrokenView.setCallback(mBrokenCallback);
         mBrokenView.setEnable(true);
-        bindPresenter();
+
         
 //        adapter = new DeviceRecyclerViewAdapter(getContext(),this,getActivity());
         adapter = new DeviceRecyclerViewAdapter(getContext(),this,mColorfulListener);
@@ -353,6 +360,30 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
         
     }
 
+    @Override
+    public void onUpdateCamBean(@Nullable Boolean isTurn, @Nullable Boolean isCrypto) {
+        //TODO
+        Log.e("123","on update cam bean isturn="+isTurn+" iscrypto="+isCrypto);
+        synchronized (this) {
+            for (CameraItemBean b:mList){
+                if (b.getType()!=PlayType.HW5198){
+                    if (isTurn!=null){
+                        b.setType(isTurn ? PlayType.TURN : PlayType.ECAM);
+                    }
+                    if (isCrypto!=null){
+                        b.setMethodType(isCrypto ? 1 : 0);
+                    }
+
+                }else{//ap   isTurn ->  h265
+                    if (isTurn!=null && isCrypto!=null){
+                        b.setMethodType(isTurn?(isCrypto? 3:2):(isCrypto?1:0));
+                    }
+                }
+            }
+        }
+
+    }
+
     class MyBrokenCallback extends BrokenCallback {
         @Override
         public void onStart(View v) {
@@ -421,6 +452,10 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
         getContext().startActivity(intent);
     }
 
+
+
+
+
     private CameraItemBean getUpdataBean(int pos){
         CameraItemBean b = mList.get(pos);
         if (b.getType()==PlayType.ECAM || b.getType() == PlayType.TURN){
@@ -430,6 +465,9 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
         return b;
     }
 
+
+
+
     public void updataAllBeanType(){
         Log.i("123","updata All bean type");
         for (CameraItemBean b:mList){
@@ -437,7 +475,6 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
                 b.setType(HomeAction.getInstance().isUseTurn()?PlayType.TURN:PlayType.ECAM);
             }
         }
-
     }
 
 

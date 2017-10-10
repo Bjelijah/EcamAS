@@ -1,6 +1,8 @@
 package com.howell.rxbus;
 
 
+import android.util.Log;
+
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -40,6 +42,8 @@ public class RxBus {
 
     // 用 code 指定订阅此事件的对应 code 的订阅者
     public void postWithCode(int code, Object action) {
+        String str = String.format("0x%x",code);
+        Log.e("123","post with code  code="+str+"  action="+action);
         bus.onNext(new Action(code, action));
     }
 
@@ -50,6 +54,8 @@ public class RxBus {
 
     // 根据传递的 eventType 类型返回特定类型(eventType)的 被观察者,
     public <T> Observable<T> toObservableWithCode(final int code, Class<T> eventType) {
+        String str = String.format("0x%x",code);
+        Log.i("123","toObservableWithCode   code="+str+"   eventType="+eventType.toString());
         return bus.ofType(Action.class)
                 .filter(new Predicate<Action>() {
                     @Override
@@ -65,6 +71,9 @@ public class RxBus {
                 })
                 .cast(eventType);
     }
+
+
+
 
 
 

@@ -173,6 +173,11 @@ public class ApActivity extends AppCompatActivity implements IDeviceContract.IVe
 
     }
 
+    @Override
+    public void onUpdateCamBean(@Nullable Boolean isTurn, @Nullable Boolean isCrypto) {
+
+    }
+
     class MyPostListener implements DialogInterface.OnClickListener{
 
         @Override

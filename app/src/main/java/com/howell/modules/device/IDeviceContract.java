@@ -1,6 +1,7 @@
 package com.howell.modules.device;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import com.howell.bean.CameraItemBean;
 import com.howell.bean.PlayType;
@@ -19,6 +20,7 @@ public interface IDeviceContract {
         void onAddResult(boolean isSuccess, PlayType type);
         void onRemoveResult(boolean isSuccess,int pos);
         void onError();
+        void onUpdateCamBean(@Nullable Boolean isTurn,@Nullable Boolean isCrypto);
     }
 
     interface IPresenter extends ImpBasePresenter{

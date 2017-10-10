@@ -23,18 +23,16 @@ public abstract class NoticeBasePresenter extends BasePresenter implements INoti
     INoticeContract.IVew mView;
     String mURL;
     String mAccount;
-    Disposable mDisposable;
     @Override
     public void bindView(ImpBaseView view) {
         mView = (INoticeContract.IVew) view;
-        registEvent();
+        initEvent();
     }
 
     @Override
     public void unbindView() {
         dispose();
         mView = null;
-        unregistEvent();
     }
 
     @Override
@@ -50,14 +48,16 @@ public abstract class NoticeBasePresenter extends BasePresenter implements INoti
     }
 
 
-    protected void registEvent(){
-        if (mDisposable!=null)mDisposable.dispose();
-        Log.i("123","notice base present regist event");
+    protected void initEvent(){
+//        if (mDisposable!=null)mDisposable.dispose();
+        Log.e("123","notice base present regist event 222222222222");
         RxBus.getDefault().toObservableWithCode(RxConstants.RX_CONFIG_CODE,String.class)
                 .subscribeWith(new Observer<String>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
-                        mDisposable = d;
+                        Log.i("123","onSubscribe  device base");
+//                        mDisposable = d;
+                        addDisposable(d);
                     }
 
                     @Override
@@ -78,11 +78,6 @@ public abstract class NoticeBasePresenter extends BasePresenter implements INoti
                 });
     }
 
-    protected void unregistEvent(){
-        if (mDisposable!=null&&!mDisposable.isDisposed()){
-            mDisposable.dispose();
-            mDisposable = null;
-        }
-    }
+
 
 }

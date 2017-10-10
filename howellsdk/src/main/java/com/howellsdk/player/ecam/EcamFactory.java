@@ -99,12 +99,12 @@ public class EcamFactory {
                     t.getIPv4Address(), t.getPort(),
                     0, t.getUsername(), t.getPassword());
             Crypto crypto = new Crypto(1);
-            if(methodType == 0){
+            if(methodType == 0){//连接模式  udp+ice
                 streamReqContext = new StreamReqContext(isPlayBack,
                         beg, end, re_invite, 1 << 1 | 1 << 2 ,mUpnpIP , mUpnpPort, opt,crypto,0,stream);
                 Log.e("streamReqContext", "java stream:"+stream);
                 Log.e("streamReqContext", "UpnpIP:"+mUpnpIP+"UpnpPort:"+mUpnpPort);
-            }else if(methodType == 2){
+            }else if(methodType == 2){//ice
 //	        	streamReqContext = new StreamReqContext(isPlayBack,
 //		                beg, end, re_invite, 1 << 2 ,UpnpIP , UpnpPort, opt);
                 streamReqContext = new StreamReqContext(isPlayBack,
@@ -175,7 +175,7 @@ public class EcamFactory {
         public void play( boolean isSub) {
 
             mIsPlayBack = false;
-            StreamReqContext c = fillStreamReqContext(mIsPlayBack?1:0,0,0,0,mModeType,isSub?1:0);
+            StreamReqContext c = fillStreamReqContext(mIsPlayBack?1:0,0,0,0,0/*mModeType*/,isSub?1:0);
             if (c==null)                {Log.e("123","c==null");mCB.onError(0);return;}
             JniUtil.ecamSetContextObj(c);
             if(!invite(isSub))          {Log.e("123","invite error");mCB.onError(0);return;}
@@ -192,6 +192,10 @@ public class EcamFactory {
             Log.i("123","play");
             //play
             super.play(isSub);
+
+            //
+            int method = JniUtil.ecamGetMethod();
+            Log.e("123","~~~~~~~~~method = "+method);
         }
 
         @Override
@@ -199,7 +203,7 @@ public class EcamFactory {
             mIsPlayBack = true;
             long beg = Util.ISODateString2ISODate(begTime).getTime()/1000;
             long end = Util.ISODateString2ISODate(endTime).getTime()/1000;
-            StreamReqContext c = fillStreamReqContext(mIsPlayBack?1:0,beg,end,0,mModeType,isSub?1:0);
+            StreamReqContext c = fillStreamReqContext(mIsPlayBack?1:0,beg,end,0,0/*mModeType*/,isSub?1:0);
             if (c==null)                    {mCB.onError(0);return;}
             JniUtil.ecamSetContextObj(c);
             if (!invite(isSub))             {mCB.onError(0);return;}
@@ -244,7 +248,7 @@ public class EcamFactory {
         public void playbackReLink(boolean isSub, long beg, long end) {
             super.playbackReLink(isSub, beg, end);
             stop();
-            StreamReqContext c = fillStreamReqContext(mIsPlayBack?1:0,beg,end,1,mModeType,isSub?1:0);
+            StreamReqContext c = fillStreamReqContext(mIsPlayBack?1:0,beg,end,1,0/*mModeType*/,isSub?1:0);
             if (c==null){mCB.onError(0);return;}
             JniUtil.ecamSetContextObj(c);
 //            if(!invite(isSub)){mCB.onError(0);return;}

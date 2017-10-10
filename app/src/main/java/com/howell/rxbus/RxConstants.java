@@ -6,4 +6,5 @@ package com.howell.rxbus;
 
 public class RxConstants {
     public final static int RX_CONFIG_CODE = 0xff01;
+    public final static int RX_PLAY_TYPE_CODE = 0xff02;
 }

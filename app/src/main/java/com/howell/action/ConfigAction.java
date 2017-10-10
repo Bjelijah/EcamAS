@@ -24,6 +24,10 @@ public class ConfigAction {
     String mImei;
     String mEmail;
 
+    boolean mIsTurn;
+    boolean mIsCrypto;
+
+
     public String getEmail() {
         return mEmail;
     }
@@ -60,7 +64,28 @@ public class ConfigAction {
         mIsFirst = UserConfigSp.loadUserFirstLogin(c);
         mImei = PhoneConfig.getIMEI(c);
         Log.i("123","mName="+mName+" isfirst="+mIsFirst);
+        mIsTurn = ServerConfigSp.loadServerIsTurn(c);
+        mIsCrypto = ServerConfigSp.loadServerIsCrypto(c);
 
+
+
+
+    }
+
+    public boolean isTurn() {
+        return mIsTurn;
+    }
+
+    public void setIsTurn(boolean mIsTurn) {
+        this.mIsTurn = mIsTurn;
+    }
+
+    public boolean isCrypto() {
+        return mIsCrypto;
+    }
+
+    public void setIsCrypto(boolean mIsCrypto) {
+        this.mIsCrypto = mIsCrypto;
     }
 
     public void refresh(Context context){
