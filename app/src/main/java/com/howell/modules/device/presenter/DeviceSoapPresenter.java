@@ -13,11 +13,13 @@ import com.howell.utils.UserConfigSp;
 import com.howellsdk.api.ApiManager;
 import com.howellsdk.net.http.bean.DeviceStatus;
 import com.howellsdk.net.soap.bean.AddDeviceReq;
+import com.howellsdk.net.soap.bean.DeviceMatchingCodeRes;
 import com.howellsdk.net.soap.bean.DeviceStatusReq;
 import com.howellsdk.net.soap.bean.DeviceStatusRes;
 import com.howellsdk.net.soap.bean.LoginRequest;
 import com.howellsdk.net.soap.bean.LoginResponse;
 import com.howellsdk.net.soap.bean.NullifyDeviceReq;
+import com.howellsdk.net.soap.bean.Request;
 import com.howellsdk.net.soap.bean.Result;
 
 import java.util.ArrayList;
@@ -277,7 +279,52 @@ public class DeviceSoapPresenter extends DeviceBasePresenter {
 
     }
 
+    @Override
+    public void getDevicesMatchCode() {
+        ApiManager.getInstance().getSoapService()
+                .getDeviceMatchingCode(new Request(mAccount,ApiManager.SoapHelp.getsSession(),null,0))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Function<DeviceMatchingCodeRes, String>() {
+                    @Override
+                    public String apply(@NonNull DeviceMatchingCodeRes deviceMatchingCodeRes) throws Exception {
+                        if (!deviceMatchingCodeRes.getResult().equalsIgnoreCase("ok")){
+                            mView.onError();
+                            return null;
+                        }
+                        return deviceMatchingCodeRes.getMatchCode();
+                    }
+                })
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        addDisposable(d);
+                    }
+
+                    @Override
+                    public void onNext(@NonNull String s) {
+                        mView.onDeviceMatchCode(s);
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        e.printStackTrace();
+                        mView.onError();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    @Override
+    public void getDeviceMatchResult(String name) {
+//        ApiManager.getInstance().getSoapService()
+//                .getDeviceMatchingCode()
 
 
 
+    }
 }

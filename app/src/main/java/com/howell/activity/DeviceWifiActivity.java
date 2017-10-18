@@ -26,6 +26,10 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.android.howell.webcam.R;
+import com.howell.bean.CameraItemBean;
+import com.howell.bean.PlayType;
+import com.howell.modules.device.IDeviceContract;
+import com.howell.modules.device.presenter.DeviceSoapPresenter;
 import com.howell.protocol.GetDeviceMatchingCodeReq;
 import com.howell.protocol.GetDeviceMatchingCodeRes;
 import com.howell.utils.NetWorkUtils;
@@ -33,6 +37,7 @@ import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by howell on 2016/12/2.
@@ -52,6 +57,7 @@ public class DeviceWifiActivity extends AppCompatActivity {
     private NetWorkUtils mWifiAdmin;
     private String[] mWifiMember;
     private ArrayAdapter<String> myAdapter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -208,6 +214,7 @@ public class DeviceWifiActivity extends AppCompatActivity {
         intent.putExtra("device_name", mDeviceName.getText().toString());
         startActivity(intent);
     }
+
 
 
     class MyWifiSearchReceive extends BroadcastReceiver{

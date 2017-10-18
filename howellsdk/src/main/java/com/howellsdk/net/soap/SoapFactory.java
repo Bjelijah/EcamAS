@@ -1972,10 +1972,36 @@ public class SoapFactory {
                     DeviceMatchingCodeRes res = new DeviceMatchingCodeRes();
                     try {
                         SoapObject obj = initEnvelopAndTransport(rpc, "http://www.haoweis.com/HomeServices/MCU/getDeviceMatchingCode");
-                        if (obj.getProperty("Result").toString().equalsIgnoreCase("ok")) {
+                        if (obj.getProperty("result").toString().equalsIgnoreCase("ok")) {
                             res.setMatchCode(obj.getProperty("MatchingCode").toString());
                         }
-                        res.setResult(obj.getProperty("Result").toString());
+                        res.setResult(obj.getProperty("result").toString());
+                        e.onNext(res);
+                    }catch (Exception ex){
+                        e.onError(ex);
+                    }finally {
+                        e.onComplete();
+                    }
+                }
+            });
+        }
+
+        @Override
+        public Observable<GetDeviceMatchingResultRes> getDeviceMatchingResult(GetDeviceMatchingResultReq req) {
+            final SoapObject rpc = new SoapObject(mNameSpace, "getDeviceMatchingResultReq")
+                    .addProperty("Account", req.getAccount())
+                    .addProperty("LoginSession",req.getSession())
+                    .addProperty("MatchingCode",req.getMatchingCode());
+            return Observable.create(new ObservableOnSubscribe<GetDeviceMatchingResultRes>() {
+                @Override
+                public void subscribe(@NonNull ObservableEmitter<GetDeviceMatchingResultRes> e) throws Exception {
+                    GetDeviceMatchingResultRes res = new GetDeviceMatchingResultRes();
+                    try {
+                        SoapObject obj = initEnvelopAndTransport(rpc, "http://www.haoweis.com/HomeServices/MCU/getDeviceMatchingResult");
+                        if (obj.getProperty("result").toString().equalsIgnoreCase("ok")) {
+                            res.setDevID(obj.getProperty("DevID").toString());
+                        }
+                        res.setResult(obj.getProperty("result").toString());
                         e.onNext(res);
                     }catch (Exception ex){
                         e.onError(ex);

@@ -6,6 +6,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,11 +17,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.howell.action.FlashLightManager;
+import com.howell.bean.CameraItemBean;
+import com.howell.bean.PlayType;
 import com.howell.broadcastreceiver.HomeKeyEventBroadCastReceiver;
 import com.android.howell.webcam.R;
+import com.howell.modules.device.IDeviceContract;
+import com.howell.modules.device.presenter.DeviceSoapPresenter;
 import com.howell.utils.CameraUtils;
 
-public class FlashLighting extends Activity implements OnClickListener{
+import java.util.List;
+
+public class FlashLighting extends Activity implements OnClickListener,IDeviceContract.IVew{
 	private TextView /*tips,*/btnTips;
 	private ImageButton mBack,mFlashLight;
 	//private ImageView mBackground;
@@ -38,12 +45,15 @@ public class FlashLighting extends Activity implements OnClickListener{
 	private static final int LIGHTOFF = 2;
 	private FlashThread thread;
 	private Handler mHandler = new Handler(){};
+	IDeviceContract.IPresenter mPresenter;
+	String mMatchCode;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.flash_light);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		bindPresenter();
 		isBtnClicked = false;
 		mActivities = Activities.getInstance();
         mActivities.addActivity("FlashLighting",FlashLighting.this);
@@ -69,7 +79,7 @@ public class FlashLighting extends Activity implements OnClickListener{
 		
 		mBack.setOnClickListener(this);
 		mFlashLight.setOnClickListener(this);
-		
+		mPresenter.getDevicesMatchCode();
 		if(thread == null){
 	        thread = new FlashThread();
 	        thread.start();
@@ -98,6 +108,7 @@ public class FlashLighting extends Activity implements OnClickListener{
 				intent.putExtra("wifi_ssid", wifi_ssid);
 				intent.putExtra("wifi_password", wifi_password);
 				intent.putExtra("device_name", device_name);
+				intent.putExtra("match_code",mMatchCode);
 				startActivity(intent);
 			}
 			break;
@@ -150,6 +161,7 @@ public class FlashLighting extends Activity implements OnClickListener{
     protected void onDestroy() {
     	// TODO Auto-generated method stub
     	super.onDestroy();
+		unbindPresenter();
     	mActivities.removeActivity("FlashLighting");
     	unregisterReceiver(receiver);
     }
@@ -184,7 +196,51 @@ public class FlashLighting extends Activity implements OnClickListener{
 			}
 		}
 	};
-    
+
+	@Override
+	public void bindPresenter() {
+		if(mPresenter==null){
+			mPresenter = new DeviceSoapPresenter();
+		}
+		mPresenter.init(this);
+		mPresenter.bindView(this);
+	}
+
+	@Override
+	public void unbindPresenter() {
+		mPresenter.unbindView();
+	}
+
+	@Override
+	public void onQueryResult(List<CameraItemBean> beanList) {
+
+	}
+
+	@Override
+	public void onAddResult(boolean isSuccess, PlayType type) {
+
+	}
+
+	@Override
+	public void onRemoveResult(boolean isSuccess, int pos) {
+
+	}
+
+	@Override
+	public void onError() {
+
+	}
+
+	@Override
+	public void onUpdateCamBean(@Nullable Boolean isTurn, @Nullable Boolean isCrypto) {
+
+	}
+
+	@Override
+	public void onDeviceMatchCode(String s) {
+		mMatchCode = s;
+	}
+
 	class FlashThread extends Thread{
 		private boolean threadExit ;
 		

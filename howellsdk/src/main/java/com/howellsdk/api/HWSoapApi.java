@@ -134,6 +134,9 @@ public interface HWSoapApi {
 
     Observable<DeviceMatchingCodeRes> getDeviceMatchingCode(Request req);
 
+    Observable<GetDeviceMatchingResultRes> getDeviceMatchingResult(GetDeviceMatchingResultReq req);
+
+
     Observable<TrustedAuthorityLoginRes> trustedAuthorityLogin(TrustedAuthorityLoginReq req);
 
     Observable<NoticesRes> queryNoticesRes(NoticesReq req);

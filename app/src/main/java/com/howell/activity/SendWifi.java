@@ -29,7 +29,7 @@ public class SendWifi extends Activity implements OnClickListener , XQuquerListe
 	
 	private Activities mActivities;
 	private HomeKeyEventBroadCastReceiver receiver;
-	private String wifi_ssid,wifi_password,device_name;
+	private String wifi_ssid,wifi_password,device_name,mMatchCode;
 	
 	private ImageButton mBack,mBtnSend,mBtnFinish;
 	private LinearLayout mSend,mFinish;
@@ -55,7 +55,7 @@ public class SendWifi extends Activity implements OnClickListener , XQuquerListe
 		wifi_ssid = intent.getStringExtra("wifi_ssid");
 		wifi_password = intent.getStringExtra("wifi_password");
 		device_name = intent.getStringExtra("device_name");
-		
+		mMatchCode = intent.getStringExtra("match_code");
 		tips = (TextView)findViewById(R.id.tv_send_wifi_tips);
 		btnTips = (TextView)findViewById(R.id.tv_send_btn_tip);
 		mBack = (ImageButton)findViewById(R.id.ib_send_wifi_back);
@@ -120,7 +120,8 @@ public class SendWifi extends Activity implements OnClickListener , XQuquerListe
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.ib_send_wifi:
-			if(SoapManager.getInstance().getmGetDeviceMatchingCodeRes() == null){
+			//if(SoapManager.getInstance().getmGetDeviceMatchingCodeRes() == null){
+			if(mMatchCode==null){
 				Dialog alertDialog = new AlertDialog.Builder(SendWifi.this).   
 			            setTitle(getResources().getString(R.string.send_wifi_config_activity_dialog_title)).   
 			            setMessage(getResources().getString(R.string.send_wifi_config_activity_dialog_message)).   
@@ -161,7 +162,8 @@ public class SendWifi extends Activity implements OnClickListener , XQuquerListe
 	
 	private void send()
 	{
-		String wifiMeesage = "Wo:"+wifi_ssid+"|"+wifi_password+"|"+SoapManager.getInstance().getmGetDeviceMatchingCodeRes().getMatchingCode();
+		//String wifiMeesage = "Wo:"+wifi_ssid+"|"+wifi_password+"|"+SoapManager.getInstance().getmGetDeviceMatchingCodeRes().getMatchingCode();
+		String wifiMeesage = "Wo:"+wifi_ssid+"|"+wifi_password+"|"+mMatchCode;
 		System.out.println(wifiMeesage);
 		byte[] data = wifiMeesage.getBytes();
 		if(data.length>0) xququerService.sendData(data, 0.5f);  //0.0 ~ 1.0

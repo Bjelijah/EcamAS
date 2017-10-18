@@ -178,6 +178,11 @@ public class ApActivity extends AppCompatActivity implements IDeviceContract.IVe
 
     }
 
+    @Override
+    public void onDeviceMatchCode(String s) {
+
+    }
+
     class MyPostListener implements DialogInterface.OnClickListener{
 
         @Override

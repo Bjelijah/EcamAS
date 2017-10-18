@@ -393,6 +393,11 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
 
     }
 
+    @Override
+    public void onDeviceMatchCode(String s) {
+
+    }
+
     class MyBrokenCallback extends BrokenCallback {
         @Override
         public void onStart(View v) {

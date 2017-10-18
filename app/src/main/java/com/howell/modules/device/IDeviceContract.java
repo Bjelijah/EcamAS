@@ -21,6 +21,7 @@ public interface IDeviceContract {
         void onRemoveResult(boolean isSuccess,int pos);
         void onError();
         void onUpdateCamBean(@Nullable Boolean isTurn,@Nullable Boolean isCrypto);
+        void onDeviceMatchCode(String s);
     }
 
     interface IPresenter extends ImpBasePresenter{
@@ -28,5 +29,7 @@ public interface IDeviceContract {
         void queryDevices();
         void addDevice(CameraItemBean bean);
         void removeDevice(CameraItemBean bean,int pos);
+        void getDevicesMatchCode();
+        void getDeviceMatchResult(String name);
     }
 }

@@ -222,6 +222,13 @@ public abstract class DeviceBasePresenter extends BasePresenter implements IDevi
 
     }
 
+    @Override
+    public void getDevicesMatchCode() {
 
+    }
 
+    @Override
+    public void getDeviceMatchResult(String name) {
+
+    }
 }
