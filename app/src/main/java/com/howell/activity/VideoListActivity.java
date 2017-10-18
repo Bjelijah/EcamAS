@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.howell.action.PlayBackVideoListAction;
@@ -74,6 +75,11 @@ public class VideoListActivity extends AppCompatActivity implements AppBarLayout
         PlayBackVideoListAction.getInstance().init(this,mBean);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mFragment.onResume();
+    }
 
     @Override
     protected void onDestroy() {
@@ -122,6 +128,8 @@ public class VideoListActivity extends AppCompatActivity implements AppBarLayout
 
         mFragment = (VodFragment) getSupportFragmentManager().findFragmentById(R.id.videolist_fragment);
         mFragment.setBean(mBean);
+
+
     }
 
     private void wheelTimeFun(){

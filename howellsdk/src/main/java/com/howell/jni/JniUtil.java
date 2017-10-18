@@ -54,6 +54,8 @@ public class JniUtil {
 	public static native boolean readyPlayPlayback();//fixme same to readyPlayLive
 	public static native void netSetPlayBackTime(ApTimeBean beg, ApTimeBean end);
 	public static native boolean netReadyPlay(int isCrypto,int isPlayBack,int slot,int isSub);//isCrypto 0h264 1h264c  2h265  3h265c
+	public static native boolean isNetReady();
+	public static native boolean isNetLogin();
 	public static native void releasePlay();
 	public static native void playView();
 	public static native void pauseAndPlayView();
@@ -72,6 +74,7 @@ public class JniUtil {
 	public static native int netGetVideoListCount(ApTimeBean beg,ApTimeBean end);//获取总录像文件数
 	public static native int netGetVideoListPageCount(ApTimeBean beg,ApTimeBean end,int pageSize,int curPageNo);//获取分页 总页数 pageSize:单页文件数  curPageNo当前第几页
 	public static native ReplayFile[] netGetVideoListAll(int count);
+	public static native ReplayFile[] netGetVideoList(int startCount,int endCount);
 	public static native void netCloseVideoList();
 	//transmission
 	

@@ -257,6 +257,22 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
 
 /*
  * Class:     com_howell_jni_JniUtil
+ * Method:    isNetReady
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_isNetReady
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    isNetLogin
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_isNetLogin
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
  * Method:    releasePlay
  * Signature: ()V
  */
@@ -301,6 +317,14 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netStopPlay
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_stopView
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    netGetStreamLenSomeTime
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetStreamLenSomeTime
   (JNIEnv *, jclass);
 
 /*
@@ -367,16 +391,13 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetVideoListPageCount
 JNIEXPORT jobjectArray JNICALL Java_com_howell_jni_JniUtil_netGetVideoListAll
   (JNIEnv *, jclass, jint);
 
-
 /*
  * Class:     com_howell_jni_JniUtil
- * Method:    netGetStreamLenSomeTime
- * Signature: ()I
+ * Method:    netGetVideoList
+ * Signature: (II)[Lcom/howellsdk/player/ap/bean/ReplayFile;
  */
-JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetStreamLenSomeTime
-        (JNIEnv *, jclass);
-
-
+JNIEXPORT jobjectArray JNICALL Java_com_howell_jni_JniUtil_netGetVideoList
+  (JNIEnv *, jclass, jint, jint);
 
 /*
  * Class:     com_howell_jni_JniUtil

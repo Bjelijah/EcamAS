@@ -1,8 +1,10 @@
 package com.howell.modules.player.presenter;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.howell.bean.CameraItemBean;
+import com.howell.jni.JniUtil;
 import com.howell.modules.player.IPlayContract;
 import com.howell.modules.player.bean.PTZ;
 import com.howell.modules.player.bean.VODRecord;
@@ -50,30 +52,20 @@ public class PlayApPresenter extends PlayBasePresenter {
                                 new HWPlayApi.IAPCamCB() {
                                     @Override
                                     public void onRecordFileList(final ArrayList<ReplayFile> files) {
-
+                                        mCurPage++;
                                         Observable.create(new ObservableOnSubscribe<ArrayList<VODRecord>>() {
 
                                             @Override
                                             public void subscribe(@NonNull ObservableEmitter<ArrayList<VODRecord>> e) throws Exception {
+
                                                 ArrayList<VODRecord> vods = new ArrayList<VODRecord>();
                                                 for(ReplayFile f:files){
-                                                    StringBuffer begSb = new StringBuffer()
-                                                            .append(f.getBegYear()).append("-")
-                                                            .append(f.getBegMonth()).append("-")
-                                                            .append(f.getBegDay()).append(" ")
-                                                            .append(f.getBegHour()).append(":")
-                                                            .append(f.getBegMin()).append(":")
-                                                            .append(f.getBegSec());
-                                                    StringBuffer endSb = new StringBuffer()
-                                                            .append(f.getEndYear()).append("-")
-                                                            .append(f.getEndMonth()).append("-")
-                                                            .append(f.getEndDay()).append(" ")
-                                                            .append(f.getEndHour()).append(":")
-                                                            .append(f.getEndMin()).append(":")
-                                                            .append(f.getEndSec());
-                                                    String beg = begSb.toString();
-                                                    String end = endSb.toString();
-
+                                                    String beg = String.format("%04d-%02d-%02d %02d:%02d:%02d",
+                                                            f.getBegYear(),f.getBegMonth(),f.getBegDay(),
+                                                            f.getBegHour(),f.getBegMin(),f.getBegSec());
+                                                    String end = String.format("%04d-%02d-%02d %02d:%02d:%02d",
+                                                            f.getEndYear(),f.getEndMonth(),f.getEndDay(),
+                                                            f.getEndHour(),f.getEndMin(),f.getEndSec());
                                                     vods.add(new VODRecord(
                                                             beg,
                                                             end,
@@ -81,8 +73,9 @@ public class PlayApPresenter extends PlayBasePresenter {
                                                             "",
                                                             mLastVODTime.equals(f.getBegDay()+"")?false:true));
                                                     mLastVODTime = f.getBegDay()+"";
-                                                    e.onNext(vods);
+
                                                 }
+                                                e.onNext(vods);
                                             }
                                         })
                                                 .subscribeOn(Schedulers.io())
@@ -95,6 +88,10 @@ public class PlayApPresenter extends PlayBasePresenter {
 
                                                     @Override
                                                     public void onNext(@NonNull ArrayList<VODRecord> vodRecords) {
+                                                        Log.i("123","mView="+mView);
+                                                        if (mView!=null){
+                                                            Log.e("123","mView="+mView.getClass().getName());
+                                                        }
                                                         mView.onRecord(vodRecords);
                                                     }
 
@@ -148,12 +145,23 @@ public class PlayApPresenter extends PlayBasePresenter {
     }
 
     @Override
+    public void holdServer() {
+        ApiManager.PlayHelp.keepApi(ApiManager.getInstance().getAPcamService());
+    }
+
+    @Override
+    public void resumeServer() {
+        ApiManager.getInstance().setApcamService(ApiManager.PlayHelp.getAPi());
+    }
+
+    @Override
     public void play(final boolean isSub) {
-        RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<Object>() {
+        ThreadUtil.cachedThreadStart(new Runnable() {
             @Override
-            public void doTask() {
+            public void run() {
                 ApiManager.getInstance().getAPcamService()
                         .play(isSub);
+                startTimeTask();
             }
         });
 
@@ -161,22 +169,26 @@ public class PlayApPresenter extends PlayBasePresenter {
 
     @Override
     public void playback(final boolean isSub, final String beg, final String end) {
-        RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<Object>() {
+        Log.i("123","ap play back");
+        ThreadUtil.cachedThreadStart(new Runnable() {
             @Override
-            public void doTask() {
+            public void run() {
+                Log.i("123","ap play back do task");
                 ApiManager.getInstance().getAPcamService()
                         .playback(isSub,beg,end);
+                startTimeTask();
             }
         });
     }
 
     @Override
     public void stop() {
-        RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<Object>() {
+        ThreadUtil.cachedThreadStart(new Runnable() {
             @Override
-            public void doTask() {
+            public void run() {
                 ApiManager.getInstance().getAPcamService()
                         .stop();
+                stopTimeTask();
             }
         });
     }
@@ -188,13 +200,14 @@ public class PlayApPresenter extends PlayBasePresenter {
 
     @Override
     public void playMoveTo(final boolean isSub, final String beg, final String end) {
-        RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<Object>() {
+        ThreadUtil.cachedThreadStart(new Runnable() {
             @Override
-            public void doTask() {
+            public void run() {
                 ApiManager.getInstance().getAPcamService()
                         .reLink(isSub,beg,end);
             }
         });
+
     }
 
     @Override
@@ -241,18 +254,22 @@ public class PlayApPresenter extends PlayBasePresenter {
     @Override
     public IPlayContract.IPresent vodReset() {
         mCurPage = 0;
+
         return this;
     }
 
     @Override
     public void getVODRecord(final boolean isSub, final String beg, final String end) {
-        RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<Object>() {
+        ThreadUtil.cachedThreadStart(new Runnable() {
             @Override
-            public void doTask() {
+            public void run() {
+                //login may outtime
+                if (!JniUtil.isNetLogin()){
+                    JniUtil.login(mBean.getUpnpIP());
+                }
                 ApiManager.getInstance().getAPcamService().getRecordedFiles(beg,end,mCurPage,mPageSize);
             }
         });
-
     }
 
     @Override

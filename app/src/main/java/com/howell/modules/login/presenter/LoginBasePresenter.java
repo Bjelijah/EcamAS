@@ -3,6 +3,7 @@ package com.howell.modules.login.presenter;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.howell.action.ConfigAction;
 import com.howell.bean.Custom;
@@ -44,6 +45,7 @@ public abstract class LoginBasePresenter extends BasePresenter implements ILogin
         mIsSSL = config.isSSL();
         mIsFirst = config.isFirst();
 
+        Log.i("123",toString());
     }
 
 
@@ -51,5 +53,14 @@ public abstract class LoginBasePresenter extends BasePresenter implements ILogin
 
     protected void saveLoginInformation(){}
 
-
+    @Override
+    public String toString() {
+        return "LoginBasePresenter{" +
+                "mName='" + mName + '\'' +
+                ", mPwd='" + mPwd + '\'' +
+                ", mUrl='" + mUrl + '\'' +
+                ", mIsSSL=" + mIsSSL +
+                ", mIsFirst=" + mIsFirst +
+                '}';
+    }
 }

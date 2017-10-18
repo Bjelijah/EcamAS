@@ -15,9 +15,11 @@ import android.os.StrictMode;
 import android.util.Log;
 
 import com.android.howell.webcam.R;
+import com.howell.action.ConfigAction;
 import com.howell.jni.JniUtil;
 import com.howell.modules.login.ILoginContract;
 import com.howell.modules.login.bean.Type;
+import com.howell.modules.login.presenter.LoginHttpPresenter;
 import com.howell.modules.login.presenter.LoginSoapPresenter;
 import com.howell.protocol.SoapManager;
 
@@ -91,7 +93,7 @@ public class LogoActivity extends Activity implements ILoginContract.IView{
 
 		JniUtil.logEnable(true);
 		mIsFromNotification = getIntent().getBooleanExtra("notification",false);
-
+		ConfigAction.getInstance(this);
 	}
 
 
@@ -113,7 +115,19 @@ public class LogoActivity extends Activity implements ILoginContract.IView{
 	@Override
 	public void bindPresenter() {
 		if (mPresenter==null){
-			mPresenter = new LoginSoapPresenter();//// FIXME: 2017/9/14 add  http
+
+			switch (ConfigAction.getInstance(this).getMode()){
+				case 0:
+					mPresenter = new LoginSoapPresenter();//// FIXME: 2017/9/14 add  http
+					break;
+				case 1:
+					mPresenter = new LoginHttpPresenter();//// FIXME: 2017/10/17 add  http
+					break;
+				default:
+					mPresenter = new LoginSoapPresenter();//// FIXME: 2017/9/14 add  http
+					break;
+			}
+
 		}
 		mPresenter.bindView(this);
 		mPresenter.init(this);

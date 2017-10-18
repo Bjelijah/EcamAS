@@ -2,6 +2,9 @@ package com.howellsdk.player.ap.bean;
 
 import org.codehaus.jackson.map.util.ISO8601Utils;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
@@ -99,10 +102,34 @@ public class ApTimeBean {
         year = (short) calendar.get(Calendar.YEAR);
         month = (short) (calendar.get(Calendar.MONTH)+1);
         dayOfWeek = (short) calendar.get(Calendar.DAY_OF_WEEK);
+        hour = (short)calendar.get(Calendar.HOUR_OF_DAY);
         day = (short) calendar.get(Calendar.DAY_OF_MONTH);
         minute = (short) calendar.get(Calendar.MINUTE);
         second = (short) calendar.get(Calendar.SECOND);
         msecond = (short) calendar.get(Calendar.MILLISECOND);
+    }
+
+    public ApTimeBean(String time,int timeType){
+        Calendar calendar = Calendar.getInstance();
+        if (timeType==0){
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            try {
+                calendar.setTime(df.parse(time));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }else if(timeType==1){
+            calendar.setTime(ISO8601Utils.parse(time));
+        }
+        year = (short) calendar.get(Calendar.YEAR);
+        month = (short) (calendar.get(Calendar.MONTH)+1);
+        dayOfWeek = (short) calendar.get(Calendar.DAY_OF_WEEK);
+        hour = (short)calendar.get(Calendar.HOUR_OF_DAY);
+        day = (short) calendar.get(Calendar.DAY_OF_MONTH);
+        minute = (short) calendar.get(Calendar.MINUTE);
+        second = (short) calendar.get(Calendar.SECOND);
+        msecond = (short) calendar.get(Calendar.MILLISECOND);
+        toString();
     }
 
 

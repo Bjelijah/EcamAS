@@ -38,12 +38,14 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.howell.action.ConfigAction;
 import com.howell.action.FingerprintUiHelper;
 import com.howell.activity.fragment.FingerPrintFragment;
 import com.howell.bean.Custom;
 import com.android.howell.webcam.R;
 import com.howell.modules.login.ILoginContract;
 import com.howell.modules.login.bean.Type;
+import com.howell.modules.login.presenter.LoginHttpPresenter;
 import com.howell.modules.login.presenter.LoginSoapPresenter;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.IConst;
@@ -336,6 +338,8 @@ public class LoginActivity extends AppCompatActivity implements ILoginContract.I
             c.setCustomPort(mIsCustom?ServerConfigSp.loadServerPort(this):DEFAULT_PORT);
             c.setSSL(mIsCustom?ServerConfigSp.loadServerSSL(this):false);
 //            LoginAction.getInstance().setContext(this).regLoginResCallback(this).Login(username,password,c);
+            mPresenter.init(this);
+            Log.i("123","userName="+username+" password="+password);
             mPresenter.login(username,password,c);
         }
     }
@@ -474,7 +478,14 @@ public class LoginActivity extends AppCompatActivity implements ILoginContract.I
     @Override
     public void bindPresenter() {
         if (mPresenter==null){
-            mPresenter = new LoginSoapPresenter();
+            switch (ConfigAction.getInstance(this).getMode()){
+                case 0:
+                    mPresenter = new LoginSoapPresenter();
+                    break;
+                case 1:
+                    mPresenter = new LoginHttpPresenter();
+                    break;
+            }
         }
         mPresenter.bindView(this);
         mPresenter.init(this);

@@ -21,6 +21,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -111,7 +112,7 @@ public class ApiManager {
         return mHWHttpApi;
     }
 
-    public HWHttpApi getmHWHttpApi(){
+    public HWHttpApi getHWHttpService(){
         if (mHWHttpApi==null)throw new NullPointerException("api=null");
         return mHWHttpApi;
     }
@@ -245,6 +246,12 @@ public class ApiManager {
 //        }
         return mHWApcamApi;
     }
+
+    public HWPlayApi setApcamService(HWPlayApi api){
+        mHWApcamApi = api;
+        return mHWApcamApi;
+    }
+
 
     public ApiManager resetApService(){
         mHWApcamApi = null;
@@ -494,5 +501,16 @@ public class ApiManager {
             SoapHelp.sSession = sSession;
         }
     }
+
+    public static class PlayHelp{
+        static HWPlayApi api;
+        public static void keepApi(HWPlayApi api){
+            PlayHelp.api = api;
+        }
+        public static HWPlayApi getAPi(){
+            return api;
+        }
+    }
+
 
 }

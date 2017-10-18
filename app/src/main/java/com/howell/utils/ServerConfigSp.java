@@ -35,7 +35,14 @@ public class ServerConfigSp {
 
     public static int loadServerMode(Context context){
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
-        return sp.getInt("server_mode",0);//default: soap
+        return sp.getInt("server_mode",0);//default: soap  0 soap  1 http
+    }
+
+    public static void saveServerMode(Context context,int mode){
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt("server_mode",mode);
+        editor.commit();
     }
 
 
@@ -143,4 +150,6 @@ public class ServerConfigSp {
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
         return sp.getBoolean("push_on_off",false);
     }
+
+
 }

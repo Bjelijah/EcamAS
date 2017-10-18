@@ -20,6 +20,7 @@
 #include <g711/g711.h>
 #include <protocol_type.h>
 #include <stream_type.h>
+#include <hw_config.h>
 
 
 #define LOGI(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_INFO, "JNI", __VA_ARGS__):(void)NULL)
@@ -83,7 +84,7 @@ struct StreamResource
     IH265DEC_HANDLE play_265_handle;
     LIVE_STREAM_HANDLE live_stream_handle;
     FILE_STREAM_HANDLE file_stream_handle;
-    FILE_LIST_HANDLE file_list_handle;
+    FILE_LIST_HANDLE file_list_handle,file_list_handle_all;
     int total_file_list_count;
     SYSTEMTIME beg,end; //回放文件的开始结束 不是列表的
 
@@ -125,8 +126,8 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_logEnable
  */
 void yv12gl_display(const unsigned char * y, const unsigned char *u,const unsigned char *v, int width, int height, unsigned long long time)
 {
-    if(g_yuv_display == NULL) return;
-    if (!g_yuv_display->enable) return;
+    if(g_yuv_display == NULL) {LOGE("g_yuv_display==null error");return;}
+    if (!g_yuv_display->enable) {LOGE("g_yuv_display enable false error return");return;}
     g_yuv_display->time = time/1000;
 
     if( g_yuv_display->jvm->AttachCurrentThread(&g_yuv_display->env,NULL)!= JNI_OK) {
@@ -244,12 +245,12 @@ void audio_play(const char* buf,int len)
         self->env->CallVoidMethod( self->obj, self->mid, NULL);
     }
 
-    LOGE("start to detach audio play thread");
+   // LOGE("start to detach audio play thread");
 
     if (self->jvm->DetachCurrentThread() != JNI_OK) {
         LOGE("%s: DetachCurrentThread() failed", __FUNCTION__);
     }else{
-        LOGE("audio_play detach ok");
+     //   LOGE("audio_play detach ok");
     }
     /* char* data = (*self.env)->GetByteArrayElements(self.env,self.data_array,0); */
     /* memcpy(data,buf,len); */
@@ -694,9 +695,11 @@ void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* bu
     //__android_log_print(ANDROID_LOG_INFO, "jni", "-------------stream_type %d-len %d",stream_type,len);
     res->stream_len += len;
     if(res == NULL){
+        LOGE("on live stream_fun res==null error return");
         return;
     }
     if(res->is_exit == 1){
+        LOGE("on live stream_fun is exit return");
         return;
     }
     //fixme 阻塞
@@ -713,9 +716,11 @@ void on_live_stream_fun(LIVE_STREAM_HANDLE handle,int stream_type,const char* bu
 void on_file_stream_fun(FILE_STREAM_HANDLE handle,const char *buf,int len,long userdata){
     res->stream_len += len;
     if(res == NULL){
+        LOGE("on file stream_fun res==NULL error");
         return;
     }
     if(res->is_exit == 1){
+        LOGE("on file stream is exit return");
         return;
     }
 
@@ -725,18 +730,19 @@ void on_file_stream_fun(FILE_STREAM_HANDLE handle,const char *buf,int len,long u
 
 
     int ret = hwplay_input_data(res->play_handle, buf ,len);
+    LOGI("on_file_stream_fun input data ret=%d",ret);
 }
 
 
 
 static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, int len, unsigned long timestamp, long sys_tm, int w, int h, int framerate, int au_sample, int au_channel, int au_bits, long user){
 
-//    LOGE("on source_callback       type=%d  len=%d  w=%d  h=%d  timestamp=%ld sys_tm=%ld  framerate=%d  au_sample=%d  au_channel=%d au_bits=%d",type,len,w,h,timestamp,sys_tm,framerate,au_sample,au_channel,au_bits);
+    LOGE("on source_callback       type=%d  len=%d  w=%d  h=%d  timestamp=%ld sys_tm=%ld  framerate=%d  au_sample=%d  au_channel=%d au_bits=%d",type,len,w,h,timestamp,sys_tm,framerate,au_sample,au_channel,au_bits);
 //    int ret = hwplay_is_pause(handle);
 //    LOGE("on source callback is pause=%d\n",ret);
     if (res!=NULL){
         if (res->is_exit){
-            LOGE("is  exit return");
+            LOGE("on source callback is  exit return");
             return;
         }
     }
@@ -781,6 +787,10 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netInit
         res->timestamp = 0;
         res->file_list_handle = -1;
         res->stream_len = 0;
+        res->live_stream_handle = -1;
+        res->file_stream_handle = -1;
+        res->total_file_list_count = -1;
+        res->file_list_handle_all = -1;
         pthread_mutex_init(&res->lock_play,NULL);
         sem_init(&res->sem_play,0,0);
     }
@@ -967,9 +977,9 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayPlayback
 }
 
 
-void fill_net_time
-        (JNIEnv *env,jobject obj,SYSTEMTIME *time){
-    if(time==NULL)return;
+void fill_net_time (JNIEnv *env,jobject obj,SYSTEMTIME *time){
+    if(time==NULL){LOGE("fill net time time==null error");return;}
+    LOGI("fill net time");
     jclass clazz = env->GetObjectClass(obj);
     jfieldID id = env->GetFieldID(clazz,"year","S");
     time->wYear = env->GetShortField(obj,id);
@@ -988,13 +998,15 @@ void fill_net_time
     id = env->GetFieldID(clazz,"msecond","S");
     time->wMilliseconds = env->GetShortField(obj,id);
     env->DeleteLocalRef(clazz);
-    LOGI("fill net time:[year:%d m:%d d:%d h:%d min:%d  s:%d\n",time->wYear,time->wMonth,time->wDay,time->wHour,time->wMinute,time->wSecond);
+    LOGI("fill net time:[%04d-%02d-%02d %02d:%02d:%02d]\n",time->wYear,time->wMonth,time->wDay,time->wHour,time->wMinute,time->wSecond);
 }
 
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netSetPlayBackTime
         (JNIEnv *env, jclass, jobject beg, jobject end){
-    if (res == NULL) return;
+    LOGE("net set play back time");
+    if (res == NULL) {LOGE("res==null error");return;}
+    LOGI("net st play bake time");
     fill_net_time(env,beg,&res->beg);
     fill_net_time(env,end,&res->end);
 }
@@ -1003,6 +1015,7 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netSetPlayBackTime
 JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
         (JNIEnv *, jclass, jint isCrypto, jint isPlayBack, jint slot, jint is_sub){
     if(res == NULL)return false;
+    if (res->user_handle==-1){LOGE("net ready play user handle==-1 error");return false;}
     hwplay_init(1,0,0);
     RECT area;
     HW_MEDIAINFO media_head;
@@ -1016,13 +1029,16 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
         hwnet_get_file_stream_head(res->file_stream_handle,(char*)&media_head,1024,&res->media_head_len);
     }
     LOGI("net ready play get live stream head vdec_code=");
-    LOGE(" code= 0x%x",media_head.vdec_code);
+    LOGE(" code= 0x%x   file_stream_handle=%d\n",media_head.vdec_code,res->file_stream_handle );
+    LOGE("beg= [%04d-%02d-%02d %02d:%02d:%02d]\n",res->beg.wYear,res->beg.wMonth,res->beg.wDay,res->beg.wHour,res->beg.wMinute,res->beg.wSecond);
+    //ap:0 h264  1 h265  2 h264 Crypto  3 h265 Crypto
+
     if (isCrypto==1){
-        media_head.vdec_code = VDEC_H264_ENCRYPT;//加密  用于bao VDEC_H264     VDEC_H264_ENCRYPT INZ_200系列
+        media_head.vdec_code = VDEC_HIS_H265;//VDEC_H264_ENCRYPT;//加密  用于bao VDEC_H264     VDEC_H264_ENCRYPT INZ_200系列
     }else if(isCrypto == 0){
         media_head.vdec_code = VDEC_H264;//未加密 用于 ap
     }else if(isCrypto == 2){
-        media_head.vdec_code = VDEC_HIS_H265;//h265
+        media_head.vdec_code = VDEC_H264_ENCRYPT;//VDEC_HIS_H265;//h265
     }else if(isCrypto == 3){
         media_head.vdec_code = VDEC_HISH265_ENCRYPT;//h265 加密
     }else {
@@ -1031,11 +1047,32 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
 
     PLAY_HANDLE  ph = hwplay_open_stream((char*)&media_head,sizeof(media_head),1024*1024,isPlayBack,area);
     hwplay_open_sound(ph);
-    hwplay_register_source_data_callback(ph,on_source_callback,0);
+    hwplay_register_source_data_callback(ph,on_source_callback,1);//user data==0
     res->play_handle = ph;
+    LOGI("ready finish  play_handle=%d",ph);
     return res->play_handle>=0?true:false;
 }
 
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_isNetReady
+        (JNIEnv *, jclass){
+    LOGI("is net ready?   play_handle=%d    live_stream_handle=%d  file_stream_handle=%d\n",res->play_handle,res->live_stream_handle,res->file_stream_handle);
+    if (res==NULL)return false;
+    bool ret = true;
+    if (res->play_handle==-1){
+        ret = false;
+    }
+    if (res->live_stream_handle==-1&&res->file_stream_handle==-1){
+        ret = false;
+    }
+
+    return ret;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_isNetLogin
+        (JNIEnv *, jclass){
+    if (res==NULL)return false;
+    return res->user_handle>-1?true: false;
+}
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_releasePlay
         (JNIEnv *, jclass){
@@ -1057,6 +1094,7 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_playView
         g_transMgr->transDataLen = 0;
     }
   //  hwplay_clear_stream_buf(res->play_handle);
+    LOGI("play view playHandle=%d\n",res->play_handle);
     hwplay_play(res->play_handle);
 }
 
@@ -1081,27 +1119,33 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_isPause
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netStopPlay
         (JNIEnv *, jclass){
     if(res == NULL)return;
+    int ret = 0;
     if (res->live_stream_handle!=-1){
-        hwnet_close_live_stream(res->live_stream_handle);
+        ret = hwnet_close_live_stream(res->live_stream_handle);
+        LOGI("close live stream ret=%d   stream handle=%d\n",ret,res->live_stream_handle);
         res->live_stream_handle = -1;
     }
+
     if (res->file_stream_handle!=-1){
-        hwnet_close_file_stream(res->file_stream_handle);
+        ret = hwnet_close_file_stream(res->file_stream_handle);
+        LOGI("close file stream ret = %d   file_stream_handle=%d\n",ret,res->file_stream_handle);
         res->file_stream_handle = -1;
     }
     res->stream_len = 0;
+
 }
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_stopView
         (JNIEnv *, jclass){
     if(res == NULL)return;
-
-    hwplay_stop(res->play_handle);
+    int ret = 0;
+    ret = hwplay_stop(res->play_handle);
     hwplay_clear_stream_buf(res->play_handle);
     //hwnet_close_live_stream(res->live_stream_handle);
-
+    LOGI("stop view ret=%d   play_handle=%d\n",ret,res->play_handle);
     res->is_exit = 1;
     res->play_handle = -1;
+
     //deInit265Decode();
 }
 
@@ -1201,20 +1245,33 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzIris
 JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetVideoListCount
         (JNIEnv *env, jclass, jobject beg, jobject end){
     if (res==NULL)return -1;
-    if(res->play_handle==-1)return -1;
+    if(res->user_handle==-1)return -1;
     SYSTEMTIME beg_time,end_time;
     fill_net_time(env,beg,&beg_time);
     fill_net_time(env,end,&end_time);
-    res->file_list_handle = hwnet_get_file_list(res->play_handle,0,beg_time,end_time,0);
-    hwnet_get_file_count(res->file_list_handle,&res->total_file_list_count);
+    LOGI("total_file_list_count=%d   list handle all=%d\n",res->total_file_list_count,res->file_list_handle_all);
+    if (res->total_file_list_count==-1 ||  res->file_list_handle_all==-1) {
+        res->file_list_handle_all = hwnet_get_file_list(res->user_handle, 0, beg_time, end_time, 0);
+        hwnet_get_file_count(res->file_list_handle_all, &res->total_file_list_count);
+
+    }
+    LOGI("play_handle=%d  list handle_all=%d    count=%d\n",res->play_handle, res->file_list_handle_all,res->total_file_list_count);
     return res->total_file_list_count;
 }
 
 void netCloseFileListNecessary(){
     if (res==NULL)return;
-    if (res->file_list_handle==-1)return;
-    hwnet_close_file_list(res->file_list_handle);
-    res->file_list_handle = -1;
+    if (res->file_list_handle!=-1) {
+
+        hwnet_close_file_list(res->file_list_handle);
+        res->file_list_handle = -1;
+        res->total_file_list_count = -1;
+    }
+    if (res->file_list_handle_all!=-1){
+        hwnet_close_file_list(res->file_list_handle_all);
+        res->file_list_handle_all = -1;
+        res->total_file_list_count = -1;
+    }
 }
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_netCloseVideoList
@@ -1234,8 +1291,8 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetStreamLenSomeTime
 
 JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetVideoListPageCount
         (JNIEnv *env, jclass, jobject begObj, jobject endObj, jint pageSize, jint curPageNo){
-    if(res==NULL)return -1;
-    if (res->play_handle==-1)return -1;
+    if(res==NULL){LOGE("res==null error");return -1;}
+    if (res->user_handle==-1){LOGE("play handle==-1 error");return -1;}
     SYSTEMTIME beg,end;
     memset(&beg,0,sizeof(beg));
     memset(&end,0,sizeof(end));
@@ -1248,8 +1305,11 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_netGetVideoListPageCount
 
     netCloseFileListNecessary();
 
-    res->file_list_handle = hwnet_get_file_list_by_page(res->play_handle,0,1,beg,end,0,1,0,&page);
+    res->file_list_handle = hwnet_get_file_list_by_page(res->user_handle,0,1,beg,end,0,1,0,&page);
+   // hwnet_get_file_list(res->play_handle,0,beg,end,0);
     res->total_file_list_count = page.page_count;
+//    LOGI("page count=%d\n",page.page_count);
+    if (res->file_list_handle==-1){LOGE("file_list_handle==-1  get file list by page error");}
     return res->file_list_handle>-1?page.page_count:-1;
 }
 
@@ -1268,7 +1328,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_howell_jni_JniUtil_netGetVideoListAll
     jfieldID _begSecId      = env->GetFieldID(clz,"begSec","S");
 
     jfieldID _endYearId     = env->GetFieldID(clz,"endYear","S");
-    jfieldID _endMounthId   = env->GetFieldID(clz,"endMount","S");
+    jfieldID _endMounthId   = env->GetFieldID(clz,"endMonth","S");
     jfieldID _endDayId      = env->GetFieldID(clz,"endDay","S");
     jfieldID _endHourId     = env->GetFieldID(clz,"endHour","S");
     jfieldID _endMinId      = env->GetFieldID(clz,"endMin","S");
@@ -1304,7 +1364,90 @@ JNIEXPORT jobjectArray JNICALL Java_com_howell_jni_JniUtil_netGetVideoListAll
     return arry;
 }
 
+JNIEXPORT jobjectArray JNICALL Java_com_howell_jni_JniUtil_netGetVideoList
+        (JNIEnv *env, jclass, jint startCount, jint endCount){
+    if(res == NULL) return NULL;
+    if (res->file_list_handle_all==-1)return NULL;
+    SYSTEMTIME beg,end;
+    jclass clz              = env->FindClass("com/howellsdk/player/ap/bean/ReplayFile");
+    jfieldID _begYearId     = env->GetFieldID(clz,"begYear","S");
+    jfieldID _begMounthId   = env->GetFieldID(clz,"begMonth","S");
+    jfieldID _begDayId      = env->GetFieldID(clz,"begDay","S");
+    jfieldID _begHourId     = env->GetFieldID(clz,"begHour","S");
+    jfieldID _begMinId      = env->GetFieldID(clz,"begMin","S");
+    jfieldID _begSecId      = env->GetFieldID(clz,"begSec","S");
 
+    jfieldID _endYearId     = env->GetFieldID(clz,"endYear","S");
+    jfieldID _endMounthId   = env->GetFieldID(clz,"endMonth","S");
+    jfieldID _endDayId      = env->GetFieldID(clz,"endDay","S");
+    jfieldID _endHourId     = env->GetFieldID(clz,"endHour","S");
+    jfieldID _endMinId      = env->GetFieldID(clz,"endMin","S");
+    jfieldID _endSecId      = env->GetFieldID(clz,"endSec","S");
+    jmethodID consId        = env->GetMethodID(clz,"<init>","()V");
+    if (endCount==startCount)endCount+=1;
+    int count = endCount - startCount;
+    if (count<0)count = -count;
+    jobjectArray arry = env->NewObjectArray(count,clz,NULL);
+    jobject obj;
+    int type = 0;
+//    LOGI("startCount=%d  endCount=%d\n",startCount,endCount);
+    if(endCount>startCount) {
+        for (int i = startCount,index=0; i < endCount; i++,index++) {
+            memset(&beg, 0, sizeof(beg));
+            memset(&end, 0, sizeof(end));
+            if (hwnet_get_file_detail(res->file_list_handle_all, i, &beg, &end, &type) == 1) {
+                obj = env->NewObject(clz, consId);
+                env->SetShortField(obj, _begYearId, beg.wYear);
+                env->SetShortField(obj, _begMounthId, beg.wMonth);
+                env->SetShortField(obj, _begDayId, beg.wDay);
+                env->SetShortField(obj, _begHourId, beg.wHour);
+                env->SetShortField(obj, _begMinId, beg.wMinute);
+                env->SetShortField(obj, _begSecId, beg.wSecond);
+                env->SetShortField(obj, _endYearId, end.wYear);
+                env->SetShortField(obj, _endMounthId, end.wMonth);
+                env->SetShortField(obj, _endDayId, end.wDay);
+                env->SetShortField(obj, _endHourId, end.wHour);
+                env->SetShortField(obj, _endMinId, end.wMinute);
+                env->SetShortField(obj, _endSecId, end.wSecond);
+
+                env->SetObjectArrayElement(arry, index, obj);
+            } else {
+                LOGE("hwnet_get_file_detail error\n");
+                break;
+            }
+        }
+    }else{
+//        int index=0;
+        for (int j = startCount,index=0; j > endCount; j--,index++) {
+
+            memset(&beg, 0, sizeof(beg));
+            memset(&end, 0, sizeof(end));
+            if (hwnet_get_file_detail(res->file_list_handle_all, j, &beg, &end, &type) == 1) {
+//                LOGI("index=%d  j=%d  M=%d-D=%d H=%d:m=%d\n",index,j,beg.wMonth,beg.wDay,beg.wHour,beg.wMinute);
+
+                obj = env->NewObject(clz, consId);
+                env->SetShortField(obj, _begYearId, beg.wYear);
+                env->SetShortField(obj, _begMounthId, beg.wMonth);
+                env->SetShortField(obj, _begDayId, beg.wDay);
+                env->SetShortField(obj, _begHourId, beg.wHour);
+                env->SetShortField(obj, _begMinId, beg.wMinute);
+                env->SetShortField(obj, _begSecId, beg.wSecond);
+                env->SetShortField(obj, _endYearId, end.wYear);
+                env->SetShortField(obj, _endMounthId, end.wMonth);
+                env->SetShortField(obj, _endDayId, end.wDay);
+                env->SetShortField(obj, _endHourId, end.wHour);
+                env->SetShortField(obj, _endMinId, end.wMinute);
+                env->SetShortField(obj, _endSecId, end.wSecond);
+                env->SetObjectArrayElement(arry, index, obj);
+//                index++;
+            } else {
+                LOGE("hwnet_get_file_detail error\n");
+                break;
+            }
+        }
+    }
+    return arry;
+}
 
 
 ///////////////////////////////

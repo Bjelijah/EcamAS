@@ -362,6 +362,7 @@
     <string name="server_setting_port_title">ServerPort:</string>
     <string name="server_setting_port">Input Server Port</string>
     <string name="server_setting_ssl">Server Using SSL</string>
+    <string name="server_setting_service_type">Server Link Type</string>
     <string name="server_setting_video_port_title">Video Port:</string>
     <string name="server_setting_video_port">Input Video Port</string>
     <string name="server_setting_default">Default</string>

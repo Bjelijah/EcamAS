@@ -31,6 +31,7 @@ import com.howell.bean.PlayType;
 import com.android.howell.webcam.R;
 import com.howell.entityclass.NodeDetails;
 import com.howell.modules.device.IDeviceContract;
+import com.howell.modules.device.presenter.DeviceHttpPresenter;
 import com.howell.modules.device.presenter.DeviceSoapPresenter;
 import com.howell.protocol.GetNATServerReq;
 import com.howell.protocol.GetNATServerRes;
@@ -318,7 +319,15 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
     @Override
     public void bindPresenter() {
         if (mPresenter==null){
-            mPresenter = new DeviceSoapPresenter();
+            switch (ConfigAction.getInstance(getContext()).getMode()){
+                case 0:
+                    mPresenter = new DeviceSoapPresenter();
+                    break;
+                case 1:
+                    mPresenter = new DeviceHttpPresenter();
+                    break;
+            }
+
         }
         mPresenter.bindView(this);
         mPresenter.init(getContext());

@@ -41,15 +41,22 @@ public abstract class PlayBasePresenter extends BasePresenter implements IPlayCo
     protected static final int F_TIME = 1;//刷新率  s
     @Override
     public void bindView(ImpBaseView view) {
-        Log.i("123","play base presenter bindview");
+        Log.e("123","play base presenter bindview        before  mView="+mView);
+        if (mView!=null){
+            Log.e("123","before mView="+mView.getClass().getName());
+        }
         mView = (IPlayContract.IVew) view;
+        Log.e("123","after  mView="+mView.getClass().getName());
     }
 
     @Override
     public void unbindView() {
+        Log.e("123","PlayBasePresenter  unbindView    mView="+mView.getClass().getName());
         dispose();
         mView = null;
     }
+
+
 
     @Override
     public void init(Context context, CameraItemBean bean) {
@@ -103,6 +110,16 @@ public abstract class PlayBasePresenter extends BasePresenter implements IPlayCo
 
     @Override
     public void playMoveTo(boolean isSub, long beg, long end) {
+
+    }
+
+    @Override
+    public void holdServer() {
+
+    }
+
+    @Override
+    public void resumeServer() {
 
     }
 }

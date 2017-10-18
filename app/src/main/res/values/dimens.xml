@@ -21,7 +21,7 @@
     <dimen name="add_activity_mini_horizontal_margin">24dp</dimen>
     <dimen name="add_activity_btn_padding">16dp</dimen>
     <!-- listen device and wifi -->
-    <dimen name="add_listen_device_padding_vertical">32dp</dimen>
+    <dimen name="add_listen_device_padding_vertical">23dp</dimen>
     <dimen name="add_listen_device_padding_horizontal">16dp</dimen>
     <dimen name="add_listen_device_margin_vertcail_ctrl">23dp</dimen>
     <dimen name="add_listen_device_margin_vertcail_fun">10dp</dimen>

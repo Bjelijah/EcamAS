@@ -1,6 +1,7 @@
 package com.howellsdk.player.ap;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.howell.jni.JniUtil;
 import com.howellsdk.api.HWPlayApi;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.jar.JarInputStream;
 
 /**
  * Created by Administrator on 2017/9/4.
@@ -76,6 +78,7 @@ public class ApFactory {
 
         @Override
         public void unBindCam() {
+            JniUtil.netCloseVideoList();
             JniUtil.releasePlay();//释放解码器
             super.unBindCam();
         }
@@ -87,21 +90,38 @@ public class ApFactory {
 
         @Override
         public boolean disconnect() {
+
             return JniUtil.loginOut();
         }
 
         @Override
         public void play(boolean isSub) {
             lastIsPlayback = false;
-            JniUtil.netReadyPlay(isCrypto,0,slot,isSub?1:0);
+            if (JniUtil.isNetReady()) {
+                JniUtil.netStopPlay();
+                JniUtil.stopView();
+            }
+            JniUtil.netReadyPlay(isCrypto, 0, slot, isSub ? 1 : 0);
+
             super.play(isSub);
         }
 
         @Override
         public void playback(boolean isSub, String begTime, String endTime) {
 //            ApTimeBean bean[] = phaseTime(begTime,endTime);
+            Log.i("123","ap Factory play back ");
             lastIsPlayback = true;
-            JniUtil.netSetPlayBackTime(new ApTimeBean(begTime),new ApTimeBean(endTime));
+            Log.i("123","net set play back time begTime="+begTime+"   endTime="+endTime);
+            if (JniUtil.isNetReady()){
+                //关掉重开
+                Log.i("123","is net ready we close it");
+                JniUtil.netStopPlay();
+                JniUtil.stopView();
+            }else{
+                Log.i("123","is not ready we ready it");
+            }
+            JniUtil.netSetPlayBackTime(new ApTimeBean(begTime,0),new ApTimeBean(endTime,0));
+            Log.i("123","ap Factory play back set play back time ");
             JniUtil.netReadyPlay(isCrypto,1,slot,isSub?1:0);
             super.playback(isSub,begTime,endTime);
         }
@@ -116,6 +136,7 @@ public class ApFactory {
         public void stop() {
             JniUtil.netStopPlay();
             super.stop();
+            JniUtil.releasePlay();
         }
 
         @Override
@@ -133,21 +154,43 @@ public class ApFactory {
             }
         }
 
+        private  ReplayFile[] getRecordedFilesOld(int count,int nowPage,int pageSize){//nowPage from 0;
+
+            int totalPage = count/pageSize;
+//            Log.i("123","  getRecordedFilesOld  count="+count+"  nowPage="+nowPage+"  pageSize="+pageSize+ "  totalPage="+totalPage);
+            if (count%pageSize!=0)totalPage+=1;
+            int start = (count-1)-nowPage*pageSize;
+            if (start<0)start=0;
+            int end = (count-1)-(nowPage+1)*pageSize;
+            if (end<0)end=0;
+//            Log.i("123","startCount="+start+" endCount="+end);
+            return JniUtil.netGetVideoList(start,end);
+        }
+
+
         @Override
         public boolean getRecordedFiles(String beg, String end,@Nullable Integer nowPage,@Nullable Integer pageSize) {
-
             ApTimeBean [] timeBeen = phaseTime(beg,end);
             int count = 0;
-            if (nowPage==null||pageSize==null){
+            ReplayFile[] replayFiles=null;
+            count = JniUtil.netGetVideoListPageCount(timeBeen[0],timeBeen[1],nowPage,pageSize);
+            Log.i("123","count="+count);
+            if (count>20 || count<0)count = 0;
+            if (count==0){
                 count = JniUtil.netGetVideoListCount(timeBeen[0],timeBeen[1]);
+                Log.i("123","all  count="+count);
+                replayFiles =  getRecordedFilesOld(count,nowPage,pageSize);
             }else{
-                count = JniUtil.netGetVideoListPageCount(timeBeen[0],timeBeen[1],nowPage,pageSize);
+                replayFiles = JniUtil.netGetVideoListAll(count);
             }
-            ReplayFile[] replayFiles = JniUtil.netGetVideoListAll(count);
+//            Log.i("123","length="+replayFiles.length);
+            if (replayFiles==null)return false;
             ArrayList<ReplayFile> lists = new ArrayList<>();
             for (int i=0;i<replayFiles.length;i++){
+//                Log.i("123","file="+replayFiles[i]);
                 lists.add(replayFiles[i]);
             }
+
             cb.onRecordFileList(lists);
 
             return true;
@@ -236,7 +279,6 @@ public class ApFactory {
         dateStart = Util.ISODateString2ISODate(startTime);
         dateEnd = Util.ISODateString2ISODate(endTime);
 
-
         calendar.setTime(dateEnd);
         beans[1] = new ApTimeBean((short) (calendar.get(calendar.YEAR)),(short)(1+calendar.get(calendar.MONTH)),
                 (short)(calendar.get(calendar.DAY_OF_WEEK)-1),(short)calendar.get(calendar.DAY_OF_MONTH),
@@ -255,4 +297,14 @@ public class ApFactory {
         return beans;
     }
 
+    private ApTimeBean phaseTime10Before(String endTime){
+        Calendar calendar = Calendar.getInstance();
+        Date dateEnd = Util.ISODateString2ISODate(endTime);
+        calendar.setTime(dateEnd);
+        calendar.add(Calendar.DAY_OF_MONTH,-10);
+        return  new ApTimeBean((short) (calendar.get(calendar.YEAR)),(short)(1+calendar.get(calendar.MONTH)),
+                (short)(calendar.get(calendar.DAY_OF_WEEK)-1),(short)calendar.get(calendar.DAY_OF_MONTH),
+                (short)calendar.get(calendar.HOUR_OF_DAY),(short)calendar.get(calendar.MINUTE),
+                (short)calendar.get(calendar.SECOND),(short)calendar.get(calendar.MILLISECOND));
+    }
 }

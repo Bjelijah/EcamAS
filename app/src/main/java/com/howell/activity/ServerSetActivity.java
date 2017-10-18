@@ -10,13 +10,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.Spinner;
 import android.widget.Switch;
 
 import com.howell.action.HomeAction;
 import com.android.howell.webcam.R;
+import com.howell.rxbus.RxBus;
+import com.howell.rxbus.RxConstants;
 import com.howell.utils.IConst;
 import com.howell.utils.ServerConfigSp;
 import com.howell.utils.Util;
@@ -31,6 +35,7 @@ public class ServerSetActivity extends AppCompatActivity implements IConst{
     AutoCompleteTextView mIPView,mPortView;
     Button mbtnSave,mbtnDefault;
     Switch mswSSL;
+    Spinner mSp;
     private ProgressDialog mPd;
     private boolean mIsSSL = false;
 //    ImageButton mBack;
@@ -79,6 +84,7 @@ public class ServerSetActivity extends AppCompatActivity implements IConst{
                 mPortView.setText(DEFAULT_SERVER_PORT_SSL+"");
                 mswSSL.setChecked(true);
                 mIsSSL = true;
+                mSp.setSelection(0,true);
             }
         });
         mswSSL = (Switch) findViewById(R.id.server_set_ssl);
@@ -88,14 +94,8 @@ public class ServerSetActivity extends AppCompatActivity implements IConst{
                 mIsSSL = isChecked;
             }
         });
+        mSp = (Spinner) findViewById(R.id.server_setting_service_type);
 
-//        mBack = (ImageButton) findViewById(R.id.server_set_ib_back);
-//        mBack.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                finish();
-//            }
-//        });
     }
 
     private void initToolbar(){
@@ -122,6 +122,7 @@ public class ServerSetActivity extends AppCompatActivity implements IConst{
         mIPView.setText(ServerConfigSp.loadServerIP(this));
         mPortView.setText(ServerConfigSp.loadServerPort(this)+"");
         mswSSL.setChecked(ServerConfigSp.loadServerSSL(this));
+        mSp.setSelection(ServerConfigSp.loadServerMode(this),true);
     }
 
 
@@ -178,14 +179,21 @@ public class ServerSetActivity extends AppCompatActivity implements IConst{
 
 
     private void save(String ip,int port){
-        String _ip;
-        if (Util.isIP(ip)){
-            _ip = ip;
-        }else{
-            _ip = Util.parseIP(ip);
-        }
-        HomeAction.getInstance().setServiceIPAndPort(_ip,port);
-        ServerConfigSp.saveServerInfo(this,_ip,port,mIsSSL);
+//        String _ip;
+//        if (Util.isIP(ip)){
+//            _ip = ip;
+//        }else{
+//            _ip = Util.parseIP(ip);
+//        }
+
+//        HomeAction.getInstance().setServiceIPAndPort(_ip,port);
+//        ServerConfigSp.saveServerInfo(this,_ip,port,mIsSSL);
+        ServerConfigSp.saveServerURL(this,ip,port,mSp.getSelectedItemPosition(),mIsSSL);
+        //// FIXME: 2017/10/17 发消息更新
+        RxBus.getDefault().postWithCode(RxConstants.RX_CONFIG_CODE,"");
+
+
+
         waitShow(getResources().getString(R.string.camera_setting_save_title),getResources().getString(R.string.camera_setting_save_msg),1000);
     }
 

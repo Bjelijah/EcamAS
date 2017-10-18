@@ -41,6 +41,8 @@ public interface IPlayContract {
         void catchPic(String path);
         void setSoundMute(boolean setMute);
         void talkFun(boolean bTalking);
-
+        IVew getView();
+        void holdServer();
+        void resumeServer();
     }
 }

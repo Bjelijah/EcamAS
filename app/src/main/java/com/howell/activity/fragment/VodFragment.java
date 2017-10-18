@@ -114,8 +114,15 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mPresent.resumeServer();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
+        Log.e("123","on VodFragment  destoryView");
         unbindPresenter();
     }
 
@@ -217,6 +224,10 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
 
     @Override
     public void onItemClickListener(View v, int pos) {
+//        Log.i("123","on item click mpresent deinit");
+//        mPresent.deInit();
+        mPresent.holdServer();
+
         VODRecord record = mList.get(pos);
         String startTime = record.getStartTime();
         String endTime = record.getEndTime();
@@ -230,7 +241,10 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
         intent.putExtra("endTime",endTime);
 
         getContext().startActivity(intent);
+
     }
+
+
 
     @Override
     public void onLoad(BaseFooterView baseFooterView) {
@@ -251,6 +265,7 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
 
 
         initNowTime();
+
         mPresent.vodReset();
         mPresent.getVODRecord(IS_SUB,mBeg,mEnd);
         baseHeaderView.postDelayed(new Runnable() {
@@ -264,6 +279,7 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
 
     @Override
     public void bindPresenter() {
+        if(mBean==null)return;
         if (mPresent==null){
             switch (mBean.getType()){
                 case ECAM:
@@ -276,9 +292,9 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
                     mPresent = new PlayTurnPresenter();
                     break;
             }
-            mPresent.bindView(this);
-            mPresent.init(getContext(),mBean);
         }
+        mPresent.bindView(this);
+        mPresent.init(getContext(),mBean);
     }
 
     @Override

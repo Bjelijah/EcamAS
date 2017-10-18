@@ -332,6 +332,7 @@
 	<string name="server_setting_port_title">服务器端口:</string>
 	<string name="server_setting_port">输入服务器的端口</string>
 	<string name="server_setting_ssl">服务器使用SSL</string>
+	<string name="server_setting_service_type">服务器通讯模式：</string>
 	<string name="server_setting_video_port_title">视频端口:</string>
 	<string name="server_setting_video_port">输入视频端口</string>
 	<string name="server_setting_default">默认</string>

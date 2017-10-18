@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.howell.action.ConfigAction;
 import com.howell.action.NoticeAction;
 import com.howell.activity.BigImagesActivity;
 import com.howell.adapter.NoticeRecyclerViewAdapter;
@@ -26,6 +27,7 @@ import com.howell.datetime.WheelMain;
 import com.android.howell.webcam.R;
 import com.howell.modules.device.presenter.DeviceSoapPresenter;
 import com.howell.modules.notice.INoticeContract;
+import com.howell.modules.notice.presenter.NoticeHttpPresenter;
 import com.howell.modules.notice.presenter.NoticeSoapPresenter;
 import com.howell.protocol.NoticeList;
 import com.howell.protocol.QueryNoticesRes;
@@ -303,7 +305,17 @@ public class NoticeFragment extends HomeBaseFragment implements INoticeContract.
     @Override
     public void bindPresenter() {
         if (mPresenter==null){
-            mPresenter = new NoticeSoapPresenter();
+            switch (ConfigAction.getInstance(getContext()).getMode()){
+                case 0:
+                    mPresenter = new NoticeSoapPresenter();
+                    break;
+                case 1:
+                    mPresenter = new NoticeHttpPresenter();
+                    break;
+            }
+
+
+
         }
         Log.e("123","notice fragment bindview");
         mPresenter.bindView(this);

@@ -110,7 +110,7 @@ BOOL 		 hwplay_start_join_file(const char* src_file,const char* dst_file);
 BOOL 		 hwplay_get_join_pos(int* pos);
 BOOL 		 hwplay_stop_join_file();
 
-//ÖÇÄÜËÑË÷Ö§³Ö
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö§ï¿½ï¿½
 MOTION_HANDLE 		 hwplay_start_motion_search(PLAY_HANDLE handle,RECT search_rt);
 BOOL 			  	 hwplay_get_next_motion(MOTION_HANDLE handle,motion_node* mt_node,int* err_code);
 BOOL				 hwplay_stop_motion_search(MOTION_HANDLE handle);
@@ -120,51 +120,56 @@ BOOL 				 hwplay_get_osd(PLAY_HANDLE handle, SYSTEMTIME* sys);
 BOOL 				 hwplay_set_osd(PLAY_HANDLE handle,SYSTEMTIME sys);
 BOOL 				 hwplay_get_frame_osd(PLAY_HANDLE handle,int frame,SYSTEMTIME* sys);
 
-//²¥·ÅÄ£Ê½
+//ï¿½ï¿½ï¿½ï¿½Ä£Ê½
 BOOL  				 hwplay_init_draw(BOOL used3d);
 
-//Í¼Ïñ´¦Àí
-//É«²Êµ÷½Ú,²ÎÊý·¶Î§(0-100)
+//Í¼ï¿½ï¿½ï¿½ï¿½
+//É«ï¿½Êµï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î§(0-100)
 BOOL  				 hwplay_start_color_adjust(PLAY_HANDLE handle);
 BOOL  				 hwplay_set_color_value(PLAY_HANDLE handle,int bright,int contrast,int saturation,int hue);
 BOOL  				 hwplay_get_color_value(PLAY_HANDLE handle,int* bright,int* contrast,int* saturation,int* hue);
 BOOL  				 hwplay_get_color_default_value(PLAY_HANDLE handle,int* bright,int* contrast,int* saturation,int* hue);
 BOOL  				 hwplay_stop_color_adjust(PLAY_HANDLE handle);
-//ºÚ°×Ä£Ê½
+//ï¿½Ú°ï¿½Ä£Ê½
 BOOL  			     hwplay_start_balck_mode(PLAY_HANDLE handle);
 BOOL  				 hwplay_stop_black_mode(PLAY_HANDLE handle);
-//Èñ¶Èµ÷½Ú,²ÎÊý·¶Î§(0-100)
+//ï¿½ï¿½Èµï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î§(0-100)
 BOOL  				 hwplay_start_sharpen_adjust(PLAY_HANDLE handle);
 BOOL  				 hwplay_set_sharpen_value(PLAY_HANDLE handle,int sharpen);
 BOOL  				 hwplay_get_sharpen_value(PLAY_HANDLE handle,int* sharpen);
 BOOL  				 hwplay_get_sharpen_default_value(PLAY_HANDLE handle,int* sharpen);
 BOOL  				 hwplay_stop_sharpen_adjust(PLAY_HANDLE handle);
-//ÌÝ¶Èµ÷½Ú
+//ï¿½Ý¶Èµï¿½ï¿½ï¿½
 BOOL  				 hwplay_start_gradient_adjust(PLAY_HANDLE handle);
 BOOL  				 hwplay_set_gradient_mode(PLAY_HANDLE handle,BOOL bcolor,BOOL bcartoon);
 BOOL 				 hwplay_stop_gradient_adjust(PLAY_HANDLE handle);
 
-//ÏÔÊ¾±ÈÀý (ÒòÎªÊÓÆµ±àÂë³ß´ç²»Ò»¶¨ÓëÊµ¼ÊÏÔÊ¾µÄÆ¥Åä£¬ËùÒÔÈÃÓÃ»§À´×Ô¼ºÑ¡Ôñ
-//±ÈÈçipcam ×ÓÂëÁ÷ËäÈ»ÊÇ704 * 576µÄ£¬µ«ÊÇÊµ¼ÊÈ´ÐèÒªÒÔ16:9À´ÏÔÊ¾¡£
-//scale = "16:9" or scale = "4:3" or scale = "unknown"(ÏÔÊ¾Õû¸ö´°¿Ú)
+//ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½Îªï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ß´ç²»Ò»ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Æ¥ï¿½ä£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½Ñ¡ï¿½ï¿½
+//ï¿½ï¿½ï¿½ï¿½ipcam ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½704 * 576ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½È´ï¿½ï¿½Òªï¿½ï¿½16:9ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½
+//scale = "16:9" or scale = "4:3" or scale = "unknown"(ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 BOOL  				 hwplay_set_scale(PLAY_HANDLE handle,const char* scale);
 
 BOOL 			     hwplay_reattch_rect(PLAY_HANDLE handle,RECT rt);
 
-//Ô­Ê¼Êý¾Ý»Øµ÷
-//¿ÉÒÔÌæ´úhwplay_register_yuv_callback_ex
+//Ô­Ê¼ï¿½ï¿½ï¿½Ý»Øµï¿½
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½hwplay_register_yuv_callback_ex
+
+/**
+ * user = 0 not wait for download
+ * user = 1 wait framerate
+ */
 typedef void (source_callback)(PLAY_HANDLE handle,
-										int type,//3-ÒôÆµ,1-ÊÓÆµ
-										const char* buf,//Êý¾Ý»º´æ,Èç¹ûÊÇÊÓÆµ£¬ÔòÎªYV12Êý¾Ý£¬Èç¹ûÊÇÒôÆµÔòÎªpcmÊý¾Ý
-										int len,//Êý¾Ý³¤¶È,Èç¹ûÎªÊÓÆµÔòÓ¦¸ÃµÈÓÚw * h * 3 / 2
-										unsigned long timestamp,//Ê±±ê,µ¥Î»ÎªºÁÃë
-										long sys_tm,//osd Ê±¼ä(1970µ½ÏÖÔÚµÄUTCÊ±¼ä)
-										int w,//ÊÓÆµ¿í,ÒôÆµÊý¾ÝÎÞÐ§
-										int h,//ÊÓÆµ¸ß,ÒôÆµÊý¾ÝÎÞÐ§
-										int framerate,//ÊÓÆµÖ¡ÂÊ,ÒôÆµÊý¾ÝÎÞÐ§
-										int au_sample,//ÒôÆµ²ÉÑùÂÊ,ÊÓÆµÊý¾ÝÎÞÐ§
-										int au_channel,//ÒôÆµÍ¨µÀÊý,ÊÓÆµÊý¾ÝÎÞÐ§
-										int au_bits,//ÒôÆµÎ»¿í,ÊÓÆµÊý¾ÝÎÞÐ§
+										int type,//3-ï¿½ï¿½Æµ,1-ï¿½ï¿½Æµ
+										const char* buf,//ï¿½ï¿½ï¿½Ý»ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ÎªYV12ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½Îªpcmï¿½ï¿½ï¿½ï¿½
+										int len,//ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½Îªï¿½ï¿½Æµï¿½ï¿½Ó¦ï¿½Ãµï¿½ï¿½ï¿½w * h * 3 / 2
+										unsigned long timestamp,//Ê±ï¿½ï¿½,ï¿½ï¿½Î»Îªï¿½ï¿½ï¿½ï¿½
+										long sys_tm,//osd Ê±ï¿½ï¿½(1970ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½UTCÊ±ï¿½ï¿½)
+										int w,//ï¿½ï¿½Æµï¿½ï¿½,ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+										int h,//ï¿½ï¿½Æµï¿½ï¿½,ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+										int framerate,//ï¿½ï¿½ÆµÖ¡ï¿½ï¿½,ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+										int au_sample,//ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+										int au_channel,//ï¿½ï¿½ÆµÍ¨ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
+										int au_bits,//ï¿½ï¿½ÆµÎ»ï¿½ï¿½,ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§
 										long user);
 BOOL  hwplay_register_source_data_callback(PLAY_HANDLE handle,source_callback* fun,long user);
 

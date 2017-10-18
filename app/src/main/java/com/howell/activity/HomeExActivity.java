@@ -50,6 +50,7 @@ import com.howell.db.UserLoginDao;
 import com.android.howell.webcam.R;
 import com.howell.modules.login.ILoginContract;
 import com.howell.modules.login.bean.Type;
+import com.howell.modules.login.presenter.LoginHttpPresenter;
 import com.howell.modules.login.presenter.LoginSoapPresenter;
 import com.howell.protocol.QueryClientVersionReq;
 import com.howell.protocol.QueryClientVersionRes;
@@ -690,7 +691,15 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
     @Override
     public void bindPresenter() {
         if (mPresenter==null){
-            mPresenter = new LoginSoapPresenter();
+            switch (ConfigAction.getInstance(this).getMode()){
+                case 0:
+                    mPresenter = new LoginSoapPresenter();
+                    break;
+                case 1:
+                    mPresenter = new LoginHttpPresenter();
+                    break;
+            }
+
         }
         mPresenter.bindView(this);
         mPresenter.init(this);
