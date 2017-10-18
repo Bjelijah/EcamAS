@@ -219,6 +219,7 @@ public class SoapFactory {
                 public void subscribe(@NonNull ObservableEmitter<Result> e) throws Exception {
                     try{
                         SoapObject obj = initEnvelopAndTransport(rpc,"http://www.haoweis.com/HomeServices/MCU/updateChannelName");
+                        Log.i("123","updatachannelname="+obj.toString());
                         e.onNext(new Result(obj.getProperty("result").toString()));
                     }catch (Exception ex){
                         e.onError(ex);
@@ -2161,6 +2162,7 @@ public class SoapFactory {
                     PictureRes res = new PictureRes();
                     try{
                         SoapObject obj = initEnvelopAndTransport(rpc,"http://www.haoweis.com/HomeServices/MCU/getPicture");
+                        Log.i("123","get pictureRes="+obj.toString());
                         if (obj.getProperty("result").toString().equalsIgnoreCase("ok")){
                             res.setPictureID(obj.getProperty("PictureID").toString());
                             res.setPicture(obj.getProperty("Picture").toString());

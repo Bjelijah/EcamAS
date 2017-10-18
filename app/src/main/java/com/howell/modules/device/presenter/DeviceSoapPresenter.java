@@ -1,6 +1,7 @@
 package com.howell.modules.device.presenter;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.howell.bean.APDeviceDBBean;
@@ -16,11 +17,14 @@ import com.howellsdk.net.soap.bean.AddDeviceReq;
 import com.howellsdk.net.soap.bean.DeviceMatchingCodeRes;
 import com.howellsdk.net.soap.bean.DeviceStatusReq;
 import com.howellsdk.net.soap.bean.DeviceStatusRes;
+import com.howellsdk.net.soap.bean.GetDeviceMatchingResultReq;
+import com.howellsdk.net.soap.bean.GetDeviceMatchingResultRes;
 import com.howellsdk.net.soap.bean.LoginRequest;
 import com.howellsdk.net.soap.bean.LoginResponse;
 import com.howellsdk.net.soap.bean.NullifyDeviceReq;
 import com.howellsdk.net.soap.bean.Request;
 import com.howellsdk.net.soap.bean.Result;
+import com.howellsdk.net.soap.bean.UpdateChannelNameReq;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -319,10 +323,85 @@ public class DeviceSoapPresenter extends DeviceBasePresenter {
                 });
     }
 
+    private void changeDeviceName(String deviceId,String name){
+        ApiManager.getInstance().getSoapService()
+                .updateChannelName(new UpdateChannelNameReq(
+                        mAccount,
+                        ApiManager.SoapHelp.getsSession(),
+                        deviceId,
+                        0,
+                        name
+                ))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Result>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        addDisposable(d);
+                    }
+
+                    @Override
+                    public void onNext(@NonNull Result result) {
+                        if (result.getResult().equalsIgnoreCase("ok")){
+                            mView.onAddResult(true,PlayType.ECAM);
+                        }else{
+                            mView.onError();
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        e.printStackTrace();
+                        mView.onError();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
     @Override
-    public void getDeviceMatchResult(String name) {
-//        ApiManager.getInstance().getSoapService()
-//                .getDeviceMatchingCode()
+    public void getDeviceMatchResult(String matchCode,@Nullable final String name) {
+        ApiManager.getInstance().getSoapService()
+                .getDeviceMatchingResult(new GetDeviceMatchingResultReq(mAccount,ApiManager.SoapHelp.getsSession(),matchCode))
+                .map(new Function<GetDeviceMatchingResultRes, String>() {
+                    @Override
+                    public String apply(@NonNull GetDeviceMatchingResultRes getDeviceMatchingResultRes) throws Exception {
+                        if (!getDeviceMatchingResultRes.getResult().equalsIgnoreCase("ok")){
+                            mView.onError();
+                            return null;
+                        }
+                        return getDeviceMatchingResultRes.getDevID();
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        addDisposable(d);
+                    }
+
+                    @Override
+                    public void onNext(@NonNull String s) {
+                        if (name!=null){
+                            changeDeviceName(s,name);
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        e.printStackTrace();
+                        mView.onError();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
 
 
 

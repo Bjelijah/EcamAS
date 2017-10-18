@@ -153,6 +153,7 @@ public class SendWifi extends Activity implements OnClickListener , XQuquerListe
 		case R.id.ib_finish_set:
 			Intent intent = new Intent(SendWifi.this,GetMatchResult.class);
 			intent.putExtra("device_name", device_name);
+			intent.putExtra("match_code",mMatchCode);
         	startActivity(intent);
 		default:
 			break;

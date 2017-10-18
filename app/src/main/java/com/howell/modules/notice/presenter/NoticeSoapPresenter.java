@@ -116,6 +116,7 @@ public class NoticeSoapPresenter extends NoticeBasePresenter {
                 .map(new Function<NoticeList, NoticeItemBean>() {
                     @Override
                     public NoticeItemBean apply(@NonNull NoticeList o) throws Exception {
+                        Log.e("123","picture id "+o.getPictureID());
                         return new NoticeItemBean()
                                 .setTitle(o.getName())
                                 .setDescription(o.getMessage())

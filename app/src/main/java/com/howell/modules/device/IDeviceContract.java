@@ -30,6 +30,6 @@ public interface IDeviceContract {
         void addDevice(CameraItemBean bean);
         void removeDevice(CameraItemBean bean,int pos);
         void getDevicesMatchCode();
-        void getDeviceMatchResult(String name);
+        void getDeviceMatchResult(String matchCode,String name);
     }
 }
