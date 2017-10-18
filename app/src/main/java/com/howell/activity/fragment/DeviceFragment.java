@@ -397,7 +397,7 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
         @Override
         public void onStart(View v) {
             super.onStart(v);
-            Log.e("123","BrokenCallback onStart");
+            Log.e("123","BrokenCallback onStart  v="+v.getId());
         }
 
         @Override
@@ -414,7 +414,7 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
         @Override
         public void onFalling(View v) {
             super.onFalling(v);
-            Log.e("123","BrokenCallback onFalling");
+            Log.e("123","BrokenCallback onFalling  v="+v.getId());
             //开始删除
             int pos = (int) v.getTag();
             Log.i("123","pos="+pos);
@@ -433,7 +433,7 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
             //更新
             int pos = (int) v.getTag();
             final CameraItemBean bean = mList.get(pos);
-            mPresenter.removeDevice(bean,pos);
+         //   mPresenter.removeDevice(bean,pos);
 //            mList.remove(pos);
 //            adapter.removeSllData(pos);
 //            adapter.setData(mList);
