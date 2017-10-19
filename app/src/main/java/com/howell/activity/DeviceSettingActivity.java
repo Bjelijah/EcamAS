@@ -415,8 +415,9 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
         mBVmd = bVmd;
         mBPush = bPush;
         mDetRecCb.setChecked(bVmd);
-        mDetAlarmCb.setChecked(bVmd?bPush:false);
-        mDetAlarmCb.setEnabled(bVmd);
+      //  mDetAlarmCb.setChecked(bVmd?bPush:false);
+        mDetAlarmCb.setChecked(bPush);
+      //  mDetAlarmCb.setEnabled(bVmd);
 
         mUpdataBtn.setVisibility(bNeedUpdata?View.VISIBLE:View.GONE);
 
@@ -482,7 +483,7 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
                 mIsRec = isChecked;
                 mDetAlarmCb.setEnabled(mIsRec);
                 if (!mIsRec){
-                    mDetAlarmCb.setChecked(false);
+                 //   mDetAlarmCb.setChecked(false);
                 }
                 break;
             case R.id.camera_setting_det_alarm_cb:

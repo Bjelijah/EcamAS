@@ -127,10 +127,10 @@ public class SettingAction {
                         !resDev.getResult().equalsIgnoreCase("OK")){
                     return false;
                 }
-                if (resVMD.getEnabled()){
+                //if (resVMD.getEnabled()){
                     QueryDeviceReq reqQueryDevice = new QueryDeviceReq(account,session,devId);
                     queryDeviceRes = mSoapManager.getQueryDeviceRes(reqQueryDevice);
-                }
+                //}
 
                 mResParam = resParam;
                 mResVMD = resVMD;
@@ -153,9 +153,9 @@ public class SettingAction {
                     int bitrate = Integer.parseInt(resParam.getBitRate());
                     boolean bVmd = resVMD.getEnabled();
                     boolean bPush = false;
-                    if (bVmd){
+                  //  if (bVmd){
                         bPush = queryDeviceRes.getAndroidPushSubscribedFlag()==0?false:true;
-                    }
+                   // }
                     boolean bLamp = resAux.getAuxiliaryState().equals("Inactive")?false:true;
                     boolean bRotation = resVideo.getRotationDegree()==0?false:true;
                     boolean bNeedUpdata = false;
