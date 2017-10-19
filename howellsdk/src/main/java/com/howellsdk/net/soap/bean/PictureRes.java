@@ -36,4 +36,12 @@ public class PictureRes {
 		this.picture = picture;
 	}
 
+	@Override
+	public String toString() {
+		return "PictureRes{" +
+				"result='" + result + '\'' +
+				", pictureID='" + pictureID + '\'' +
+				", picture='" + picture + '\'' +
+				'}';
+	}
 }

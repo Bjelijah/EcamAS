@@ -254,6 +254,7 @@ public class NoticeSoapPresenter extends NoticeBasePresenter {
                     @Override
                     public void onNext(@NonNull Bitmap bitmap) {
                         //draw
+
                         mView.onPicture(hoder,bitmap, SDCardUtils.getBitmapCachePath() + id + "HD",index);
                     }
 
@@ -261,6 +262,7 @@ public class NoticeSoapPresenter extends NoticeBasePresenter {
                     public void onError(@NonNull Throwable e) {
                         e.printStackTrace();
                         Log.e("123","download pic error");
+                        mView.onPicture(hoder,null, null,index);
                     }
 
                     @Override
@@ -280,8 +282,10 @@ public class NoticeSoapPresenter extends NoticeBasePresenter {
         for (int i=0;i<picIDs.size();i++){
             String id = picIDs.get(i);
             if(!SDCardUtils.isBitmapExist(id)){
+                Log.i("123","is not bitmap exit id="+id);
                downloadPic(hoder,id,width,height,i);
             }else{
+                Log.i("123","is bitmap exit id="+id);
                getPic(hoder,id,width,height,i);
             }
         }

@@ -2151,7 +2151,7 @@ public class SoapFactory {
         }
 
         @Override
-        public Observable<PictureRes> getGetPictureRes(PictureReq req) {
+        public Observable<PictureRes> getGetPictureRes(final PictureReq req) {
             final SoapObject rpc = new SoapObject(mNameSpace, "getPictureReq")
                     .addProperty("Account", req.getAccount())
                     .addProperty("LoginSession", req.getLoginSession())
@@ -2166,8 +2166,11 @@ public class SoapFactory {
                         if (obj.getProperty("result").toString().equalsIgnoreCase("ok")){
                             res.setPictureID(obj.getProperty("PictureID").toString());
                             res.setPicture(obj.getProperty("Picture").toString());
+                        }else if(obj.getProperty("result").toString().equalsIgnoreCase("NoRecord")){
+                            Log.e("123","noRecord   picId="+req.getPictureID()+"  get picId="+obj.getProperty("PictureID").toString());
                         }
                         res.setResult(obj.getProperty("result").toString());
+                        e.onNext(res);
                     }catch (Exception ex){
                         e.onError(ex);
                     }finally {

@@ -49,7 +49,8 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
     NoticeRecyclerViewAdapter.OnItemClickListener mListener;
     INoticeContract.IPresenter mPresent;
     private int requiredWidthSize = 0;
-
+    private int requiredHeightSize = 0;
+    private int mPhoneWidth = 0;
     String mPath;
 //    private ViewHoder mHoder;
     private Handler mHandle= new Handler(){
@@ -140,8 +141,8 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
 
         this.mListener = mListener;
         this.mContext = context;
-        int width = PhoneConfig.getPhoneWidth(mContext);
-        requiredWidthSize  = (width-32)/4;
+        mPhoneWidth = PhoneConfig.getPhoneWidth(mContext);
+        requiredWidthSize  = (mPhoneWidth-32)/4;
 //        bindPresenter();
     }
 
@@ -194,6 +195,8 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
                 hoder.iv2.setVisibility(View.GONE);
                 hoder.iv3.setVisibility(View.GONE);
                 hoder.iv4.setVisibility(View.GONE);
+                requiredWidthSize = (mPhoneWidth-32) /1;
+
                 break;
             case 2:
                 hoder.lliv.setVisibility(View.VISIBLE);
@@ -201,6 +204,7 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
                 hoder.iv2.setVisibility(View.VISIBLE);
                 hoder.iv3.setVisibility(View.GONE);
                 hoder.iv4.setVisibility(View.GONE);
+                requiredWidthSize = (mPhoneWidth-32) /2;
                 break;
             case 3:
                 hoder.lliv.setVisibility(View.VISIBLE);
@@ -208,6 +212,7 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
                 hoder.iv2.setVisibility(View.VISIBLE);
                 hoder.iv3.setVisibility(View.VISIBLE);
                 hoder.iv4.setVisibility(View.GONE);
+                requiredWidthSize = (mPhoneWidth-32) /3;
                 break;
             case 4:
                 hoder.lliv.setVisibility(View.VISIBLE);
@@ -215,10 +220,13 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
                 hoder.iv2.setVisibility(View.VISIBLE);
                 hoder.iv3.setVisibility(View.VISIBLE);
                 hoder.iv4.setVisibility(View.VISIBLE);
+                requiredWidthSize = (mPhoneWidth-32) /4;
                 break;
             default:
                 break;
+
         }
+        requiredHeightSize = requiredWidthSize/2;
     }
 
 
@@ -241,7 +249,7 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
         Log.i("123","picPath="+holder.picPath);
         initPicView(holder);
         initClick(holder);
-        mPresent.getPicture(holder,picID,requiredWidthSize,requiredWidthSize);
+        mPresent.getPicture(holder,picID,requiredWidthSize,requiredHeightSize);
 
 
     }
@@ -357,7 +365,13 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
                 break;
             default:break;
         }
+        Log.e("123","onPicture  bit="+bit+"  path="+path+"  index="+index);
         iv.setImageBitmap(bit);
+//        if (bit!=null) {
+//            iv.setImageBitmap(bit);
+//        }else{
+//            iv.setBackgroundColor(R.color.bg_color);
+//        }
     }
 
     public class ViewHoder  extends RecyclerView.ViewHolder implements Serializable{
