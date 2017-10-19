@@ -131,7 +131,7 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
         mBrokenView.setCallback(mBrokenCallback);
         mBrokenView.setEnable(true);
 
-        
+
 //        adapter = new DeviceRecyclerViewAdapter(getContext(),this,getActivity());
         adapter = new DeviceRecyclerViewAdapter(getContext(),this,mColorfulListener);
 //        adapter = new DeviceRecyclerViewAdapter(getContext(),this);
@@ -150,7 +150,7 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
 
     @Override
     public void getData(){
-  
+
         if (mList==null)return;
         mList.clear();
         mPresenter.queryDevices();
@@ -234,7 +234,7 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
     public void onItemVideoClickListener(View v, View itemView, int pos) {
         //long click || click
         Log.i("123","on item vied long click || click");
-      //  itemView.setOnTouchListener(mColorfulListener);
+        //  itemView.setOnTouchListener(mColorfulListener);
         //TODO get net server res
         CameraItemBean bean = mList.get(pos);
         Log.i("123","bean type="+bean.getType());
@@ -366,7 +366,7 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
     public void onError() {
         Log.e("123","Device Fragment on error");
         //// TODO: 2017/9/18
-        
+
     }
 
     @Override
@@ -419,10 +419,12 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
         @Override
         public void onFalling(View v) {
             super.onFalling(v);
-            Log.e("123","BrokenCallback onFalling  v="+v.getId());
-            //开始删除
             int pos = (int) v.getTag();
-            Log.i("123","pos="+pos);
+            Log.e("123","BrokenCallback onFalling  v="+v.getId()+"  pos="+pos);
+            //开始删除
+
+
+
 //            final CameraItemBean bean = mList.get(pos);
 //            if(HomeAction.getInstance().removeCam(getContext(),bean)){
 //              //  mList.remove(pos);
@@ -430,24 +432,37 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
 //                Snackbar.make(mView,getString(R.string.device_item_remove_fail),Snackbar.LENGTH_LONG).show();
 //            }
 //            Snackbar.make(mView,getString(R.string.device_item_remove_fail),Snackbar.LENGTH_LONG).show();
+
+
         }
 
         @Override
         public void onFallingEnd(View v) {
             Log.e("123","BrokenCallback onFallingEnd");
             //更新
-            int pos = (int) v.getTag();
-            final CameraItemBean bean = mList.get(pos);
-         //   mPresenter.removeDevice(bean,pos);
+
+
+//            int pos = (int) v.getTag();
+//            final CameraItemBean bean = mList.get(pos);
+//            mPresenter.removeDevice(bean,pos);
 //            mList.remove(pos);
 //            adapter.removeSllData(pos);
 //            adapter.setData(mList);
-
+//
 //            mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);
 
 
-//            super.onFallingEnd(v);
+            super.onFallingEnd(v);
 
+        }
+
+        @Override
+        public void onFinish(View v) {
+            Log.i("123","on broken finish");
+            int pos = (int) v.getTag();
+            final CameraItemBean bean = mList.get(pos);
+            mPresenter.removeDevice(bean,pos);
+            super.onFinish(v);
         }
 
         @Override
