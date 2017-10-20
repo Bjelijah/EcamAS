@@ -18,7 +18,10 @@ import android.view.animation.TranslateAnimation;
 import com.howell.activity.BasePlayActivity;
 import com.howell.bean.ICam;
 import com.android.howell.webcam.R;
+import com.howell.modules.player.IPlayContract;
+import com.howell.modules.player.bean.PTZ;
 import com.howell.utils.PhoneConfig;
+import com.howellsdk.player.turn.bean.PTZ_CMD;
 
 /**
  * 
@@ -36,7 +39,7 @@ public class PTZControlAction {
 		return mInstance;
 	}
 	Handler handler = null;
-	
+	IPlayContract.IPresent mPresenter;
 
 	private int animationNum = 0;
 	private boolean bAnimatingFinish = true;
@@ -59,6 +62,11 @@ public class PTZControlAction {
 		return this;
 	}
 
+	public PTZControlAction setPresenter(IPlayContract.IPresent p){
+		mPresenter = p;
+		return this;
+	}
+
 
 	
 	public boolean bAnimating(){
@@ -76,91 +84,30 @@ public class PTZControlAction {
 	
 
 	public  void zoomTeleStart(){
-		new AsyncTask<Void, Integer, Void>(){
-
-			@Override
-			protected Void doInBackground(Void... arg0) {
-				if (null==mCam) {
-					throw new NullPointerException();
-				}
-				mCam.zoomTeleStart();
-				return null;
-			}
-		}.execute();
+		mPresenter.ptzCtrl(PTZ.PTZ_ZOOM_TELE);
 	}
 	
 	public void zoomTeleStop(){
-		new AsyncTask<Void, Integer, Void>(){
-
-			@Override
-			protected Void doInBackground(Void... arg0) {
-				if (null==mCam) {
-					throw new NullPointerException();
-				}
-				mCam.zoomTeleStop();
-				
-				return null;
-			}
-			
-		}.execute();
+		mPresenter.ptzCtrl(PTZ.PTZ_ZOOM_STOP);
 	}
 	
 	
 	public void zoomWideStart(){
-		new AsyncTask<Void, Integer, Void>(){
-
-			@Override
-			protected Void doInBackground(Void... arg0) {
-				if ( null==mCam) {
-					throw new NullPointerException();
-				}
-				mCam.zoomWideStart();
-				return null;
-			}
-			
-		}.execute();
+		mPresenter.ptzCtrl(PTZ.PTZ_ZOOM_WIDE);
 	}
 
 	public void zoomWideStop(){
-		new AsyncTask<Void, Integer, Void>(){
-			@Override
-			protected Void doInBackground(Void... arg0) {
-				if(null == mCam){
-					throw new NullPointerException();
-				}
-				mCam.zoomWideStop();
-				return null;
-			}
-		}.execute();
+		mPresenter.ptzCtrl(PTZ.PTZ_ZOOM_STOP);
 	}
-	
-	public void ptzMoveStart(final String direction){
-		Log.e("123", "ptz move start");
-		new AsyncTask<Void, Void, Void>(){
 
-			@Override
-			protected Void doInBackground(Void... params) {
-				if (null==mCam) {
-					throw new NullPointerException();
-				}
-				mCam.ptzMoveStart(direction);
-				return null;
-			}
-			
-		}.execute();
+
+	public void ptzMoveStart(PTZ cmd){
+		Log.e("123", "ptz move start");
+		mPresenter.ptzCtrl(cmd);
 	}
-	
+
 	public void ptzMoveStop(){
-		new AsyncTask<Void, Void, Void>(){
-			@Override
-			protected Void doInBackground(Void... params) {
-				if (null==mCam) {
-					throw new NullPointerException();
-				}
-				mCam.ptzMoveStop();
-				return null;
-			}
-		}.execute();
+		mPresenter.ptzCtrl(PTZ.PTZ_STOP);
 	}
 	
 

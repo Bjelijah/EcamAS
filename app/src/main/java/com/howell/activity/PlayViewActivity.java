@@ -223,6 +223,7 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
             case R.id.catch_picture:
 //                PlayAction.getInstance().catchPic();
                 mPresent.catchPic();
+                mHandler.sendEmptyMessage(MSG_PLAY_SAVE_PICTURE);
                 break;
             case R.id.player_change_stream:
                 mPopupWindow.showAsDropDown(v);
@@ -299,7 +300,7 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
         mPtzRight.setOnTouchListener(this);
         mPtzUp.setOnTouchListener(this);
         mPtzDown.setOnTouchListener(this);
-        PTZControlAction.getInstance().setHandle(mHandler);
+        PTZControlAction.getInstance().setHandle(mHandler).setPresenter(mPresent);
 //        Log.i("123","mPlayMgr="+mPlayMgr);
 //        PTZControlAction.getInstance().setCam(mPlayMgr).setHandle(mHandler).setPtzInfo(
 //                LoginAction.getInstance().getmInfo().getAccount(),
@@ -376,38 +377,30 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
         switch (viewID){
             case R.id.play_ptz_left:
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//                    PTZControlAction.getInstance().ptzMoveStart("Left");
-                    mPresent.ptzCtrl(PTZ.PTZ_LEFT);
+                    PTZControlAction.getInstance().ptzMoveStart(PTZ.PTZ_LEFT);
                 }else if(event.getAction() == MotionEvent.ACTION_UP){
-//                    PTZControlAction.getInstance().ptzMoveStop();
-                    mPresent.ptzCtrl(PTZ.PTZ_STOP);
+                    PTZControlAction.getInstance().ptzMoveStop();
                 }
                 break;
             case R.id.play_ptz_right:
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//                    PTZControlAction.getInstance().ptzMoveStart("Right");
-                    mPresent.ptzCtrl(PTZ.PTZ_RIGHT);
+                    PTZControlAction.getInstance().ptzMoveStart(PTZ.PTZ_RIGHT);
                 }else if(event.getAction() == MotionEvent.ACTION_UP){
-//                    PTZControlAction.getInstance().ptzMoveStop();
-                    mPresent.ptzCtrl(PTZ.PTZ_STOP);
+                    PTZControlAction.getInstance().ptzMoveStop();
                 }
                 break;
             case R.id.play_ptz_top:
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//                    PTZControlAction.getInstance().ptzMoveStart("Up");
-                    mPresent.ptzCtrl(PTZ.PTZ_UP);
+                    PTZControlAction.getInstance().ptzMoveStart(PTZ.PTZ_UP);
                 }else if(event.getAction() == MotionEvent.ACTION_UP){
-//                    PTZControlAction.getInstance().ptzMoveStop();
-                    mPresent.ptzCtrl(PTZ.PTZ_STOP);
+                    PTZControlAction.getInstance().ptzMoveStop();
                 }
                 break;
             case R.id.play_ptz_bottom:
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-//                    PTZControlAction.getInstance().ptzMoveStart("Down");
-                    mPresent.ptzCtrl(PTZ.PTZ_DOWN);
+                    PTZControlAction.getInstance().ptzMoveStart(PTZ.PTZ_DOWN);
                 }else if(event.getAction() == MotionEvent.ACTION_UP){
-//                    PTZControlAction.getInstance().ptzMoveStop();
-                    mPresent.ptzCtrl(PTZ.PTZ_STOP);
+                    PTZControlAction.getInstance().ptzMoveStop();
                 }
                 break;
             default:
@@ -450,6 +443,12 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
     @Override
     public boolean getSoundState() {
         return mIsAudioOpen;
+    }
+
+    @Override
+    public void catchPic() {
+        mPresent.catchPic();
+        mHandler.sendEmptyMessage(MSG_PLAY_SAVE_PICTURE);
     }
 
     @Override

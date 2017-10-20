@@ -737,7 +737,7 @@ void on_file_stream_fun(FILE_STREAM_HANDLE handle,const char *buf,int len,long u
 
 static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, int len, unsigned long timestamp, long sys_tm, int w, int h, int framerate, int au_sample, int au_channel, int au_bits, long user){
 
-    LOGE("on source_callback       type=%d  len=%d  w=%d  h=%d  timestamp=%ld sys_tm=%ld  framerate=%d  au_sample=%d  au_channel=%d au_bits=%d",type,len,w,h,timestamp,sys_tm,framerate,au_sample,au_channel,au_bits);
+//    LOGE("on source_callback       type=%d  len=%d  w=%d  h=%d  timestamp=%ld sys_tm=%ld  framerate=%d  au_sample=%d  au_channel=%d au_bits=%d",type,len,w,h,timestamp,sys_tm,framerate,au_sample,au_channel,au_bits);
 //    int ret = hwplay_is_pause(handle);
 //    LOGE("on source callback is pause=%d\n",ret);
     if (res!=NULL){
@@ -1183,7 +1183,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netPtzMove
             ctrl.cmd = 4;
             break;
         case 4:
-            ctrl.cmd = 5;
+            ctrl.cmd = 6;
             break;
         default:
             break;

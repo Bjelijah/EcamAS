@@ -90,7 +90,8 @@ public class PlayFunFragment extends Fragment implements OnClickListener {
 			MessageUtiles.postToast(context, getResources().getString(R.string.no_sdcard),2000);
 			return;
 		}
-		PlayAction.getInstance().catchPic();
+//		PlayAction.getInstance().catchPic();
+		fun.catchPic();
 	}
 	
 	private void soundFun(){

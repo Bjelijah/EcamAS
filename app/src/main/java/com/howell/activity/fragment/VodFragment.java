@@ -293,6 +293,7 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
                     break;
             }
         }
+        Log.i("123","vod bindPresent  type="+mBean.getType());
         mPresent.bindView(this);
         mPresent.init(getContext(),mBean);
     }
