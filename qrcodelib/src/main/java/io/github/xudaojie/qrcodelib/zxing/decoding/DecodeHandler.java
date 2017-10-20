@@ -37,7 +37,7 @@ import io.github.xudaojie.qrcodelib.zxing.camera.CameraManager;
 import io.github.xudaojie.qrcodelib.zxing.camera.PlanarYUVLuminanceSource;
 
 
-final class DecodeHandler extends Handler {
+class DecodeHandler extends Handler {
 
     private static final String TAG = DecodeHandler.class.getSimpleName();
 

@@ -20,11 +20,11 @@ package io.github.xudaojie.qrcodelib.zxing.decoding;
  * This class provides the constants to use when sending an Intent to Barcode Scanner.
  * These strings are effectively API and cannot be changed.
  */
-public final class Intents {
+public class Intents {
     private Intents() {
     }
 
-    public static final class Scan {
+    public static class Scan {
         /**
          * Send this intent to open the Barcodes app in scanning mode, find a barcode, and return
          * the results.
@@ -100,7 +100,7 @@ public final class Intents {
         }
     }
 
-    public static final class Encode {
+    public static class Encode {
         /**
          * Send this intent to encode a piece of data as a QR code and display it full screen, so
          * that another person can scan the barcode from your screen.
@@ -131,7 +131,7 @@ public final class Intents {
         }
     }
 
-    public static final class SearchBookContents {
+    public static class SearchBookContents {
         /**
          * Use Google Book Search to search the contents of the book provided.
          */
@@ -151,7 +151,7 @@ public final class Intents {
         }
     }
 
-    public static final class WifiConnect {
+    public static class WifiConnect {
         /**
          * Internal intent used to trigger connection to a wi-fi network.
          */
@@ -177,7 +177,7 @@ public final class Intents {
     }
 
 
-    public static final class Share {
+    public static class Share {
         /**
          * Give the user a choice of items to encode as a barcode, then render it as a QR Code and
          * display onscreen for a friend to scan with their phone.

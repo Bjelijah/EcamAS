@@ -30,7 +30,7 @@ import java.util.concurrent.CountDownLatch;
 import io.github.xudaojie.qrcodelib.CaptureActivity;
 
 
-final class DecodeThread extends Thread {
+class DecodeThread extends Thread {
 
     public static final String BARCODE_BITMAP = "barcode_bitmap";
     private final CaptureActivity activity;

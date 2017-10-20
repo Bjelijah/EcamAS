@@ -27,7 +27,7 @@ import android.view.WindowManager;
 
 import java.util.regex.Pattern;
 
-final class CameraConfigurationManager {
+class CameraConfigurationManager {
 
     private static final String TAG = CameraConfigurationManager.class.getSimpleName();
 

@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+
+apply plugin: 'com.getkeepsafe.dexcount'//在项目build.gardle中配置代码
 android {
     compileSdkVersion 25
     buildToolsVersion '25.0.0'
@@ -16,6 +18,11 @@ android {
         ndk{
             abiFilters 'armeabi','armeabi-v7a'
         }
+    }
+
+    dexOptions{
+        jumboMode = true;
+        javaMaxHeapSize "2g"
     }
 
     externalNativeBuild{
@@ -67,7 +74,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:appcompat-v7:25.0.0'
     testCompile 'junit:junit:4.12'
     compile files('libs/core.jar')
@@ -105,7 +112,7 @@ dependencies {
     compile 'com.mikepenz:octicons-typeface:3.0.0.1@aar'
 
 
-   // compile 'com.zys:brokenview:1.0.3'
+//    compile 'com.zys:brokenview:1.0.3'
 
     compile ('com.github.ozodrukh:CircularReveal:2.0.1@aar') {
         transitive = true;
@@ -130,3 +137,6 @@ dependencies {
     compile project(path: ':pushlibrary')
     compile project(path: ':netsdk')
 }
+
+
+

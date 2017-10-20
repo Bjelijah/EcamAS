@@ -12,7 +12,8 @@ import com.howell.service.MyService;
  * Created by Administrator on 2017/6/8.
  */
 
-public class App extends MultiDexApplication {
+/*MultiDexApplication*/
+public class App extends  MultiDexApplication{
 
     @Override
     protected void attachBaseContext(Context base) {

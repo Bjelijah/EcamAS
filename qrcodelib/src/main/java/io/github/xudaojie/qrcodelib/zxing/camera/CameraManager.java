@@ -38,7 +38,7 @@ import io.github.xudaojie.qrcodelib.zxing.view.ViewfinderView;
  * implementation encapsulates the steps needed to take preview-sized images, which are used for
  * both preview and decoding.
  */
-public final class CameraManager {
+public class CameraManager {
 
     static final int SDK_INT; // Later we can use Build.VERSION.SDK_INT
     private static final String TAG = CameraManager.class.getSimpleName();

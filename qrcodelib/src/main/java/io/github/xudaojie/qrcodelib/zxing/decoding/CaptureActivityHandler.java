@@ -39,7 +39,7 @@ import io.github.xudaojie.qrcodelib.zxing.view.ViewfinderResultPointCallback;
 /**
  * This class handles all the messaging which comprises the state machine for capture.
  */
-public final class CaptureActivityHandler extends Handler {
+public class CaptureActivityHandler extends Handler {
 
     private static final String TAG = CaptureActivityHandler.class.getSimpleName();
 

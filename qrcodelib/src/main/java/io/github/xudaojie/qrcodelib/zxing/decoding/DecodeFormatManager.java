@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
-final class DecodeFormatManager {
+class DecodeFormatManager {
 
     static final Vector<BarcodeFormat> PRODUCT_FORMATS;
     static final Vector<BarcodeFormat> ONE_D_FORMATS;
@@ -40,7 +40,7 @@ final class DecodeFormatManager {
         PRODUCT_FORMATS.add(BarcodeFormat.UPC_E);
         PRODUCT_FORMATS.add(BarcodeFormat.EAN_13);
         PRODUCT_FORMATS.add(BarcodeFormat.EAN_8);
-        PRODUCT_FORMATS.add(BarcodeFormat.RSS_14);
+     //   PRODUCT_FORMATS.add(BarcodeFormat.RSS_14);
         ONE_D_FORMATS = new Vector<BarcodeFormat>(PRODUCT_FORMATS.size() + 4);
         ONE_D_FORMATS.addAll(PRODUCT_FORMATS);
         ONE_D_FORMATS.add(BarcodeFormat.CODE_39);

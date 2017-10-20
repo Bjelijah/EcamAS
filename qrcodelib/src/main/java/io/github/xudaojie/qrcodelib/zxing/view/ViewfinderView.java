@@ -44,7 +44,7 @@ import io.github.xudaojie.qrcodelib.zxing.camera.CameraManager;
  *
  * @author dswitkin@google.com (Daniel Switkin)
  */
-public final class ViewfinderView extends View {
+public class ViewfinderView extends View {
 
     public static int RECT_OFFSET_X; // 扫描区域偏移量 默认位于屏幕中间
     public static int RECT_OFFSET_Y;

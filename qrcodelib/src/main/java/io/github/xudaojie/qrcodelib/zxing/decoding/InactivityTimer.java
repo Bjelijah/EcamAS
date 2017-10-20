@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Finishes an activity after a period of inactivity.
  */
-public final class InactivityTimer {
+public class InactivityTimer {
 
     private static final int INACTIVITY_DELAY_SECONDS = 5 * 60;
 
@@ -60,7 +60,7 @@ public final class InactivityTimer {
         inactivityTimer.shutdown();
     }
 
-    private static final class DaemonThreadFactory implements ThreadFactory {
+    private static class DaemonThreadFactory implements ThreadFactory {
         public Thread newThread(Runnable runnable) {
             Thread thread = new Thread(runnable);
             thread.setDaemon(true);
