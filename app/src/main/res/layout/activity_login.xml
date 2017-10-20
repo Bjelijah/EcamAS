@@ -95,7 +95,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <RelativeLayout
-                android:layout_width="190dp"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/group_inside_vertical_margin_top"
                 >
@@ -252,11 +252,12 @@
 
             <LinearLayout
                 android:id="@+id/login_ll_try"
-                android:layout_width="190dp"
+                android:layout_width="220dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginTop="@dimen/group_vertical_margin_top"
-                style="?android:attr/buttonBarButtonStyle">
+                style="?android:attr/buttonBarButtonStyle"
+                android:paddingLeft="0dp">
 
                 <LinearLayout
                     android:layout_width="190dp"
