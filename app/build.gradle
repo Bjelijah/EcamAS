@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'com.getkeepsafe.dexcount'
 android {
     compileSdkVersion 26
     buildToolsVersion '26.0.1'
