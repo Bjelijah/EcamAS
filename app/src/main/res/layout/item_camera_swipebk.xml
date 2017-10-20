@@ -98,6 +98,7 @@
                 app:rippleColor="#00ff00"
                 app:elevation="6dp"
                 app:pressedTranslationZ="12dp"
+                android:visibility="gone"
                 />
 
 
