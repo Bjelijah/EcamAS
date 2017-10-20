@@ -355,14 +355,14 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
             super.onFalling(v);
             Log.e("123","BrokenCallback onFalling");
             //开始删除
-            int pos = (int) v.getTag();
-            Log.i("123","pos="+pos);
-            final CameraItemBean bean = mList.get(pos);
-            if(HomeAction.getInstance().removeCam(getContext(),bean)){
-              //  mList.remove(pos);
-            }else{
-                Snackbar.make(mView,getString(R.string.device_item_remove_fail),Snackbar.LENGTH_LONG).show();
-            }
+//            int pos = (int) v.getTag();
+//            Log.i("123","pos="+pos);
+//            final CameraItemBean bean = mList.get(pos);
+//            if(HomeAction.getInstance().removeCam(getContext(),bean)){
+//              //  mList.remove(pos);
+//            }else{
+//                Snackbar.make(mView,getString(R.string.device_item_remove_fail),Snackbar.LENGTH_LONG).show();
+//            }
 //            Snackbar.make(mView,getString(R.string.device_item_remove_fail),Snackbar.LENGTH_LONG).show();
         }
 
@@ -370,10 +370,10 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
         public void onFallingEnd(View v) {
             Log.e("123","BrokenCallback onFallingEnd");
             //更新
-            int pos = (int) v.getTag();
-            mList.remove(pos);
-            adapter.removeSllData(pos);
-            adapter.setData(mList);
+//            int pos = (int) v.getTag();
+//            mList.remove(pos);
+//            adapter.removeSllData(pos);
+//            adapter.setData(mList);
 
 //            mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);
 
@@ -386,6 +386,22 @@ public class DeviceFragment extends HomeBaseFragment implements BaseHeaderView.O
         public void onCancelEnd(View v) {
             super.onCancelEnd(v);
             Log.e("123","BrokenCallback onCancelEnd");
+        }
+
+        @Override
+        public void onFinish(View v) {
+            super.onFinish(v);
+            int pos = (int) v.getTag();
+            final CameraItemBean bean = mList.get(pos);
+            if(HomeAction.getInstance().removeCam(getContext(),bean)){
+                //  mList.remove(pos);
+            }else{
+                Snackbar.make(mView,getString(R.string.device_item_remove_fail),Snackbar.LENGTH_LONG).show();
+            }
+            mList.remove(pos);
+            adapter.removeSllData(pos);
+            adapter.setData(mList);
+
         }
     }
 

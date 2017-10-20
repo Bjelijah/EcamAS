@@ -348,9 +348,9 @@
 	<string name="camera_setting_assist">辅助</string>
 	<string name="camera_setting_lamp">指示灯</string>
 	<string name="camera_setting_detection">侦测</string>
-	<string name="camera_setting_det_rec">移动侦测录像</string>
-	<string name="camera_setting_det_rec_dec">视频画面中移动物体，即触发报警并录像（有安装SD卡）</string>
-	<string name="camera_setting_det_alarm">移动侦测报警推送</string>
+	<string name="camera_setting_det_rec">移动侦测</string>
+	<string name="camera_setting_det_rec_dec">视频画面中移动物体，即触发报警</string>
+	<string name="camera_setting_det_alarm">侦测报警推送</string>
 	<string name="camera_setting_det_alarm_dec">推送报警给我的手机</string>
 	<string name="camera_setting_camera_version">版本</string>
 	<string name="camera_setting_camera_updata">升级摄像机</string>

@@ -241,7 +241,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
             case 0:
                 menu.findItem(R.id.menu_home_help).setVisible(true);
                 menu.findItem(R.id.menu_home_like).setVisible(true);
-                menu.findItem(R.id.menu_home_share).setVisible(true);
+                menu.findItem(R.id.menu_home_share).setVisible(false);
                 if(UserConfigSp.loadLike(this)) {menu.findItem(R.id.menu_home_like).setIcon(getDrawable(R.mipmap.ic_favorite_white_24dp));}else{
                     menu.findItem(R.id.menu_home_like).setIcon(getDrawable(R.mipmap.ic_favorite_border_white_24dp));}
                 menu.findItem(R.id.menu_home_notice_search).setVisible(false);
@@ -257,7 +257,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
                 menu.findItem(R.id.menu_home_like).setVisible(false);
                 menu.findItem(R.id.menu_home_help).setVisible(false);
                 menu.findItem(R.id.menu_home_notice_search).setVisible(false);
-                menu.findItem(R.id.menu_home_scope).setVisible(true);
+                menu.findItem(R.id.menu_home_scope).setVisible(false);
                 menu.findItem(R.id.menu_home_setting).setVisible(false);
                 menu.findItem(R.id.menu_home_notice_unread).setVisible(false);
                 menu.findItem(R.id.menu_home_notice_read).setVisible(false);
@@ -526,7 +526,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     }
 
     private void initHomeFun(){
-        funCheckVersion();
+       // funCheckVersion();
     }
 
 
