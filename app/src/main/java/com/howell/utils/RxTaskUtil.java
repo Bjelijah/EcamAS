@@ -1,25 +1,25 @@
 package com.howell.utils;
 
 
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
-
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableEmitter;
-import io.reactivex.FlowableOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
+//import org.reactivestreams.Subscriber;
+//import org.reactivestreams.Subscription;
+//
+//import io.reactivex.BackpressureStrategy;
+//import io.reactivex.Flowable;
+//import io.reactivex.FlowableEmitter;
+//import io.reactivex.FlowableOnSubscribe;
+//import io.reactivex.android.schedulers.AndroidSchedulers;
+//import io.reactivex.annotations.NonNull;
+//import io.reactivex.disposables.Disposable;
+//import io.reactivex.functions.Action;
+//import io.reactivex.functions.Consumer;
+//import io.reactivex.schedulers.Schedulers;
 
 
 /**
  * Created by Administrator on 2017/8/7.
  */
-
+/*
 public class RxTaskUtil {
 
     public  static <T> Disposable doInUIThread(final RxTask<T> uiTask){
@@ -188,3 +188,4 @@ public class RxTaskUtil {
     }
 
 }
+*/

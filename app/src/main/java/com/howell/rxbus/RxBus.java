@@ -1,17 +1,17 @@
 package com.howell.rxbus;
 
 
-import io.reactivex.Observable;
-import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
-import io.reactivex.subjects.PublishSubject;
-import io.reactivex.subjects.Subject;
+//import io.reactivex.Observable;
+//import io.reactivex.functions.Function;
+//import io.reactivex.functions.Predicate;
+//import io.reactivex.subjects.PublishSubject;
+//import io.reactivex.subjects.Subject;
 
 /**
  * Created by PandaQ on 2016/12/9.
  * email : 767807368@qq.com
  */
-
+/*
 public class RxBus {
 
     private static volatile RxBus defaultInstance;
@@ -71,3 +71,4 @@ public class RxBus {
 
 
 }
+*/

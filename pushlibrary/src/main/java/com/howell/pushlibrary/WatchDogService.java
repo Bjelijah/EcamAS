@@ -15,6 +15,7 @@ import android.util.Log;
 
 import java.util.concurrent.TimeUnit;
 
+//// FIXME: 2017/10/23
 import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;

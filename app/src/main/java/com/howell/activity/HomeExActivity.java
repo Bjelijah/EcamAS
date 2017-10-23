@@ -81,7 +81,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import io.reactivex.disposables.CompositeDisposable;
+//import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * Created by howell on 2016/11/15.
@@ -127,7 +127,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     public static Bitmap sBkBitmap;
     private String mUpdataUrl=null;
     private List<HomeBaseFragment> mFragments;
-    private final CompositeDisposable mDisposables = new CompositeDisposable();
+//    private final CompositeDisposable mDisposables = new CompositeDisposable();
     Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -225,7 +225,7 @@ public class HomeExActivity extends AppCompatActivity implements HomeAction.Chan
     @Override
     protected void onDestroy() {
         mHandler = null;
-        mDisposables.clear();
+//        mDisposables.clear();
         super.onDestroy();
     }
 
