@@ -22,6 +22,7 @@ import com.howell.modules.login.bean.Type;
 import com.howell.modules.login.presenter.LoginHttpPresenter;
 import com.howell.modules.login.presenter.LoginSoapPresenter;
 import com.howell.protocol.SoapManager;
+import com.howellsdk.utils.SDKDebugLog;
 
 import java.util.concurrent.TimeUnit;
 
@@ -92,6 +93,7 @@ public class LogoActivity extends Activity implements ILoginContract.IView{
 	private void init(){
 
 		JniUtil.logEnable(true);
+		SDKDebugLog.LogEnable(true);
 		mIsFromNotification = getIntent().getBooleanExtra("notification",false);
 		ConfigAction.getInstance(this);
 	}

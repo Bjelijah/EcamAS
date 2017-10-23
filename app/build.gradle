@@ -7,9 +7,10 @@ android {
         applicationId "com.android.howell.webcam"
         minSdkVersion 21
         targetSdkVersion 22
-        versionCode 29
+        versionCode 30
         versionName "1.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
 //        ndk{
 //            abiFilters 'armeabi','armeabi-v7a'
@@ -68,9 +69,10 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:appcompat-v7:26.+'
     testCompile 'junit:junit:4.12'
-    compile files('libs/core.jar')
+
     compile 'com.android.support:support-v4:26.+'
     compile 'com.android.support:design:26.+'
     compile 'com.android.support:recyclerview-v7:26.+'
