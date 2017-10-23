@@ -481,7 +481,7 @@ public class DeviceSettingActivity extends AppCompatActivity implements Compound
                 break;
             case R.id.camera_setting_det_dec_cb:
                 mIsRec = isChecked;
-                mDetAlarmCb.setEnabled(mIsRec);
+               // mDetAlarmCb.setEnabled(mIsRec);
                 if (!mIsRec){
                  //   mDetAlarmCb.setChecked(false);
                 }

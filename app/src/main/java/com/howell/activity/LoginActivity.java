@@ -302,7 +302,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
+            // There was an error; don't attempt login and  the first
             // form field with an error.
 
             focusView.requestFocus();
