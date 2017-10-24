@@ -69,7 +69,7 @@ public class SoapFactory {
             envelope.dotNet = true;
             envelope.encodingStyle = "UTF-8";
             envelope.setOutputSoapObject(rpc);
-            Log.i("123","url="+mUrl);
+            Log.i("123","initEnvelopAndTransport url="+mUrl);
             if (mTransport==null){
                 mTransport = new HttpTransportSE(mUrl);
                 mTransport.debug = true;

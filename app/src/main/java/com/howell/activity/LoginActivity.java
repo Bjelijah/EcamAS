@@ -47,9 +47,12 @@ import com.howell.modules.login.ILoginContract;
 import com.howell.modules.login.bean.Type;
 import com.howell.modules.login.presenter.LoginHttpPresenter;
 import com.howell.modules.login.presenter.LoginSoapPresenter;
+import com.howell.rxbus.RxBus;
+import com.howell.rxbus.RxConstants;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.IConst;
 import com.howell.utils.ServerConfigSp;
+import com.howell.utils.UserConfigSp;
 import com.howell.utils.Util;
 
 import java.util.ArrayList;
@@ -147,7 +150,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginContract.I
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-        bindPresenter();
+      //  bindPresenter();
 
         mUserNameView = (AutoCompleteTextView) findViewById(R.id.login_et_username);
 
@@ -331,12 +334,21 @@ public class LoginActivity extends AppCompatActivity implements ILoginContract.I
             // perform the user login attempt.
 
             //login
+            //
+            ConfigAction.getInstance(this).saveCustom(mIsCustom);
+
+            if (mPresenter!=null){
+                unbindPresenter();
+            }
+            bindPresenter();
+
             mProgressView.setVisibility(View.VISIBLE);
             Custom c = new Custom();
             c.setCustom(mIsCustom);
-            c.setCustomIP(mIsCustom?ServerConfigSp.loadServerIP(this):DEFAULT_IP);
-            c.setCustomPort(mIsCustom?ServerConfigSp.loadServerPort(this):DEFAULT_PORT);
-            c.setSSL(mIsCustom?ServerConfigSp.loadServerSSL(this):false);
+            c.setCustomIP(ConfigAction.getInstance(this).getIp());
+            c.setCustomPort(ConfigAction.getInstance(this).getPort());
+            c.setSSL(ConfigAction.getInstance(this).isSSL());
+            c.setMode(ConfigAction.getInstance(this).getMode());
 //            LoginAction.getInstance().setContext(this).regLoginResCallback(this).Login(username,password,c);
             mPresenter.init(this);
             Log.i("123","userName="+username+" password="+password);
@@ -477,8 +489,10 @@ public class LoginActivity extends AppCompatActivity implements ILoginContract.I
 
     @Override
     public void bindPresenter() {
+        int sel = mIsCustom?ConfigAction.getInstance(this).getMode():0;
+        Log.i("123","~~~~~~sel="+sel);
         if (mPresenter==null){
-            switch (ConfigAction.getInstance(this).getMode()){
+            switch (sel){
                 case 0:
                     mPresenter = new LoginSoapPresenter();
                     break;
@@ -495,6 +509,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginContract.I
     public void unbindPresenter() {
         if (mPresenter!=null) {
             mPresenter.unbindView();
+            mPresenter=null;
         }
     }
 

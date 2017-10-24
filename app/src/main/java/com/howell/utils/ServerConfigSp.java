@@ -8,7 +8,7 @@ import android.util.Log;
  * Created by howell on 2016/11/29.
  */
 
-public class ServerConfigSp {
+public class ServerConfigSp implements IConst{
     private static final String SP_NAME = "server_set";
 
     public static void saveServerURL(Context context,String ip,int port,int serverMode,boolean isSSL){
@@ -26,11 +26,13 @@ public class ServerConfigSp {
         editor.putInt("server_mode",serverMode);
         editor.putBoolean("server_ssl",isSSL);
         editor.commit();
+
     }
 
     public static String loadServerURL(Context context){
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
-        return sp.getString("server_url","http://www.haoweis.com:8800/HomeService/HomeMCUService.svc?wsdl");//default: haoweis
+        String url= sp.getString("server_url","http://www.haoweis.com:8800/HomeService/HomeMCUService.svc?wsdl");//default: haoweis
+        return url;
     }
 
     public static int loadServerMode(Context context){
@@ -67,22 +69,22 @@ public class ServerConfigSp {
 
     public static String loadTurnIP(Context context){
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
-        return sp.getString("turn_ip",null);
+        return sp.getString("turn_ip",DEFAULT_TURN_SERVER_IP);
     }
 
     public static int loadTurnPort(Context context){
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
-        return sp.getInt("turn_port",0);
+        return sp.getInt("turn_port",DEFAULT_TURN_SERVER_PORT_NOSSL);
     }
 
     public static String loadServerIP(Context context){
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
-        return sp.getString("server_ip","www.haoweis.com");
+        return sp.getString("server_ip",DEFAULT_IP);
     }
 
     public static int loadServerPort(Context context){
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
-        return sp.getInt("server_port",0);
+        return sp.getInt("server_port",DEFAULT_PORT);
     }
 
     public static boolean loadServerSSL(Context context){
@@ -132,12 +134,12 @@ public class ServerConfigSp {
 
     public static String loadCenterIP(Context context){
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
-        return sp.getString("center_ip",null);
+        return sp.getString("center_ip",DEFAULT_CENTER_IP);
     }
 
     public static int loadCenterPort(Context context){
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
-        return sp.getInt("center_port",0);
+        return sp.getInt("center_port",DEFAULT_CENTER_PORT);
     }
 
     public static void savePushOnOff(Context context,boolean isOnOff){

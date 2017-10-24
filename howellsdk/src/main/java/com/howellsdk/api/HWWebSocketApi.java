@@ -12,6 +12,7 @@ public interface HWWebSocketApi {
     int ERROR_SEND = 0x01;
     int ERROR_RECEIVE = 0x02;
     int ERROR_SOCKET = 0x00;
+
     void connect();
     void alarmLink(int cseq, String session, String username) throws JSONException;
     void alarmAlive(int cseq, long systemUpTime, Double longitude, Double latitude) throws JSONException;

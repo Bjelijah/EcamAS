@@ -40,6 +40,7 @@ public abstract class LoginBasePresenter extends BasePresenter implements ILogin
         mContext = context;
         ConfigAction config = ConfigAction.getInstance(context);
         mUrl = config.getURL();
+
         mName = config.getName();
         mPwd = config.getPassword();
         mIsSSL = config.isSSL();

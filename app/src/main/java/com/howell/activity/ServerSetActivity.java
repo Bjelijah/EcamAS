@@ -17,6 +17,7 @@ import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 
+import com.howell.action.ConfigAction;
 import com.howell.action.HomeAction;
 import com.android.howell.webcam.R;
 import com.howell.rxbus.RxBus;
@@ -81,9 +82,9 @@ public class ServerSetActivity extends AppCompatActivity implements IConst{
             @Override
             public void onClick(View v) {
                 mIPView.setText(DEFAULT_SERVER_IP);
-                mPortView.setText(DEFAULT_SERVER_PORT_SSL+"");
-                mswSSL.setChecked(true);
-                mIsSSL = true;
+                mPortView.setText(DEFAULT_SERVER_PORT_NOSSL+"");
+                mswSSL.setChecked(false);
+                mIsSSL = false;
                 mSp.setSelection(0,true);
             }
         });
@@ -188,8 +189,12 @@ public class ServerSetActivity extends AppCompatActivity implements IConst{
 
 //        HomeAction.getInstance().setServiceIPAndPort(_ip,port);
 //        ServerConfigSp.saveServerInfo(this,_ip,port,mIsSSL);
+
+        Log.i("123","pos="+mSp.getSelectedItemPosition());
+
         ServerConfigSp.saveServerURL(this,ip,port,mSp.getSelectedItemPosition(),mIsSSL);
         //// FIXME: 2017/10/17 发消息更新
+
         RxBus.getDefault().postWithCode(RxConstants.RX_CONFIG_CODE,"");
 
 

@@ -50,6 +50,14 @@ public class UserConfigSp {
         return sp.getBoolean("user_custom",false);
     }
 
+    public static void saveUserIsCustom(Context context,boolean isCustom){
+        SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = sp.edit();
+        edit.putBoolean("user_custom",isCustom);
+        edit.commit();
+    }
+
+
     public static void saveSoundState(Context context,boolean isOpen){
         SharedPreferences sp = context.getSharedPreferences(SET_SP_NAME,Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();

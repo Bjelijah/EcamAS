@@ -120,28 +120,27 @@ public class ApiManager {
 
 
     public HWSoapApi getSoapService(String url){
-        if (mHWSoapApi==null){
-            SoapFactory factory = null;
-            try {
-                factory = new SoapFactory.Builder()
-                        .baseUrl(url)
-                        .build();
-                mHWSoapApi = factory.create();
-            } catch (CertificateException e) {
-                e.printStackTrace();
-            } catch (UnrecoverableKeyException e) {
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (KeyStoreException e) {
-                e.printStackTrace();
-            } catch (KeyManagementException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        SoapFactory factory = null;
+        try {
+            factory = new SoapFactory.Builder()
+                    .baseUrl(url)
+                    .build();
+            mHWSoapApi = factory.create();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (UnrecoverableKeyException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-       return mHWSoapApi;
+
+        return mHWSoapApi;
     }
 
     public HWSoapApi getSoapService(){
@@ -184,19 +183,19 @@ public class ApiManager {
             ,String deviceId,int channel,boolean isSub
             , String name, String pwd, boolean ssl, String imei, HWPlayApi.ITurnCB cb){
 //        if (mHWTurnApi==null){
-            mHWTurnApi = new TurnFactory.Builder()
-                    .setContext(c)
-                    .setIP(ip)
-                    .setPort(port)
-                    .setName(name)
-                    .setPwd(pwd)
-                    .setSSL(ssl)
-                    .setIMEI(imei)
-                    .setTurnCallback(cb)
-                    .setDeviceId(deviceId)
-                    .setChannel(channel)
-                    .build()
-                    .create();
+        mHWTurnApi = new TurnFactory.Builder()
+                .setContext(c)
+                .setIP(ip)
+                .setPort(port)
+                .setName(name)
+                .setPwd(pwd)
+                .setSSL(ssl)
+                .setIMEI(imei)
+                .setTurnCallback(cb)
+                .setDeviceId(deviceId)
+                .setChannel(channel)
+                .build()
+                .create();
 //        }
         return mHWTurnApi;
     }
@@ -209,12 +208,12 @@ public class ApiManager {
 
     public HWPlayApi getEcamService(String name, String ip, int port, int method,HWPlayApi.IEcamCB cb){
 //        if (mHWEcamApi==null){
-            mHWEcamApi = new EcamFactory.Builder()
-                    .setAccount(name)
-                    .setUpnp(ip,port)
-                    .setMethodType(method)
-                    .setEcamCB(cb)
-                    .build().create();
+        mHWEcamApi = new EcamFactory.Builder()
+                .setAccount(name)
+                .setUpnp(ip,port)
+                .setMethodType(method)
+                .setEcamCB(cb)
+                .build().create();
 //        }
         return mHWEcamApi;
     }
@@ -237,12 +236,12 @@ public class ApiManager {
 
     public HWPlayApi getAPcamService(String ip,int slot,int crypto,HWPlayApi.IAPCamCB cb){
 //        if (mHWApcamApi==null){
-            mHWApcamApi = new ApFactory.Builder()
-                    .setIP(ip)
-                    .setSlot(slot)
-                    .setCrypto(crypto)
-                    .setCallback(cb)
-                    .build().create();
+        mHWApcamApi = new ApFactory.Builder()
+                .setIP(ip)
+                .setSlot(slot)
+                .setCrypto(crypto)
+                .setCallback(cb)
+                .build().create();
 //        }
         return mHWApcamApi;
     }

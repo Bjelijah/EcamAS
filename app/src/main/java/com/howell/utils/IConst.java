@@ -6,7 +6,7 @@ public interface IConst {
 
 	String DEFAULT_IP = "www.haoweis.com";
     int DEFAULT_PORT = 8800;
-
+    String DEFAULT_URL = "http://www.haoweis.com:8800/HomeService/HomeMCUService.svc?wsdl";
 	final String GUEST_NAME = "100868";
 	final String GUEST_PASSWORD = "100868";
 	final int MSG_LOGIN_CAM_OK       = 0xf0;

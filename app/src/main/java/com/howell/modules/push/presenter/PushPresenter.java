@@ -9,12 +9,14 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.android.howell.webcam.R;
+import com.howell.action.ConfigAction;
 import com.howell.activity.LogoActivity;
 import com.howell.modules.BasePresenter;
 import com.howell.modules.ImpBaseView;
 import com.howell.modules.push.IPushContract;
 import com.howell.utils.NetWorkUtils;
 import com.howell.utils.PhoneConfig;
+import com.howell.utils.ServerConfigSp;
 import com.howellsdk.api.ApiManager;
 import com.howellsdk.api.HWWebSocketApi;
 import com.howellsdk.net.websocket.bean.WSRes;
@@ -74,7 +76,7 @@ public class PushPresenter extends BasePresenter implements IPushContract.IPrese
             @Override
             public void onWebSocketClose() {
                 mIsOpen = false;
-                Log.i("547","on web socket close");
+                Log.i("547","on web socket close url="+mURL);
                 stopHeart();
                 if (!NetWorkUtils.isNetworkConnected(mContext)){Log.e("547","on socket close  network not link  we not link");mView.onWebSocketClose();return;}
                 if (!mIsServiceWork){Log.e("547","on socket close  server stop  we not link");mView.onWebSocketClose();return;}
@@ -125,6 +127,7 @@ public class PushPresenter extends BasePresenter implements IPushContract.IPrese
             @Override
             public void onError(int error) {
                 Log.e("547","on error ="+error);
+                //maybe url update
             }
         });
         return this;

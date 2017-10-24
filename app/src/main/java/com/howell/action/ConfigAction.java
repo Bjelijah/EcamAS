@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.howell.rxbus.RxBus;
 import com.howell.rxbus.RxConstants;
+import com.howell.utils.IConst;
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.ServerConfigSp;
 import com.howell.utils.UserConfigSp;
@@ -20,8 +21,9 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Administrator on 2017/9/14.
  */
 
-public class ConfigAction {
+public class ConfigAction implements IConst{
     private static ConfigAction mInstance = null;
+    Context mContext;
     String mURL;
     String mIp;//用于websocket
     int mPort;
@@ -46,6 +48,7 @@ public class ConfigAction {
     }
 
     private ConfigAction (final Context c){
+        mContext = c;
         //注册rxbus
         RxBus.getDefault().toObservableWithCode(RxConstants.RX_CONFIG_CODE,String.class)
                 .subscribeOn(Schedulers.io())
@@ -77,21 +80,30 @@ public class ConfigAction {
     }
 
     private void load(Context c){
+
+        boolean isCustom = UserConfigSp.loadUserIsCustom(c);
         //server
-        mURL = ServerConfigSp.loadServerURL(c);
-        mIp = ServerConfigSp.loadServerIP(c);
-        mPort = ServerConfigSp.loadServerPort(c);
-        mMode = ServerConfigSp.loadServerMode(c);
-        mIsSSL = ServerConfigSp.loadServerSSL(c);
+        mURL = isCustom?ServerConfigSp.loadServerURL(c):DEFAULT_URL;
+        mIp = isCustom?ServerConfigSp.loadServerIP(c):DEFAULT_SERVER_IP;
+        mIsSSL = isCustom?ServerConfigSp.loadServerSSL(c):false;
+        mPort = isCustom?ServerConfigSp.loadServerPort(c):DEFAULT_SERVER_PORT_NOSSL;
+        mMode = isCustom?ServerConfigSp.loadServerMode(c):0;
+        mIsTurn = isCustom?ServerConfigSp.loadServerIsTurn(c):false;
+        mIsCrypto = isCustom?ServerConfigSp.loadServerIsCrypto(c):false;
         //user
         mName = UserConfigSp.loadUserName(c);
         mPassword = UserConfigSp.loadUserPwd(c);
         mIsFirst = UserConfigSp.loadUserFirstLogin(c);
         mImei = PhoneConfig.getIMEI(c);
-        Log.i("123","mName="+mName+" isfirst="+mIsFirst);
-        mIsTurn = ServerConfigSp.loadServerIsTurn(c);
-        mIsCrypto = ServerConfigSp.loadServerIsCrypto(c);
+        Log.i("123","ConfigAction="+toString());
+
     }
+
+    public void saveCustom(boolean isCustom){
+        UserConfigSp.saveUserIsCustom(mContext,isCustom);
+        load(mContext);
+    }
+
 
     public boolean isTurn() {
         return mIsTurn;
@@ -147,5 +159,28 @@ public class ConfigAction {
 
     public String getImei() {
         return mImei;
+    }
+
+    public void setMode(int mode){
+        mMode = mode;
+    }
+
+
+    @Override
+    public String toString() {
+        return "ConfigAction{" +
+                "mURL='" + mURL + '\'' +
+                ", mIp='" + mIp + '\'' +
+                ", mPort=" + mPort +
+                ", mMode=" + mMode +
+                ", mIsSSL=" + mIsSSL +
+                ", mName='" + mName + '\'' +
+                ", mPassword='" + mPassword + '\'' +
+                ", mIsFirst=" + mIsFirst +
+                ", mImei='" + mImei + '\'' +
+                ", mEmail='" + mEmail + '\'' +
+                ", mIsTurn=" + mIsTurn +
+                ", mIsCrypto=" + mIsCrypto +
+                '}';
     }
 }

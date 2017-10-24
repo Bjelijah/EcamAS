@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.howell.action.ConfigAction;
 import com.howell.action.LoginAction;
 import com.howell.modules.player.IPlayContract;
 import com.howell.modules.push.IPushContract;
@@ -141,7 +142,7 @@ public class MyService extends AbsWorkService implements IPushContract.IVew{
     }
 
     private void link(){
-        String url =  "ws://" + ServerConfigSp.loadServerIP(this) + ":8803/howell/ver10/ADC";
+        String url =  "ws://" + ConfigAction.getInstance(this).getIp() + ":8803/howell/ver10/ADC";
         Log.i("123","server link url="+url);
         mPresenter.init(this,url, PhoneConfig.getIMEI(this)).connect();
     }
