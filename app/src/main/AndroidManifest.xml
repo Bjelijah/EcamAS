@@ -194,6 +194,7 @@
             android:theme="@style/MyappThemePlay"
             />
 
+        <activity android:name="com.howell.activity.LineChartActivity"/>
 
         <!--android:theme="@android:style/Theme.NoTitleBar"-->
         <!--<activity-->

@@ -175,6 +175,7 @@ public class FlashLightManager {
 
 
     private void openFlash() throws CameraAccessException {
+        if (cameraDevice==null)return;
         CaptureRequest.Builder builder =  cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
         builder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_TORCH);
         builder.addTarget(surface);
@@ -183,9 +184,11 @@ public class FlashLightManager {
         if (captureSession!=null)
         captureSession.setRepeatingRequest(request,null,null);
         isOpenFlash = true;
+        return;
     }
 
     private void closeFlash() throws CameraAccessException {
+        if (cameraDevice==null)return;
         CaptureRequest.Builder builder =  cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
         builder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_OFF);
         builder.addTarget(surface);

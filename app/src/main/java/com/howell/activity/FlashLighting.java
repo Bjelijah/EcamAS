@@ -110,6 +110,7 @@ public class FlashLighting extends Activity implements OnClickListener,IDeviceCo
 				intent.putExtra("device_name", device_name);
 				intent.putExtra("match_code",mMatchCode);
 				startActivity(intent);
+				finish();
 			}
 			break;
 			

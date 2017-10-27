@@ -1549,8 +1549,8 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_nativeAudioBPlayable
 
 
 int on_my_connect(const char* session_id){
-
-    if(g_transMgr==NULL)return -1;
+    LOGI("on my connect");
+    if(g_transMgr==NULL){LOGE("on my connect g_transMgr==null we return");return -1;}
 
     //		if(g_transMgr->jvm->AttachCurrentThread( &g_transMgr->env, NULL) != JNI_OK) {
     //				LOGE("%s: AttachCurrentThread() failed", __FUNCTION__);

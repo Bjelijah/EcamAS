@@ -43,6 +43,7 @@ public class PlayTurnPresenter extends PlayBasePresenter {
     @Override
     public void init(final Context context, final CameraItemBean bean) {
         super.init(context, bean);
+        Log.i("123","bean device id="+bean.getDeviceId()+"  channel="+bean.getChannelNo());
         Observable.create(new ObservableOnSubscribe<Boolean>() {
 
             @Override

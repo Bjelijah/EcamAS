@@ -129,6 +129,8 @@ public class TurnFactory {
         private int mCmdType;
         private String mCmdJsonStr;
         private boolean mIsPlayback;
+        private boolean mIsSub;
+        private String mBeg,mEnd;
         private void onConnect(String sessionId){
             Log.i("123","onConnect sessid="+sessionId);
             mSessionID=sessionId;
@@ -136,6 +138,8 @@ public class TurnFactory {
             switch (mCmdType){
                 case SUBSCRIBE_PLAY:
                 case SUBSCRIBE_REPLAY:
+                    mCmdJsonStr=getSubscribeJsonStr(mSessionID,mDeviceId,mChannel,mIsSub,mBeg,mEnd);
+                    Log.i("123","mcmdType="+mCmdType+"    cmd="+mCmdJsonStr);
                     JniUtil.transSubscribe(mCmdJsonStr,mCmdJsonStr.length());
                     break;
                 case RECORDED_LIST:
@@ -258,14 +262,14 @@ public class TurnFactory {
         @Override
         public void play(boolean isSub) {
             mIsPlayback = false;
-            subscribe(mDeviceId,mChannel,isSub,null,null);
+            subscribe(isSub,null,null);
             super.play(isSub);
         }
 
         @Override
         public void playback(boolean isSub,String begTime, String endTime) {
             mIsPlayback = true;
-            subscribe(mDeviceId,mChannel,isSub,begTime,endTime);
+            subscribe(isSub,begTime,endTime);
             super.playback(isSub,begTime,endTime);
         }
 
@@ -283,7 +287,10 @@ public class TurnFactory {
         @Override
         public void reLink(boolean isSub,@Nullable String begTime,@Nullable String endTime) {
             mCmdType = SUBSCRIBE_REPLAY;
-            mCmdJsonStr = getSubscribeJsonStr(mDeviceId,mChannel,isSub,begTime,endTime);
+            mIsSub = isSub;
+            mBeg=begTime;
+            mEnd = endTime;
+//            mCmdJsonStr = getSubscribeJsonStr(mDeviceId,mChannel,isSub,begTime,endTime);
             JniUtil.stopView();
             unSubscribe();
         }
@@ -311,11 +318,11 @@ public class TurnFactory {
             JniUtil.transDisconnect();
         }
 
-        private String getSubscribeJsonStr(String deviceId, int channel, boolean isSub, @Nullable String begTime, @Nullable String endTime){
+        private String getSubscribeJsonStr(String session,String deviceId, int channel, boolean isSub, @Nullable String begTime, @Nullable String endTime){
             boolean islive = false;
             if (begTime==null || endTime==null) islive = true;
             TurnSubScribe bean = new TurnSubScribe(
-                    mSessionID,
+                    session,
                     "media",
                     new TurnSubScribe.media(
                             getDialogId(),
@@ -331,8 +338,12 @@ public class TurnFactory {
             return  TurnJsonUtil.getTurnSubScribe(bean);
         }
 
-        private void subscribe(String deviceId, int channel, boolean isSub, @Nullable String begTime, @Nullable String endTime) {
-            mCmdJsonStr = getSubscribeJsonStr(deviceId,channel,isSub,begTime,endTime);
+        private void subscribe(boolean isSub, @Nullable String begTime, @Nullable String endTime) {
+            mIsSub = isSub;
+            mBeg = begTime;
+            mEnd = endTime;
+//            mCmdJsonStr = getSubscribeJsonStr(deviceId,channel,isSub,begTime,endTime);
+//            Log.i("123","subcribe    jsonStr="+mCmdJsonStr);
             mCmdType = SUBSCRIBE_PLAY;
             taskConnect();
         }
