@@ -308,7 +308,7 @@
     <string name="home_setting_unread">Unread</string>
     <string name="home_setting_read">Read</string>
     <string name="home_setting_read_all">All</string>
-
+    <string name="home_setting_show_chart">Chart</string>
     <!-- add -->
     <string name="add_camera_title">Add New Camera</string>
     <string name="add_ap">Add Ap</string>

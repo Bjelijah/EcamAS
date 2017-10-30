@@ -275,6 +275,7 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
                 menu.findItem(R.id.menu_home_help).setVisible(true);
                 menu.findItem(R.id.menu_home_like).setVisible(true);
                 menu.findItem(R.id.menu_home_share).setVisible(true);
+                menu.findItem(R.id.menu_home_chart).setVisible(true);
                 if(UserConfigSp.loadLike(this)) {menu.findItem(R.id.menu_home_like).setIcon(getDrawable(R.mipmap.ic_favorite_white_24dp));}else{
                     menu.findItem(R.id.menu_home_like).setIcon(getDrawable(R.mipmap.ic_favorite_border_white_24dp));}
                 menu.findItem(R.id.menu_home_notice_search).setVisible(false);
@@ -289,6 +290,7 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
                 menu.findItem(R.id.menu_home_share).setVisible(false);
                 menu.findItem(R.id.menu_home_like).setVisible(false);
                 menu.findItem(R.id.menu_home_help).setVisible(false);
+                menu.findItem(R.id.menu_home_chart).setVisible(true);
                 menu.findItem(R.id.menu_home_notice_search).setVisible(false);
                 menu.findItem(R.id.menu_home_scope).setVisible(true);
                 menu.findItem(R.id.menu_home_setting).setVisible(false);
@@ -300,6 +302,7 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
                 menu.findItem(R.id.menu_home_share).setVisible(false);
                 menu.findItem(R.id.menu_home_like).setVisible(false);
                 menu.findItem(R.id.menu_home_help).setVisible(false);
+                menu.findItem(R.id.menu_home_chart).setVisible(true);
                 menu.findItem(R.id.menu_home_notice_search).setVisible(true);
                 menu.findItem(R.id.menu_home_scope).setVisible(false);
                 menu.findItem(R.id.menu_home_setting).setVisible(false);
@@ -331,6 +334,9 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
                 startActivity(new Intent(this,DeviceShareActivity.class));
                 break;
             case R.id.menu_home_help:
+                break;
+            case R.id.menu_home_chart:
+                startActivity(new Intent(this,LineChartActivity.class));
                 break;
             case R.id.menu_home_notice_search:
                 ((NoticeFragment)mFragments.get(2)).doSearchByTime();

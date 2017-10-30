@@ -178,23 +178,33 @@
             android:screenOrientation="portrait"
             android:theme="@style/MyAppThemeAdd"/>
 
-        <activity android:name="com.howell.activity.BasePlayActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:theme="@style/MyappThemePlay"
-            />
+        <!--<activity android:name="com.howell.activity.BasePlayActivity"-->
+            <!--android:configChanges="orientation|screenSize|keyboardHidden"-->
+            <!--android:theme="@style/MyappThemePlay"-->
+            <!--/>-->
+
+        <!--android:parentActivityName="com.howell.activity.BasePlayActivity"-->
         <activity android:name="com.howell.activity.PlayViewActivity"
-            android:parentActivityName="com.howell.activity.BasePlayActivity"
+
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:theme="@style/MyappThemePlay"
             />
 
+        <!--android:parentActivityName="com.howell.activity.BasePlayActivity"-->
         <activity android:name="com.howell.activity.PlayBackActivity"
-            android:parentActivityName="com.howell.activity.BasePlayActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:theme="@style/MyappThemePlay"
             />
 
-        <activity android:name="com.howell.activity.LineChartActivity"/>
+        <activity android:name="com.howell.activity.LineChartActivity"
+            android:theme="@style/MyAppThemeCharts"
+            />
+
+        <activity android:name="com.howell.activity.PreviewLineChartActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape"
+            android:theme="@style/MyAppThemeCharts"
+            />
 
         <!--android:theme="@android:style/Theme.NoTitleBar"-->
         <!--<activity-->

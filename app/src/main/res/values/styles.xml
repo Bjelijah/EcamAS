@@ -139,9 +139,17 @@
     </style>
 
 
+
+
     <style name="MyAppThemeDeviceSetting.share">
         <item name="colorPrimary">@color/home_bk</item>
         <item name="colorPrimaryDark">@color/home_bk_dark</item>
+    </style>
+
+    <style name="MyAppThemeCharts" parent="MaterialDrawerTheme">
+        <item name="colorPrimary">@color/home_bk</item>
+        <item name="colorPrimaryDark">@color/home_bk_dark</item>
+        <item name="colorAccent">@color/homeText</item>
     </style>
 
 
@@ -203,6 +211,9 @@
         <item name="colorPrimary">@color/home_bk</item>
         <item name="colorPrimaryDark">@color/home_bk_dark</item>
     </style>
+
+
+
 
     <style name="MyappThemeVideoList" parent="MaterialDrawerTheme.TranslucentStatus">
         <item name="colorPrimary">@color/home_bk</item>
