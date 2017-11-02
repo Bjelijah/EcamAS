@@ -180,7 +180,7 @@ public class LineChartFragment extends Fragment{
         // Reset viewport height range to (0,100)
         final Viewport v = new Viewport(chart.getMaximumViewport());
         v.bottom = 0;
-        v.top = 100;
+        v.top = 105;
         v.left = 0;
         v.right = CHARTS_LEN-1;
         chart.setMaximumViewport(v);

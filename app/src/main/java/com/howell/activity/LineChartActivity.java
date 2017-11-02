@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.android.howell.webcam.R;
 import com.howell.activity.fragment.LineChartFragment;
+import com.howell.activity.fragment.LineColumnChartFragment;
 
 /**
  * Created by Administrator on 2017/10/27.
@@ -22,13 +23,19 @@ public class LineChartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_charts);
         btn1 = (Button) findViewById(R.id.lc_btn1);
-//        btn1.setOnClickListener(v->{
-//            startActivity(new Intent(LineChartActivity.this,PreviewLineChartActivity.class));
-//        });
-//        btn2 = (Button) findViewById(R.id.lc_btn2);
-//        btn2.setOnClickListener(v->{
-//            startActivity(new Intent(LineChartActivity.this,PreviewLineChartActivity.class));
-//        });
+        btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LineChartActivity.this, PreviewLineChartActivity.class));
+            }
+        });
+        btn2 = (Button) findViewById(R.id.lc_btn2);
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LineChartActivity.this, LineColumnChartsActivity.class));
+            }
+        });
 
         if (savedInstanceState==null){
             getSupportFragmentManager().beginTransaction().add(R.id.charts_container,new LineChartFragment()).commit();

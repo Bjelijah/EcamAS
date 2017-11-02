@@ -232,11 +232,19 @@ public class TurnJsonUtil {
 				bitrate = videoObj.getInt("bitrate");
 				gop = videoObj.getInt("gop");
 				videoCodec = videoObj.getString("codec");
-				audioObj = metaObj.getJSONObject("audio");
-				samples = audioObj.getInt("samples");
-				channels = audioObj.getInt("channels");
-				bitwidth = audioObj.getInt("bitwidth");
-				audioCodec = audioObj.getString("codec");
+
+				try {
+					audioObj = metaObj.getJSONObject("audio");
+					samples = audioObj.getInt("samples");
+					channels = audioObj.getInt("channels");
+					bitwidth = audioObj.getInt("bitwidth");
+					audioCodec = audioObj.getString("codec");
+				}catch (Exception ex){
+					samples=8000;
+					channels = 1;
+					bitwidth = 16;
+					audioCodec="G711";
+				}
 				keyFrameIndex = metaObj.getBoolean("key_frame_index");
 
 				//set
@@ -267,7 +275,7 @@ public class TurnJsonUtil {
 
 				if (audioCodec.contains("aac")){
 					bean.setAudioCodec(0);
-				}else if(audioCodec.contains("G711")){
+				}else if(audioCodec.contains("711")){
 					bean.setAudioCodec(1);
 				}
 				bean.setKeyFrameIndex(keyFrameIndex);

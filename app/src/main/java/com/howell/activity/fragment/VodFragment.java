@@ -28,6 +28,7 @@ import com.howell.modules.player.presenter.PlayApPresenter;
 import com.howell.modules.player.presenter.PlayEcamPresenter;
 import com.howell.modules.player.presenter.PlayTurnPresenter;
 import com.howell.utils.AlerDialogUtils;
+import com.howellsdk.utils.RxUtil;
 import com.howellsdk.utils.Util;
 
 import java.text.SimpleDateFormat;
@@ -330,11 +331,17 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
     }
 
     @Override
-    public void onRecord(List<com.howell.modules.player.bean.VODRecord> vodRecords) {
-        mList.addAll(vodRecords);
-        mAdapter.setData(mList);
-        mlfv.stopLoad();
-        mlhv.stopRefresh();
+    public void onRecord(final List<com.howell.modules.player.bean.VODRecord> vodRecords) {
+        RxUtil.doInUIThread(new RxUtil.RxSimpleTask<Object>() {
+            @Override
+            public void doTask() {
+                mList.addAll(vodRecords);
+                mAdapter.setData(mList);
+                mlfv.stopLoad();
+                mlhv.stopRefresh();
+            }
+        });
+
     }
 
     @Override

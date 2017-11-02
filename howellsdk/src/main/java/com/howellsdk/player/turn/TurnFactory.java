@@ -143,6 +143,7 @@ public class TurnFactory {
                     JniUtil.transSubscribe(mCmdJsonStr,mCmdJsonStr.length());
                     break;
                 case RECORDED_LIST:
+                    Log.i("123","mcmdJsonStr="+mCmdJsonStr);
                     JniUtil.transGetRecordFiles(mCmdJsonStr,mCmdJsonStr.length());
                     break;
                 default:

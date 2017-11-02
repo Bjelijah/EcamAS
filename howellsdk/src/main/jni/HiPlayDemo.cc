@@ -1646,7 +1646,7 @@ int on_my_ack_res(int msgCommand,void * res,int len){
     switch (msgCommand) {
 
 #if 1
-        case 0x13:
+        case 0x13://websocket disconnect
         {
             if (g_transMgr->callback_obj!=NULL&&g_transMgr->on_disconnect_method!=NULL) {
                 LOGE("call on_disconnect_method method");
@@ -1685,6 +1685,7 @@ int on_my_ack_res(int msgCommand,void * res,int len){
             break;
         case 0x104:
         {
+            LOGI("cmd 104   %s",res);
             on_record_list_res(env,(const char*)res,len);
         }
             break;
@@ -1698,6 +1699,11 @@ int on_my_ack_res(int msgCommand,void * res,int len){
             break;
     }
     //on_ack_all_res(env,msgCommand,(const char*)res,len);
+    if(_jvm==NULL){
+        LOGE("error  _jvm==null   line=%d",__LINE__);
+    }
+
+
     if (_jvm->DetachCurrentThread() != JNI_OK) {
         LOGE("%s: DetachCurrentThread() failed", __FUNCTION__);
     }

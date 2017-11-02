@@ -206,6 +206,13 @@
             android:theme="@style/MyAppThemeCharts"
             />
 
+        <activity android:name="com.howell.activity.LineColumnChartsActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape"
+            android:theme="@style/MyAppThemeCharts"
+            />
+
+
         <!--android:theme="@android:style/Theme.NoTitleBar"-->
         <!--<activity-->
             <!--android:name="com.wyy.twodimcode.CaptureActivity"-->

@@ -17,6 +17,7 @@ import java.util.List;
 import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.listener.ViewportChangeListener;
 import lecho.lib.hellocharts.model.Axis;
+import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.Line;
 import lecho.lib.hellocharts.model.LineChartData;
 import lecho.lib.hellocharts.model.PointValue;
@@ -37,12 +38,21 @@ public class PreviewLineChartFragment extends Fragment {
     int [][] manAllDay;
     private static final int DATA_LEN = 12*12;
     int [] colorUtil={ Color.parseColor("#2a7ac2"), Color.parseColor("#c09237")};
+    private String [] mHourOfDay;
+    private static final String[] HOUR_OF_DAY={"0:00","1:00","2:00","3:00","4:00","5:00","6:00",
+            "7:00","8:00","9:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00",
+            "19:00","20:00","21:00","22:00","23:00"};
+
+
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v=inflater.inflate(R.layout.fragment_preview_line_charts,container,false);
         mChart = v.findViewById(R.id.plc_chart);
         mPreviewChart = v.findViewById(R.id.plc_preview_charts);
+        initLabel();
         generateData();
         return v;
     }
@@ -57,6 +67,23 @@ public class PreviewLineChartFragment extends Fragment {
         }
         onData();
     }
+
+
+    private void initLabel(){
+        if (mHourOfDay==null) mHourOfDay = new String[144];
+        int hour=0 , min=0;
+        String str="";
+        for(int i=0;i<144;i++){
+            str = String.format("%02d:%02d",hour,min);
+            mHourOfDay[i]=str;
+            min+=10;
+            if (min==60) {
+                min = 0;
+                hour++;
+            }
+        }
+    }
+
 
     private Line getLine(int index){
         List<PointValue> values = new ArrayList<PointValue>();
@@ -78,7 +105,13 @@ public class PreviewLineChartFragment extends Fragment {
        lines.add(getLine(0));
        lines.add(getLine(1));
        data = new LineChartData(lines);
-       data.setAxisXBottom(new Axis());
+
+        List<AxisValue> axisValues = new ArrayList<AxisValue>();
+        for (int i=0;i<DATA_LEN;i++){
+            axisValues.add(new AxisValue(i).setLabel(mHourOfDay[i]));
+        }
+
+       data.setAxisXBottom(new Axis(axisValues));
        data.setAxisYLeft(new Axis().setHasLines(true));
        previewData = new LineChartData(data);
 
@@ -109,7 +142,7 @@ public class PreviewLineChartFragment extends Fragment {
         } else {
             mPreviewChart.setCurrentViewport(tempViewport);
         }
-        mPreviewChart.setZoomType(ZoomType.HORIZONTAL);
+//        mPreviewChart.setZoomType(ZoomType.HORIZONTAL);
         mPreviewChart.setZoomEnabled(false);
     }
 

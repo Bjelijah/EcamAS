@@ -22,6 +22,7 @@ import com.howell.action.HomeAction;
 import com.howell.action.LoginAction;
 import com.howell.action.PlayAction;
 import com.howell.activity.DeviceSettingActivity;
+import com.howell.activity.PlayBackActivity;
 import com.howell.activity.PlayViewActivity;
 import com.howell.activity.VideoListActivity;
 import com.howell.adapter.DeviceRecyclerViewAdapter;
@@ -39,11 +40,14 @@ import com.howell.protocol.SoapManager;
 import com.howell.rxbus.RxBus;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.IConst;
+import com.howell.utils.Util;
 import com.zys.brokenview.BrokenCallback;
 import com.zys.brokenview.BrokenTouchListener;
 import com.zys.brokenview.BrokenView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Observer;
@@ -237,7 +241,7 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
         //  itemView.setOnTouchListener(mColorfulListener);
         //TODO get net server res
         CameraItemBean bean = mList.get(pos);
-        Log.i("123","bean type="+bean.getType());
+        Log.i("123","bean type="+bean.getType()+"   id="+bean.getDeviceId()+"   channel="+bean.getChannelNo());
         if (!bean.isOnline()){
             AlerDialogUtils.postDialogMsg(this.getContext(),
                     getResources().getString(R.string.not_online),
@@ -258,7 +262,27 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
 //                    getResources().getString(R.string.no_sdcard),null);
 //            return;
 //        }
+
+
         this.getContext().startActivity(new Intent(this.getContext(), VideoListActivity.class).putExtra("bean",bean));
+
+
+        //fixme  test vod
+//        Intent intent = new Intent(getContext(), PlayBackActivity.class);
+//
+//
+//        Date dateNow = new Date();
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(dateNow);
+//        calendar.add(Calendar.MINUTE,-5);
+//        Date dateBefore = calendar.getTime();
+//        String startTime = Util.Date2ISODate(dateBefore);
+//        String endTime = Util.Date2ISODate(dateNow);
+//
+//        intent.putExtra("CameraItem",bean);
+//        intent.putExtra("startTime",startTime);
+//        intent.putExtra("endTime",endTime);
+//        getContext().startActivity(intent);
     }
 
     @Override
