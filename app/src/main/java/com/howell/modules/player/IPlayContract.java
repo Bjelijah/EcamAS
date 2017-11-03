@@ -44,5 +44,6 @@ public interface IPlayContract {
         IVew getView();
         void holdServer();
         void resumeServer();
+        void clearServer();
     }
 }

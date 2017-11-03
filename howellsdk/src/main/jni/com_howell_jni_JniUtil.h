@@ -442,9 +442,9 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transDeinit
 /*
  * Class:     com_howell_jni_JniUtil
  * Method:    transConnect
- * Signature: (Ljava/lang/String;IZILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+ * Signature: (Ljava/lang/String;IZILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)I
  */
-JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transConnect
+JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_transConnect
   (JNIEnv *, jclass, jstring, jint, jboolean, jint, jstring, jstring, jstring);
 
 /*

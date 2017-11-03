@@ -55,9 +55,11 @@ public class VideoListRecyclerAdapter extends RecyclerView.Adapter<VideoListRecy
 
     private void init(ViewHolder holder,final int pos){
         VODRecord record = mList.get(pos);
-        holder.title.setText(record.getTimeZoneStartTime().substring(0,10));
-        holder.tv.setText(record.getTimeZoneStartTime().substring(11) + " --> "
-                + record.getTimeZoneEndTime().substring(11));
+        holder.title.setText(record.getStartTime().substring(0,10));
+
+        //fixme using
+        holder.tv.setText(record.getStartTime().substring(11) + " --> "
+                + record.getEndTime().substring(11));
         holder.title.setVisibility((record.hasTitle()||pos==0)?View.VISIBLE:View.GONE);
         holder.tv.setTextColor(record.isWatched()? Color.GRAY:Color.BLACK);
 

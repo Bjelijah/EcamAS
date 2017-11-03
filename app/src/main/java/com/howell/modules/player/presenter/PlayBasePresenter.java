@@ -122,4 +122,9 @@ public abstract class PlayBasePresenter extends BasePresenter implements IPlayCo
     public void resumeServer() {
 
     }
+
+    @Override
+    public void clearServer() {
+        ApiManager.PlayHelp.clearAPi();
+    }
 }

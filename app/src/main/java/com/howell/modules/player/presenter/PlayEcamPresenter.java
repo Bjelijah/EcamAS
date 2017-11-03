@@ -15,7 +15,7 @@ import com.howell.protocol.InviteResponse;
 
 import com.howell.utils.DeviceVersionUtils;
 import com.howell.utils.FileUtils;
-import com.howell.utils.Util;
+
 import com.howellsdk.api.ApiManager;
 import com.howellsdk.api.HWPlayApi;
 import com.howellsdk.audio.AudioAction;
@@ -29,6 +29,7 @@ import com.howellsdk.net.soap.bean.VodSearchReq;
 import com.howellsdk.net.soap.bean.VodSearchRes;
 import com.howellsdk.utils.RxUtil;
 import com.howellsdk.utils.ThreadUtil;
+import com.howellsdk.utils.Util;
 
 import org.kobjects.base64.Base64;
 
@@ -275,11 +276,13 @@ public class PlayEcamPresenter extends PlayBasePresenter {
 
     @Override
     public void playback(final boolean isSub, final String beg, final String end) {
+        final String isoBeg = com.howellsdk.utils.Util.DateString2ISODateString(beg);
+        final String isoEnd = com.howellsdk.utils.Util.DateString2ISODateString(end);
         Observable.create(new ObservableOnSubscribe<Boolean>() {
             @Override
             public void subscribe(@NonNull ObservableEmitter<Boolean> e) throws Exception {
                 ApiManager.getInstance().getEcamService()
-                        .playback(isSub,beg,end);
+                        .playback(isSub,isoBeg,isoEnd);
                 e.onNext(true);
             }
         })
@@ -329,9 +332,8 @@ public class PlayEcamPresenter extends PlayBasePresenter {
 
     @Override
     public void playMoveTo(final boolean isSub, final String beg, final String end) {
-        final long _beg = com.howellsdk.utils.Util.ISODateString2ISODate(beg).getTime();
-        final long _end = com.howellsdk.utils.Util.ISODateString2ISODate(end).getTime();
-
+        final long _beg = com.howellsdk.utils.Util.DateString2Date(beg).getTime();
+        final long _end = com.howellsdk.utils.Util.DateString2Date(end).getTime();
         RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<Object>() {
             @Override
             public void doTask() {
@@ -340,7 +342,6 @@ public class PlayEcamPresenter extends PlayBasePresenter {
                         .playbackReLink(isSub,_beg,_end);
             }
         });
-
     }
 
     @Override
@@ -404,6 +405,8 @@ public class PlayEcamPresenter extends PlayBasePresenter {
 //            return;
         }
 //        final boolean isNew = DeviceVersionUtils.isNewVersionDevice(mBean.getDeVer());
+        final String isoBeg = Util.DateString2ISODateString(beg);
+        final String isoEnd = Util.DateString2ISODateString(end);
         Log.i("123","~~~~~~~~~~~mCurPage="+mCurPage+"   tot="+mTotalPage);
         ApiManager.getInstance().getSoapService()
                 .vodSearch(new VodSearchReq(
@@ -412,8 +415,8 @@ public class PlayEcamPresenter extends PlayBasePresenter {
                         mBean.getDeviceId(),
                         mBean.getChannelNo(),
                         isSub?"Sub":"Main",
-                        beg,
-                        end,
+                        isoBeg,
+                        isoEnd,
                         null,
                         mCurPage,
                         mPageSize))
@@ -450,15 +453,16 @@ public class PlayEcamPresenter extends PlayBasePresenter {
                     @Override
                     public VODRecord apply(@NonNull VodSearchRes.Record record) throws Exception {
                         boolean hasTitle = false;
+//                        Log.i("123","record starttime="+record.getStartTime());
                         if (!mLastVODTime.equals(record.getStartTime().substring(0,10))){
                             mLastVODTime = record.getStartTime().substring(0,10);
                             hasTitle = true;
                         }
                         return new VODRecord(
-                                record.getStartTime(),
-                                record.getEndTime(),
                                 Util.ISODateString2Date(record.getStartTime()),
                                 Util.ISODateString2Date(record.getEndTime()),
+                                record.getStartTime(),
+                                record.getEndTime(),
                                 record.getFileSize(),
                                 record.getDesc(),
                                 hasTitle);

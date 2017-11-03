@@ -82,7 +82,7 @@ public class JniUtil {
 	public static native synchronized void transSetCallBackObj(Object o, int flag);
 	public static native synchronized void transSetCallbackMethodName(String methodName, int flag);
 	public static native synchronized void transDeinit();
-	public static native synchronized void transConnect(String ip, int port, boolean isUseSSL, int type, String id, String name, String pwd);
+	public static native synchronized int transConnect(String ip, int port, boolean isUseSSL, int type, String id, String name, String pwd);
 	public static native synchronized void transDisconnect();
 	public static native synchronized void transSubscribe(String jsonStr, int jsonLen);
 	public static native synchronized void transUnsubscribe();

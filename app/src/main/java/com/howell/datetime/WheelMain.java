@@ -184,12 +184,15 @@ public class WheelMain {
 		}
 		sb=strYear+"-"
 				+strMonth+"-"
-				+strDay+"T"
+				+strDay+" "
 				+"23:59:59";
 				/*.append(String.valueOf(wv_hours)).append(":")
 				.append(String.valueOf(wv_mins)).append(":")
 				.append(String.valueOf(wv_seconds));*/
-		
+
+		return sb;
+
+		/*
 		Date date = null;
 		SimpleDateFormat foo = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		foo.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -205,6 +208,7 @@ public class WheelMain {
         System.out.println(dateTime);
 		
 		return dateTime;
+		*/
 	}
 	
 	public String getStartTime(String endTime) {
@@ -215,9 +219,20 @@ public class WheelMain {
 	}
 
 	public String getStartTIme(String endTime,int reduceDays){
-		Date date = TimeTransform.StringToDate(endTime);
-		String dateTime = TimeTransform.reduceDays(date,reduceDays);
-		return dateTime;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date=null;
+		try {
+			date = sdf.parse(endTime);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		c.add(Calendar.DATE,-reduceDays);
+		return sdf.format(c.getTime());
+//		Date date = TimeTransform.StringToDate(endTime);
+//		String dateTime = TimeTransform.reduceDays(date,reduceDays);
+//		return dateTime;
 	}
 
 	public Date getTime(){

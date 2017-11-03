@@ -3,6 +3,8 @@ package com.howellsdk.utils;
 import org.codehaus.jackson.map.util.ISO8601DateFormat;
 import org.codehaus.jackson.map.util.ISO8601Utils;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
@@ -22,6 +24,37 @@ public class Util {
     public static Date ISODateString2ISODate(String isoDate){
         return ISO8601Utils.parse(isoDate);
     }
+
+    public static Date DateString2Date(String dateStr){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date=null;
+        try {
+            date = sdf.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    public static String Date2String(Date date){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return sdf.format(date);
+    }
+
+
+    public static String DateString2ISODateString(String dateStr){
+        ISO8601DateFormat isoDate = new ISO8601DateFormat();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = sdf.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String isoString = isoDate.format(date);
+        return isoString;
+    }
+
 
     public static String ISODateString2Date(String isoDate){
         String str = null;

@@ -276,8 +276,10 @@ public class ApFactory {
 //        } catch (ParseException e) {
 //            e.printStackTrace();
 //        }
-        dateStart = Util.ISODateString2ISODate(startTime);
-        dateEnd = Util.ISODateString2ISODate(endTime);
+
+
+        dateStart = Util.DateString2Date(startTime);
+        dateEnd = Util.DateString2Date(endTime);
 
         calendar.setTime(dateEnd);
         beans[1] = new ApTimeBean((short) (calendar.get(calendar.YEAR)),(short)(1+calendar.get(calendar.MONTH)),

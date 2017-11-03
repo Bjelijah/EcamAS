@@ -132,7 +132,7 @@ public class TurnFactory {
         private boolean mIsSub;
         private String mBeg,mEnd;
         private void onConnect(String sessionId){
-            Log.i("123","onConnect sessid="+sessionId);
+            Log.i("123","onConnect sessid="+sessionId+"  mcmdType="+mCmdType);
             mSessionID=sessionId;
             mCb.onConnect(sessionId);
             switch (mCmdType){
@@ -147,6 +147,7 @@ public class TurnFactory {
                     JniUtil.transGetRecordFiles(mCmdJsonStr,mCmdJsonStr.length());
                     break;
                 default:
+                    Log.e("123","error No CMD mCmdType="+mCmdType);
                     break;
             }
             mCmdType = CMD_NONE;
@@ -214,7 +215,7 @@ public class TurnFactory {
 
 
         private HWPlayApi init(Context context) {
-
+            Log.i("123","~~~~~~~~~~  api init  "+this.hashCode());
             JniUtil.transInit();
             JniUtil.transSetCallBackObj(this, 0);
             JniUtil.transSetCallbackMethodName("onConnect", 0);
@@ -298,6 +299,7 @@ public class TurnFactory {
 
         @Override
         public boolean getRecordedFiles(String beg, String end,@Nullable Integer nowPage,@Nullable Integer pageSize) {
+            Log.i("123","turnFactory getRecordedFiles");
             getRecordedFiles(mDeviceId,mChannel,beg,end);
             return true;
         }
@@ -311,7 +313,12 @@ public class TurnFactory {
 
         private void taskConnect(){
             Log.i("123","~~~~~~~~~~~task  connect");
-            JniUtil.transConnect(mIP,mPort,mIsSSL,101,mIMEI,mName,mPwd);
+            int ret = JniUtil.transConnect(mIP,mPort,mIsSSL,101,mIMEI,mName,mPwd);
+            if (ret==-1){
+                Log.e("123","transConnect ret="+ret+"  we init and connect again");
+                init(mContext);
+                JniUtil.transConnect(mIP,mPort,mIsSSL,101,mIMEI,mName,mPwd);
+            }
         }
 
         private void taskDisconnect(){
@@ -363,7 +370,7 @@ public class TurnFactory {
                     end
             ));
             mCmdType = RECORDED_LIST;
-            Log.i("123","getRecFiles");
+            Log.i("123","getRecFiles  cmd="+mCmdType   +" this="+this.hashCode());
             taskConnect();
         }
 

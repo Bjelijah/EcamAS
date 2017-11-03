@@ -730,7 +730,7 @@ void on_file_stream_fun(FILE_STREAM_HANDLE handle,const char *buf,int len,long u
 
 
     int ret = hwplay_input_data(res->play_handle, buf ,len);
-    LOGI("on_file_stream_fun input data ret=%d",ret);
+//    LOGI("on_file_stream_fun input data ret=%d",ret);
 }
 
 
@@ -1139,10 +1139,13 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_stopView
         (JNIEnv *, jclass){
     if(res == NULL)return;
     int ret = 0;
+    res->firstTimestamp = 0;
+    res->timestamp = 0;
     ret = hwplay_stop(res->play_handle);
     hwplay_clear_stream_buf(res->play_handle);
     //hwnet_close_live_stream(res->live_stream_handle);
     LOGI("stop view ret=%d   play_handle=%d\n",ret,res->play_handle);
+
     res->is_exit = 1;
     res->play_handle = -1;
 
@@ -1853,9 +1856,9 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transDeinit
     }
 }
 
-JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transConnect
-        (JNIEnv *env, jclass, jstring ip, jint port, jboolean isSSL, jint type, jstring id, jstring name, jstring pwd){
-    if(g_transMgr==NULL)return;
+JNIEXPORT int JNICALL Java_com_howell_jni_JniUtil_transConnect
+        (JNIEnv *env, jclass clazz, jstring ip, jint port, jboolean isSSL, jint type, jstring id, jstring name, jstring pwd){
+    if(g_transMgr==NULL)return -1;
 
     trans_set_no_use_ssl(!isSSL);
 
@@ -1872,6 +1875,7 @@ JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transConnect
     env->ReleaseStringUTFChars(pwd,_pwd);
     env->ReleaseStringUTFChars(ip,_ip);
     LOGI("transConnect over");
+    return ret;
 }
 
 JNIEXPORT void JNICALL Java_com_howell_jni_JniUtil_transDisconnect

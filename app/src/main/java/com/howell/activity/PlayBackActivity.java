@@ -137,10 +137,10 @@ public class PlayBackActivity extends BasePlayActivity implements View.OnClickLi
     }
 
     @Override
-    public void onPlaybackStartEndTime(final long beg, final long end) {//sdp[0]  sdp[1]
+    public void onPlaybackStartEndTime(final long beg, final long end) {//sdp[0]  sdp[1]//秒
         Log.i("123","  play back activity onPlaybackStartEndTime");
         super.onPlaybackStartEndTime(beg, end);
-        int max = (int)((end-beg)*1000);//开始到结束时间的毫秒
+        final int max = (int)((end-beg)*1000);//开始到结束时间的毫秒
         Log.i("123","!!!!!!!!!!!beg="+beg+"  end="+end);
         mCurBeg = beg;
         mCurEnd = end;
@@ -149,7 +149,7 @@ public class PlayBackActivity extends BasePlayActivity implements View.OnClickLi
         mReplaySeekBar.post(new Runnable() {
             @Override
             public void run() {
-                mReplaySeekBar.setMax((int)((end-beg)*1000));
+                mReplaySeekBar.setMax(max);
             }
         });
 
@@ -176,7 +176,7 @@ public class PlayBackActivity extends BasePlayActivity implements View.OnClickLi
         long curTimestamp = mCurTimeStamp;
                 //JniUtil.getCurPlayTimestamp();
         long offset = curTimestamp - begTimestamp;
-        Log.i("123","offset=            "+offset);
+//        Log.i("123","offset=            "+offset);
         if (mLastProgressOffset!=offset) {
             mReplaySeekBar.setProgress((int) offset);
             mLastProgressOffset = offset;
@@ -206,16 +206,21 @@ public class PlayBackActivity extends BasePlayActivity implements View.OnClickLi
 //        PlayAction.getInstance().setPlayBackProgressByUser(false);
         int progress = seekBar.getProgress();
         mLastProgressOffset = progress;
-        PlayAction.getInstance().playBackRePlay(mCurBeg,progress);
-        Log.i("123","~~~~~~~~mcur beg="+Util.Date2ISODate(new Date(mCurBeg)));
+        Log.i("123","!!!!!!progress="+progress);
+//        PlayAction.getInstance().playBackRePlay(mCurBeg,progress);
+//        Log.i("123","~~~~~~~~mcur beg="+Util.Date2ISODate(new Date(mCurBeg)));
 
 //        long curSec = mCurBeg +progress/1000;
-        long curSec = Util.ISODateString2ISODate(mBegTime).getTime() +progress/1000;
-        long curEnd = Util.ISODateString2ISODate(mEndTime).getTime();
-        String beg = Util.Date2ISODate(new Date(curSec));
-        String end = Util.Date2ISODate(new Date(curEnd));
+        long curSec = Util.DateString2Date(mBegTime).getTime() + progress;//毫秒
+        long curEnd = Util.DateString2Date(mEndTime).getTime();
 
-        Log.i("123","beg="+beg +"  beg="+ Util.ISODateString2Date(beg)+"  end="+Util.ISODateString2Date(end));
+//        String beg = Util.Date2ISODate(new Date(curSec));
+//        String end = Util.Date2ISODate(new Date(curEnd));
+
+        String beg = Util.Date2String(new Date(curSec));
+        String end = Util.Date2String(new Date(curEnd));
+
+        Log.i("123","~~~~~~~~beg="+beg+" end="+end+"   curSec="+curSec+"  startSec="+Util.DateString2Date(mBegTime).getTime());
         mPresent.playMoveTo(mIsSub,beg,end);
     }
 

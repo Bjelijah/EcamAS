@@ -194,8 +194,9 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
 //        calendar.add(Calendar.DAY_OF_MONTH,-1);
         Date dateBefore = calendar.getTime();
 
-        mBeg = Util.Date2ISODate(begDate);
-        mEnd = Util.Date2ISODate(endDate);
+
+        mBeg = Util.Date2String(begDate);
+        mEnd = Util.Date2String(endDate);
     }
 
 
@@ -297,11 +298,13 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
         Log.i("123","vod bindPresent  type="+mBean.getType());
         mPresent.bindView(this);
         mPresent.init(getContext(),mBean);
+
     }
 
     @Override
     public void unbindPresenter() {
         if (mPresent!=null){
+            mPresent.clearServer();
             mPresent.unbindView();
             mPresent.deInit();
             mPresent = null;

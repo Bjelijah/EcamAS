@@ -1,6 +1,8 @@
 package com.howellsdk.utils;
 
 
+import android.util.Log;
+
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
@@ -109,7 +111,7 @@ public class RxUtil {
         }
 
         public abstract void doTask();
-        public void doTaskError(Throwable throwable){}
+        public void doTaskError(Throwable throwable){throwable.printStackTrace();}
         public void doFinish(){}
         public RxSimpleTask(T t){
             setT(t);
@@ -142,7 +144,7 @@ public class RxUtil {
 
         public abstract void doInUIThread();
 
-        public void doError(Throwable throwable){}
+        public void doError(Throwable throwable){throwable.printStackTrace();}
 
         public void doFinish(){}
     }

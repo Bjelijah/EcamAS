@@ -175,7 +175,7 @@ public class ApiManager {
 
 
     public HWPlayApi getTurnService(){
-        if (mHWTurnApi==null)throw new NullPointerException("api=null");
+        if (mHWTurnApi==null){Log.e("123","mHWTurnApi==null throw exception");throw new NullPointerException("api=null");}
         return mHWTurnApi;
     }
 
@@ -247,10 +247,16 @@ public class ApiManager {
     }
 
     public HWPlayApi setApcamService(HWPlayApi api){
-        mHWApcamApi = api;
+        if (api!=null) {
+            mHWApcamApi = api;
+        }
         return mHWApcamApi;
     }
 
+    public HWPlayApi setTurnService(HWPlayApi api){
+        if(api!=null){ mHWTurnApi = api;}
+        return mHWTurnApi;
+    }
 
     public ApiManager resetApService(){
         mHWApcamApi = null;
@@ -509,6 +515,7 @@ public class ApiManager {
         public static HWPlayApi getAPi(){
             return api;
         }
+        public static void clearAPi(){api=null;}
     }
 
 

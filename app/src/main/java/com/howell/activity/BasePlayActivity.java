@@ -159,10 +159,16 @@ public abstract class BasePlayActivity extends FragmentActivity implements IPlay
 
 
     protected void playErrorFun(){
-        mWaitProgressBar.setVisibility(View.GONE);
-        AlerDialogUtils.postDialogMsg(BasePlayActivity.this,
-                getResources().getString(R.string.play_play_error_msg_title),
-                getResources().getString(R.string.play_play_error_msg_msg),null);
+        RxUtil.doInUIThread(new RxUtil.RxSimpleTask<Object>() {
+            @Override
+            public void doTask() {
+                mWaitProgressBar.setVisibility(View.GONE);
+                AlerDialogUtils.postDialogMsg(BasePlayActivity.this,
+                        getResources().getString(R.string.play_play_error_msg_title),
+                        getResources().getString(R.string.play_play_error_msg_msg),null);
+            }
+        });
+
     }
 
 

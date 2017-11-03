@@ -9,6 +9,7 @@ import com.howell.modules.player.IPlayContract;
 import com.howell.modules.player.bean.PTZ;
 import com.howell.modules.player.bean.VODRecord;
 import com.howell.utils.FileUtils;
+import com.howell.utils.Util;
 import com.howellsdk.api.ApiManager;
 import com.howellsdk.api.HWPlayApi;
 import com.howellsdk.player.turn.bean.PTZ_CMD;
@@ -31,6 +32,8 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+
+
 /**
  * Created by Administrator on 2017/9/20.
  */
@@ -38,17 +41,17 @@ import io.reactivex.schedulers.Schedulers;
 public class PlayTurnPresenter extends PlayBasePresenter {
     private int mCurPage;
     private final int mPageSize = 20;
-
+    private long firstTimeStamp = 0;
 
     @Override
     public void init(final Context context, final CameraItemBean bean) {
         super.init(context, bean);
-        Log.i("123","bean device id="+bean.getDeviceId()+"  channel="+bean.getChannelNo());
+        Log.i("123","~~~~playTurnPresenter init   bean device id="+bean.getDeviceId()+"  channel="+bean.getChannelNo());
         Observable.create(new ObservableOnSubscribe<Boolean>() {
 
             @Override
             public void subscribe(@NonNull ObservableEmitter<Boolean> e) throws Exception {
-                boolean ret =         ApiManager.getInstance()
+                final boolean ret =         ApiManager.getInstance()
                         .getTurnService(
                                 context,
                                 bean.getUpnpIP(),
@@ -74,6 +77,16 @@ public class PlayTurnPresenter extends PlayBasePresenter {
                                     @Override
                                     public void onDisconnectUnexpect(int flag) {
                                         Log.i("123","on disconnect unexpect flag="+flag);
+                                        if (mView==null){
+                                            Log.e("123","onDisconnectUnexpect flag="+flag+"  but mView=null we return") ;
+                                            return;
+                                        }
+                                        switch (flag){
+                                            case 3:
+                                                Log.i("123","mView onError");
+                                                mView.onError(0);
+                                                break;
+                                        }
                                     }
 
                                     @Override
@@ -81,20 +94,36 @@ public class PlayTurnPresenter extends PlayBasePresenter {
                                         mCurPage++;
                                         if (fileList.getRecordFileCount()>0) {
                                             ArrayList<TurnGetRecordedFileAckBean.RecordedFile> lists= fileList.getRecordedFiles();
+//                                            for(TurnGetRecordedFileAckBean.RecordedFile rf:lists){
+//                                                Log.i("123","rf="+rf);
+//                                            }
+
+
+
                                             List<VODRecord> vods = new ArrayList<VODRecord>();
                                             for (int i=0;i<lists.size();i++){
                                                 boolean hasTitle = false;
-                                                if (!mLastVODTime.equals(lists.get(i).getBeginTime().substring(0,10))){
-                                                    mLastVODTime = lists.get(i).getBeginTime().substring(0,10);
+
+
+
+                                                String beg = Util.ISODateString2Date(lists.get(i).getBeginTime());
+                                                String end = Util.ISODateString2Date(lists.get(i).getEndTime());
+
+                                                if (!mLastVODTime.equals(beg.substring(0,10))){
+                                                    mLastVODTime = beg.substring(0,10);
                                                     hasTitle = true;
                                                 }
+//                                                Log.i("123","begTIme="+lists.get(i).getBeginTime()+"  beg="+beg+"  title="+hasTitle);
                                                 vods.add(new VODRecord(
+                                                        beg,
+                                                        end,
                                                         lists.get(i).getBeginTime(),
                                                         lists.get(i).getEndTime(),
                                                         0,
                                                         "",
                                                         hasTitle));
                                             }
+//                                            Log.i("123","mView="+mView);
                                             mView.onRecord(vods);
                                         }
                                     }
@@ -186,13 +215,16 @@ public class PlayTurnPresenter extends PlayBasePresenter {
 
     @Override
     public void playback(final boolean isSub, final String beg, final String end) {
+        final String isoBeg = com.howellsdk.utils.Util.DateString2ISODateString(beg);
+        final String isoEnd = com.howellsdk.utils.Util.DateString2ISODateString(end);
+        firstTimeStamp = 0;
         Observable.create(new ObservableOnSubscribe<Boolean>() {
 
             @Override
             public void subscribe(@NonNull ObservableEmitter<Boolean> e) throws Exception {
                 ApiManager.getInstance()
                         .getTurnService()
-                        .playback(isSub,beg,end);
+                        .playback(isSub,isoBeg,isoEnd);
                 e.onNext(true);
             }
         })
@@ -206,6 +238,10 @@ public class PlayTurnPresenter extends PlayBasePresenter {
 
                     @Override
                     public void onNext(@NonNull Boolean aBoolean) {
+                        Log.i("123","beg="+beg+" end="+end);//ms
+                        long begTime = com.howellsdk.utils.Util.ISODateString2ISODate(isoBeg).getTime()/1000;
+                        long endTime = com.howellsdk.utils.Util.ISODateString2ISODate(isoEnd).getTime()/1000;
+                        mView.onPlaybackStartEndTime(begTime,endTime);//need s
                         startTimeTask();
                     }
 
@@ -245,15 +281,28 @@ public class PlayTurnPresenter extends PlayBasePresenter {
 
     @Override
     public void playMoveTo(final boolean isSub, final String beg, final String end) {
+        final String isoBeg = com.howellsdk.utils.Util.DateString2ISODateString(beg);
+        final String isoEnd = com.howellsdk.utils.Util.DateString2ISODateString(end);
         RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<Object>() {
             @Override
             public void doTask() {
                 ApiManager.getInstance()
                         .getTurnService()
-                        .reLink(isSub,beg,end);
+                        .reLink(isSub,isoBeg,isoEnd);
             }
         });
 
+    }
+
+    @Override
+    public void relink(final boolean isSub) {
+        RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<Object>() {
+            @Override
+            public void doTask() {
+                ApiManager.getInstance().getTurnService()
+                        .reLink(isSub,null,null);
+            }
+        });
     }
 
     @Override
@@ -306,11 +355,15 @@ public class PlayTurnPresenter extends PlayBasePresenter {
 
     @Override
     public void getVODRecord(boolean isSub, final String beg, final String end) {
+        final String isoBeg = com.howellsdk.utils.Util.DateString2ISODateString(beg);
+        final String isoEnd = com.howellsdk.utils.Util.DateString2ISODateString(end);
+        Log.i("123","getVodRecord  beg="+beg+"  end="+end);
         RxUtil.doInIOTthread(new RxUtil.RxSimpleTask<Object>() {
             @Override
             public void doTask() {
+                Log.i("123","getVodRecord");
                 ApiManager.getInstance().getTurnService()
-                        .getRecordedFiles(beg,end,mCurPage,mPageSize);
+                        .getRecordedFiles(isoBeg,isoEnd,mCurPage,mPageSize);
             }
         });
 
@@ -347,6 +400,16 @@ public class PlayTurnPresenter extends PlayBasePresenter {
     }
 
     @Override
+    public void holdServer() {
+        ApiManager.PlayHelp.keepApi(ApiManager.getInstance().getTurnService());
+    }
+
+    @Override
+    public void resumeServer() {
+        ApiManager.getInstance().setTurnService(ApiManager.PlayHelp.getAPi());
+    }
+
+    @Override
     protected void startTimeTask() {
         super.startTimeTask();
         ThreadUtil.scheduledSingleThreadStart(new Runnable() {
@@ -366,7 +429,15 @@ public class PlayTurnPresenter extends PlayBasePresenter {
                 int speed = streamLen*8/1024/F_TIME;
                 long timestamp = ApiManager.getInstance().getTurnService().getTimestamp();
                 long firstTimestamp = ApiManager.getInstance().getTurnService().getFirstTimestamp();
-                mView.onTime(speed,timestamp,firstTimestamp,bWait);
+
+//                Log.i("123","timestamp:"+timestamp+"  FIRST="+firstTimestamp);
+                if (firstTimeStamp==0 && firstTimestamp!=0){
+                    firstTimeStamp = firstTimestamp;
+                }
+//                Log.i("123","timestamp:"+timestamp+"  FIRST="+firstTimestamp+"   mF="+firstTimeStamp);
+                if(firstTimestamp!=0) {//第一针还没来
+                    mView.onTime(speed, timestamp, firstTimeStamp, bWait);
+                }
             }
         },0,F_TIME, TimeUnit.SECONDS);
     }
@@ -374,7 +445,7 @@ public class PlayTurnPresenter extends PlayBasePresenter {
     @Override
     protected void stopTimeTask() {
         super.stopTimeTask();
-        ThreadUtil.scheduledThreadShutDown();
+        ThreadUtil.scheduledSingleThreadShutDown();
     }
 
 
