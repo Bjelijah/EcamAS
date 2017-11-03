@@ -15,6 +15,7 @@ import com.howellsdk.player.ap.bean.ReplayFile;
 import com.howellsdk.player.turn.bean.PTZ_CMD;
 import com.howellsdk.utils.RxUtil;
 import com.howellsdk.utils.ThreadUtil;
+import com.howellsdk.utils.Util;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -69,6 +70,8 @@ public class PlayApPresenter extends PlayBasePresenter {
                                                     vods.add(new VODRecord(
                                                             beg,
                                                             end,
+                                                            Util.DateString2ISODateString(beg),
+                                                            Util.DateString2ISODateString(end),
                                                             0,
                                                             "",
                                                             mLastVODTime.equals(f.getBegDay()+"")?false:true));
@@ -169,7 +172,12 @@ public class PlayApPresenter extends PlayBasePresenter {
 
     @Override
     public void playback(final boolean isSub, final String beg, final String end) {
-        Log.i("123","ap play back");
+        Log.i("123","ap play back   beg="+beg+"  end="+end);
+
+        long begTime = Util.DateString2Date(beg).getTime()/1000;
+        long endTime = Util.DateString2Date(end).getTime()/1000;
+        mView.onPlaybackStartEndTime(begTime,endTime);//need s
+
         ThreadUtil.cachedThreadStart(new Runnable() {
             @Override
             public void run() {

@@ -71,10 +71,22 @@ public class LineColumnChartFragment extends Fragment {
             axisValues.add(new AxisValue(i).setLabel(""));
         }
         Line lineIn = new Line(valuesIn);
-        lineIn.setColor(colorUtil[0]).setCubic(true).setFilled(true).setHasLabels(true).setHasLabelsOnlyForSelected(true);
+        lineIn.setColor(colorUtil[0])
+                .setCubic(true)
+                .setFilled(true)
+                .setHasLabels(true)
+                .setHasLabelsOnlyForSelected(true)
+                .setPointRadius(4)
+                .setStrokeWidth(1);
 
         Line lineOut = new Line(valuesOut);
-        lineOut.setColor(colorUtil[1]).setCubic(true).setFilled(true).setHasLabels(true).setHasLabelsOnlyForSelected(true);
+        lineOut.setColor(colorUtil[1])
+                .setCubic(true)
+                .setFilled(true)
+                .setHasLabels(true)
+                .setHasLabelsOnlyForSelected(true)
+                .setPointRadius(4)
+                .setStrokeWidth(1);
 
         List<Line> lines = new ArrayList<Line>();
         lines.add(lineIn);
@@ -82,7 +94,7 @@ public class LineColumnChartFragment extends Fragment {
 
         lineData = new LineChartData(lines);
         lineData.setAxisXBottom(new Axis(axisValues).setHasLines(true));
-        lineData.setAxisYLeft(new Axis().setHasLines(true).setMaxLabelChars(3));
+        lineData.setAxisYLeft(new Axis().setHasLines(true).setMaxLabelChars(3).setName("人数"));
 
         mChartTop.setLineChartData(lineData);
         mChartTop.setViewportCalculationEnabled(false);
@@ -112,7 +124,7 @@ public class LineColumnChartFragment extends Fragment {
         }
         columnData = new ColumnChartData(columns);
         columnData.setAxisXBottom(new Axis(axisValues).setHasLines(true));
-        columnData.setAxisYLeft(new Axis().setHasLines(true).setMaxLabelChars(2));
+        columnData.setAxisYLeft(new Axis().setHasLines(true).setMaxLabelChars(2).setName("人数"));
 
         mChartBottom.setColumnChartData(columnData);
 

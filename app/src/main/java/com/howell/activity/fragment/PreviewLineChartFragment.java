@@ -43,6 +43,8 @@ public class PreviewLineChartFragment extends Fragment {
             "7:00","8:00","9:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00",
             "19:00","20:00","21:00","22:00","23:00"};
 
+    private static final String[] HOUR={"0","1","2","3","4","5","6","7","8","9","10","11","12",
+            "13","14","15","16","17","18","19","20","21","22","23"};
 
 
 
@@ -95,35 +97,57 @@ public class PreviewLineChartFragment extends Fragment {
                 .setHasPoints(false)
                 .setStrokeWidth(1)
                 .setCubic(true)
-                .setHasLines(true);
+                .setHasLines(true)
+                .setFilled(true);
 
-       return line;
+
+        return line;
     }
 
     private void onData(){
-       List<Line> lines = new ArrayList<>();
-       lines.add(getLine(0));
-       lines.add(getLine(1));
-       data = new LineChartData(lines);
+        List<Line> lines = new ArrayList<>();
+        lines.add(getLine(0));
+        lines.add(getLine(1));
+        data = new LineChartData(lines);
 
         List<AxisValue> axisValues = new ArrayList<AxisValue>();
         for (int i=0;i<DATA_LEN;i++){
             axisValues.add(new AxisValue(i).setLabel(mHourOfDay[i]));
         }
 
-       data.setAxisXBottom(new Axis(axisValues));
-       data.setAxisYLeft(new Axis().setHasLines(true));
-       previewData = new LineChartData(data);
+        Axis axisX = new Axis(axisValues);
+        axisX.setMaxLabelChars(5);
+        data.setAxisXBottom(axisX);
+        data.setAxisYLeft(new Axis().setHasLines(true).setName("人数"));
+        previewData = new LineChartData(data);
 
 
-       mChart.setLineChartData(data);
-       mChart.setZoomEnabled(false);
-       mChart.setScrollEnabled(false);
+        List<Line> datalines = data.getLines();
 
-       mPreviewChart.setLineChartData(previewData);
-       mPreviewChart.setViewportChangeListener(new ViewportListener());
+        for(int i=0;i<datalines.size();i++){
+            Line l = datalines.get(i);
+            for (PointValue pv:l.getValues()){
+                pv.setLabel((i==0?"进入：":"出去：")+pv.getY());
 
-       previewX(true);
+            }
+
+            l.setHasPoints(true);
+            l.setPointRadius(4);
+
+            l.setHasLabelsOnlyForSelected(true);
+
+
+        }
+        data.getAxisXBottom().setHasLines(true);
+        mChart.setLineChartData(data);
+        mChart.setZoomEnabled(false);
+        mChart.setScrollEnabled(false);
+        mChart.setValueSelectionEnabled(true);
+
+        mPreviewChart.setLineChartData(previewData);
+        mPreviewChart.setViewportChangeListener(new ViewportListener());
+
+        previewX(true);
     }
 
 
@@ -134,9 +158,23 @@ public class PreviewLineChartFragment extends Fragment {
 
     private void previewX(boolean animate) {
         Viewport tempViewport = new Viewport(mChart.getMaximumViewport());
-        int dx =(int) (tempViewport.width() / 2);
-        Log.i("123","dx="+dx);
-        tempViewport.inset(dx, 0);
+        int dx =(int) (tempViewport.width() / 12*11);
+        int dy =(int) (tempViewport.height()/ 4);
+        Log.i("123","dx="+dx+"  dy="+dy);
+
+        float top = tempViewport.top;
+        float bottom = tempViewport.bottom;
+        float left = tempViewport.left;
+        float right = tempViewport.right;
+
+        float newRight = tempViewport.right/12;
+        Log.i("123","t="+top+" b="+bottom+" l="+left+" r="+right + " new r="+newRight);
+        tempViewport.set(left,top,newRight,bottom);
+//        tempViewport.inset(dx, 0);
+//        tempViewport.inset(0,dy);
+//        tempViewport.offsetTo(dx,0);
+
+
         if (animate) {
             mPreviewChart.setCurrentViewportWithAnimation(tempViewport);
         } else {
