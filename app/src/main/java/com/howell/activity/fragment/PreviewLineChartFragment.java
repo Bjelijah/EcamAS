@@ -170,10 +170,6 @@ public class PreviewLineChartFragment extends Fragment {
         float newRight = tempViewport.right/12;
         Log.i("123","t="+top+" b="+bottom+" l="+left+" r="+right + " new r="+newRight);
         tempViewport.set(left,top,newRight,bottom);
-//        tempViewport.inset(dx, 0);
-//        tempViewport.inset(0,dy);
-//        tempViewport.offsetTo(dx,0);
-
 
         if (animate) {
             mPreviewChart.setCurrentViewportWithAnimation(tempViewport);

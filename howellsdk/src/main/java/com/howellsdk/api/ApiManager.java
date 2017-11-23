@@ -395,6 +395,24 @@ public class ApiManager {
             VEHICLE_PICTURES_DATA,
             VEHICLE_PICTURES_DETECT,
             VEHICLE_VEHICLE,
+            PDC_VERSION,
+            PDC_MAINPAGE_LAYOUT,
+            PDC_DEVICE_SEARCH,
+            PDC_DEVICE_SEARCH_START,
+            PDC_DEVICE_SEARCH_STOP,
+            PDC_DEVICE,
+            PDC_DEVICE_STATUS,
+            PDC_DEVICE_SAMPLES,
+            PDC_DEVICE_THRESHOLD,
+            PDC_DEVICE_SCHEDULE,
+            PDC_GROUP,
+            PDC_GROUP_STATUS,
+            PDC_GROUP_DEVICES,
+            PDC_GROUP_SAMPLES,
+            PDC_GROUP_THRESHOLD,
+            PDC_FLAVOURS,
+            PDC_EVENTS_RECORDS,
+            PDC_USERS
         }
         public enum DeviceClassification{
             NONE("None"),
@@ -485,6 +503,24 @@ public class ApiManager {
                 case VEHICLE_PICTURES_DATA:action="GET:/howell/ver10/vehicle_service/System/Pictures/"+params[0]+"/Data:";break;
                 case VEHICLE_PICTURES_DETECT:action="GET:/howell/ver10/vehicle_service/System/Pictures/"+params[0]+"/Detection:";break;
                 case VEHICLE_VEHICLE:action="GET:/howell/ver10/vehicle_service/System/Vehicles"+(params.length>0?"/"+params[0]:"")+":";break;
+                case PDC_VERSION:action="GET:/howell/ver10/pdc_service/System/Version:";break;
+                case PDC_MAINPAGE_LAYOUT:action="GET:/howell/ver10/pdc_service/System/MainPage/Layout:";break;
+                case PDC_DEVICE_SEARCH:action="GET:/howell/ver10/pdc_service/System/Devices/Searching/"+params[0]+":";break;
+                case PDC_DEVICE_SEARCH_START:action="POST:/howell/ver10/pdc_service/System/Devices/Searching/"+params[0]+":";break;
+                case PDC_DEVICE_SEARCH_STOP:action="DELETE:/howell/ver10/pdc_service/System/Devices/Searching/"+params[0]+":";break;
+                case PDC_DEVICE:action="GET:/howell/ver10/pdc_service/System/Devices"+(params.length>0?"/"+params[0]:"")+":";break;
+                case PDC_DEVICE_STATUS:action="GET:/howell/ver10/pdc_service/System/Devices/"+params[0]+"/Status:";break;
+                case PDC_DEVICE_SAMPLES:action="GET:/howell/ver10/pdc_service/System/Devices/"+params[0]+"/Samples:";break;
+                case PDC_DEVICE_THRESHOLD:action="GET:/howell/ver10/pdc_service/System/Devices/"+params[0]+"/Threshold:";break;
+                case PDC_DEVICE_SCHEDULE:action="GET:/howell/ver10/pdc_service/System/Devices/"+params[0]+"/Schedule:";break;
+                case PDC_GROUP:action="GET:/howell/ver10/pdc_service/System/Groups"+(params.length>0?"/"+params[0]:"")+":";break;
+                case PDC_GROUP_STATUS:action="GET:/howell/ver10/pdc_service/System/Groups/"+params[0]+"/Status:";break;
+                case PDC_GROUP_DEVICES:action="GET:/howell/ver10/pdc_service/System/Groups/"+params[0]+"/Devices"+(params.length>1?"/"+params[1]:"")+":";break;
+                case PDC_GROUP_SAMPLES:action="GET:/howell/ver10/pdc_service/System/Groups/"+params[0]+"/Samples:";break;
+                case PDC_GROUP_THRESHOLD:action="GET:/howell/ver10/pdc_service/System/Groups/"+params[0]+"/Threshold:";break;
+                case PDC_FLAVOURS:action="GET:/howell/ver10/pdc_service/System/Flavours"+(params.length>0?"/"+params[0]:"")+":";break;
+                case PDC_EVENTS_RECORDS:action="GET:/howell/ver10/pdc_service/System/Events/Records:";break;
+                case PDC_USERS:action="GET:/howell/ver10/pdc_service/System/Users"+(params.length>0?"/"+params[0]:"")+":";break;
                 default:
                     break;
             }

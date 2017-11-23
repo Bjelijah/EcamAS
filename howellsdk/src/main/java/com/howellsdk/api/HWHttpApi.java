@@ -2,60 +2,13 @@ package com.howellsdk.api;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.howellsdk.net.http.bean.*;
 
-import com.howellsdk.net.http.bean.ClientCredential;
-import com.howellsdk.net.http.bean.Codec;
-import com.howellsdk.net.http.bean.Department;
-import com.howellsdk.net.http.bean.DepartmentList;
-import com.howellsdk.net.http.bean.DevicePermission;
-import com.howellsdk.net.http.bean.DevicePermissionList;
-import com.howellsdk.net.http.bean.EventLinkage;
-import com.howellsdk.net.http.bean.EventLinkageList;
-import com.howellsdk.net.http.bean.EventRecordedList;
-import com.howellsdk.net.http.bean.Fault;
-import com.howellsdk.net.http.bean.GISMapItemList;
-import com.howellsdk.net.http.bean.GISMapLayerList;
-import com.howellsdk.net.http.bean.GISMapList;
-import com.howellsdk.net.http.bean.GPSDevice;
-import com.howellsdk.net.http.bean.GPSDeviceList;
-import com.howellsdk.net.http.bean.IOInputChannel;
-import com.howellsdk.net.http.bean.IOInputChannelList;
-import com.howellsdk.net.http.bean.IOInputChannelStatus;
-import com.howellsdk.net.http.bean.IOInputChannelStatusList;
-import com.howellsdk.net.http.bean.IOOutputChannel;
-import com.howellsdk.net.http.bean.IOOutputChannelList;
-import com.howellsdk.net.http.bean.IOOutputChannelStatus;
-import com.howellsdk.net.http.bean.IOOutputChannelStatusList;
-import com.howellsdk.net.http.bean.Linkage;
-import com.howellsdk.net.http.bean.LinkageList;
-import com.howellsdk.net.http.bean.Map;
-import com.howellsdk.net.http.bean.MapGroup;
-import com.howellsdk.net.http.bean.MapGroupList;
-import com.howellsdk.net.http.bean.MapItem;
-import com.howellsdk.net.http.bean.MapItemList;
-import com.howellsdk.net.http.bean.MapList;
-import com.howellsdk.net.http.bean.ProcessingResult;
-import com.howellsdk.net.http.bean.RMCList;
-import com.howellsdk.net.http.bean.TeardownCredential;
-import com.howellsdk.net.http.bean.User;
-import com.howellsdk.net.http.bean.UserNonce;
-import com.howellsdk.net.http.bean.Vehicle;
-import com.howellsdk.net.http.bean.VehicleDetectionResult;
-import com.howellsdk.net.http.bean.VehicleList;
-import com.howellsdk.net.http.bean.VehiclePlateDevice;
-import com.howellsdk.net.http.bean.VehiclePlateDeviceList;
-import com.howellsdk.net.http.bean.VehiclePlatePicture;
-import com.howellsdk.net.http.bean.VehiclePlateRecordList;
-import com.howellsdk.net.http.bean.VideoInputChannelGroup;
-import com.howellsdk.net.http.bean.VideoInputChannelGroupList;
-import com.howellsdk.net.http.bean.VideoInputChannelPermission;
-import com.howellsdk.net.http.bean.VideoInputChannelPermissionList;
-import com.howellsdk.net.http.bean.VideoOutputChannelPermission;
-import com.howellsdk.net.http.bean.VideoOutputChannelPermissionList;
 
 import io.reactivex.Observable;
 import okhttp3.ResponseBody;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -509,4 +462,141 @@ public interface HWHttpApi {
     Observable<Vehicle> queryVehicleList(
             @Header("Cookie") String cookie,
             @Path("id") String id);
+
+    @GET("howell/ver10/pdc_service/System/Version")
+    Observable<PDCServiceVersion> queryPdcServiceVersion(@Header("Cookie") String cookie);
+
+    @GET("howell/ver10/pdc_service/System/MainPage/Layout")
+    Observable<MainPageLayout> queryMainPageLayout(@Header("Cookie") String cookie);
+
+    @GET("howell/ver10/pdc_service/System/Devices/Searching/{id}")
+    Observable<PDCDevice> getSearchPdcDevice(
+            @Header("Cookie") String cookie,
+            @Path("id") String id);
+
+    @Headers("Content-Type:application/json;charset=utf-8")
+    @POST("howell/ver10/pdc_service/System/Devices/Searching/{id}")
+    Observable<Fault> startSearchPdcDevice(
+            @Header("Cookie") String cookie,
+            @Path("id") String id,
+            @Body String ProtocolTypeAndTimeout);
+
+    @DELETE("howell/ver10/pdc_service/System/Devices/Searching/{id}")
+    Observable<Fault> stopSearchPdcDevice(
+            @Header("Cookie") String cookie,
+            @Path("id") String id);
+
+    @GET("howell/ver10/pdc_service/System/Devices")
+    Observable<PDCDeviceList> queryPdcDevices(
+            @Header("Cookie") String cookie,
+            @Query("DeviceId")  @Nullable String deviceId,
+            @Query("PageIndex") @Nullable Integer pageIndex,
+            @Query("PageSize")  @Nullable Integer pageSize);
+
+    @GET("howell/ver10/pdc_service/System/Devices/{id}")
+    Observable<PDCDevice> queryPdcDevices(
+            @Header("Cookie") String cookie,
+            @Path("id")       String id);
+
+    @GET("howell/ver10/pdc_service/System/Devices/{id}/Status")
+    Observable<PDCDeviceStatus> queryPdcDeviceStatus(
+            @Header("Cookie") String cookie,
+            @Path("id")       String id);
+
+    @GET("howell/ver10/pdc_service/System/Devices/{id}/Samples")
+    Observable<PDCDeviceList> queryPdcDeviceSamples(
+            @Header("Cookie")       String cookie,
+            @Path("id")             String id,
+            @Query("SampleUnit")   @NonNull String sampleUnit,
+            @Query("BeginTime")    @NonNull String beginTime,
+            @Query("EndTime")      @NonNull String endTime,
+            @Query("PageIndex")    @Nullable Integer pageIndex,
+            @Query("PageSize")     @Nullable Integer pageSize);
+
+    @GET("howell/ver10/pdc_service/System/Devices/{id}/Threshold")
+    Observable<PDCThreshold> queryPdcDeviceThreshold(
+            @Header("Cookie")       String cookie,
+            @Path("id")             String id);
+
+    @GET("howell/ver10/pdc_service/System/Devices/{id}/Schedule")
+    Observable<WeeklySchedule> queryPdcDeviceSchedule(
+            @Header("Cookie")       String cookie,
+            @Path("id")             String id);
+
+    @GET("howell/ver10/pdc_service/System/Groups")
+    Observable<PDCDeviceGroupList> queryPdcGroups(
+            @Header("Cookie")               String cookie,
+            @Query("PDCDeviceGroupId")      @Nullable String pdcDeviceGroupId,
+            @Query("PageIndex")             @Nullable Integer pageIndex,
+            @Query("PageSize")              @Nullable Integer pageSize);
+
+    @GET("howell/ver10/pdc_service/System/Groups/{id}")
+    Observable<PDCDeviceGroup> queryPdcGroups(
+            @Header("Cookie")               String cookie,
+            @Path("id")                     String id);
+
+    @GET("howell/ver10/pdc_service/System/Groups/{id}/Status")
+    Observable<PDCDeviceGroupStatus> queryPdcGroupStatus(
+            @Header("Cookie")               String cookie,
+            @Path("id")                     String id);
+
+    @GET("howell/ver10/pdc_service/System/Groups/{id}/Devices")
+    Observable<PDCDeviceList> queryPdcGroupDevices(
+            @Header("Cookie")               String cookie,
+            @Path("id")                     String id,
+            @Query("PageIndex")             @Nullable Integer pageIndex,
+            @Query("PageSize")              @Nullable Integer pageSize,
+            @Query("Inversed")              @Nullable Boolean inverse);
+
+    @GET("howell/ver10/pdc_service/System/Groups/{groupId}/Devices/{deviceId}")
+    Observable<PDCDevice> queryPdcGroupDevices(
+            @Header("Cookie")               String cookie,
+            @Path("groupId")                String groupId,
+            @Path("deviceId")               String deviceId);
+
+    @GET("howell/ver10/pdc_service/System/Groups/{id}/Samples")
+    Observable<PDCSampleList> queryPdcGroupSamples(
+            @Header("Cookie")               String cookie,
+            @Path("id")                     String id,
+            @Query("SampleUnit")            @NonNull String sampleUnit,
+            @Query("BeginTime")             @NonNull String beginTime,
+            @Query("EndTime")               @NonNull String endTime);
+
+    @GET("howell/ver10/pdc_service/System/Groups/{id}/Threshold")
+    Observable<PDCThreshold> queryPdcGroupThreshold(
+            @Header("Cookie")               String cookie,
+            @Path("id")                     String id);
+
+    @GET("howell/ver10/pdc_service/System/Flavours")
+    Observable<PDCFlavourList> queryPdcFlavours(
+            @Header("Cookie")               String cookie,
+            @Query("PageIndex")             @Nullable Integer pageIndex,
+            @Query("PageSize")              @Nullable Integer pageSize);
+
+    @GET("howell/ver10/pdc_service/System/Flavours/{id}")
+    Observable<PDCFlavour> queryPdcFlavours(
+            @Header("Cookie")               String cookie,
+            @Path("id")                     String id);
+
+    @GET("howell/ver10/pdc_service/System/Events/Records")
+    Observable<EventRecordedList> queryPdcEventRecords(
+            @Header("Cookie")               String cookie,
+            @Query("BeginTime")             @NonNull String beginTime,
+            @Query("EndTime")               @NonNull String endTime,
+            @Query("ComponentId")           @Nullable String componentId,
+            @Query("EventType")             @Nullable String eventType,
+            @Query("PageIndex")             @Nullable Integer pageIndex,
+            @Query("PageSize")              @Nullable Integer pageSize);
+
+    @GET("howell/ver10/pdc_service/System/Users")
+    Observable<PDCUserList> queryPdcUsers(
+            @Header("Cookie")               String cookie,
+            @Query("PageIndex")             @Nullable Integer pageIndex,
+            @Query("PageSize")              @Nullable Integer pageSize);
+
+    @GET("howell/ver10/pdc_service/System/Users/{id}")
+    Observable<PDCUser> queryPdcUsers(
+            @Header("Cookie")               String cookie,
+            @Path("id")                     String id);
+
 }
