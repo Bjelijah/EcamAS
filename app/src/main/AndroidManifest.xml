@@ -227,7 +227,7 @@
             android:theme="@style/MyAppThemeAp"/>
         <activity android:name="com.howell.activity.PushSettingActivity"
             android:theme="@style/MyAppThemeServerAddress"/>
-
+        <activity android:name="com.howell.activity.TestActivity"/>
 
 
 

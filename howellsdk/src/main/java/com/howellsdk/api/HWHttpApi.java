@@ -466,6 +466,10 @@ public interface HWHttpApi {
     @GET("howell/ver10/pdc_service/System/Version")
     Observable<PDCServiceVersion> queryPdcServiceVersion(@Header("Cookie") String cookie);
 
+    @GET("howell/ver10/pdc_service/System/Version")
+    Observable<PDCServiceVersion> queryPdcServiceVersion();
+
+
     @GET("howell/ver10/pdc_service/System/MainPage/Layout")
     Observable<MainPageLayout> queryMainPageLayout(@Header("Cookie") String cookie);
 
@@ -504,7 +508,7 @@ public interface HWHttpApi {
             @Path("id")       String id);
 
     @GET("howell/ver10/pdc_service/System/Devices/{id}/Samples")
-    Observable<PDCDeviceList> queryPdcDeviceSamples(
+    Observable<PDCSampleList> queryPdcDeviceSamples(
             @Header("Cookie")       String cookie,
             @Path("id")             String id,
             @Query("SampleUnit")   @NonNull String sampleUnit,

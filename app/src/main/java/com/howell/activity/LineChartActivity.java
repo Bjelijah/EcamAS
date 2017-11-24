@@ -37,6 +37,8 @@ public class LineChartActivity extends AppCompatActivity {
             }
         });
 
+
+
         if (savedInstanceState==null){
             getSupportFragmentManager().beginTransaction().add(R.id.charts_container,new LineChartFragment()).commit();
         }

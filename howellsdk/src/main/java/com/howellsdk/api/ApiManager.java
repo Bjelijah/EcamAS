@@ -2,6 +2,7 @@ package com.howellsdk.api;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.howellsdk.net.http.utils.CustomInterceptor;
@@ -456,8 +457,8 @@ public class ApiManager {
             sVerify = verifySession;
             sSession = loginSession;
         }
-        public static String getCookie(Type type,String... params) throws UnsupportedEncodingException, NoSuchAlgorithmException {
-            Log.i("123","params="+params+"  params len="+params.length);
+        public static String getCookie(Type type,@Nullable String... params) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+            //Log.i("123","params="+params+"  params len="+params.length);
             String action = null;
             switch (type){
                 case BUSINESS_DEVICE:action="GET:/howell/ver10/data_service/Business/Informations/Devices"+(params.length>0?"/"+params[0]:"")+":";break;

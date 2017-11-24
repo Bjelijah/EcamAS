@@ -334,6 +334,7 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
                 startActivity(new Intent(this,DeviceShareActivity.class));
                 break;
             case R.id.menu_home_help:
+                startActivity(new Intent(this,TestActivity.class));
                 break;
             case R.id.menu_home_chart:
                 startActivity(new Intent(this,LineChartActivity.class));
