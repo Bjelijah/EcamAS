@@ -50,7 +50,7 @@ public class NavigationActivity extends Activity {
 		View secondView = inflater.inflate(R.layout.viewpager02, null);
 		View thirdView = inflater.inflate(R.layout.viewpager03, null);
 		View fourthView = inflater.inflate(R.layout.viewpager04, null);
-		
+
 		pageViews = new ArrayList<View>();
 		pageViews.add(firstView);
 		pageViews.add(secondView);

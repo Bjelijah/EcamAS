@@ -8,6 +8,7 @@
     android:gravity="bottom|center" >
 
     <Button
+        android:id="@+id/start_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="45dip"
@@ -20,3 +21,4 @@
         android:background="@drawable/guide_enter_app_btn_selector" />
 
 </LinearLayout>
+

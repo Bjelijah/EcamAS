@@ -69,6 +69,6 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'com.squareup.retrofit2:adapter-rxjava2:2.2.0'
     compile 'org.ligboy.retrofit2:converter-fastjson-android:2.1.0'
-    compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.7'//iso
+    compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.7'//isoDate
     compile 'com.google.code.ksoap2-android:ksoap2-android:3.6.2'
 }

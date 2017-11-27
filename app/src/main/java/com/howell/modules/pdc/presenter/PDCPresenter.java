@@ -25,7 +25,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 
-import io.reactivex.Scheduler;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;

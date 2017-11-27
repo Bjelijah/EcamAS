@@ -78,6 +78,8 @@ android {
 dependencies {
     compile project(':library')
     compile project(':qrcodelib')
+    compile project(path: ':pushlibrary')
+    compile project(path: ':howellsdk')
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -127,6 +129,5 @@ dependencies {
     compile 'com.github.lecho:hellocharts-android:v1.5.8'
     //compile 'com.github.XuDaojie:QRCode-Android:v0.4.2'
     //    compile 'com.xdandroid:hellodaemon:+'
-    compile project(path: ':pushlibrary')
-    compile project(path: ':howellsdk')
+
 }
