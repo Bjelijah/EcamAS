@@ -21,15 +21,15 @@ public class PlayFunViewPage extends ViewPager {
 	public PlayFunViewPage(Context context,AttributeSet attrs){
 		super(context, attrs);
 	}
-	
-	
+
+
 	private float startX;
 	private float endX;
-	
-	private View mBottomView = null;
-	
 
-	
+	private View mBottomView = null;
+
+
+
 	@Override
 	public boolean onTouchEvent(MotionEvent arg0) {
 		// TODO Auto-generated method stub
@@ -41,19 +41,19 @@ public class PlayFunViewPage extends ViewPager {
 		}
 		return super.onTouchEvent(arg0);
 	}
-	
-	
-	
+
+
+
 	public void setBottomView(View v){
 		this.mBottomView = v;
 	}
 
-	
+
 	public void updataAllView(){//FIXME low effect
 		MyPagerAdapter adapter = (MyPagerAdapter) getAdapter();
 		adapter.notifyDataSetChanged();
 	}
-	
+
 	private void fun(){
 		MyPagerAdapter adapter = (MyPagerAdapter) getAdapter();
 		int item = getCurrentItem();

@@ -79,15 +79,15 @@ public class DeviceHttpPresenter extends DeviceBasePresenter {
                                 .setIndensity(0)
                                 .setDeviceId(Util.transformItemId2DeviceId(v.getId()))
                                 .setChannelNo(Util.transfromItemId2DeviceChannel(v.getId()))
-                                .setOnline(true)
-                                .setPtz(true)
+                                .setOnline(v.getVideoInputChannel().getOnline())
+                                .setPtz(v.getVideoInputChannel().getPtz())
                                 .setStore(true)
                                 .setUpnpIP(ip)
                                 .setUpnpPort(ConfigAction.getInstance(mContext).isSSL()?8862:8812)
                                 .setMethodType(0)
                                 .setDeVer("")
                                 .setAndroidPush(false)
-                                .setPicturePath("/sdcard/eCamera/cache/"+v.getId()+".jpg");
+                                .setPicturePath("/sdcard/eCamera/cache/"+Util.transformItemId2DeviceId(v.getId())+".jpg");
                     }
                 })
                 .toList()
