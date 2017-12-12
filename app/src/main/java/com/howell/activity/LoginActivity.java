@@ -130,6 +130,10 @@ public class LoginActivity extends AppCompatActivity implements ILoginContract.I
                     mIsGuest = userName.equals(GUEST_NAME)?true:false;
                     mProgressView.setVisibility(View.VISIBLE);
 //                    LoginAction.getInstance().setContext(LoginActivity.this).regLoginResCallback(LoginActivity.this).Login(userName,userPassword,c);
+                    Log.i("123","mPresenter="+mPresenter);
+
+                    if (mPresenter!=null)unbindPresenter();
+                    bindPresenter();
                     mPresenter.login(userName,userPassword,c);
 
                     break;
@@ -150,7 +154,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginContract.I
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         // Set up the login form.
-      //  bindPresenter();
+      //  bindPresenter();//延迟bind bind完会init 获取登入信息
 
         mUserNameView = (AutoCompleteTextView) findViewById(R.id.login_et_username);
 

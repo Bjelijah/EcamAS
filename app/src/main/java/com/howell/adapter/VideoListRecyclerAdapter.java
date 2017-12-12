@@ -29,6 +29,7 @@ public class VideoListRecyclerAdapter extends RecyclerView.Adapter<VideoListRecy
 
     Context mContext;
     OnItemClick mListener;
+
     public VideoListRecyclerAdapter(OnItemClick o){
         this.mListener = o;
     }
