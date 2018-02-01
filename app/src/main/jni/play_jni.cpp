@@ -14,6 +14,7 @@
 #include <hw_config.h>
 #include <stream_type.h>
 #include <protocol_type.h>
+#include <string.h>
 #include "include/stream_type.h"
 #include "include/net_sdk.h"
 #include "include/play_def.h"
