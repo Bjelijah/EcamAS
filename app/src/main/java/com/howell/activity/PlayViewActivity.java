@@ -243,7 +243,7 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode==KeyEvent.KEYCODE_BACK){
-            PlayAction.getInstance().catchPic("/sdcard/eCamera/cache");
+         //   PlayAction.getInstance().catchPic("/sdcard/eCamera/cache");
             mPresent.catchPic("/sdcard/eCamera/cache");
         }
         return super.onKeyDown(keyCode, event);
@@ -261,7 +261,6 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
         Log.i("123","finish");
 //        mVodShowFun = true;
         finish();
-
         Intent intent = new Intent(this, VideoListActivity.class);
         intent.putExtra("bean", mCam);
         startActivity(intent);

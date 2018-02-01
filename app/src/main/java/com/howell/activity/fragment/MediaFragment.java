@@ -110,8 +110,6 @@ public class MediaFragment extends HomeBaseFragment implements MediaRecyclerView
         intent.putExtra("position", pos);
         intent.putStringArrayListExtra("arrayList", mPicPath);
 
-
-
         //startActivity(intent);
         startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity(),view,"myImage").toBundle());
         //overridePendingTransition(R.anim.zoomin, R.anim.zoomout);

@@ -21,6 +21,7 @@
 #include <protocol_type.h>
 #include <stream_type.h>
 #include <hw_config.h>
+#include <string.h>
 
 
 #define LOGI(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_INFO, "JNI", __VA_ARGS__):(void)NULL)
