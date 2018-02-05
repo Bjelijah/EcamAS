@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 22
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
 
@@ -50,6 +50,9 @@ android {
     packagingOptions{
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/ASL2.0'
+        pickFirst 'lib/armeabi-v7a/libplayer_jni.so'
+        pickFirst 'lib/armeabi-v7a/libhwtrans.so'
+        pickFirst 'lib/armeabi-v7a/libhwplay.so'
     }
     useLibrary 'org.apache.http.legacy'
 }

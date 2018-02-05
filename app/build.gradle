@@ -1,12 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.getkeepsafe.dexcount'
+
 android {
     compileSdkVersion 26
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.android.howell.webcam"
         minSdkVersion 21
-        targetSdkVersion 22
+        targetSdkVersion 26
         versionCode 30
         versionName "1.2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -27,11 +28,12 @@ android {
 //        }
 //    }
 
-    sourceSets{
-        main{
-            jniLibs.srcDirs=['libs']
-        }
-    }
+//    sourceSets{
+//        main{
+//            jniLibs.srcDirs=['libs']
+//        }
+//    }
+
 
     buildTypes {
         release {
@@ -76,17 +78,22 @@ android {
 
 
 dependencies {
-    compile project(':library')
-    compile project(':qrcodelib')
-    compile project(path: ':pushlibrary')
-    compile project(path: ':howellsdk')
     compile fileTree(include: ['*.jar'], dir: 'libs')
+
+
+//    androidTestImplementation
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:appcompat-v7:26.+'
     testCompile 'junit:junit:4.12'
+
+
+    compile 'com.firebaseui:firebase-ui-auth:3.1.0'
+    compile 'com.google.android.gms:play-services-auth:11.4.2'
+
+    implementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
 
     compile 'com.android.support:support-v4:26.+'
     compile 'com.android.support:design:26.+'
@@ -112,7 +119,7 @@ dependencies {
     compile 'com.mikepenz:google-material-typeface:2.2.0.1@aar'
     compile 'com.mikepenz:fontawesome-typeface:4.6.0.3@aar'
     compile 'com.mikepenz:octicons-typeface:3.0.0.1@aar'
-    compile 'com.github.lecho:hellocharts-library:1.5.8@aar'
+  //  compile 'com.github.lecho:hellocharts-library:1.5.8@aar'
     //compile 'com.zys:brokenview:1.0.3'
     compile('com.github.ozodrukh:CircularReveal:2.0.1@aar') {
         transitive = true;
@@ -129,5 +136,11 @@ dependencies {
     compile 'com.github.lecho:hellocharts-android:v1.5.8'
     //compile 'com.github.XuDaojie:QRCode-Android:v0.4.2'
     //    compile 'com.xdandroid:hellodaemon:+'
+    compile project(path: ':library')
+    compile project(path: ':qrcodelib')
+    compile project(path: ':pushlibrary')
+    compile project(path: ':howellsdk')
+
+
 
 }

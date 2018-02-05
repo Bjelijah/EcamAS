@@ -5,14 +5,14 @@ apply plugin: 'com.android.library'
 //version = '1.0'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion '26.0.2'
 
     resourcePrefix "qr"
 
     defaultConfig {
-        minSdkVersion 11
-        targetSdkVersion 25
+        minSdkVersion 14
+        targetSdkVersion 26
         versionCode 7
         versionName "0.4.1"
 
@@ -24,6 +24,8 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        repositories {
+        }
     }
 }
 
@@ -32,7 +34,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.0.0'
+    compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.google.zxing:core:3.2.1'
     testCompile 'junit:junit:4.12'
 }
