@@ -1,6 +1,5 @@
 package com.howell.activity.fragment;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,13 +25,10 @@ import com.howell.activity.RecycleViewDivider;
 import com.howell.adapter.ShareItem2RecyclerViewAdapter;
 import com.howell.bean.ShareItem2Bean;
 import com.howell.db.ShareDao;
-import com.howell.entityclass.NodeDetails;
 
 import com.howell.utils.ThreadUtil;
-import com.howell.utils.Util;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -55,7 +51,7 @@ public class ShareAddFragment extends ShareBaseFragment {
     List<ShareItem2Bean> mList;
     Bundle mMyChoose = new Bundle();
     boolean mNeedChooseDev;
-    ArrayList<NodeDetails> mL;
+//    ArrayList<NodeDetails> mL;
     String [] mSpinnerName;
 
     private Handler mHandler = new Handler(){
@@ -141,11 +137,13 @@ public class ShareAddFragment extends ShareBaseFragment {
         if (mNeedChooseDev){
             //init spinner
             mView.findViewById(R.id.share_item_share_dev_view).setVisibility(View.VISIBLE);
+            //fixme
 //            mL = SoapManager.getInstance().getNodeDetails();
-            mSpinnerName = new String[mL.size()];
-            for (int i=0;i<mL.size();i++){
-                mSpinnerName[i] = mL.get(i).getName();
-            }
+//            mSpinnerName = new String[mL.size()];
+//            for (int i=0;i<mL.size();i++){
+//                mSpinnerName[i] = mL.get(i).getName();
+//            }
+
             ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_item,mSpinnerName);
             myAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
             mSp.setAdapter(myAdapter);
@@ -153,8 +151,9 @@ public class ShareAddFragment extends ShareBaseFragment {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     Log.e("123","pos="+position);
-                    mMyChoose.putString("name",mL.get(position).getName());
-                    mMyChoose.putString("id",mL.get(position).getDevID());
+                    //fixme
+//                    mMyChoose.putString("name",mL.get(position).getName());
+//                    mMyChoose.putString("id",mL.get(position).getDevID());
                 }
 
                 @Override

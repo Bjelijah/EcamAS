@@ -23,7 +23,7 @@ import com.howell.broadcastreceiver.HomeKeyEventBroadCastReceiver;
 import com.android.howell.webcam.R;
 import com.howell.modules.device.IDeviceContract;
 import com.howell.modules.device.presenter.DeviceSoapPresenter;
-import com.howell.utils.CameraUtils;
+
 
 import java.util.List;
 

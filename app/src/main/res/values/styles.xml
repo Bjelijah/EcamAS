@@ -4,13 +4,6 @@
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
     -->
-    <style name="AppBaseTheme" parent="android:Theme.Light">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
-    </style>
 
     <!-- Application theme. -->
     <!-- new ui -->
@@ -27,43 +20,6 @@
 
     </style>
 
-    <style name="transparentFrameWindowStyle" parent="android:style/Theme.Dialog">
-        <item name="android:windowBackground">@drawable/bg_window</item>
-        <item name="android:windowFrame">@null</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:backgroundDimEnabled">false</item>
-        <item name="android:windowFullscreen">true</item>
-        <!--  <item name="android:listPreferredItemPaddingLeft">0dip</item>
-        <item name="android:listPreferredItemPaddingRight">0dip</item>-->
-    </style>
-
-    <style name="main_menu_animstyle">
-        <item name="android:windowEnterAnimation">@anim/settingswindow_in_anim</item>
-        <item name="android:windowExitAnimation">@anim/settingswindow_out_anim</item>
-    </style>
-
-    <style name="main_tab_bottom">
-        <item name="android:textSize">@dimen/bottom_tab_font_size</item>
-        <item name="android:textColor">#ffffffff</item>
-        <item name="android:ellipsize">marquee</item>
-        <item name="android:gravity">center_horizontal</item>
-        <item name="android:background">#00000000</item>
-        <item name="android:paddingTop">@dimen/bottom_tab_padding_up</item>
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:button">@null</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:drawablePadding">@dimen/bottom_tab_padding_drawable</item>
-        <item name="android:layout_weight">1.0</item>
-    </style>
-    
-    <style name="popuStyle">
-        <item name="android:windowEnterAnimation">@anim/popup_anim_in</item>
-        <item name="android:windowExitAnimation">@anim/popup_anim_out</item>
-    </style>
-
 
     <!-- new ui -->
 
@@ -73,21 +29,8 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="anim_fade" parent="@android:style/Animation.Activity">
-        <item name="android:activityOpenEnterAnimation">@anim/fade_in</item>
-        <!--<item name="android:activityOpenExitAnimation">@anim/fade_out</item>-->
-        <!--<item name="android:activityCloseEnterAnimation">@anim/fade_in</item>-->
-        <!--<item name="android:activityCloseExitAnimation">@anim/fade_out</item>-->
-    </style>
-
 
     <style name="anim_window_no" parent="@android:style/Animation"/>
-
-    <style name="anim_window_fade" parent="@android:style/Animation">
-        <item name="android:windowEnterAnimation">@anim/fade_in</item>
-        <item name="android:windowExitAnimation">@anim/fade_out</item>
-    </style>
-
 
 
     <style name="MyAppThemeLogin" parent="AppTheme.NoActionBar">
@@ -105,12 +48,6 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
-
-    <style name="MyAppThemeScan" parent="MaterialDrawerTheme">
-        <item name="android:colorPrimary">@color/home_bk</item>
-        <item name="android:colorPrimaryDark">@color/home_bk_dark</item>
-        <item name="colorAccent">@color/white</item>
-    </style>
 
     <style name="MyAppThemeListenDevice" parent="MaterialDrawerTheme">
         <item name="android:colorPrimary">@color/home_bk</item>
@@ -180,12 +117,6 @@
     </style>
 
 
-    <style name="toolbar_theme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="colorControlNormal">@color/white</item>
-
-    </style>
-
-
     <style name="MyAppThemeAdd" parent="MaterialDrawerTheme.TranslucentStatus">
 
         <item name="colorPrimary">@color/transparent</item>
@@ -198,14 +129,6 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
-
-
-
-
-    <style name="MyAppThemeHome.replay">
-        <item name="colorAccent">@color/register_bk</item>
-        <item name="android:clickable">true</item>
-    </style>
 
     <style name="MyappThemePlay" parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
         <item name="colorPrimary">@color/home_bk</item>
@@ -224,21 +147,6 @@
     <style name="ToolBarWithNavigationBack">
         <item name="navigationIcon">@drawable/abc_ic_ab_back_material</item>
     </style>
-
-    <style name="TextAppearance" parent="TextAppearance.AppCompat"/>
-    <style name="TextAppearance.Header">
-        <item name="android:textAllCaps">true</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-        <item name="android:textColor">?colorAccent</item>
-    </style>
-
-    <style name="TextComponent"/>
-    <style name="TextComponent.ItemRow">
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:minHeight">48dp</item>
-    </style>
-
-
 
 
     <style name="CollapsingTextAppearance" parent="Base.TextAppearance.AppCompat.Widget.ActionBar.Title"/>
@@ -276,10 +184,6 @@
     <style name="MyAppThemeHome.BigImage" >
     </style>
 
-    <style name="MyAppThemeAdd.Scan">
-
-    </style>
-
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -296,41 +200,6 @@
         　　
         <item name="android:maxHeight">32dip</item>
     </style>
-
-    <style name="WidgetProgressBar.small">　　
-        <item name="android:minWidth">16dip</item>
-        　　
-        <item name="android:maxWidth">16dip</item>
-        　　
-        <item name="android:minHeight">16dip</item>
-        　　
-        <item name="android:maxHeight">16dip</item>
-    </style>
-
-    <style name="WidgetProgressBar.Large">　　
-        <item name="android:minWidth">48dip</item>
-        　　
-        <item name="android:maxWidth">48dip</item>
-        　　
-        <item name="android:minHeight">48dip</item>
-        　　
-        <item name="android:maxHeight">48dip</item>
-    </style>
-
-    <style name="WidgetProgressBar.xLarge">　　
-        <item name="android:minWidth">64dip</item>
-        　　
-        <item name="android:maxWidth">64dip</item>
-        　　
-        <item name="android:minHeight">64dip</item>
-        　　
-        <item name="android:maxHeight">64dip</item>
-    </style>
-
-
-
-
-
 
 
     <style name="FloatingStyle" parent="@android:style/TextAppearance">

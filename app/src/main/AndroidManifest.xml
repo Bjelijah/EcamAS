@@ -72,11 +72,6 @@
         >
         <!--android:theme="@android:style/Theme.Black.NoTitleBar"-->
         <activity
-            android:name="com.howell.activity.SetDeviceWifi"
-            android:screenOrientation="portrait"
-            android:theme="@style/MyAppThemeListenDevice"
-            android:windowSoftInputMode="stateVisible|adjustPan" />
-        <activity
             android:name="com.howell.activity.SendWifi"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" />
@@ -86,10 +81,6 @@
             android:theme="@android:style/Theme.Black.NoTitleBar" />
         <activity
             android:name="com.howell.activity.FlashLighting"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
-        <activity
-            android:name="com.howell.activity.SetOrResetWifi"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" />
         <!--android:theme="@android:style/Theme.Black.NoTitleBar"-->
