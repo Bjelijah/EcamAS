@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
-import com.howell.action.ApAction;
 import com.android.howell.webcam.R;
 import com.howell.bean.CameraItemBean;
 import com.howell.bean.PlayType;

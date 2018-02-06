@@ -10,15 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 
-import com.howell.action.ConfigAction;
-import com.howell.action.HomeAction;
 import com.android.howell.webcam.R;
 import com.howell.rxbus.RxBus;
 import com.howell.rxbus.RxConstants;

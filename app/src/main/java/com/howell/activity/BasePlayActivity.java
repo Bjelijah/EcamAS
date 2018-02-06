@@ -1,18 +1,12 @@
 package com.howell.activity;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
-import android.opengl.GLSurfaceView;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -30,13 +24,8 @@ import android.widget.Toast;
 
 
 import com.howell.action.PTZControlAction;
-import com.howell.action.PlayAction;
-import com.howell.action.YV12Renderer;
-import com.howell.bean.CamFactory;
 import com.howell.bean.CameraItemBean;
-import com.howell.bean.ICam;
 import com.android.howell.webcam.R;
-import com.howell.bean.PlayType;
 import com.howell.ehlib.MySeekBar;
 import com.howell.modules.player.IPlayContract;
 import com.howell.modules.player.bean.VODRecord;
@@ -46,10 +35,8 @@ import com.howell.modules.player.presenter.PlayTurnPresenter;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.MessageUtiles;
 import com.howell.utils.PhoneConfig;
-import com.howell.utils.ThreadUtil;
 import com.howell.utils.UserConfigSp;
 import com.howellsdk.api.player.GLESTextureView;
-import com.howellsdk.audio.AudioAction;
 import com.howellsdk.utils.RxUtil;
 
 import java.util.List;
@@ -58,7 +45,7 @@ import java.util.List;
  * Created by Administrator on 2016/12/16.
  */
 
-public abstract class BasePlayActivity extends FragmentActivity implements IPlayContract.IVew,SurfaceHolder.Callback,View.OnTouchListener,ICam.IStream{
+public abstract class BasePlayActivity extends FragmentActivity implements IPlayContract.IVew,SurfaceHolder.Callback,View.OnTouchListener{
 
 
 
@@ -412,17 +399,7 @@ public abstract class BasePlayActivity extends FragmentActivity implements IPlay
 
     protected void playBackFun(){}
 
-    @Override
-    public void showStreamSpeed(final int kbitPerSec) {
-        if (mStreamLen!=null){
-            mStreamLen.post(new Runnable() {
-                @Override
-                public void run() {
-                    mStreamLen.setText(kbitPerSec+" kbit/s");
-                }
-            });
-        }
-    }
+
 
     @Override
     public void bindPresenter() {

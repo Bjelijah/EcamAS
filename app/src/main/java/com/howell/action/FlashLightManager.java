@@ -66,11 +66,12 @@ public class FlashLightManager {
     private String cameraId = null;
     private boolean isSupportFlashCamera2 = false;
     private TimerTask task;
+
     private FlashLightManager() {
     }
 
 
-    private Handler mHander =null;
+    private Handler mHander = null;
 
     public FlashLightManager(Context context) {
         this.context = context;
@@ -90,11 +91,11 @@ public class FlashLightManager {
         mHander = handler;
     }
 
-    public void deInit(){
-        if (isLOLLIPOP()){
+    public void deInit() {
+        if (isLOLLIPOP()) {
 
-        }else{
-            if (camera!=null){
+        } else {
+            if (camera != null) {
                 camera.stopPreview();
                 camera.release();
                 camera = null;
@@ -104,15 +105,15 @@ public class FlashLightManager {
 
     }
 
-    public void twinkle(){
+    public void twinkle() {
         task = new TimerTask();
         task.execute();
     }
 
-    public void stopTwinkle(){
+    public void stopTwinkle() {
 
 
-        if (task!=null){
+        if (task != null) {
             task.cancel(true);
             task = null;
         }
@@ -142,7 +143,7 @@ public class FlashLightManager {
         }
 
         if (isLOLLIPOP()) {
-            Log.i("123","camera2 open");
+            Log.i("123", "camera2 open");
             openFlash();
         } else {
             turnLightOnCamera(camera);
@@ -165,7 +166,7 @@ public class FlashLightManager {
             return;
         }
         if (isLOLLIPOP()) {
-            Log.i("123","camera2 close");
+            Log.i("123", "camera2 close");
             closeFlash();
         } else {
             turnLightOffCamera(camera);
@@ -175,31 +176,29 @@ public class FlashLightManager {
 
 
     private void openFlash() throws CameraAccessException {
-        if (cameraDevice==null)return;
-        CaptureRequest.Builder builder =  cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+        if (cameraDevice == null) return;
+        CaptureRequest.Builder builder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
         builder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_TORCH);
         builder.addTarget(surface);
         request = builder.build();
-        Log.i("123","open flash  FLASH_MODE_TORCH ");
-        if (captureSession!=null)
-        captureSession.setRepeatingRequest(request,null,null);
+        Log.i("123", "open flash  FLASH_MODE_TORCH ");
+        if (captureSession != null)
+            captureSession.setRepeatingRequest(request, null, null);
         isOpenFlash = true;
         return;
     }
 
     private void closeFlash() throws CameraAccessException {
-        if (cameraDevice==null)return;
-        CaptureRequest.Builder builder =  cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+        if (cameraDevice == null) return;
+        CaptureRequest.Builder builder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
         builder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_OFF);
         builder.addTarget(surface);
         request = builder.build();
-        Log.i("123","close flash  FLASH_MODE_OFF ");
-        if (captureSession!=null)
-        captureSession.setRepeatingRequest(request,null,null);
+        Log.i("123", "close flash  FLASH_MODE_OFF ");
+        if (captureSession != null)
+            captureSession.setRepeatingRequest(request, null, null);
         isOpenFlash = false;
     }
-
-
 
 
     /**
@@ -331,7 +330,7 @@ public class FlashLightManager {
      */
 
 
-    private void createCaptureSession(){
+    private void createCaptureSession() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             final CameraCaptureSession.StateCallback stateCallback = new CameraCaptureSession.StateCallback() {
@@ -341,6 +340,7 @@ public class FlashLightManager {
                         captureSession = arg0;
                     }
                 }
+
                 public void onConfigureFailed(CameraCaptureSession arg0) {
                 }
             };
@@ -366,6 +366,16 @@ public class FlashLightManager {
 
     private void openCamera() throws CameraAccessException {
 
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         manager.openCamera(cameraId, new StateCallback() {
             @Override
             public void onOpened(@NonNull CameraDevice camera) {
@@ -382,7 +392,7 @@ public class FlashLightManager {
             public void onError(@NonNull CameraDevice camera, int error) {
 
             }
-        },mHander);
+        }, mHander);
     }
 
     private void closeCamera(){

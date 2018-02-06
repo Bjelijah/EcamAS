@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.howell.action.ConfigAction;
-import com.howell.action.LoginAction;
 import com.howell.bean.APDeviceDBBean;
 import com.howell.bean.CameraItemBean;
 import com.howell.bean.PlayType;
@@ -17,10 +16,8 @@ import com.howell.rxbus.RxBus;
 import com.howell.rxbus.RxConstants;
 import com.howell.utils.ServerConfigSp;
 import com.howell.utils.UserConfigSp;
-import com.howellsdk.utils.RxUtil;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -28,10 +25,7 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.disposables.Disposables;
-import io.reactivex.internal.subscriptions.BooleanSubscription;
 import io.reactivex.schedulers.Schedulers;
 
 /**

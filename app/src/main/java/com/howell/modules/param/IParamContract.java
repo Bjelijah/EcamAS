@@ -52,5 +52,6 @@ public interface IParamContract {
         void setVMDOnOff(boolean bVmd);
         void setPush(boolean bPush);
         void setNewCameraName(String name);
+        void cameraUpdate();
     }
 }

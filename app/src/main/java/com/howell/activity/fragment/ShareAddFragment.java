@@ -1,6 +1,5 @@
 package com.howell.activity.fragment;
 
-import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,7 +10,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,30 +18,22 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 
 
 import com.android.howell.webcam.R;
-import com.howell.action.LoginAction;
 import com.howell.activity.RecycleViewDivider;
 import com.howell.adapter.ShareItem2RecyclerViewAdapter;
 import com.howell.bean.ShareItem2Bean;
 import com.howell.db.ShareDao;
 import com.howell.entityclass.NodeDetails;
-import com.howell.protocol.AddDeviceSharerReq;
-import com.howell.protocol.AddDeviceSharerRes;
-import com.howell.protocol.QueryDeviceReq;
-import com.howell.protocol.QueryDeviceRes;
-import com.howell.protocol.SoapManager;
+
 import com.howell.utils.ThreadUtil;
 import com.howell.utils.Util;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Created by Administrator on 2017/7/14.
@@ -151,7 +141,7 @@ public class ShareAddFragment extends ShareBaseFragment {
         if (mNeedChooseDev){
             //init spinner
             mView.findViewById(R.id.share_item_share_dev_view).setVisibility(View.VISIBLE);
-            mL = SoapManager.getInstance().getNodeDetails();
+//            mL = SoapManager.getInstance().getNodeDetails();
             mSpinnerName = new String[mL.size()];
             for (int i=0;i<mL.size();i++){
                 mSpinnerName[i] = mL.get(i).getName();
@@ -190,39 +180,39 @@ public class ShareAddFragment extends ShareBaseFragment {
             return;
         }
 
-        new AsyncTask<Void,Void,Boolean>(){
-            @Override
-            protected Boolean doInBackground(Void... params) {
-                boolean foo =  true;
-                if (foo)return true;
-
-                SoapManager s = SoapManager.getInstance();
-                AddDeviceSharerRes res = s.getAddDeviceSharerRes(new AddDeviceSharerReq(
-                        LoginAction.getInstance().getmInfo().getAccount(),
-                        LoginAction.getInstance().getmInfo().getLr().getLoginSession(),
-                        mDevID,
-                        mChannelNo,
-                        shareAccount));
-                Log.e("123","res="+res.toString());
-                if (res.getResult().equalsIgnoreCase("ok"))return true;
-
-                return false;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-
-                if (aBoolean){
-                    //TODO add db,
-                    String time = Util.Date2ISODate(new Date());
-                    mDao.insertAddShare(shareAccount,time,mDevID,mDevName);
-//                    ArrayList<ShareItem2Bean> l = mDao.queryAllAddShare(mNeedChooseDev?null:mDevID);
-//                    Log.i("123","l="+l.toString());
-                }
-                mHandler.sendEmptyMessage(aBoolean?MSG_SHARE_ADD_SHARE_OK:MSG_SHARE_ADD_SHARE_ERROR);
-            }
-        }.execute();
+//        new AsyncTask<Void,Void,Boolean>(){
+//            @Override
+//            protected Boolean doInBackground(Void... params) {
+//                boolean foo =  true;
+//                if (foo)return true;
+//
+//                SoapManager s = SoapManager.getInstance();
+//                AddDeviceSharerRes res = s.getAddDeviceSharerRes(new AddDeviceSharerReq(
+//                        LoginAction.getInstance().getmInfo().getAccount(),
+//                        LoginAction.getInstance().getmInfo().getLr().getLoginSession(),
+//                        mDevID,
+//                        mChannelNo,
+//                        shareAccount));
+//                Log.e("123","res="+res.toString());
+//                if (res.getResult().equalsIgnoreCase("ok"))return true;
+//
+//                return false;
+//            }
+//
+//            @Override
+//            protected void onPostExecute(Boolean aBoolean) {
+//                super.onPostExecute(aBoolean);
+//
+//                if (aBoolean){
+//                    //TODO add db,
+//                    String time = Util.Date2ISODate(new Date());
+//                    mDao.insertAddShare(shareAccount,time,mDevID,mDevName);
+////                    ArrayList<ShareItem2Bean> l = mDao.queryAllAddShare(mNeedChooseDev?null:mDevID);
+////                    Log.i("123","l="+l.toString());
+//                }
+//                mHandler.sendEmptyMessage(aBoolean?MSG_SHARE_ADD_SHARE_OK:MSG_SHARE_ADD_SHARE_ERROR);
+//            }
+//        }.execute();
 
     }
 }

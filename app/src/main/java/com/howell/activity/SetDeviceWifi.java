@@ -25,9 +25,7 @@ import android.widget.Toast;
 
 import com.howell.broadcastreceiver.HomeKeyEventBroadCastReceiver;
 import com.android.howell.webcam.R;
-import com.howell.protocol.GetDeviceMatchingCodeReq;
-import com.howell.protocol.GetDeviceMatchingCodeRes;
-import com.howell.protocol.SoapManager;
+
 import com.howell.utils.NetWorkUtils;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
@@ -55,7 +53,7 @@ public class SetDeviceWifi extends AppCompatActivity implements OnClickListener{
 	private String[] Member;
 	private ArrayAdapter<String> myAdapter;
 
-	private SoapManager mSoapManager;
+//	private SoapManager mSoapManager;
 	private MyssidReceive mReceive = new MyssidReceive();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +64,7 @@ public class SetDeviceWifi extends AppCompatActivity implements OnClickListener{
 		mActivities.addActivity("SetDeviceWifi",SetDeviceWifi.this);
 		receiver = new HomeKeyEventBroadCastReceiver();
 		registerReceiver(receiver, new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
-		mSoapManager = SoapManager.getInstance();
+//		mSoapManager = SoapManager.getInstance();
 		mWifiAdmin = new NetWorkUtils(this);
 //		System.out.println(mWifiAdmin.getWifiSSID());
 //		Log.e("123","wifi admin="+mWifiAdmin.getWifiSSID());
@@ -123,13 +121,13 @@ public class SetDeviceWifi extends AppCompatActivity implements OnClickListener{
 	}
 
 	public class SendMatchCodeTask extends AsyncTask<Void, Integer, Void> {
-		GetDeviceMatchingCodeRes res;
+//		GetDeviceMatchingCodeRes res;
 		@Override
 		protected Void doInBackground(Void... params) {
 			// TODO Auto-generated method stub
 			System.out.println("call doInBackground");
-			GetDeviceMatchingCodeReq req = new GetDeviceMatchingCodeReq(mSoapManager.getLoginResponse().getAccount(),mSoapManager.getLoginResponse().getLoginSession());
-			res = mSoapManager.getGetDeviceMatchingCodeRes(req);
+//			GetDeviceMatchingCodeReq req = new GetDeviceMatchingCodeReq(mSoapManager.getLoginResponse().getAccount(),mSoapManager.getLoginResponse().getLoginSession());
+//			res = mSoapManager.getGetDeviceMatchingCodeRes(req);
 
 			return null;
 		}
@@ -138,7 +136,7 @@ public class SetDeviceWifi extends AppCompatActivity implements OnClickListener{
 		protected void onPostExecute(Void result) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
-			System.out.println(res.getResult()+","+res.getMatchingCode());
+//			System.out.println(res.getResult()+","+res.getMatchingCode());
 		}
 	}
 

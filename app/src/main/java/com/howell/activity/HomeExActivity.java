@@ -8,15 +8,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PersistableBundle;
-import android.renderscript.Allocation;
-import android.renderscript.Element;
-import android.renderscript.RenderScript;
-import android.renderscript.ScriptIntrinsicBlur;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -38,8 +33,6 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.howell.action.ConfigAction;
 import com.howell.action.FingerprintUiHelper;
-import com.howell.action.HomeAction;
-import com.howell.action.LoginAction;
 import com.howell.activity.fragment.DeviceFragment;
 import com.howell.activity.fragment.FingerPrintSaveFragment;
 import com.howell.activity.fragment.HomeBaseFragment;
@@ -52,10 +45,7 @@ import com.howell.modules.login.ILoginContract;
 import com.howell.modules.login.bean.Type;
 import com.howell.modules.login.presenter.LoginHttpPresenter;
 import com.howell.modules.login.presenter.LoginSoapPresenter;
-import com.howell.protocol.QueryClientVersionReq;
-import com.howell.protocol.QueryClientVersionRes;
-import com.howell.protocol.SoapManager;
-import com.howell.rxbus.Action;
+
 import com.howell.rxbus.RxBus;
 import com.howell.rxbus.RxConstants;
 import com.howell.utils.AlerDialogUtils;
@@ -75,12 +65,10 @@ import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.interfaces.OnCheckedChangeListener;
-import com.mikepenz.materialdrawer.model.ExpandableDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
-import com.mikepenz.materialdrawer.model.SwitchDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -89,23 +77,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by howell on 2016/11/15.
  */
 
-public class HomeExActivity extends AppCompatActivity implements ILoginContract.IView,HomeAction.ChangeUser,IConst, ViewPager.OnPageChangeListener {
+public class HomeExActivity extends AppCompatActivity implements ILoginContract.IView,IConst, ViewPager.OnPageChangeListener {
 
     private final static long ID_DRAWER_UID = 0x00;
     private final static long ID_DRAWER_HOME = 0x01;
@@ -465,7 +443,7 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
     private void buildDrawer(Bundle savedInstanceState){
         final boolean isTurn = bTypeTurn;//HomeAction.getInstance().isUseTurn();
         final boolean isCrypto = bTypeCrypto;//HomeAction.getInstance().isUseCrypto();
-        HomeAction.getInstance().registChangerUserCallback(this);
+//        HomeAction.getInstance().registChangerUserCallback(this);
         result = new DrawerBuilder()
                 .withActivity(this)
                 .withAccountHeader(headerResult)
@@ -635,16 +613,16 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
         ThreadUtil.cachedThreadStart(new Runnable() {
             @Override
             public void run() {
-                SoapManager s = SoapManager.getInstance();
-                QueryClientVersionRes res = s.getQueryClientVersionRes(new QueryClientVersionReq("Android"));
-                Log.i("123","!!!!!!!!!!!!!!!! version  res="+res.toString());
-                boolean needUpdata = PhoneConfig.isNewVersion(HomeExActivity.this,res.getVersion());
-
-                if (needUpdata){
-                    mUpdataUrl = new String(Base64.decode(res.getDownloadAddress(),0));
-                    Log.e("123","url="+mUpdataUrl);
-                    mHandler.sendEmptyMessage(MSG_HOME_UPDATA);
-                }
+//                SoapManager s = SoapManager.getInstance();
+//                QueryClientVersionRes res = s.getQueryClientVersionRes(new QueryClientVersionReq("Android"));
+//                Log.i("123","!!!!!!!!!!!!!!!! version  res="+res.toString());
+//                boolean needUpdata = PhoneConfig.isNewVersion(HomeExActivity.this,res.getVersion());
+//
+//                if (needUpdata){
+//                    mUpdataUrl = new String(Base64.decode(res.getDownloadAddress(),0));
+//                    Log.e("123","url="+mUpdataUrl);
+//                    mHandler.sendEmptyMessage(MSG_HOME_UPDATA);
+//                }
             }
         });
 
@@ -669,18 +647,7 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
         super.onSaveInstanceState(outState, outPersistentState);
     }
 
-    @Override
-    public void onChangeOk() {
-        Log.e("123","on changeOK");
-        for(HomeBaseFragment fragment:mFragments){
-            fragment.getData();
-        }
-    }
 
-    @Override
-    public void onChangeError() {
-        Snackbar.make(mViewPager,getString(R.string.home_drawer_changer_user_error),Snackbar.LENGTH_LONG).show();
-    }
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

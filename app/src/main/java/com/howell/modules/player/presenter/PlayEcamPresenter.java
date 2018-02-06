@@ -3,31 +3,23 @@ package com.howell.modules.player.presenter;
 import android.content.Context;
 import android.util.Log;
 
-import com.google.android.gms.common.api.Api;
-import com.howell.action.LoginAction;
 import com.howell.bean.CameraItemBean;
 
-import com.howell.jni.JniUtil;
 import com.howell.modules.player.IPlayContract;
 import com.howell.modules.player.bean.PTZ;
 import com.howell.modules.player.bean.VODRecord;
-import com.howell.protocol.InviteRequest;
-import com.howell.protocol.InviteResponse;
 
-import com.howell.utils.DeviceVersionUtils;
+
 import com.howell.utils.FileUtils;
 
 import com.howellsdk.api.ApiManager;
 import com.howellsdk.api.HWPlayApi;
 import com.howellsdk.audio.AudioAction;
-import com.howellsdk.net.soap.bean.ExtendedParamReq;
-import com.howellsdk.net.soap.bean.ExtendedParamRes;
 import com.howellsdk.net.soap.bean.InviteReq;
 import com.howellsdk.net.soap.bean.InviteRes;
 import com.howellsdk.net.soap.bean.NATServerReq;
 import com.howellsdk.net.soap.bean.NATServerRes;
 import com.howellsdk.net.soap.bean.PtzControlReq;
-import com.howellsdk.net.soap.bean.Request;
 import com.howellsdk.net.soap.bean.Result;
 import com.howellsdk.net.soap.bean.SetAuxiliaryReq;
 import com.howellsdk.net.soap.bean.VodSearchReq;
@@ -35,8 +27,6 @@ import com.howellsdk.net.soap.bean.VodSearchRes;
 import com.howellsdk.utils.RxUtil;
 import com.howellsdk.utils.ThreadUtil;
 import com.howellsdk.utils.Util;
-
-import org.kobjects.base64.Base64;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,7 +42,6 @@ import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.BooleanSupplier;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;

@@ -26,18 +26,19 @@ import com.howell.broadcastreceiver.HomeKeyEventBroadCastReceiver;
 import com.android.howell.webcam.R;
 import com.howell.modules.device.IDeviceContract;
 import com.howell.modules.device.presenter.DeviceSoapPresenter;
-import com.howell.protocol.GetDeviceMatchingResultReq;
-import com.howell.protocol.GetDeviceMatchingResultRes;
-import com.howell.protocol.SoapManager;
-import com.howell.protocol.UpdateChannelNameReq;
-import com.howell.protocol.UpdateChannelNameRes;
+import com.howellsdk.net.soap.bean.GetDeviceMatchingResultReq;
+import com.howellsdk.net.soap.bean.GetDeviceMatchingResultRes;
+import com.howellsdk.net.soap.bean.UpdateChannelNameReq;
+import com.howellsdk.net.soap.bean.UpdateChannelNameRes;
+import com.howellsdk.utils.ThreadUtil;
+
 
 import java.util.List;
 
 
 public class GetMatchResult extends Activity implements OnClickListener,IDeviceContract.IVew{
 	private ProgressBar mSeekBar;
-	private SoapManager mSoapManager;
+//	private SoapManager mSoapManager;
 	private TimerTask task;
 	private GetResultTask getResultTask;
 	private TextView mTips;
@@ -80,7 +81,7 @@ public class GetMatchResult extends Activity implements OnClickListener,IDeviceC
 		mBack.setOnClickListener(this);
 		
 		mTips = (TextView)findViewById(R.id.tv_get_match_result_tip);
-		mSoapManager = SoapManager.getInstance();
+//		mSoapManager = SoapManager.getInstance();
 		
 //		getResultTask = new GetResultTask(progress);
 //		getResultTask.execute();
@@ -122,7 +123,9 @@ public class GetMatchResult extends Activity implements OnClickListener,IDeviceC
 
 	@Override
 	public void onAddResult(boolean isSuccess, PlayType type) {
-		if (!isSuccess)return;
+		if (!isSuccess){
+			return;
+		}
 		if(task != null){
 			isTimerTaskStop = true;
 		}
@@ -137,7 +140,18 @@ public class GetMatchResult extends Activity implements OnClickListener,IDeviceC
 
 	@Override
 	public void onError() {
-
+		//todo 查询失败
+		ThreadUtil.cachedThreadStart(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				mPresenter.getDeviceMatchResult(mMatchCode,device_name);
+			}
+		});
 	}
 
 	@Override
@@ -177,6 +191,9 @@ public class GetMatchResult extends Activity implements OnClickListener,IDeviceC
             		
 					Thread.sleep(1000);
 					nowProgress ++;
+					if (nowProgress > 59){
+						nowProgress=59;
+					}
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -266,17 +283,17 @@ public class GetMatchResult extends Activity implements OnClickListener,IDeviceC
 		}
 
 		private void queryResult(){
-			Log.e("","queryResult");
-			GetDeviceMatchingResultReq req = new GetDeviceMatchingResultReq(mSoapManager.getLoginResponse().getAccount(),mSoapManager.getLoginResponse().getLoginSession(),mSoapManager.getmGetDeviceMatchingCodeRes().getMatchingCode());
-			getDeviceMatchingResultRes = mSoapManager.getGetDeviceMatchingResultRes(req);
-			Log.e("","GetResult:"+getDeviceMatchingResultRes.getResult());
+//			Log.e("","queryResult");
+//			GetDeviceMatchingResultReq req = new GetDeviceMatchingResultReq(mSoapManager.getLoginResponse().getAccount(),mSoapManager.getLoginResponse().getLoginSession(),mSoapManager.getmGetDeviceMatchingCodeRes().getMatchingCode());
+//			getDeviceMatchingResultRes = mSoapManager.getGetDeviceMatchingResultRes(req);
+//			Log.e("","GetResult:"+getDeviceMatchingResultRes.getResult());
 		}
 		
 		private void chanegName(){
-			Log.e("","chanegName");
-			UpdateChannelNameReq req = new UpdateChannelNameReq(mSoapManager.getLoginResponse().getAccount(),mSoapManager.getLoginResponse().getLoginSession(),getDeviceMatchingResultRes.getDevID(),0,device_name);
-			updateChannelNameRes = mSoapManager.getUpdateChannelNameRes(req);
-            Log.e("","UpdateChannelName Result:"+updateChannelNameRes.getResult());
+//			Log.e("","chanegName");
+//			UpdateChannelNameReq req = new UpdateChannelNameReq(mSoapManager.getLoginResponse().getAccount(),mSoapManager.getLoginResponse().getLoginSession(),getDeviceMatchingResultRes.getDevID(),0,device_name);
+//			updateChannelNameRes = mSoapManager.getUpdateChannelNameRes(req);
+//            Log.e("","UpdateChannelName Result:"+updateChannelNameRes.getResult());
 		}
 		
         @Override

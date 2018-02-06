@@ -6,8 +6,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.howell.action.ConfigAction;
-import com.howell.action.HomeAction;
-import com.howell.action.LoginAction;
 import com.howell.bean.Custom;
 import com.howell.bean.UserLoginDBBean;
 import com.howell.db.UserLoginDao;

@@ -14,8 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.howell.action.PlayAction;
-import com.howell.action.PlayBackVideoListAction;
 import com.howell.activity.PlayBackActivity;
 import com.howell.activity.RecycleViewDivider;
 import com.howell.adapter.VideoListRecyclerAdapter;
@@ -31,12 +29,10 @@ import com.howell.utils.AlerDialogUtils;
 import com.howellsdk.utils.RxUtil;
 import com.howellsdk.utils.Util;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import pullrefreshview.layout.BaseFooterView;
 import pullrefreshview.layout.BaseHeaderView;
@@ -72,7 +68,7 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
             switch (msg.what){
                 case MSG_VIDEO_LIST_DATA_UPDATE:
                     Log.i("123","MSG_VIDEO_LIST_DATA_UPDATE");
-                    mList.addAll(PlayBackVideoListAction.getInstance().getVodList());
+//                    mList.addAll(PlayBackVideoListAction.getInstance().getVodList());
                     mAdapter.setData(mList);
                     mlfv.stopLoad();
                     break;
@@ -151,11 +147,7 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
 //         getData(null,null);
     }
 
-    private void getData(String beg,String end){
 
-        PlayBackVideoListAction.getInstance().searchVODList();
-//        mPresent.getVODRecord(IS_SUB,beg,end);
-    }
 
     public void searchList(String startTime,String endTime){
         mList.clear();

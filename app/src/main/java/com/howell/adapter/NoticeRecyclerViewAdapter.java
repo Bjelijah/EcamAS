@@ -2,10 +2,8 @@ package com.howell.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,19 +14,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.howell.action.LoginAction;
 import com.howell.bean.NoticeItemBean;
 import com.android.howell.webcam.R;
 import com.howell.modules.notice.INoticeContract;
 import com.howell.modules.notice.presenter.NoticeSoapPresenter;
-import com.howell.protocol.GetPictureReq;
-import com.howell.protocol.GetPictureRes;
-import com.howell.protocol.SoapManager;
+
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.SDCardUtils;
-import com.howell.utils.ScaleImageUtils;
-
-import org.kobjects.base64.Base64;
 
 import java.io.Serializable;
 import java.util.ArrayList;

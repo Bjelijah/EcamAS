@@ -1,7 +1,6 @@
 package com.howell.activity;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,14 +15,11 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
 import com.android.howell.webcam.R;
-import com.howell.action.LoginAction;
 import com.howell.bean.CameraItemBean;
 import com.howell.bean.PlayType;
 import com.howell.modules.device.IDeviceContract;
 import com.howell.modules.device.presenter.DeviceSoapPresenter;
-import com.howell.protocol.AddDeviceReq;
-import com.howell.protocol.AddDeviceRes;
-import com.howell.protocol.SoapManager;
+
 
 import java.util.List;
 

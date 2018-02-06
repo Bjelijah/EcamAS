@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.howell.action.FingerprintUiHelper;
-import com.howell.action.LoginAction;
 import com.howell.action.MyTimeMgr;
 import com.howell.activity.Activities;
 import com.howell.bean.Custom;
@@ -36,7 +35,7 @@ import java.util.List;
 
 
 
-public class FingerPrintFragment extends DialogFragment implements FingerprintUiHelper.Callback,OnTouchListener,LoginAction.IloginRes,IConst{
+public class FingerPrintFragment extends DialogFragment implements FingerprintUiHelper.Callback,OnTouchListener,IConst{
 	private static final int MSG_SIGN_IN_FAIL 	= 0xa0;
 	private static final int MSG_SIGN_IN_OK 	= 0xa1;
 	public static final int MSG_ERROR_WAIT_OK		= 0xa2;
@@ -283,15 +282,6 @@ public class FingerPrintFragment extends DialogFragment implements FingerprintUi
 		return false;
 	}
 
-	@Override
-	public void onLoginSuccess() {
-
-	}
-
-	@Override
-	public void onLoginError(int e) {
-
-	}
 
 	private enum MyState{
 		WAIT,

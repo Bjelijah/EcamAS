@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.howell.action.PlayAction;
 import com.android.howell.webcam.R;
 import com.howell.utils.MessageUtiles;
 import com.howell.utils.SDCardUtils;

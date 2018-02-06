@@ -19,24 +19,17 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 
-import com.howell.action.LoginAction;
 import com.howell.action.PTZControlAction;
 //import com.howell.action.PlayAction;
 //import com.howell.action.PlayAction;
-import com.howell.action.PlayAction;
 import com.howell.adapter.MyPagerAdapter;
 import com.android.howell.webcam.R;
-import com.howell.modules.player.IPlayContract;
 import com.howell.modules.player.bean.PTZ;
-import com.howell.modules.player.bean.VODRecord;
 import com.howell.transformer.CubeInTransformer;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.PhoneConfig;
-import com.howell.utils.UserConfigSp;
 import com.howellsdk.audio.AudioAction;
 import com.howellsdk.utils.RxUtil;
-
-import java.util.List;
 
 /**
  * Created by Administrator on 2016/12/16.

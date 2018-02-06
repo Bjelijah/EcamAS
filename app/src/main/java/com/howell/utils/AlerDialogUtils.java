@@ -9,9 +9,7 @@ import android.util.Log;
 
 import com.android.howell.webcam.R;
 import com.howell.entityclass.NodeDetails;
-import com.howell.protocol.SoapManager;
-import com.howell.protocol.UpgradeDevVerReq;
-import com.howell.protocol.UpgradeDevVerRes;
+
 
 //import android.view.View.OnClickListener;
 
@@ -33,17 +31,17 @@ public class AlerDialogUtils {
 		    			//CamTabActivity.updateNum -- ;
 		    			System.out.println(dev.toString());
 		    			//DeviceSetActivity.dev.setHasUpdate(false);
-		    			for(NodeDetails d:SoapManager.getInstance().getNodeDetails()){
-		    	    		if(d.getName().equals(dev.getName())){
-		    	    			d.setHasUpdate(false);
-		    	    			break;
-		    	    		}
-		    	    	}
-		    			System.out.println(dev.toString());
-		    			//DeviceSetActivity.cameraUpdate();
-		    			UpgradeDevVerReq req = new UpgradeDevVerReq(SoapManager.getInstance().getLoginResponse().getAccount(),SoapManager.getInstance().getLoginResponse().getLoginSession(),dev.getDevID());
-		    	    	UpgradeDevVerRes res = SoapManager.getInstance().getUpgradeDevVerRes(req);
-		    	    	Log.e("cameraUpdate", res.getResult());
+//		    			for(NodeDetails d:SoapManager.getInstance().getNodeDetails()){
+//		    	    		if(d.getName().equals(dev.getName())){
+//		    	    			d.setHasUpdate(false);
+//		    	    			break;
+//		    	    		}
+//		    	    	}
+//		    			System.out.println(dev.toString());
+//		    			//DeviceSetActivity.cameraUpdate();
+//		    			UpgradeDevVerReq req = new UpgradeDevVerReq(SoapManager.getInstance().getLoginResponse().getAccount(),SoapManager.getInstance().getLoginResponse().getLoginSession(),dev.getDevID());
+//		    	    	UpgradeDevVerRes res = SoapManager.getInstance().getUpgradeDevVerRes(req);
+//		    	    	Log.e("cameraUpdate", res.getResult());
 		    		}
 		    	}.start();
 		    }
