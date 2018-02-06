@@ -434,7 +434,46 @@
 
                     </RelativeLayout>
 
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/camera_setting_margin_vertacil_ctrl"
+                        >
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_alignParentLeft="true">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/camera_setting_subtitle_size"
+                                android:text="@string/camera_setting_det_duration"
+                                />
 
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/camera_setting_dec_size"
+                                android:text="@string/camera_setting_det_duration_dec"
+                                />
+
+                        </LinearLayout>
+
+                        <android.support.v7.widget.AppCompatSpinner
+                            android:id="@+id/camera_setting_det_lamp_sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:entries="@array/lamp_duration"
+                            />
+
+
+
+
+                    </RelativeLayout>
 
                 </LinearLayout>
 

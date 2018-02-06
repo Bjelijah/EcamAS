@@ -30,5 +30,10 @@
         <item>Turn</item>
     </string-array>
 
+    <string-array name="lamp_duration">
+        <item>10 second</item>
+        <item>30 second</item>
+        <item>60 second</item>
+    </string-array>
 
 </resources>

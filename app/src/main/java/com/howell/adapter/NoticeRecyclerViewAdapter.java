@@ -333,7 +333,7 @@ public class NoticeRecyclerViewAdapter extends RecyclerView.Adapter<NoticeRecycl
     }
 
     @Override
-    public void onQueryResult(List<NoticeItemBean> lists) {
+    public void onQueryResult(List<NoticeItemBean> lists,boolean b) {
 
     }
 

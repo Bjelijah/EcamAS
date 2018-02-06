@@ -215,7 +215,7 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
         holder.ivInfo.setImageDrawable(new IconicsDrawable(mContext,    Octicons.Icon.oct_info).actionBar().color(Color.WHITE));
         holder.ivDelete.setImageDrawable(new IconicsDrawable(mContext,    Octicons.Icon.oct_trashcan).actionBar().color(Color.WHITE));
         holder.llDelete.setBackground(new IconicsDrawable(mContext,    Octicons.Icon.oct_trashcan).actionBar().colorRes(R.color.item_camera_detele_bk));
-
+        holder.ivInfo.setVisibility(View.GONE);
         holder.ivDelete.setVisibility(View.GONE );
         holder.llDelete.setVisibility((LoginAction.getInstance().ismIsGuest()&&false) ? View.GONE : View.VISIBLE);
 
@@ -368,6 +368,7 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
             ivReplay = (FloatingActionButton) itemView.findViewById(R.id.item_camera_iv_replay);
             ivSetting = (FloatingActionButton) itemView.findViewById(R.id.item_camera_iv_setting);
             ivInfo = (FloatingActionButton) itemView.findViewById(R.id.item_camera_iv_info);
+
             ivDelete = (FloatingActionButton) itemView.findViewById(R.id.item_camera_iv_delete);
             llDelete = (LinearLayout) itemView.findViewById(R.id.item_camera_ll_delete);
             sll = (SwipeLinearLayout) itemView.findViewById(R.id.item_camera_sll);

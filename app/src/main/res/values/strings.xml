@@ -382,6 +382,8 @@
     <string name="camera_setting_det_rec">Detection and Recording</string>
     <string name="camera_setting_det_rec_dec">If something moving in the video,it will trigger the alarm,record it(if has SDcard)</string>
     <string name="camera_setting_det_alarm">Detection and Push Alarm</string>
+    <string name="camera_setting_det_duration">Detection and Lamp</string>
+    <string name="camera_setting_det_duration_dec">How long lamp on</string>
     <string name="camera_setting_det_alarm_dec">Push the Alarm To My Phone</string>
     <string name="camera_setting_camera_version">Version</string>
     <string name="camera_setting_camera_updata">Updata Camera</string>

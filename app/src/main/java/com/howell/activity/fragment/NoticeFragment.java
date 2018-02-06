@@ -123,7 +123,7 @@ public class NoticeFragment extends HomeBaseFragment implements INoticeContract.
             }
         },1000);
 //        mNoticeAction.getNoticesTask();
-        mPresenter.queryNotice(null,mIsRead,mTime,null);
+        mPresenter.queryNotice(null,mIsRead,mTime,null,false);
     }
 
     @Override
@@ -219,7 +219,7 @@ public class NoticeFragment extends HomeBaseFragment implements INoticeContract.
             @Override
             public void run() {
 //                Log.i("123","do search by state action="+mNoticeAction);
-                mlist.clear();
+//                mlist.clear();
                 Log.i("123","mlist size="+mlist.size());
 //                if (mNoticeAction==null){
 //                    mNoticeAction = NoticeAction.getInstance();
@@ -227,7 +227,7 @@ public class NoticeFragment extends HomeBaseFragment implements INoticeContract.
 //                mNoticeAction.searchNotices(status);
 
                 mPresenter.reset();
-                mPresenter.queryNotice(null,mIsRead,mTime,null);
+                mPresenter.queryNotice(null,mIsRead,mTime,null,true);
 
             }
         });
@@ -236,10 +236,10 @@ public class NoticeFragment extends HomeBaseFragment implements INoticeContract.
 
     @Override
     public void getData(){
-        mlist.clear();
+//        mlist.clear();//fixme
 //        mNoticeAction.reset();
 //        mNoticeAction.getNoticesTask();
-        mPresenter.reset().queryNotice(null,mIsRead,mTime,null);
+        mPresenter.reset().queryNotice(null,mIsRead,mTime,null,true);
     }
 
 
@@ -283,19 +283,19 @@ public class NoticeFragment extends HomeBaseFragment implements INoticeContract.
                         Date date = wheelMain.getTime();
                         mTime = Util.Date2ISODate(date);
                         Log.i("123","time ="+mTime);
-                        mlist.clear();
+//                        mlist.clear();
 //                        mNoticeAction.searchNotices(mTime);
-                        mPresenter.reset().queryNotice(null,mIsRead,mTime,null);
+                        mPresenter.reset().queryNotice(null,mIsRead,mTime,null,true);
 
                     }
                 })
                 .setNeutralButton(getString(R.string.all), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mlist.clear();
+//                        mlist.clear();
                         mTime = null;
 //                        mNoticeAction.searchNotices(null);
-                        mPresenter.reset().queryNotice(null,mIsRead,mTime,null);
+                        mPresenter.reset().queryNotice(null,mIsRead,mTime,null,true);
                     }
                 })
                 .setNegativeButton(getResources().getString(R.string.cancel), null)
@@ -332,9 +332,10 @@ public class NoticeFragment extends HomeBaseFragment implements INoticeContract.
     }
 
     @Override
-    public void onQueryResult(List<NoticeItemBean> lists) {
-        Log.i("123","on query result lists="+lists+"    mlist="+mlist);
+    public void onQueryResult(List<NoticeItemBean> lists,boolean b) {
+        Log.i("123","on query result lists="+lists+"    mlist="+mlist+" needResetList="+b);
         if (lists!=null) {
+            if (b)mlist.clear();
             mlist.addAll(lists);
         }
         mHandler.sendEmptyMessage(MSG_NOTICE_UPDATA);

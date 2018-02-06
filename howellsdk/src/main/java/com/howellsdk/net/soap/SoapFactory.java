@@ -2330,10 +2330,10 @@ public class SoapFactory {
                     ExtendedParamRes res = new ExtendedParamRes();
                     try{
                         SoapObject obj = initEnvelopAndTransport(rpc,"http://www.haoweis.com/HomeServices/MCU/getExtendedParam");
-                        if (obj.getProperty("Result").toString().equalsIgnoreCase("ok")){
+                        if (obj.getProperty("result").toString().equalsIgnoreCase("ok")){
                             res.setLightingDuration(Integer.valueOf(obj.getProperty("LightingDuration").toString()));
                         }
-                        res.setResult(obj.getProperty("Result").toString());
+                        res.setResult(obj.getProperty("result").toString());
                         e.onNext(res);
                     }catch (Exception ex){
                         e.onError(ex);

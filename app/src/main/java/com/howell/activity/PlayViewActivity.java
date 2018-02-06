@@ -1,9 +1,14 @@
 package com.howell.activity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
@@ -11,6 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 
 import com.howell.action.LoginAction;
@@ -37,7 +43,7 @@ import java.util.List;
  */
 
 public class PlayViewActivity extends BasePlayActivity implements GestureDetector.OnGestureListener,View.OnTouchListener,View.OnClickListener,IPlayFun {
-
+    private static final int REQUEST_RECORD_AUDIO_PERMISSION_RESULT = 101;
     private GestureDetector mGestureDetector;
     private RelativeLayout mPlayPtzMove;
     private LinearLayout mPtzLeft,mPtzRight,mPtzUp,mPtzDown;
@@ -48,10 +54,43 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestPermission();
         initPlayView();
         initFun();
         start();
     }
+
+
+    private void requestPermission(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED){
+                Log.i("123","RECORD_AUDIO  get granted");
+                AudioAction.getInstance().initAudioRecord();
+            }else{
+                if(shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)){
+                    Log.i("123","need request permission");
+                }
+                requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},REQUEST_RECORD_AUDIO_PERMISSION_RESULT);
+            }
+        }else{
+            Log.i("123","no need request permission");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION_RESULT) {
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(getApplicationContext(),
+                        "Application will not have audio on record", Toast.LENGTH_SHORT).show();
+            }else{
+                AudioAction.getInstance().initAudioRecord();
+            }
+
+        }
+    }
+
 
     @Override
     protected void onDestroy() {
@@ -235,6 +274,16 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
 
                 finish();
                 break;
+            case R.id.lamp:
+                if (mIsLampLight){
+                    mIsLampLight = false;
+                    mLamp.setImageDrawable(getDrawable(R.drawable.ic_lightbulb_outline_black_40dp));
+                }else{
+                    mIsLampLight = true;
+                    mLamp.setImageDrawable(getDrawable(R.drawable.ic_highlight_black_40dp));
+                }
+                mPresent.lampOn(mIsLampLight);
+                break;
             default:
                 break;
         }
@@ -275,10 +324,11 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
 
     private void initFun(){
         mGestureDetector = new GestureDetector(this,this);
-        AudioAction.getInstance().initAudioRecord();
+//        AudioAction.getInstance().initAudioRecord();
         AudioAction.getInstance().initSound(this);
         mBtTalk.setOnTouchListener(this);
         mSound.setOnClickListener(this);
+        mLamp.setOnClickListener(this);
         mVodList.setOnClickListener(this);
         mCatchPicture.setOnClickListener(this);
         mHD.setOnClickListener(this);

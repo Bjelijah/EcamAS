@@ -37,6 +37,7 @@ public interface IPlayContract {
         void ptzCtrl(PTZ cmd);
         IPresent vodReset();
         void getVODRecord(boolean isSub,String beg,String end);
+        void lampOn(boolean isOn);
         void catchPic();
         void catchPic(String path);
         void setSoundMute(boolean setMute);

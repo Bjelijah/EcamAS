@@ -15,6 +15,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -22,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -45,6 +47,7 @@ import com.howellsdk.net.soap.bean.AuxiliaryRes;
 import com.howellsdk.net.soap.bean.CodingParamRes;
 import com.howellsdk.net.soap.bean.DevVerRes;
 import com.howellsdk.net.soap.bean.DeviceStatusRes;
+import com.howellsdk.net.soap.bean.ExtendedParamRes;
 import com.howellsdk.net.soap.bean.VMDParamRes;
 import com.howellsdk.net.soap.bean.VideoParamRes;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -66,15 +69,18 @@ public class DeviceSettingActivity extends AppCompatActivity implements IParamCo
     CameraItemBean mBean;
     TextView mDeviceName,mResolutionTv,mPictureTv,mUpdataTv;
     SeekBar mResolutionSb,mPictureSb;
+    AppCompatSpinner mLampSp;
     AppCompatCheckBox mTurnCb,mLampCb,mDetRecCb,mDetAlarmCb;
     Button mUpdataBtn,mRenameBtn;
     RelativeLayout mSharell;
     ImageView mShareIv;
+    int mLampDuration = 0;
+
 
     boolean mIsSaved,mIsTurn,mIsLamp,mIsRec,mIsAlarm,mIsRename=false;
     int mResolution,mPicture;
     IParamContract.IPresenter mPresenter;
-    private boolean mIsGetCodefinish,mIsGetVmdFinish,mIsGetAuxFinish,mIsGetVideoFinish,mIsGetVerFinish,mIsGetPush;
+    private boolean mIsGetCodefinish,mIsGetVmdFinish,mIsGetAuxFinish,mIsGetVideoFinish,mIsGetVerFinish,mIsGetPush,mIsGetLampDuration;
 
     private ProgressDialog mPd;
 
@@ -211,6 +217,8 @@ public class DeviceSettingActivity extends AppCompatActivity implements IParamCo
         });
         mShareIv = (ImageView) findViewById(R.id.camera_setting_share_iv);
         mShareIv.setImageDrawable(new IconicsDrawable(this,GoogleMaterial.Icon.gmd_chevron_right).actionBar().colorRes(R.color.homeText));
+        mLampSp = findViewById(R.id.camera_setting_det_lamp_sp);
+
     }
 
     private void initFun(){
@@ -222,6 +230,30 @@ public class DeviceSettingActivity extends AppCompatActivity implements IParamCo
         mDetAlarmCb.setOnCheckedChangeListener(this);
         mResolutionSb.setOnSeekBarChangeListener(this);
         mPictureSb.setOnSeekBarChangeListener(this);
+        mLampSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.i("123","pos="+position);
+                switch (position){
+                    case 0:
+                        mLampDuration = 10;
+                        break;
+                    case 1:
+                        mLampDuration = 30;
+                        break;
+                    case 2:
+                        mLampDuration = 60;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         mUpdataBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -311,7 +343,7 @@ public class DeviceSettingActivity extends AppCompatActivity implements IParamCo
     }
 
     private void checkGain(){
-        if (mIsGetCodefinish&& mIsGetVmdFinish&& mIsGetAuxFinish&&mIsGetVideoFinish&&mIsGetVerFinish&&mIsGetPush) {
+        if (mIsGetCodefinish&& mIsGetVmdFinish&& mIsGetAuxFinish&&mIsGetVideoFinish&&mIsGetVerFinish&&mIsGetPush&&mIsGetLampDuration) {
             mHandler.sendEmptyMessage(MSG_SETTING_WAIT_DISSHOW);
         }
     }
@@ -335,12 +367,15 @@ public class DeviceSettingActivity extends AppCompatActivity implements IParamCo
         mIsGetVideoFinish= false;
         mIsGetVerFinish  = false;
         mIsGetPush       = false;
+        mIsGetLampDuration = false;
         mPresenter.getCodingParam();
         mPresenter.getVMDParam();
         mPresenter.getAuxiliaryParam();
+        mPresenter.getLampDuration();
         mPresenter.getVideoParam();
         mPresenter.getVersionParam();
         mPresenter.getPushParam();
+        mPresenter.getLampDuration();
     }
 
     private void saveSet(boolean bExit){
@@ -495,6 +530,11 @@ public class DeviceSettingActivity extends AppCompatActivity implements IParamCo
            mPresenter.setNewCameraName(renameNewName);
        }
 
+       if(mLampDuration!=0){
+           mPresenter.setLampDuration(mLampDuration);
+       }
+
+
     }
 
 
@@ -624,6 +664,24 @@ public class DeviceSettingActivity extends AppCompatActivity implements IParamCo
         }
         mBLamp = res.getAuxiliaryState().equalsIgnoreCase("Inactive")?false:true;
         mLampCb.setChecked(mBLamp);
+    }
+
+    @Override
+    public void onLampDuration(ExtendedParamRes res) {
+        mIsGetLampDuration = true;
+        checkGain();
+        if (!res.getResult().equalsIgnoreCase("ok")){
+            gainError();
+            return;
+        }
+        int d = res.getLightingDuration();
+        if(d<=10){
+            mLampSp.setSelection(0);
+        }  else if(d<=30){
+            mLampSp.setSelection(1);
+        }  else {
+            mLampSp.setSelection(2);
+        }
     }
 
     @Override

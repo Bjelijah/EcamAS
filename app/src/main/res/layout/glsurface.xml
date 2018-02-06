@@ -101,23 +101,35 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="#00000000"
-                    android:src="@mipmap/img_record" />
+                    android:src="@drawable/ic_local_movies_black_40dp" />
 
+                <!--android:src="@mipmap/img_take_photo"-->
                 <ImageButton
                     android:id="@+id/catch_picture"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="#00000000"
-                    android:src="@mipmap/img_take_photo" />
+                    android:src="@drawable/ic_photo_camera_black_40dp" />
+
+
+                <ImageButton
+                    android:id="@+id/lamp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="#00000000"
+                    android:src="@drawable/ic_lightbulb_outline_black_40dp" />
+
 
                 <ImageButton
                     android:id="@+id/sound"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="0"
                     android:background="#00000000"
-                    android:src="@mipmap/img_sound" />
+                    android:src="@mipmap/img_sound"
+                    android:visibility="gone"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

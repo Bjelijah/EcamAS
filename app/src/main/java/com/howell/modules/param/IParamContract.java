@@ -9,6 +9,7 @@ import com.howellsdk.net.soap.bean.AuxiliaryRes;
 import com.howellsdk.net.soap.bean.CodingParamRes;
 import com.howellsdk.net.soap.bean.DevVerRes;
 import com.howellsdk.net.soap.bean.DeviceStatusRes;
+import com.howellsdk.net.soap.bean.ExtendedParamRes;
 import com.howellsdk.net.soap.bean.VMDParamRes;
 import com.howellsdk.net.soap.bean.VideoParamRes;
 
@@ -21,6 +22,7 @@ public interface IParamContract {
         void onCodeRes(CodingParamRes res);
         void onVMDRes(VMDParamRes res);
         void onAuxiliaryRes(AuxiliaryRes res);
+        void onLampDuration(ExtendedParamRes res);
         void onAndroidPushRes(DeviceStatusRes res);
         void onVideoParamRes(VideoParamRes res);
         void onVersionRes(DevVerRes res);
@@ -37,6 +39,7 @@ public interface IParamContract {
         void getCodingParam();
         void getVMDParam();
         void getAuxiliaryParam();
+        void getLampDuration();
         void getVideoParam();
         void getVersionParam();
         void getPushParam();
@@ -45,6 +48,7 @@ public interface IParamContract {
         void setEncodeParam(int bitrate,String streamType,String frameSize);
         void setTurn180(boolean isTurn);
         void setLampOnOff(boolean bLamp);
+        void setLampDuration(int sec);
         void setVMDOnOff(boolean bVmd);
         void setPush(boolean bPush);
         void setNewCameraName(String name);

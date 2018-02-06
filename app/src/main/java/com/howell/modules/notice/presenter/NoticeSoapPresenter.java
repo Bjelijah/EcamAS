@@ -70,7 +70,7 @@ public class NoticeSoapPresenter extends NoticeBasePresenter {
     }
 
     @Override
-    public void queryNotice(@Nullable String searchID,@Nullable Boolean isRead,@Nullable String time,@Nullable String sender) {
+    public void queryNotice(@Nullable String searchID, @Nullable Boolean isRead, @Nullable String time, @Nullable String sender, final boolean b) {
         if (mCurPage>mTotalPage){
             mView.onError(0);
             return;
@@ -95,7 +95,7 @@ public class NoticeSoapPresenter extends NoticeBasePresenter {
                             return null;
                         }
                         if (noticesRes.getResult().equalsIgnoreCase("NoRecord")){
-                            mView.onQueryResult(null);
+                            mView.onQueryResult(null,b);
                             return null;
                         }
 
@@ -137,7 +137,7 @@ public class NoticeSoapPresenter extends NoticeBasePresenter {
 
                     @Override
                     public void onSuccess(@NonNull List<NoticeItemBean> noticeItemBeen) {
-                        mView.onQueryResult(noticeItemBeen);
+                        mView.onQueryResult(noticeItemBeen,b);
                     }
 
                     @Override

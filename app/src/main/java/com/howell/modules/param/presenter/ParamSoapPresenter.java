@@ -2,6 +2,8 @@ package com.howell.modules.param.presenter;
 
 import android.util.Log;
 
+import com.google.android.gms.common.api.Api;
+import com.howell.activity.AddNewCamera;
 import com.howell.activity.DeviceSettingActivity;
 import com.howell.modules.player.presenter.PlayBasePresenter;
 import com.howellsdk.api.ApiManager;
@@ -12,6 +14,8 @@ import com.howellsdk.net.soap.bean.DevVerReq;
 import com.howellsdk.net.soap.bean.DevVerRes;
 import com.howellsdk.net.soap.bean.DeviceStatusReq;
 import com.howellsdk.net.soap.bean.DeviceStatusRes;
+import com.howellsdk.net.soap.bean.ExtendedParamReq;
+import com.howellsdk.net.soap.bean.ExtendedParamRes;
 import com.howellsdk.net.soap.bean.GetAuxiliaryReq;
 import com.howellsdk.net.soap.bean.Request;
 import com.howellsdk.net.soap.bean.Result;
@@ -136,7 +140,7 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                         mAccount,
                         ApiManager.SoapHelp.getsSession(),
                         mBean.getDeviceId(),
-                        "SignalLamp"))
+                        "Lighting"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<AuxiliaryRes>() {
@@ -159,6 +163,43 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                     @Override
                     public void onComplete() {
                         Log.i("123","get aux finish");
+                    }
+                });
+    }
+
+
+
+    @Override
+    public void getLampDuration() {
+        ApiManager.getInstance().getSoapService()
+                .getExtendedParam(new Request(
+                        mAccount,
+                        ApiManager.SoapHelp.getsSession(),
+                        mBean.getDeviceId(),
+                        mBean.getChannelNo()
+                ))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ExtendedParamRes>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        addDisposable(d);
+                    }
+
+                    @Override
+                    public void onNext(ExtendedParamRes extendedParamRes) {
+                        mView.onLampDuration(extendedParamRes);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        mView.onError();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i("123","get lamp duration finish");
                     }
                 });
     }
@@ -365,7 +406,8 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                         mAccount,
                         ApiManager.SoapHelp.getsSession(),
                         mBean.getDeviceId(),
-                        "SignalLamp",
+//                        "SignalLamp",//信号灯
+                        "Lighting",//"手动照明"
                         bLamp?"Active":"Inactive"
                 ))
                 .map(new Function<Result, Boolean>() {
@@ -396,6 +438,48 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                     @Override
                     public void onComplete() {
                         Log.i("123","set aux finish");
+                    }
+                });
+    }
+
+    @Override
+    public void setLampDuration(int sec) {
+        ApiManager.getInstance().getSoapService()
+                .setExtendedParam(new ExtendedParamReq(
+                        mAccount,
+                        ApiManager.SoapHelp.getsSession(),
+                        mBean.getDeviceId(),
+                        sec
+                ))
+                .map(new Function<Result, Boolean>() {
+
+                    @Override
+                    public Boolean apply(Result result) throws Exception {
+                        return result.getResult().equalsIgnoreCase("ok");
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        addDisposable(d);
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        mView.onSetAuxiliaryRes(aBoolean);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        mView.onSetAuxiliaryRes(false);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i("123","setLampDuration finish");
                     }
                 });
     }

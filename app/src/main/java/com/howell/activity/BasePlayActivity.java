@@ -1,13 +1,18 @@
 package com.howell.activity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -21,6 +26,7 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 
 import com.howell.action.PTZControlAction;
@@ -43,6 +49,7 @@ import com.howell.utils.PhoneConfig;
 import com.howell.utils.ThreadUtil;
 import com.howell.utils.UserConfigSp;
 import com.howellsdk.api.player.GLESTextureView;
+import com.howellsdk.audio.AudioAction;
 import com.howellsdk.utils.RxUtil;
 
 import java.util.List;
@@ -52,6 +59,8 @@ import java.util.List;
  */
 
 public abstract class BasePlayActivity extends FragmentActivity implements IPlayContract.IVew,SurfaceHolder.Callback,View.OnTouchListener,ICam.IStream{
+
+
 
     public static final int MSG_PTZ_SHAKE               = 0xff00;
     public final static int MSG_PLAY_SOUND_MUTE         = 0xff01;
@@ -75,7 +84,7 @@ public abstract class BasePlayActivity extends FragmentActivity implements IPlay
 //    protected GLSurfaceView mGlView;
     protected GLESTextureView mGlView;
     protected Button mBtTalk;
-    protected ImageButton mVodList,mCatchPicture,mSound,mPause,mBack;
+    protected ImageButton mVodList,mCatchPicture,mSound,mPause,mBack,mLamp;
     protected FrameLayout mTitle;
     protected TextView mStreamChange;
     protected MySeekBar mReplaySeekBar;
@@ -88,6 +97,7 @@ public abstract class BasePlayActivity extends FragmentActivity implements IPlay
 //    protected ICam mPlayMgr;
     protected boolean mIsAudioOpen = false;
     protected boolean mIsTalk;
+    protected boolean mIsLampLight = false;
     protected boolean isDestory = false;
 
     protected IPlayContract.IPresent mPresent;
@@ -187,12 +197,14 @@ public abstract class BasePlayActivity extends FragmentActivity implements IPlay
 
 
 
+
     protected void initView(){
         mGlView = (GLESTextureView) findViewById(R.id.gl_texture_view);
         mBtTalk = (Button) findViewById(R.id.play_talk);
         mCatchPicture = (ImageButton)findViewById(R.id.catch_picture);
         mVodList = (ImageButton) findViewById(R.id.vedio_list);
         mSound = (ImageButton)findViewById(R.id.sound);
+        mLamp = findViewById(R.id.lamp);
         mTitle = (FrameLayout)findViewById(R.id.player_title_bar);
         mStreamChange = (TextView)findViewById(R.id.player_change_stream);
         mPause = (ImageButton) findViewById(R.id.ib_pause);

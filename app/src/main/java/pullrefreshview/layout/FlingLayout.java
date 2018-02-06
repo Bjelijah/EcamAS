@@ -336,19 +336,33 @@ public class FlingLayout extends FrameLayout implements NestedScrollingChild, Ne
             return super.dispatchTouchEvent(ev) || isScrolling;
         } else {
             return super.dispatchTouchEvent(ev);
+//            boolean res = false;
+//            try {
+//                res = super.dispatchTouchEvent(ev);
+//            }catch (Exception e){
+//                e.printStackTrace();
+//            }
+//            return res;
         }
 
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mPullView != null && !ViewCompat.isNestedScrollingEnabled(mPullView)) {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    return true;
+        boolean res = false;
+        try {
+
+            if (mPullView != null && !ViewCompat.isNestedScrollingEnabled(mPullView)) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        return true;
+                }
             }
+            res = super.onTouchEvent(event);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        return super.onTouchEvent(event);
+        return res;
     }
     /******************************************************************/
 

@@ -3,6 +3,7 @@ package com.howell.modules.player.presenter;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.android.gms.common.api.Api;
 import com.howell.action.LoginAction;
 import com.howell.bean.CameraItemBean;
 
@@ -19,12 +20,16 @@ import com.howell.utils.FileUtils;
 import com.howellsdk.api.ApiManager;
 import com.howellsdk.api.HWPlayApi;
 import com.howellsdk.audio.AudioAction;
+import com.howellsdk.net.soap.bean.ExtendedParamReq;
+import com.howellsdk.net.soap.bean.ExtendedParamRes;
 import com.howellsdk.net.soap.bean.InviteReq;
 import com.howellsdk.net.soap.bean.InviteRes;
 import com.howellsdk.net.soap.bean.NATServerReq;
 import com.howellsdk.net.soap.bean.NATServerRes;
 import com.howellsdk.net.soap.bean.PtzControlReq;
+import com.howellsdk.net.soap.bean.Request;
 import com.howellsdk.net.soap.bean.Result;
+import com.howellsdk.net.soap.bean.SetAuxiliaryReq;
 import com.howellsdk.net.soap.bean.VodSearchReq;
 import com.howellsdk.net.soap.bean.VodSearchRes;
 import com.howellsdk.utils.RxUtil;
@@ -605,5 +610,47 @@ public class PlayEcamPresenter extends PlayBasePresenter {
     protected void stopTimeTask() {
         super.stopTimeTask();
         ThreadUtil.scheduledThreadShutDown();
+    }
+
+    @Override
+    public void lampOn(boolean isOn) {
+        ApiManager.getInstance().getSoapService()
+            .setAuxiliary(new SetAuxiliaryReq(
+                    mAccount,
+                    ApiManager.SoapHelp.getsSession(),
+                    mBean.getDeviceId(),
+                    "Lighting",//"手动照明"
+                    isOn?"Active":"Inactive"
+            ))
+                .map(new Function<Result, Boolean>() {
+                    @Override
+                    public Boolean apply(Result result) throws Exception {
+                        return result.getResult().equalsIgnoreCase("ok");
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        addDisposable(d);
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        Log.i("123","set lamp is ok="+aBoolean);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("123","set lamp error");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i("123","set lamp finish");
+                    }
+                });
     }
 }

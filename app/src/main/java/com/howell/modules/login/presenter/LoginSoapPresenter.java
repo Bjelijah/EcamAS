@@ -49,7 +49,7 @@ public class LoginSoapPresenter extends LoginBasePresenter implements IConst {
     Custom mCustom;
     @Override
     public void login(@Nullable String name,@Nullable String pwd,@Nullable Custom custom) {
-        Log.i("123","login ");
+        Log.i("123","login name="+name+" pwd="+pwd+" custom="+custom);
         if (name==null||pwd==null){
             if (mIsFirst) {Log.e("123","first return");mView.onError(Type.FIRST_LOGIN);return;}
             if (mName==null || mPwd==null) { Log.e("123","mName = null error");mView.onError(Type.ERROR);return;}
@@ -63,6 +63,7 @@ public class LoginSoapPresenter extends LoginBasePresenter implements IConst {
         this.mCustom = custom;
         if (custom==null){
             //getFromDB
+            Log.i("123","loadCustomFrmoDb");
             this.mCustom = loadCustomFromDB(name,pwd);
 
         }
@@ -71,7 +72,7 @@ public class LoginSoapPresenter extends LoginBasePresenter implements IConst {
             mView.onError(Type.ERROR);
             return;
         }
-        Log.i("123","custom="+this.mCustom.toString());
+        Log.i("123","~~~custom="+this.mCustom.toString());
         String imei = PhoneConfig.getIMEI(mContext);
         LoginRequest req = new LoginRequest(mName,mPwd,imei);
         ApiManager.getInstance()
@@ -332,6 +333,7 @@ public class LoginSoapPresenter extends LoginBasePresenter implements IConst {
     }
 
     private void save2DB(String account, String password, String email, Custom c){
+        Log.i("123","save2 db  c="+c);
         UserLoginDao dao = new UserLoginDao(mContext, "user.db", 1);
         if(dao.findByNameAndIP(account,c.getCustomIP())){
             List<UserLoginDBBean> list = dao.queryByNameAndIP(account,c.getCustomIP());

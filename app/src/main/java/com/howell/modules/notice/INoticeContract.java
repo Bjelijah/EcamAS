@@ -18,7 +18,7 @@ import java.util.List;
 
 public interface INoticeContract {
     interface IVew extends ImpBaseView{
-        void onQueryResult(List<NoticeItemBean> lists);
+        void onQueryResult(List<NoticeItemBean> lists,boolean needResetList);
         void onError(int flag);
         void onStatusError();
         void onPicture(NoticeRecyclerViewAdapter.ViewHoder hoder, Bitmap bit, String path,int index);
@@ -26,7 +26,7 @@ public interface INoticeContract {
     interface IPresenter extends ImpBasePresenter{
         void init(Context context);
         IPresenter reset();
-        void queryNotice(@Nullable String searchID,@Nullable Boolean isRead,@Nullable String time,@Nullable String sender);
+        void queryNotice(@Nullable String searchID,@Nullable Boolean isRead,@Nullable String time,@Nullable String sender,boolean needResetList);
         void setNoticeStatus(String id, boolean isRead);
         void getPicture(NoticeRecyclerViewAdapter.ViewHoder hoder,List<String> picIDs,int width,int height);
 

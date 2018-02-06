@@ -123,14 +123,18 @@ public class AudioAction {
 
 		try {
 			suppressor.setEnabled(true);
+
 		} catch (IllegalStateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch(NullPointerException e){
 			e.printStackTrace();
 		}
-
-		canceler.setEnabled(true);
+		try {
+			canceler.setEnabled(true);
+		}catch (NullPointerException e){
+			e.printStackTrace();
+		}
 		return canceler.getEnabled();
 	}
 
@@ -185,9 +189,9 @@ public class AudioAction {
 	}
 
 	public void startAudioRecord(final AudioRecordHelp h){
-		if(bAudioRecording) {
+		if(bAudioRecording || audioRecord==null) {
 //			Log.i("123","bAudioRecording alreadly  bAudioRecording");
-				return;
+			return;
 		}
 		bAudioRecording = true;
 

@@ -21,7 +21,7 @@ public class NoticeHttpPresenter extends NoticeBasePresenter {
     }
 
     @Override
-    public void queryNotice(@Nullable String searchID, @Nullable Boolean isRead, @Nullable String time, @Nullable String sender) {
+    public void queryNotice(@Nullable String searchID, @Nullable Boolean isRead, @Nullable String time, @Nullable String sender,boolean b) {
 
     }
 
