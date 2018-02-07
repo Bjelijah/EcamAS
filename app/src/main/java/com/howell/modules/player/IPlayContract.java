@@ -19,6 +19,7 @@ public interface IPlayContract {
     interface IVew extends ImpBaseView{
         void onConnect(boolean isSuccess);
         void onSoundMute(boolean isMute);
+        void onLampState(boolean isOn);
         void onRecord(List<VODRecord> vodRecords);
         void onError(int flag);//0 error  1 need relink
         void onTime(int speed,long timestamp,long firstTimestamp,boolean bWait);
@@ -38,6 +39,7 @@ public interface IPlayContract {
         IPresent vodReset();
         void getVODRecord(boolean isSub,String beg,String end);
         void lampOn(boolean isOn);
+        void getLampState();
         void catchPic();
         void catchPic(String path);
         void setSoundMute(boolean setMute);

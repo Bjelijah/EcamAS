@@ -3,6 +3,7 @@ package com.howell.modules.player.presenter;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.android.gms.common.api.Api;
 import com.howell.bean.CameraItemBean;
 
 import com.howell.modules.player.IPlayContract;
@@ -15,6 +16,8 @@ import com.howell.utils.FileUtils;
 import com.howellsdk.api.ApiManager;
 import com.howellsdk.api.HWPlayApi;
 import com.howellsdk.audio.AudioAction;
+import com.howellsdk.net.soap.bean.AuxiliaryRes;
+import com.howellsdk.net.soap.bean.GetAuxiliaryReq;
 import com.howellsdk.net.soap.bean.InviteReq;
 import com.howellsdk.net.soap.bean.InviteRes;
 import com.howellsdk.net.soap.bean.NATServerReq;
@@ -641,5 +644,46 @@ public class PlayEcamPresenter extends PlayBasePresenter {
                         Log.i("123","set lamp finish");
                     }
                 });
+    }
+
+    @Override
+    public void getLampState() {
+        ApiManager.getInstance().getSoapService()
+                .getAuxiliary(new GetAuxiliaryReq(
+                        mAccount,
+                        ApiManager.SoapHelp.getsSession(),
+                        mBean.getDeviceId(),
+                        "Lighting"
+                ))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<AuxiliaryRes>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        addDisposable(d);
+                    }
+
+                    @Override
+                    public void onNext(AuxiliaryRes auxiliaryRes) {
+                        if (auxiliaryRes.getResult().equalsIgnoreCase("ok")){
+                            mView.onLampState(auxiliaryRes.getAuxiliaryState().equalsIgnoreCase("Active"));
+                        }else{
+                            Log.e("123","get aux linghting error");
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        Log.e("123","get aux Lighting error");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i("123","get aux Lighting finish");
+                    }
+                });
+
+
     }
 }

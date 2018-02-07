@@ -96,6 +96,11 @@ public abstract class PlayBasePresenter extends BasePresenter implements IPlayCo
 
     }
 
+    @Override
+    public void getLampState() {
+
+    }
+
     public IPlayContract.IVew getView() {
         return mView;
     }

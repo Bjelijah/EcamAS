@@ -51,6 +51,7 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
         initPlayView();
         initFun();
         start();
+        mPresent.getLampState();
     }
 
 
@@ -330,6 +331,9 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
         mBack.setOnClickListener(this);
         mVodShowFun = false;
 //        PlayAction.getInstance().setPlayBack(false);
+        //get lamp state
+
+
     }
 
     private void fragmentPtzInit(){
@@ -453,6 +457,7 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
     private void start(){
         Log.i("123","play start");
         this.camConnect();
+
     }
 
 
@@ -507,5 +512,10 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
                 }
             }
         });
+    }
+
+    @Override
+    public void onLampState(boolean isOn) {
+        mLamp.setImageDrawable(getDrawable(isOn?R.drawable.ic_lightbulb_outline_black_40dp:R.drawable.ic_highlight_black_40dp));
     }
 }

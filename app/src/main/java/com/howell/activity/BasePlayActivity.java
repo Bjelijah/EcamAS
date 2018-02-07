@@ -463,4 +463,9 @@ public abstract class BasePlayActivity extends FragmentActivity implements IPlay
     public void onPlaybackStartEndTime(long beg, long end) {
         Log.i("123","base play  onPlaybackStartEndTime");
     }
+
+    @Override
+    public void onLampState(boolean isOn) {
+
+    }
 }

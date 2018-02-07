@@ -326,6 +326,11 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
     }
 
     @Override
+    public void onLampState(boolean isOn) {
+
+    }
+
+    @Override
     public void onRecord(final List<com.howell.modules.player.bean.VODRecord> vodRecords) {
         RxUtil.doInUIThread(new RxUtil.RxSimpleTask<Object>() {
             @Override

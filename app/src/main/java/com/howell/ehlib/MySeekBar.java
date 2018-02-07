@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.android.howell.webcam.R;
 
-public class MySeekBar extends SeekBar {
+public class MySeekBar extends android.support.v7.widget.AppCompatSeekBar {
 	private PopupWindow mPopupWindow;
 
 	private LayoutInflater mInflater;

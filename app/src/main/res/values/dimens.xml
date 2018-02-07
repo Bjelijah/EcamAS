@@ -3,6 +3,9 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="bottom_tab_padding_drawable">2.0dip</dimen>
+    <dimen name="bottom_tab_padding_up">5.0dip</dimen>
+    <dimen name="bottom_tab_font_size">10.0dip</dimen>
 
     <dimen name="activity_login_horizontal_margin">50dp</dimen>
 
@@ -25,6 +28,7 @@
     <dimen name="add_listen_device_width">230dp</dimen>
     <dimen name="add_listen_device_spinner_width">190dp</dimen>
     <!-- item notice -->
+    <dimen name="item_notice_horizontal_margin">16dp</dimen>
     <dimen name="item_notice_vertical_margin">16dp</dimen>
     <dimen name="item_notice_image_margin">5dp</dimen>
     <dimen name="item_notice_card_radius">4dp</dimen>
@@ -40,6 +44,7 @@
     <dimen name="camera_setting_width_ctrl">100dp</dimen>
 
     <!-- item vod  video list -->
+    <dimen name="item_vod_padding_vertical">10dp</dimen>
     <dimen name="item_vod_padding_horizontal">20dp</dimen>
 
     <!-- push setting -->
