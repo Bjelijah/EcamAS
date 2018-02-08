@@ -420,7 +420,10 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                 .map(new Function<Result, Boolean>() {
                     @Override
                     public Boolean apply(@NonNull Result result) throws Exception {
-
+                        if (result.getResult().equalsIgnoreCase("SessionExpired")){
+                            loginFlag = false;
+                            login();
+                        }
 
                         return result.getResult().equalsIgnoreCase("ok");
                     }
@@ -466,6 +469,10 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                 .map(new Function<Result, Boolean>() {
                     @Override
                     public Boolean apply(@NonNull Result result) throws Exception {
+                        if (result.getResult().equalsIgnoreCase("SessionExpired")){
+                            loginFlag = false;
+                            login();
+                        }
                         return result.getResult().equalsIgnoreCase("ok");
                     }
                 })
@@ -509,6 +516,10 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                 .map(new Function<Result, Boolean>() {
                     @Override
                     public Boolean apply(@NonNull Result result) throws Exception {
+                        if (result.getResult().equalsIgnoreCase("SessionExpired")){
+                            loginFlag = false;
+                            login();
+                        }
                         return result.getResult().equalsIgnoreCase("ok");
                     }
                 })
@@ -551,6 +562,10 @@ public class ParamSoapPresenter extends ParamBasePresenter {
 
                     @Override
                     public Boolean apply(Result result) throws Exception {
+                        if (result.getResult().equalsIgnoreCase("SessionExpired")){
+                            loginFlag = false;
+                            login();
+                        }
                         return result.getResult().equalsIgnoreCase("ok");
                     }
                 })
@@ -598,6 +613,10 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                     @Override
                     public Boolean apply(@NonNull Result result) throws Exception {
                         Log.i("123","result = "+result.toString());
+                        if (result.getResult().equalsIgnoreCase("SessionExpired")){
+                            loginFlag = false;
+                            login();
+                        }
                         return result.getResult().equalsIgnoreCase("ok");
                     }
                 })
@@ -639,6 +658,10 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                 .map(new Function<Result, Boolean>() {
                     @Override
                     public Boolean apply(@NonNull Result result) throws Exception {
+                        if (result.getResult().equalsIgnoreCase("SessionExpired")){
+                            loginFlag = false;
+                            login();
+                        }
                         return result.getResult().equalsIgnoreCase("ok");
                     }
                 })
@@ -681,6 +704,10 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                 .map(new Function<Result, Boolean>() {
                     @Override
                     public Boolean apply(@NonNull Result result) throws Exception {
+                        if (result.getResult().equalsIgnoreCase("SessionExpired")){
+                            loginFlag = false;
+                            login();
+                        }
                         return result.getResult().equalsIgnoreCase("ok");
                     }
                 })
