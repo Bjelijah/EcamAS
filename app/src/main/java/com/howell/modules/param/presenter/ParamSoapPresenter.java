@@ -3,9 +3,11 @@ package com.howell.modules.param.presenter;
 import android.util.Log;
 
 import com.google.android.gms.common.api.Api;
+import com.howell.action.ConfigAction;
 import com.howell.activity.AddNewCamera;
 import com.howell.activity.DeviceSettingActivity;
 import com.howell.modules.player.presenter.PlayBasePresenter;
+import com.howell.utils.PhoneConfig;
 import com.howellsdk.api.ApiManager;
 import com.howellsdk.net.soap.bean.AuxiliaryRes;
 import com.howellsdk.net.soap.bean.CodingParamReq;
@@ -17,6 +19,8 @@ import com.howellsdk.net.soap.bean.DeviceStatusRes;
 import com.howellsdk.net.soap.bean.ExtendedParamReq;
 import com.howellsdk.net.soap.bean.ExtendedParamRes;
 import com.howellsdk.net.soap.bean.GetAuxiliaryReq;
+import com.howellsdk.net.soap.bean.LoginRequest;
+import com.howellsdk.net.soap.bean.LoginResponse;
 import com.howellsdk.net.soap.bean.Request;
 import com.howellsdk.net.soap.bean.Result;
 import com.howellsdk.net.soap.bean.SetAuxiliaryReq;
@@ -65,6 +69,52 @@ public class ParamSoapPresenter extends ParamBasePresenter {
             "00000000000",
     };
 
+    private boolean loginFlag = false;
+
+//    private boolean test = false;
+
+    private synchronized void login(){
+        if (loginFlag  ) {Log.e("123","is logining we return");return ;}
+        ApiManager.getInstance().getSoapService()
+                .userLogin(new LoginRequest(
+                        ConfigAction.getInstance(mContext).getName(),
+                        ConfigAction.getInstance(mContext).getPassword(),
+                        PhoneConfig.getIMEI(mContext)
+                ))
+                .map(new Function<LoginResponse, String>() {
+                    @Override
+                    public String apply(LoginResponse loginResponse) throws Exception {
+                        ApiManager.SoapHelp.setsSession(loginResponse.getLoginSession());
+                        return loginResponse.getResult();
+                    }
+                })
+//                .subscribeOn(Schedulers.trampoline())
+//                .observeOn(Schedulers.trampoline())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        addDisposable(d);
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        Log.i("123","login s="+s);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i("123","login finish");
+                    }
+                });
+        loginFlag = true;
+    }
+
+
     @Override
     public void getCodingParam() {
         ApiManager.getInstance().getSoapService()
@@ -84,7 +134,14 @@ public class ParamSoapPresenter extends ParamBasePresenter {
 
                     @Override
                     public void onNext(@NonNull CodingParamRes codingParamRes) {
-                        mView.onCodeRes(codingParamRes);
+                        if (codingParamRes.getResult().equalsIgnoreCase("SessionExpired")){
+                            loginFlag = false;
+                            login();
+                            getCodingParam();
+                        }else{
+                            mView.onCodeRes(codingParamRes);
+                        }
+
                     }
 
                     @Override
@@ -118,7 +175,13 @@ public class ParamSoapPresenter extends ParamBasePresenter {
 
                     @Override
                     public void onNext(@NonNull VMDParamRes vmdParamRes) {
-                        mView.onVMDRes(vmdParamRes);
+                        if (vmdParamRes.getResult().equalsIgnoreCase("SessionExpired")){
+                            loginFlag = false;
+                            login();
+                            getVMDParam();
+                        }else{
+                            mView.onVMDRes(vmdParamRes);
+                        }
                     }
 
                     @Override
@@ -152,7 +215,13 @@ public class ParamSoapPresenter extends ParamBasePresenter {
 
                     @Override
                     public void onNext(@NonNull AuxiliaryRes auxiliaryRes) {
-                        mView.onAuxiliaryRes(auxiliaryRes);
+                        if (auxiliaryRes.getResult().equalsIgnoreCase("SessionExpired")){
+                            loginFlag = false;
+                            login();
+                            getAuxiliaryParam();
+                        }else{
+                            mView.onAuxiliaryRes(auxiliaryRes);
+                        }
                     }
 
                     @Override
@@ -189,7 +258,13 @@ public class ParamSoapPresenter extends ParamBasePresenter {
 
                     @Override
                     public void onNext(ExtendedParamRes extendedParamRes) {
-                        mView.onLampDuration(extendedParamRes);
+                        if (extendedParamRes.getResult().equalsIgnoreCase("SessionExpired")){
+                            loginFlag = false;
+                            login();
+                            getLampDuration();
+                        }else{
+                            mView.onLampDuration(extendedParamRes);
+                        }
                     }
 
                     @Override
@@ -223,7 +298,13 @@ public class ParamSoapPresenter extends ParamBasePresenter {
 
                     @Override
                     public void onNext(@NonNull VideoParamRes videoParamRes) {
-                        mView.onVideoParamRes(videoParamRes);
+                        if (videoParamRes.getResult().equalsIgnoreCase("SessionExpired")){
+                            loginFlag = false;
+                            login();
+                            getVideoParam();
+                        }else{
+                            mView.onVideoParamRes(videoParamRes);
+                        }
                     }
 
                     @Override
@@ -257,7 +338,13 @@ public class ParamSoapPresenter extends ParamBasePresenter {
 
                     @Override
                     public void onNext(@NonNull DevVerRes devVerRes) {
-                        mView.onVersionRes(devVerRes);
+                        if (devVerRes.getResult().equalsIgnoreCase("SessionExpired")){
+                            loginFlag = false;
+                            login();
+                            getVersionParam();
+                        }else{
+                            mView.onVersionRes(devVerRes);
+                        }
                     }
 
                     @Override
@@ -291,7 +378,13 @@ public class ParamSoapPresenter extends ParamBasePresenter {
 
                     @Override
                     public void onNext(@NonNull DeviceStatusRes deviceStatusRes) {
-                        mView.onAndroidPushRes(deviceStatusRes);
+                        if (deviceStatusRes.getResult().equalsIgnoreCase("SessionExpired")){
+                            loginFlag = false;
+                            login();
+                            getPushParam();
+                        }else{
+                            mView.onAndroidPushRes(deviceStatusRes);
+                        }
                     }
 
                     @Override
@@ -327,6 +420,8 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                 .map(new Function<Result, Boolean>() {
                     @Override
                     public Boolean apply(@NonNull Result result) throws Exception {
+
+
                         return result.getResult().equalsIgnoreCase("ok");
                     }
                 })

@@ -292,6 +292,10 @@ public class DeviceSoapPresenter extends DeviceBasePresenter {
                 .map(new Function<DeviceMatchingCodeRes, String>() {
                     @Override
                     public String apply(@NonNull DeviceMatchingCodeRes deviceMatchingCodeRes) throws Exception {
+                        if(deviceMatchingCodeRes.getResult().equalsIgnoreCase("SessionExpired")){
+                            login();
+                        }
+
                         if (!deviceMatchingCodeRes.getResult().equalsIgnoreCase("ok")){
                             mView.onError();
                             return null;
@@ -307,6 +311,7 @@ public class DeviceSoapPresenter extends DeviceBasePresenter {
 
                     @Override
                     public void onNext(@NonNull String s) {
+
                         mView.onDeviceMatchCode(s);
                     }
 

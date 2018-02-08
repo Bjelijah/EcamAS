@@ -43,7 +43,7 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
     private PlayFunViewPage mPlayFun;
     private boolean mIsShowPtz;
     private boolean mVodShowFun=false;
-
+    private boolean mIsLampOnBefore = false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,9 +88,9 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
 
     @Override
     protected void onDestroy() {
+        mPresent.lampOn(mIsLampOnBefore);
         AudioAction.getInstance().deInitAudioRecord();
         super.onDestroy();
-
         if (mVodShowFun) {
             //goto activity
             Intent intent = new Intent(this, VideoListActivity.class);
@@ -516,6 +516,7 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
 
     @Override
     public void onLampState(boolean isOn) {
+        mIsLampOnBefore = isOn;
         mLamp.setImageDrawable(getDrawable(isOn?R.drawable.ic_lightbulb_outline_black_40dp:R.drawable.ic_highlight_black_40dp));
     }
 }

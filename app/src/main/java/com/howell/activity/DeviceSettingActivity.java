@@ -369,7 +369,7 @@ public class DeviceSettingActivity extends AppCompatActivity implements IParamCo
         mPresenter.getVideoParam();
         mPresenter.getVersionParam();
         mPresenter.getPushParam();
-        mPresenter.getLampDuration();
+
     }
 
     private void saveSet(boolean bExit){

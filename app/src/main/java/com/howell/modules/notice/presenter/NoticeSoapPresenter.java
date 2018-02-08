@@ -8,12 +8,16 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.howell.action.ConfigAction;
 import com.howell.adapter.NoticeRecyclerViewAdapter;
 import com.howell.bean.NoticeItemBean;
+import com.howell.utils.PhoneConfig;
 import com.howell.utils.SDCardUtils;
 import com.howell.utils.ScaleImageUtils;
 import com.howellsdk.api.ApiManager;
 import com.howellsdk.net.soap.bean.FlaggedNoticeStatusReq;
+import com.howellsdk.net.soap.bean.LoginRequest;
+import com.howellsdk.net.soap.bean.LoginResponse;
 import com.howellsdk.net.soap.bean.NoticeList;
 import com.howellsdk.net.soap.bean.NoticesReq;
 import com.howellsdk.net.soap.bean.NoticesRes;
@@ -49,10 +53,51 @@ public class NoticeSoapPresenter extends NoticeBasePresenter {
     private final int mPageSize = 20;
     private int mTotalPage;
 
-    private void login(){
+    private boolean loginFlag = false;
+    synchronized private void login(){
+        if (loginFlag){
+            return;
+        }
+        ApiManager.getInstance().getSoapService()
+                .userLogin(new LoginRequest(
+                        ConfigAction.getInstance(mContext).getName(),
+                        ConfigAction.getInstance(mContext).getPassword(),
+                        PhoneConfig.getIMEI(mContext)
+                ))
+                .map(new Function<LoginResponse, String>() {
+                    @Override
+                    public String apply(LoginResponse loginResponse) throws Exception {
+                        ApiManager.SoapHelp.setsSession(loginResponse.getLoginSession());
+                        return loginResponse.getResult();
+                    }
+                })
+                .subscribeOn(Schedulers.trampoline())
+                .observeOn(Schedulers.trampoline())
+                .subscribe(new Observer<String>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        addDisposable(d);
+                    }
 
+                    @Override
+                    public void onNext(String s) {
+                        Log.i("123","s="+s);
+                        if (s.equalsIgnoreCase("ok")){
 
+                        }
+                    }
 
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i("123","login finish");
+                    }
+                });
+        loginFlag = true;
     }
 
     @Override
@@ -70,7 +115,7 @@ public class NoticeSoapPresenter extends NoticeBasePresenter {
     }
 
     @Override
-    public void queryNotice(@Nullable String searchID, @Nullable Boolean isRead, @Nullable String time, @Nullable String sender, final boolean b) {
+    public void queryNotice(@Nullable final String searchID, @Nullable final Boolean isRead, @Nullable final String time, @Nullable final String sender, final boolean b) {
         if (mCurPage>mTotalPage){
             mView.onError(0);
             return;
@@ -91,7 +136,9 @@ public class NoticeSoapPresenter extends NoticeBasePresenter {
                     public ArrayList<NoticeList> apply(@NonNull NoticesRes noticesRes) throws Exception {
 
                         if (noticesRes.getResult().equalsIgnoreCase("SessionExpired")){// session 过期 重新登入
+                            loginFlag = false;
                             login();
+                            queryNotice(searchID,isRead,time,sender,b);
                             return null;
                         }
                         if (noticesRes.getResult().equalsIgnoreCase("NoRecord")){
@@ -152,7 +199,7 @@ public class NoticeSoapPresenter extends NoticeBasePresenter {
     }
 
     @Override
-    public void setNoticeStatus(String id, boolean isRead) {
+    public void setNoticeStatus(final String id, final boolean isRead) {
 
         ApiManager.getInstance()
                 .getSoapService()
@@ -172,6 +219,11 @@ public class NoticeSoapPresenter extends NoticeBasePresenter {
                     public void onNext(@NonNull Result result) {
                         if (!result.getResult().equalsIgnoreCase("ok")){
                             mView.onStatusError();
+                        }
+                        if (result.getResult().equalsIgnoreCase("SessionExpired")){
+                            loginFlag = false;
+                            login();
+                            setNoticeStatus(id,isRead);
                         }
                     }
 
@@ -226,6 +278,22 @@ public class NoticeSoapPresenter extends NoticeBasePresenter {
 
     }
 
+    @Override
+    public void getPicture(NoticeRecyclerViewAdapter.ViewHoder hoder, List<String> picIDs,int width,int height) {
+
+        for (int i=0;i<picIDs.size();i++){
+            String id = picIDs.get(i);
+            if(!SDCardUtils.isBitmapExist(id)){
+                Log.i("123","is not bitmap exit id="+id);
+                downloadPic(hoder,id,width,height,i);
+            }else{
+                Log.i("123","is bitmap exit id="+id);
+                getPic(hoder,id,width,height,i);
+            }
+        }
+    }
+
+
     private void downloadPic(final NoticeRecyclerViewAdapter.ViewHoder hoder, final String id, final int width, final int height,final int index){
 
         ApiManager.getInstance()
@@ -235,11 +303,19 @@ public class NoticeSoapPresenter extends NoticeBasePresenter {
                     @Override
                     public Bitmap apply(@NonNull PictureRes pictureRes) throws Exception {
                         Log.i("123","downloadPic  res="+pictureRes.toString());
-                        byte [] data  = Base64.decode(pictureRes.getPicture());
-                        Bitmap bitmap = ScaleImageUtils.decodeByteArray(width,height,data);
-                        //save
-                        SDCardUtils.saveBmpToSd(bitmap,id);
-                        SDCardUtils.saveBmpToSd(BitmapFactory.decodeByteArray(data, 0, data.length),id+"HD");
+                        Bitmap bitmap = null;
+                        if (pictureRes.getResult().equalsIgnoreCase("ok")) {
+                            byte[] data = Base64.decode(pictureRes.getPicture());
+                            bitmap = ScaleImageUtils.decodeByteArray(width, height, data);
+                            //save
+                            SDCardUtils.saveBmpToSd(bitmap, id);
+                            SDCardUtils.saveBmpToSd(BitmapFactory.decodeByteArray(data, 0, data.length), id + "HD");
+                        }
+                        if (pictureRes.getResult().equalsIgnoreCase("SessionExpired")){
+                            loginFlag = false;
+                            login();
+                            downloadPic(hoder, id, width, height, index);
+                        }
                         return bitmap;
                     }
                 })
@@ -273,21 +349,5 @@ public class NoticeSoapPresenter extends NoticeBasePresenter {
 
 
 
-    }
-
-
-    @Override
-    public void getPicture(NoticeRecyclerViewAdapter.ViewHoder hoder, List<String> picIDs,int width,int height) {
-
-        for (int i=0;i<picIDs.size();i++){
-            String id = picIDs.get(i);
-            if(!SDCardUtils.isBitmapExist(id)){
-                Log.i("123","is not bitmap exit id="+id);
-               downloadPic(hoder,id,width,height,i);
-            }else{
-                Log.i("123","is bitmap exit id="+id);
-               getPic(hoder,id,width,height,i);
-            }
-        }
     }
 }
