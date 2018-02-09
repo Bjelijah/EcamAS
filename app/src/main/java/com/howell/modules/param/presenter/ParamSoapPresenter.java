@@ -204,7 +204,9 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                         mAccount,
                         ApiManager.SoapHelp.getsSession(),
                         mBean.getDeviceId(),
-                        "Lighting"))
+//                        "SignalLamp"//信号灯
+                        "Lighting"
+                ))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<AuxiliaryRes>() {
