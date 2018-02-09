@@ -204,8 +204,8 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                         mAccount,
                         ApiManager.SoapHelp.getsSession(),
                         mBean.getDeviceId(),
-//                        "SignalLamp"//信号灯
-                        "Lighting"
+                        "SignalLamp"//信号灯
+//                        "Lighting"
                 ))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -511,8 +511,8 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                         mAccount,
                         ApiManager.SoapHelp.getsSession(),
                         mBean.getDeviceId(),
-//                        "SignalLamp",//信号灯
-                        "Lighting",//"手动照明"
+                        "SignalLamp",//信号灯
+//                        "Lighting",//"手动照明"
                         bLamp?"Active":"Inactive"
                 ))
                 .map(new Function<Result, Boolean>() {
