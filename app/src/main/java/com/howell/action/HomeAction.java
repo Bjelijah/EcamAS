@@ -11,7 +11,7 @@ import com.howell.bean.PlayType;
 import com.howell.bean.UserLoginDBBean;
 import com.howell.db.ApDeviceDao;
 import com.howell.db.UserLoginDao;
-import com.howell.entityclass.NodeDetails;
+
 
 
 import com.howell.utils.ServerConfigSp;
@@ -88,29 +88,9 @@ public class HomeAction {
     }
     private HomeAction(){}
 
-    private QueryDeviceCallback mQueryDeviceCallback;
-    private ChangeUser mChangeUserCallback;
 
-    public HomeAction registChangerUserCallback(ChangeUser cb){
-        this.mChangeUserCallback = cb;
-        return this;
-    }
 
-    public void unregistChangerUserCallback(){
-        this.mChangeUserCallback = null;
-    }
 
-    public QueryDeviceCallback unregistQueryDeviceCallback() {
-        mQueryDeviceCallback = null;
-        return mQueryDeviceCallback;
-    }
-
-    public HomeAction registQueryDeviceCallback(QueryDeviceCallback mQueryDeviceCallback) {
-        this.mQueryDeviceCallback = mQueryDeviceCallback;
-        return this;
-    }
-
-    private ArrayList<NodeDetails> mList;
 
     private List<APDeviceDBBean> getAPCameraList(Context context,String userName){
         ApDeviceDao dao = new ApDeviceDao(context,"user.db",1);
@@ -186,14 +166,5 @@ public class HomeAction {
 
 
 
-    public interface QueryDeviceCallback{
-        void onQueryDeviceSuccess(ArrayList<NodeDetails> l);
-        void onQueryDeviceError();
-    }
-
-    public interface ChangeUser{
-        void onChangeOk();
-        void onChangeError();
-    }
 
 }

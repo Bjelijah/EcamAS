@@ -86,7 +86,7 @@ import io.reactivex.disposables.CompositeDisposable;
  * Created by howell on 2016/11/15.
  */
 
-public class HomeExActivity extends AppCompatActivity implements ILoginContract.IView,HomeAction.ChangeUser,IConst, ViewPager.OnPageChangeListener {
+public class HomeExActivity extends AppCompatActivity implements ILoginContract.IView,IConst, ViewPager.OnPageChangeListener {
 
     private final static long ID_DRAWER_UID = 0x00;
     private final static long ID_DRAWER_HOME = 0x01;
@@ -446,7 +446,6 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
     private void buildDrawer(Bundle savedInstanceState){
         final boolean isTurn = bTypeTurn;//HomeAction.getInstance().isUseTurn();
         final boolean isCrypto = bTypeCrypto;//HomeAction.getInstance().isUseCrypto();
-        HomeAction.getInstance().registChangerUserCallback(this);
         result = new DrawerBuilder()
                 .withActivity(this)
                 .withAccountHeader(headerResult)
@@ -644,18 +643,8 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
         super.onSaveInstanceState(outState, outPersistentState);
     }
 
-    @Override
-    public void onChangeOk() {
-        Log.e("123","on changeOK");
-        for(HomeBaseFragment fragment:mFragments){
-            fragment.getData();
-        }
-    }
 
-    @Override
-    public void onChangeError() {
-        Snackbar.make(mViewPager,getString(R.string.home_drawer_changer_user_error),Snackbar.LENGTH_LONG).show();
-    }
+
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

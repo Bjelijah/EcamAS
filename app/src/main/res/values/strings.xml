@@ -205,9 +205,7 @@
     <string name="QR_code">QR code</string>
     <string name="msg_default_status">put the qr code in the box, can automatically scan</string>
 
-    <style name="MyCheckBox" parent="@android:style/Widget.CompoundButton.CheckBox">
-        <item name="android:button">@drawable/cb_select</item>
-    </style>
+
 
 
     <string name="play_talk">talk</string>

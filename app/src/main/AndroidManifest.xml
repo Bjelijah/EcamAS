@@ -10,7 +10,10 @@
         <!--android:name="com.android.howell.com.android.howell.webcam.permission.JPUSH_MESSAGE"-->
         <!--android:protectionLevel="signature" />-->
 
-
+    <permission
+        android:name="com.android.howell.webcam.permission.JPUSH_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.android.howell.webcam.permission.JPUSH_MESSAGE" />
 
 
     <!-- Required  一些系统要求的权限，如访问网络等 -->
@@ -224,17 +227,17 @@
 
 
         <!-- Required SDK核心功能 -->
-        <activity
-            android:name="cn.jpush.android.ui.PushActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar">
-            <intent-filter>
-                <action android:name="cn.jpush.android.ui.PushActivity" />
+        <!--<activity-->
+            <!--android:name="cn.jpush.android.ui.PushActivity"-->
+            <!--android:configChanges="orientation|keyboardHidden"-->
+            <!--android:theme="@android:style/Theme.Translucent.NoTitleBar">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="cn.jpush.android.ui.PushActivity" />-->
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="com.android.howell.webcam" />
-            </intent-filter>
-        </activity>
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!--<category android:name="com.android.howell.webcam" />-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
 
         <!-- Myserver pushServer -->
         <service android:name="com.howell.service.MyService"
@@ -250,10 +253,10 @@
         </service>
 
         <!-- Required  SDK核心功能 -->
-        <service
-            android:name="cn.jpush.android.service.DownloadService"
-            android:enabled="true"
-            android:exported="false" />
+        <!--<service-->
+            <!--android:name="cn.jpush.android.service.DownloadService"-->
+            <!--android:enabled="true"-->
+            <!--android:exported="false" />-->
 
         <!-- Required SDK 核心功能 -->
         <!--<service-->
