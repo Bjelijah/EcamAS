@@ -3,17 +3,12 @@ package com.howell.modules.player.presenter;
 import android.content.Context;
 import android.util.Log;
 
-import com.howell.action.LoginAction;
 import com.howell.bean.CameraItemBean;
 
-import com.howell.jni.JniUtil;
 import com.howell.modules.player.IPlayContract;
 import com.howell.modules.player.bean.PTZ;
 import com.howell.modules.player.bean.VODRecord;
-import com.howell.protocol.InviteRequest;
-import com.howell.protocol.InviteResponse;
 
-import com.howell.utils.DeviceVersionUtils;
 import com.howell.utils.FileUtils;
 
 import com.howellsdk.api.ApiManager;
@@ -31,8 +26,6 @@ import com.howellsdk.utils.RxUtil;
 import com.howellsdk.utils.ThreadUtil;
 import com.howellsdk.utils.Util;
 
-import org.kobjects.base64.Base64;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +40,6 @@ import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.BooleanSupplier;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;

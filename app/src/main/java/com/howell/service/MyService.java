@@ -2,26 +2,16 @@ package com.howell.service;
 
 
 import android.content.Intent;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.howell.action.ConfigAction;
-import com.howell.action.LoginAction;
-import com.howell.modules.player.IPlayContract;
 import com.howell.modules.push.IPushContract;
 import com.howell.modules.push.presenter.PushPresenter;
 import com.howell.pushlibrary.AbsWorkService;
 import com.howell.pushlibrary.DaemonEnv;
 import com.howell.utils.PhoneConfig;
-import com.howell.utils.ServerConfigSp;
-import com.howell.utils.ThreadUtil;
-
-
-import org.json.JSONException;
-
-import java.util.concurrent.TimeUnit;
 
 
 /**

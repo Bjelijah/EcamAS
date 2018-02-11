@@ -1,11 +1,8 @@
 package com.howell.activity;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -30,15 +27,11 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.howell.action.LoginAction;
-import com.howell.action.SettingAction;
 import com.howell.bean.CameraItemBean;
 import com.android.howell.webcam.R;
 import com.howell.modules.param.IParamContract;
 import com.howell.modules.param.presenter.ParamSoapPresenter;
-import com.howell.protocol.SoapManager;
-import com.howell.protocol.UpgradeDevVerReq;
-import com.howell.protocol.UpgradeDevVerRes;
+
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.DeviceVersionUtils;
 import com.howellsdk.net.soap.bean.AuxiliaryRes;
@@ -300,11 +293,7 @@ public class DeviceSettingActivity extends AppCompatActivity implements IParamCo
        AlerDialogUtils.postDialogMsg(this, getString(R.string.camera_update), getString(R.string.camera_update_notice), new DialogInterface.OnClickListener() {
            @Override
            public void onClick(DialogInterface dialog, int which) {
-
-               UpgradeDevVerReq req = new UpgradeDevVerReq(LoginAction.getInstance().getmInfo().getAccount(),
-                       LoginAction.getInstance().getmInfo().getLr().getLoginSession(),mBean.getDeviceId());
-               UpgradeDevVerRes res = SoapManager.getInstance().getUpgradeDevVerRes(req);
-               Log.e("123",res.toString());
+               mPresenter.updateCamera();
            }
        }, null);
 

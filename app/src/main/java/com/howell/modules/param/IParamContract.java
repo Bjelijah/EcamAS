@@ -40,13 +40,13 @@ public interface IParamContract {
         void getVideoParam();
         void getVersionParam();
         void getPushParam();
-
-
         void setEncodeParam(int bitrate,String streamType,String frameSize);
         void setTurn180(boolean isTurn);
         void setLampOnOff(boolean bLamp);
         void setVMDOnOff(boolean bVmd);
         void setPush(boolean bPush);
         void setNewCameraName(String name);
+        void updateCamera();
+
     }
 }

@@ -157,6 +157,8 @@ public class LoginHttpPresenter extends LoginBasePresenter{
 
     }
 
+
+
     private void save2SP(){
         UserConfigSp.saveUserInfo(mContext,mName,mPwd,true);
         Log.i("123","save sp  name="+mName+"  pwd="+mPwd+"  custom="+true);

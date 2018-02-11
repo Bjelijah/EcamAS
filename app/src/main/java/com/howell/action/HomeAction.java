@@ -3,13 +3,10 @@ package com.howell.action;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.howell.bean.APDeviceDBBean;
-import com.howell.bean.CamFactory;
 import com.howell.bean.CameraItemBean;
 import com.howell.bean.Custom;
-import com.howell.bean.ICam;
 import com.howell.bean.PlayType;
 import com.howell.bean.UserLoginDBBean;
 import com.howell.db.ApDeviceDao;
@@ -17,8 +14,6 @@ import com.howell.db.UserLoginDao;
 import com.howell.entityclass.NodeDetails;
 
 
-import com.howell.protocol.QueryDeviceReq;
-import com.howell.protocol.SoapManager;
 import com.howell.utils.ServerConfigSp;
 
 
@@ -115,7 +110,6 @@ public class HomeAction {
         return this;
     }
 
-    private SoapManager mSoapManager = SoapManager.getInstance();
     private ArrayList<NodeDetails> mList;
 
     private List<APDeviceDBBean> getAPCameraList(Context context,String userName){
@@ -125,15 +119,9 @@ public class HomeAction {
         return beanList;
     }
 
-    private boolean isAPOnLine(String ip){
-        return ApAction.getInstance().isAPOnLine(ip);
-    }
 
 
-    public boolean addApCam2List(Context context, String userName,ApAction.QueryApDevice cb){
-        ApAction.getInstance().registQueryApDeviceCallback(cb).getApCameraList(context,userName);
-        return true;
-    }
+
 
 
 
@@ -171,67 +159,13 @@ public class HomeAction {
         return true;
     }
 
-    public boolean removeCam(Context context,CameraItemBean bean){
-        Log.e("123","type="+bean.getType());
-        ICam cam = CamFactory.buildCam(bean.getType());
-        if (null==cam)return false;
-        cam.init(context,bean);
-        return cam.unBind();
-    }
 
 
 
 
-    public void queryDevice(final String account,final String session){
-        new AsyncTask<Void,Void,Boolean>(){
-            private void sort(ArrayList<NodeDetails> list){
-                if(list != null){
-                    int length = list.size();
-                    for(int i = 0 ; i < length ; i++){
-                        System.out.println(i+":"+list.get(i).toString());
-                        if(list.get(i).isOnLine()){
-                            list.add(0, list.get(i));
-                            list.remove(i+1);
-                        }else{
-                            //System.out.println(i);
-                        }
-                    }
-                }
-            }
 
-            @Override
-            protected Boolean doInBackground(Void... voids) {
-                try {
-                    mSoapManager.getQueryDeviceRes(new QueryDeviceReq(account,session));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return false;
-                }
-                mList =  mSoapManager.getNodeDetails();
-                sort(mList);
-                return true;
-            }
 
-            @Override
-            protected void onPostExecute(Boolean aBoolean) {
-                super.onPostExecute(aBoolean);
-                if (mQueryDeviceCallback==null)return;
-                if (aBoolean){
-                    mQueryDeviceCallback.onQueryDeviceSuccess(mList);
-                }else{
-                    mQueryDeviceCallback.onQueryDeviceError();
-                }
-            }
-        }.execute();
-    }
 
-    public void changeUser(Context context, String userName,String email){
-        Bundle bundle = getUserPwdByDB(userName,email);
-        String userPwd = bundle.getString("pwd");
-        Custom c = (Custom) bundle.getSerializable("custom");
-        LoginRes res = new LoginRes();
-        LoginAction.getInstance().setContext(context).regLoginResCallback(res).Login(userName,userPwd,c);
-    }
 
     private Bundle getUserPwdByDB(String name,String email){
         String pwd = null;
@@ -249,24 +183,7 @@ public class HomeAction {
         return bundle;
     }
 
-    class LoginRes implements LoginAction.IloginRes{
 
-        @Override
-        public void onLoginSuccess() {
-            if (mChangeUserCallback!=null){
-                mChangeUserCallback.onChangeOk();
-            }
-            LoginAction.getInstance().unRegLoginResCallback();
-        }
-
-        @Override
-        public void onLoginError(int e) {
-            if (mChangeUserCallback!=null){
-                mChangeUserCallback.onChangeError();
-            }
-            LoginAction.getInstance().unRegLoginResCallback();
-        }
-    }
 
 
     public interface QueryDeviceCallback{

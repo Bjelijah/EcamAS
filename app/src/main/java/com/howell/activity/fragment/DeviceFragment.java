@@ -2,7 +2,6 @@ package com.howell.activity.fragment;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,17 +15,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.howell.action.ApAction;
 import com.howell.action.ConfigAction;
 import com.howell.action.HomeAction;
-import com.howell.action.LoginAction;
-import com.howell.action.PlayAction;
 import com.howell.activity.DeviceSettingActivity;
-import com.howell.activity.PlayBackActivity;
 import com.howell.activity.PlayViewActivity;
 import com.howell.activity.VideoListActivity;
 import com.howell.adapter.DeviceRecyclerViewAdapter;
-import com.howell.bean.APDeviceDBBean;
 import com.howell.bean.CameraItemBean;
 import com.howell.bean.PlayType;
 import com.android.howell.webcam.R;
@@ -34,27 +28,15 @@ import com.howell.entityclass.NodeDetails;
 import com.howell.modules.device.IDeviceContract;
 import com.howell.modules.device.presenter.DeviceHttpPresenter;
 import com.howell.modules.device.presenter.DeviceSoapPresenter;
-import com.howell.protocol.GetNATServerReq;
-import com.howell.protocol.GetNATServerRes;
-import com.howell.protocol.SoapManager;
-import com.howell.rxbus.RxBus;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.IConst;
-import com.howell.utils.Util;
 import com.zys.brokenview.BrokenCallback;
 import com.zys.brokenview.BrokenTouchListener;
 import com.zys.brokenview.BrokenView;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import pullrefreshview.layout.BaseFooterView;
 import pullrefreshview.layout.BaseHeaderView;
 import pullrefreshview.layout.PullRefreshLayout;
@@ -63,7 +45,7 @@ import pullrefreshview.layout.PullRefreshLayout;
  * Created by howell on 2016/11/11.
  */
 
-public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.IVew,BaseHeaderView.OnRefreshListener,BaseFooterView.OnLoadListener, DeviceRecyclerViewAdapter.OnItemClickListener,HomeAction.QueryDeviceCallback,IConst,ApAction.QueryApDevice {
+public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.IVew,BaseHeaderView.OnRefreshListener,BaseFooterView.OnLoadListener, DeviceRecyclerViewAdapter.OnItemClickListener,HomeAction.QueryDeviceCallback,IConst {
     public static final int MSG_RECEIVE_SIP = 0x0000;
     public static final int MSG_DEVICE_LIST_UPDATA = 0x0001;
     public static final int MSG_NET_SERVER_OK = 0x0002;
@@ -317,28 +299,6 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
         }, null);
     }
 
-    @Override
-    public void onQueryApDevice(List<APDeviceDBBean> list) {
-        if (mList==null)return;
-
-        for (APDeviceDBBean apBean:list){
-            CameraItemBean camBean = new CameraItemBean()
-                    .setType(PlayType.HW5198)
-                    .setCameraName(apBean.getDeviceName())
-                    .setCameraDescription("AP:"+apBean.getDeviceIP())
-                    .setOnline(apBean.isOnLine())
-                    .setIndensity(0)
-                    .setStore(true)
-                    .setPtz(true)
-                    .setUpnpIP(apBean.getDeviceIP())
-                    .setUpnpPort(apBean.getDevicePort())
-                    .setDeviceId(apBean.getDeviceIP())
-                    .setPicturePath("/sdcard/eCamera/cache/"+apBean.getDeviceIP()+".jpg");
-            mList.add(camBean);
-        }
-        HomeAction.getInstance().sort((ArrayList<CameraItemBean>) mList);//online 倒序添加
-        mHandler.sendEmptyMessage(MSG_DEVICE_LIST_UPDATA);//updata ecam list and ap list
-    }
 
     @Override
     public void bindPresenter() {
@@ -500,7 +460,7 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
     private void doPlay(int pos){
         CameraItemBean bean = getUpdataBean(pos);
         Log.i("123","do play Type="+bean.getType());
-        PlayAction.getInstance().setPlayBean(bean);
+//        PlayAction.getInstance().setPlayBean(bean);
         Intent intent = new Intent(getContext(), PlayViewActivity.class);
         getContext().startActivity(intent);
     }

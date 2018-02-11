@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.howell.action.LoginAction;
 import com.howell.activity.view.SwipeLinearLayout;
 import com.howell.bean.CameraItemBean;
 import com.howell.bean.PlayType;
@@ -29,9 +28,7 @@ import com.howell.utils.PhoneConfig;
 import com.howell.utils.ScaleImageUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
-import com.zys.brokenview.BrokenCallback;
 import com.zys.brokenview.BrokenTouchListener;
-import com.zys.brokenview.BrokenView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -217,8 +214,8 @@ public class DeviceRecyclerViewAdapter extends RecyclerView.Adapter<DeviceRecycl
         holder.llDelete.setBackground(new IconicsDrawable(mContext,    Octicons.Icon.oct_trashcan).actionBar().colorRes(R.color.item_camera_detele_bk));
 
         holder.ivDelete.setVisibility(View.GONE );
-        holder.llDelete.setVisibility((LoginAction.getInstance().ismIsGuest()&&false) ? View.GONE : View.VISIBLE);
-
+//        holder.llDelete.setVisibility((LoginAction.getInstance().ismIsGuest()&&false) ? View.GONE : View.VISIBLE);
+        holder.llDelete.setVisibility( View.VISIBLE);
        // GoogleMaterial.Icon.
 
         if (!IS_TEST) {

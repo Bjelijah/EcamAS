@@ -64,4 +64,9 @@ public abstract class LoginBasePresenter extends BasePresenter implements ILogin
                 ", mIsFirst=" + mIsFirst +
                 '}';
     }
+
+    @Override
+    public void queryClientVersion() {
+
+    }
 }

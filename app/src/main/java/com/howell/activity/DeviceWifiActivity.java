@@ -26,12 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.android.howell.webcam.R;
-import com.howell.bean.CameraItemBean;
-import com.howell.bean.PlayType;
-import com.howell.modules.device.IDeviceContract;
-import com.howell.modules.device.presenter.DeviceSoapPresenter;
-import com.howell.protocol.GetDeviceMatchingCodeReq;
-import com.howell.protocol.GetDeviceMatchingCodeRes;
+
 import com.howell.utils.NetWorkUtils;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
@@ -234,26 +229,6 @@ public class DeviceWifiActivity extends AppCompatActivity {
         }
     }
 
-    class SendMatchCodeTask extends AsyncTask<Void, Integer, Void> {
-        GetDeviceMatchingCodeRes res;
-        @Override
-        protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-            com.howell.protocol.SoapManager mSoapManager = com.howell.protocol.SoapManager.getInstance();
-
-            System.out.println("call doInBackground");
-            GetDeviceMatchingCodeReq req = new GetDeviceMatchingCodeReq(mSoapManager.getLoginResponse().getAccount(),mSoapManager.getLoginResponse().getLoginSession());
-            res = mSoapManager.getGetDeviceMatchingCodeRes(req);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            // TODO Auto-generated method stub
-            super.onPostExecute(result);
-            System.out.println(res.getResult()+","+res.getMatchingCode());
-        }
-    }
 
 
 }

@@ -2,7 +2,6 @@ package com.howell.action;
 
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -16,12 +15,10 @@ import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 
 import com.howell.activity.BasePlayActivity;
-import com.howell.bean.ICam;
 import com.android.howell.webcam.R;
 import com.howell.modules.player.IPlayContract;
 import com.howell.modules.player.bean.PTZ;
 import com.howell.utils.PhoneConfig;
-import com.howellsdk.player.turn.bean.PTZ_CMD;
 
 /**
  * 
@@ -46,7 +43,7 @@ public class PTZControlAction {
 	private void resetAnimationNum(){
 		animationNum = 0;
 	}
-	private ICam mCam;
+
 
 	public boolean bAnimationFinish(){
 		return bAnimatingFinish;
@@ -57,10 +54,7 @@ public class PTZControlAction {
 		return this;
 	}
 
-	public PTZControlAction setCam(ICam cam){
-		mCam = cam;
-		return this;
-	}
+
 
 	public PTZControlAction setPresenter(IPlayContract.IPresent p){
 		mPresenter = p;
@@ -74,13 +68,7 @@ public class PTZControlAction {
 	}
 	
 	
-	public PTZControlAction setPtzInfo(String account,String session,String devId,int channel){
-		if (mCam == null) {
-			return this;
-		}
-		mCam.ptzSetInfo(account,session,devId,channel);
-		return this;
-	}
+
 	
 
 	public  void zoomTeleStart(){

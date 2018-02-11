@@ -21,7 +21,7 @@ import com.howell.modules.login.ILoginContract;
 import com.howell.modules.login.bean.Type;
 import com.howell.modules.login.presenter.LoginHttpPresenter;
 import com.howell.modules.login.presenter.LoginSoapPresenter;
-import com.howell.protocol.SoapManager;
+
 import com.howellsdk.utils.SDKDebugLog;
 
 import java.util.concurrent.TimeUnit;
@@ -34,7 +34,6 @@ public class LogoActivity extends Activity implements ILoginContract.IView{
 	private static final int MSG_START = 0x01;
 	private ILoginContract.IPresenter mPresenter;
 	//与平台交互协议单例
-	private SoapManager mSoapManager;
 
 	//是否显示开场导航标志位，存于配置文件中
 	private boolean isFirstLogin;
@@ -171,6 +170,11 @@ public class LogoActivity extends Activity implements ILoginContract.IView{
 
 	@Override
 	public void onLogoutResult(Type type) {
+
+	}
+
+	@Override
+	public void onClientVersionResult(String res, String version, String downloadUrl) {
 
 	}
 

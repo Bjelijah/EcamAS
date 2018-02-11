@@ -565,6 +565,11 @@ public class LoginActivity extends AppCompatActivity implements ILoginContract.I
 
     }
 
+    @Override
+    public void onClientVersionResult(String res, String version, String downloadUrl) {
+
+    }
+
 
     private interface ProfileQuery {
         String[] PROJECTION = {

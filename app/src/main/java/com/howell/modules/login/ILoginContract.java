@@ -18,11 +18,13 @@ public interface ILoginContract {
         void onError(Type type);
         void onLoginSuccess(String account,String email);
         void onLogoutResult(Type type);
+        void onClientVersionResult(String res,String version,String downloadUrl);
     }
     interface IPresenter extends ImpBasePresenter {
         void init(Context context);
         void login(@Nullable String name, @Nullable String pwd,@Nullable Custom custom);
         void logout();
         void changeUser(String userName,String email);
+        void queryClientVersion();
     }
 }

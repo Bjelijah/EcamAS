@@ -6,8 +6,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.howell.action.ConfigAction;
-import com.howell.action.HomeAction;
-import com.howell.action.LoginAction;
 import com.howell.bean.Custom;
 import com.howell.bean.UserLoginDBBean;
 import com.howell.db.UserLoginDao;
@@ -21,6 +19,8 @@ import com.howellsdk.api.ApiManager;
 import com.howellsdk.net.soap.bean.AccountRes;
 import com.howellsdk.net.soap.bean.AndroidTokenReq;
 import com.howellsdk.net.soap.bean.AndroidTokenRes;
+import com.howellsdk.net.soap.bean.ClientVersionReq;
+import com.howellsdk.net.soap.bean.ClientVersionRes;
 import com.howellsdk.net.soap.bean.LoginRequest;
 import com.howellsdk.net.soap.bean.LoginResponse;
 import com.howellsdk.net.soap.bean.LogoutRequest;
@@ -352,5 +352,34 @@ public class LoginSoapPresenter extends LoginBasePresenter implements IConst {
         UserConfigSp.saveUserInfo(mContext,mName,mPwd,mCustom.isCustom());
         Log.i("123","save sp  name="+mName+"  pwd="+mPwd+"  custom="+mCustom);
         ConfigAction.getInstance(mContext).refresh(mContext);
+    }
+
+    @Override
+    public void queryClientVersion() {
+        ApiManager.getInstance().getSoapService()
+                .queryClientVersion(new ClientVersionReq())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ClientVersionRes>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        addDisposable(d);
+                    }
+
+                    @Override
+                    public void onNext(ClientVersionRes clientVersionRes) {
+                        mView.onClientVersionResult(clientVersionRes.getResult(),clientVersionRes.getVersion(),clientVersionRes.getDownloadAddress());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i("123","query client version finish");
+                    }
+                });
     }
 }

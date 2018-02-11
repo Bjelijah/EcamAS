@@ -10,8 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.howell.webcam.R;
-import com.howell.protocol.QueryDeviceSharerReq;
-import com.howell.protocol.SoapManager;
+
 
 /**
  * Created by Administrator on 2017/7/14.

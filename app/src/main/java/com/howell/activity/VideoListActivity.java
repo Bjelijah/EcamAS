@@ -15,18 +15,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 
-import com.howell.action.PlayBackVideoListAction;
 import com.howell.activity.fragment.VodFragment;
 import com.howell.bean.CameraItemBean;
 import com.howell.datetime.JudgeDate;
 import com.howell.datetime.ScreenInfo;
 import com.howell.datetime.WheelMain;
 import com.android.howell.webcam.R;
-import com.howell.modules.player.IPlayContract;
-import com.howell.modules.player.bean.VODRecord;
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.ScaleImageUtils;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -37,7 +33,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 
 /**
  * Created by Administrator on 2017/1/3.
@@ -72,7 +67,6 @@ public class VideoListActivity extends AppCompatActivity implements AppBarLayout
         imageWidth = PhoneConfig.getPhoneWidth(this)/2;
         imageHeight = imageWidth * 10 / 16;
         mBean = (CameraItemBean) getIntent().getSerializableExtra("bean");
-        PlayBackVideoListAction.getInstance().init(this,mBean);
     }
 
     @Override
@@ -84,7 +78,6 @@ public class VideoListActivity extends AppCompatActivity implements AppBarLayout
     @Override
     protected void onDestroy() {
 
-        PlayBackVideoListAction.getInstance().deInit();
         super.onDestroy();
     }
 

@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -20,7 +19,6 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.howell.action.RegisterAction;
 import com.android.howell.webcam.R;
 import com.howell.modules.regist.IRegistContract;
 import com.howell.modules.regist.bean.Type;

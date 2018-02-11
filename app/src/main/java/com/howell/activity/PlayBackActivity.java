@@ -6,9 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 
-import com.howell.action.PlayAction;
 import com.android.howell.webcam.R;
-import com.howell.jni.JniUtil;
 import com.howellsdk.utils.RxUtil;
 import com.howellsdk.utils.Util;
 
@@ -20,7 +18,7 @@ import java.util.TimeZone;
  * Created by Administrator on 2017/1/10.
  */
 
-public class PlayBackActivity extends BasePlayActivity implements View.OnClickListener,PlayAction.IPlayBackFun,SeekBar.OnSeekBarChangeListener{
+public class PlayBackActivity extends BasePlayActivity implements View.OnClickListener,SeekBar.OnSeekBarChangeListener{
 
     private long mCurBeg = 0;//当前滑杆条位置
     private long mCurEnd = 0;
@@ -155,13 +153,7 @@ public class PlayBackActivity extends BasePlayActivity implements View.OnClickLi
 
     }
 
-    @Override
-    public void onPlayBackBegEnd(long beg, long end) {//秒数
-        int max = (int)((end-beg)*1000);//开始到结束时间的毫秒
-        mCurBeg = beg;
-        Log.i("123","!!!!!!!!!!onPlayback beg="+beg+" end="+end+"    max="+max);
-        mReplaySeekBar.setMax((int)((end-beg)*1000));
-    }
+
 
     @Override
     protected void playBackFun() {

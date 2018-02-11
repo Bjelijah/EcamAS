@@ -26,20 +26,15 @@ import com.howell.broadcastreceiver.HomeKeyEventBroadCastReceiver;
 import com.android.howell.webcam.R;
 import com.howell.modules.device.IDeviceContract;
 import com.howell.modules.device.presenter.DeviceSoapPresenter;
-import com.howell.protocol.GetDeviceMatchingResultReq;
-import com.howell.protocol.GetDeviceMatchingResultRes;
-import com.howell.protocol.SoapManager;
-import com.howell.protocol.UpdateChannelNameReq;
-import com.howell.protocol.UpdateChannelNameRes;
+
 
 import java.util.List;
 
 
 public class GetMatchResult extends Activity implements OnClickListener,IDeviceContract.IVew{
 	private ProgressBar mSeekBar;
-	private SoapManager mSoapManager;
+
 	private TimerTask task;
-	private GetResultTask getResultTask;
 	private TextView mTips;
 	private ImageButton mBack;
 	
@@ -80,8 +75,7 @@ public class GetMatchResult extends Activity implements OnClickListener,IDeviceC
 		mBack.setOnClickListener(this);
 		
 		mTips = (TextView)findViewById(R.id.tv_get_match_result_tip);
-		mSoapManager = SoapManager.getInstance();
-		
+
 //		getResultTask = new GetResultTask(progress);
 //		getResultTask.execute();
 		mPresenter.getDeviceMatchResult(mMatchCode,device_name);
@@ -174,7 +168,7 @@ public class GetMatchResult extends Activity implements OnClickListener,IDeviceC
             		msg.arg1 = nowProgress;
             		handler.sendMessage(msg);
 //            		mSeekBar.setProgress(nowProgress);
-            		
+					mPresenter.getDeviceMatchResult(mMatchCode,device_name);
 					Thread.sleep(1000);
 					nowProgress ++;
 				} catch (InterruptedException e) {
@@ -255,68 +249,6 @@ public class GetMatchResult extends Activity implements OnClickListener,IDeviceC
     }*/
 	
 	//获取匹配摄像机结果
-	class GetResultTask extends AsyncTask<Void, Integer, Void> {
-		private GetDeviceMatchingResultRes getDeviceMatchingResultRes ;
-		private UpdateChannelNameRes updateChannelNameRes ;
-		private int progress;
-		
-		public GetResultTask(int progress) {
-			super();
-			this.progress = progress;
-		}
-
-		private void queryResult(){
-			Log.e("","queryResult");
-			GetDeviceMatchingResultReq req = new GetDeviceMatchingResultReq(mSoapManager.getLoginResponse().getAccount(),mSoapManager.getLoginResponse().getLoginSession(),mSoapManager.getmGetDeviceMatchingCodeRes().getMatchingCode());
-			getDeviceMatchingResultRes = mSoapManager.getGetDeviceMatchingResultRes(req);
-			Log.e("","GetResult:"+getDeviceMatchingResultRes.getResult());
-		}
-		
-		private void chanegName(){
-			Log.e("","chanegName");
-			UpdateChannelNameReq req = new UpdateChannelNameReq(mSoapManager.getLoginResponse().getAccount(),mSoapManager.getLoginResponse().getLoginSession(),getDeviceMatchingResultRes.getDevID(),0,device_name);
-			updateChannelNameRes = mSoapManager.getUpdateChannelNameRes(req);
-            Log.e("","UpdateChannelName Result:"+updateChannelNameRes.getResult());
-		}
-		
-        @Override
-        protected Void doInBackground(Void... params) {
-            // TODO Auto-generated method stub
-        	Log.e("","GetResultTask doinbackground");
-        	queryResult();
-        	while(!getDeviceMatchingResultRes.getResult().equals("OK")){
-        		if (isCancelled()) break;
-        		try {
-					Thread.sleep(10000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        		queryResult();
-        	}
-        	chanegName();
-            return null;
-        }
-        
-        @Override
-        protected void onPostExecute(Void result) {
-        	// TODO Auto-generated method stub
-        	super.onPostExecute(result);
-        	System.out.println("GetResultTask onPostExecute");
-        	System.out.println(getDeviceMatchingResultRes.getResult());
-        	if(task != null){
-        		isTimerTaskStop = true;
-        	}
-        	System.out.println("GetResultTask progress:"+progress);
-        	mSeekBar.setProgress(progress);
-			showDialog();
-        	//mSeekBar.setVisibility(View.GONE);
-        	//Intent intent = new Intent(GetMatchResult.this,ChangeDeviceName.class);
-        	//intent.putExtra("devid", getDeviceMatchingResultRes.getDevID());
-        	//startActivity(intent);
-        	//mTips.setText("添加成功");
-        }
-    }
 
     private void showDialog(){
 		Dialog alertDialog = new AlertDialog.Builder(GetMatchResult.this).
@@ -355,9 +287,9 @@ public class GetMatchResult extends Activity implements OnClickListener,IDeviceC
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         super.onKeyDown(keyCode, event);
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-        	if(getResultTask != null && !getResultTask.getStatus().equals("FINISHED")){
-				getResultTask.cancel(true);
-			}
+//        	if(getResultTask != null && !getResultTask.getStatus().equals("FINISHED")){
+//				getResultTask.cancel(true);
+//			}
 			if(task != null){
 				isTimerTaskStop = true;
 			}
@@ -371,9 +303,9 @@ public class GetMatchResult extends Activity implements OnClickListener,IDeviceC
 		// TODO Auto-generated method stub
 		switch (v.getId()) {
 		case R.id.ib_get_match_result_back:
-			if(getResultTask != null && !getResultTask.getStatus().equals("FINISHED")){
-				getResultTask.cancel(true);
-			}
+//			if(getResultTask != null && !getResultTask.getStatus().equals("FINISHED")){
+//				getResultTask.cancel(true);
+//			}
 			if(task != null ){
 				isTimerTaskStop = true;
 			}

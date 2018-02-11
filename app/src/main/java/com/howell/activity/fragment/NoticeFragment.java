@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.howell.action.ConfigAction;
-import com.howell.action.NoticeAction;
 import com.howell.activity.BigImagesActivity;
 import com.howell.adapter.NoticeRecyclerViewAdapter;
 import com.howell.bean.NoticeItemBean;
@@ -29,8 +28,7 @@ import com.howell.modules.device.presenter.DeviceSoapPresenter;
 import com.howell.modules.notice.INoticeContract;
 import com.howell.modules.notice.presenter.NoticeHttpPresenter;
 import com.howell.modules.notice.presenter.NoticeSoapPresenter;
-import com.howell.protocol.NoticeList;
-import com.howell.protocol.QueryNoticesRes;
+
 import com.howell.utils.SDCardUtils;
 import com.howell.utils.Util;
 

@@ -2,7 +2,6 @@ package com.howell.activity;
 
 import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,13 +23,8 @@ import android.widget.Toast;
 
 
 import com.howell.action.PTZControlAction;
-import com.howell.action.PlayAction;
-import com.howell.action.YV12Renderer;
-import com.howell.bean.CamFactory;
 import com.howell.bean.CameraItemBean;
-import com.howell.bean.ICam;
 import com.android.howell.webcam.R;
-import com.howell.bean.PlayType;
 import com.howell.ehlib.MySeekBar;
 import com.howell.modules.player.IPlayContract;
 import com.howell.modules.player.bean.VODRecord;
@@ -40,7 +34,6 @@ import com.howell.modules.player.presenter.PlayTurnPresenter;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.MessageUtiles;
 import com.howell.utils.PhoneConfig;
-import com.howell.utils.ThreadUtil;
 import com.howell.utils.UserConfigSp;
 import com.howellsdk.api.player.GLESTextureView;
 import com.howellsdk.utils.RxUtil;
@@ -51,7 +44,7 @@ import java.util.List;
  * Created by Administrator on 2016/12/16.
  */
 
-public abstract class BasePlayActivity extends FragmentActivity implements IPlayContract.IVew,SurfaceHolder.Callback,View.OnTouchListener,ICam.IStream{
+public abstract class BasePlayActivity extends FragmentActivity implements IPlayContract.IVew,SurfaceHolder.Callback,View.OnTouchListener{
 
     public static final int MSG_PTZ_SHAKE               = 0xff00;
     public final static int MSG_PLAY_SOUND_MUTE         = 0xff01;
@@ -400,17 +393,7 @@ public abstract class BasePlayActivity extends FragmentActivity implements IPlay
 
     protected void playBackFun(){}
 
-    @Override
-    public void showStreamSpeed(final int kbitPerSec) {
-        if (mStreamLen!=null){
-            mStreamLen.post(new Runnable() {
-                @Override
-                public void run() {
-                    mStreamLen.setText(kbitPerSec+" kbit/s");
-                }
-            });
-        }
-    }
+
 
     @Override
     public void bindPresenter() {

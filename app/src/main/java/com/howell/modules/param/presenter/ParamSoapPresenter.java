@@ -6,6 +6,7 @@ import com.howell.activity.DeviceSettingActivity;
 import com.howell.modules.player.presenter.PlayBasePresenter;
 import com.howellsdk.api.ApiManager;
 import com.howellsdk.net.soap.bean.AuxiliaryRes;
+import com.howellsdk.net.soap.bean.ClientVersionReq;
 import com.howellsdk.net.soap.bean.CodingParamReq;
 import com.howellsdk.net.soap.bean.CodingParamRes;
 import com.howellsdk.net.soap.bean.DevVerReq;
@@ -19,6 +20,7 @@ import com.howellsdk.net.soap.bean.SetAuxiliaryReq;
 import com.howellsdk.net.soap.bean.SetCodingParamReq;
 import com.howellsdk.net.soap.bean.SubscribeAndroidPushReq;
 import com.howellsdk.net.soap.bean.UpdateChannelNameReq;
+import com.howellsdk.net.soap.bean.UpgradeDevVerReq;
 import com.howellsdk.net.soap.bean.VMDParamReq;
 import com.howellsdk.net.soap.bean.VMDParamRes;
 import com.howellsdk.net.soap.bean.VideoParamReq;
@@ -526,6 +528,39 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                     @Override
                     public void onComplete() {
                         Log.i("123","set name finish");
+                    }
+                });
+    }
+
+    @Override
+    public void updateCamera() {
+        ApiManager.getInstance().getSoapService()
+                .upgradeDevVer(new UpgradeDevVerReq(
+                        mAccount,
+                        ApiManager.SoapHelp.getsSession(),
+                        mBean.getDeviceId()
+                ))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Result>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        addDisposable(d);
+                    }
+
+                    @Override
+                    public void onNext(Result result) {
+                        Log.i("123","result"+result.getResult());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
                     }
                 });
     }

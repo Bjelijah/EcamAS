@@ -10,10 +10,7 @@
         <!--android:name="com.android.howell.com.android.howell.webcam.permission.JPUSH_MESSAGE"-->
         <!--android:protectionLevel="signature" />-->
 
-    <permission
-        android:name="com.android.howell.webcam.permission.JPUSH_MESSAGE"
-        android:protectionLevel="signature" />
-    <uses-permission android:name="com.android.howell.webcam.permission.JPUSH_MESSAGE" />
+
 
 
     <!-- Required  一些系统要求的权限，如访问网络等 -->
@@ -75,11 +72,6 @@
         >
         <!--android:theme="@android:style/Theme.Black.NoTitleBar"-->
         <activity
-            android:name="com.howell.activity.SetDeviceWifi"
-            android:screenOrientation="portrait"
-            android:theme="@style/MyAppThemeListenDevice"
-            android:windowSoftInputMode="stateVisible|adjustPan" />
-        <activity
             android:name="com.howell.activity.SendWifi"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" />
@@ -91,20 +83,12 @@
             android:name="com.howell.activity.FlashLighting"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" />
-        <activity
-            android:name="com.howell.activity.SetOrResetWifi"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
         <!--android:theme="@android:style/Theme.Black.NoTitleBar"-->
         <activity
             android:name="com.howell.activity.NavigationActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar" />
 
-        <activity
-            android:name="com.howell.activity.NoticeActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Light.NoTitleBar" />
         <!--android:name="com.howell.activity.LogoActivity"-->
         <!--@android:style/Theme.NoTitleBar-->
 

@@ -1,4 +1,4 @@
-package com.howell.entityclass;
+package com.howell.bean;
 
 import java.io.Serializable;
 
@@ -39,9 +39,9 @@ public class NodeDetails implements Serializable {
 		picturePath = "/sdcard/eCamera/cache/"+devID+".jpg";
 	}
 	public NodeDetails(String devID, int channelNo, String name,
-			boolean onLine, boolean ptzFlag, int securityArea,
-			boolean eStoreFlag, String upnpIP, int upnpPort, String devVer,
-			int curVideoNum, String lastUpdated) {
+                       boolean onLine, boolean ptzFlag, int securityArea,
+                       boolean eStoreFlag, String upnpIP, int upnpPort, String devVer,
+                       int curVideoNum, String lastUpdated) {
 		super();
 		this.devID = devID;
 		this.channelNo = channelNo;
@@ -61,11 +61,11 @@ public class NodeDetails implements Serializable {
 	}
 	
 	public NodeDetails(String devID, int channelNo, String name,
-			boolean onLine, boolean ptzFlag, int securityArea,
-			boolean eStoreFlag, String upnpIP, int upnpPort, String devVer,
-			int curVideoNum, String lastUpdated, int sMSSubscribedFlag,
-			int eMailSubscribedFlag, int sharingFlag,
-			int applePushSubscribedFlag, int androidPushSubscribedFlag) {
+                       boolean onLine, boolean ptzFlag, int securityArea,
+                       boolean eStoreFlag, String upnpIP, int upnpPort, String devVer,
+                       int curVideoNum, String lastUpdated, int sMSSubscribedFlag,
+                       int eMailSubscribedFlag, int sharingFlag,
+                       int applePushSubscribedFlag, int androidPushSubscribedFlag) {
 		super();
 		this.devID = devID;
 		this.channelNo = channelNo;
@@ -90,12 +90,12 @@ public class NodeDetails implements Serializable {
 	}
 	
 	public NodeDetails(String devID, int channelNo, String name,
-			boolean onLine, boolean ptzFlag, int securityArea,
-			boolean eStoreFlag, String upnpIP, int upnpPort, String devVer,
-			int curVideoNum, String lastUpdated, int sMSSubscribedFlag,
-			int eMailSubscribedFlag, int sharingFlag,
-			int applePushSubscribedFlag, int androidPushSubscribedFlag,
-			int infraredFlag, int wirelessFlag) {
+                       boolean onLine, boolean ptzFlag, int securityArea,
+                       boolean eStoreFlag, String upnpIP, int upnpPort, String devVer,
+                       int curVideoNum, String lastUpdated, int sMSSubscribedFlag,
+                       int eMailSubscribedFlag, int sharingFlag,
+                       int applePushSubscribedFlag, int androidPushSubscribedFlag,
+                       int infraredFlag, int wirelessFlag) {
 		super();
 		this.devID = devID;
 		this.channelNo = channelNo;
