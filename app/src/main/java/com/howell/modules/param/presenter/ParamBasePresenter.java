@@ -26,6 +26,7 @@ public abstract class ParamBasePresenter extends BasePresenter implements IParam
     IParamContract.IVew mView;
     CameraItemBean mBean;
     String mAccount;
+    Context mContext;
     @Override
     public void bindView(ImpBaseView view) {
         mView = (IParamContract.IVew) view;
@@ -42,6 +43,7 @@ public abstract class ParamBasePresenter extends BasePresenter implements IParam
     @Override
     public IParamContract.IPresenter init(Context context, CameraItemBean bean) {
         this.mBean = bean;
+        mContext = context;
         mAccount = ConfigAction.getInstance(context).getName();
         return this;
     }

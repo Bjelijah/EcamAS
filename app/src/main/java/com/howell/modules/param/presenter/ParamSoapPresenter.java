@@ -2,8 +2,12 @@ package com.howell.modules.param.presenter;
 
 import android.util.Log;
 
+import com.google.android.gms.common.AccountPicker;
+import com.google.android.gms.common.api.Api;
+import com.howell.action.ConfigAction;
 import com.howell.activity.DeviceSettingActivity;
 import com.howell.modules.player.presenter.PlayBasePresenter;
+import com.howell.utils.PhoneConfig;
 import com.howellsdk.api.ApiManager;
 import com.howellsdk.net.soap.bean.AuxiliaryRes;
 import com.howellsdk.net.soap.bean.ClientVersionReq;
@@ -14,6 +18,8 @@ import com.howellsdk.net.soap.bean.DevVerRes;
 import com.howellsdk.net.soap.bean.DeviceStatusReq;
 import com.howellsdk.net.soap.bean.DeviceStatusRes;
 import com.howellsdk.net.soap.bean.GetAuxiliaryReq;
+import com.howellsdk.net.soap.bean.LoginRequest;
+import com.howellsdk.net.soap.bean.LoginResponse;
 import com.howellsdk.net.soap.bean.Request;
 import com.howellsdk.net.soap.bean.Result;
 import com.howellsdk.net.soap.bean.SetAuxiliaryReq;
@@ -62,6 +68,46 @@ public class ParamSoapPresenter extends ParamBasePresenter {
             "00000000000",
     };
 
+
+    boolean reloginFlag = false;
+
+
+    synchronized private void login(){
+        if (reloginFlag)return;
+
+        ApiManager.getInstance().getSoapService()
+                .userLogin(new LoginRequest(
+                        mAccount,
+                        ConfigAction.getInstance(mContext).getPassword(),
+                        PhoneConfig.getIMEI(mContext)
+                ))
+                .subscribeOn(Schedulers.trampoline())
+                .observeOn(Schedulers.trampoline())
+                .subscribe(new Observer<LoginResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        addDisposable(d);
+                    }
+
+                    @Override
+                    public void onNext(LoginResponse loginResponse) {
+                        ApiManager.SoapHelp.setsSession(loginResponse.getLoginSession());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.i("123","reload finish");
+                    }
+                });
+        reloginFlag = true;
+    }
+
+
     @Override
     public void getCodingParam() {
         ApiManager.getInstance().getSoapService()
@@ -81,6 +127,12 @@ public class ParamSoapPresenter extends ParamBasePresenter {
 
                     @Override
                     public void onNext(@NonNull CodingParamRes codingParamRes) {
+                        if (codingParamRes.getResult().equalsIgnoreCase("SessionExpired")){
+                            reloginFlag = false;
+                            login();
+                            getCodingParam();
+                            return;
+                        }
                         mView.onCodeRes(codingParamRes);
                     }
 
@@ -115,6 +167,12 @@ public class ParamSoapPresenter extends ParamBasePresenter {
 
                     @Override
                     public void onNext(@NonNull VMDParamRes vmdParamRes) {
+                        if (vmdParamRes.getResult().equalsIgnoreCase("SessionExpired")){
+                            reloginFlag = false;
+                            login();
+                            getVMDParam();
+                            return;
+                        }
                         mView.onVMDRes(vmdParamRes);
                     }
 
@@ -149,6 +207,12 @@ public class ParamSoapPresenter extends ParamBasePresenter {
 
                     @Override
                     public void onNext(@NonNull AuxiliaryRes auxiliaryRes) {
+                        if (auxiliaryRes.getResult().equalsIgnoreCase("SessionExpired")){
+                            reloginFlag = false;
+                            login();
+                            getAuxiliaryParam();
+                            return;
+                        }
                         mView.onAuxiliaryRes(auxiliaryRes);
                     }
 
@@ -183,6 +247,12 @@ public class ParamSoapPresenter extends ParamBasePresenter {
 
                     @Override
                     public void onNext(@NonNull VideoParamRes videoParamRes) {
+                        if (videoParamRes.getResult().equalsIgnoreCase("SessionExpired")){
+                            reloginFlag = false;
+                            login();
+                            getVideoParam();
+                            return;
+                        }
                         mView.onVideoParamRes(videoParamRes);
                     }
 
@@ -217,6 +287,12 @@ public class ParamSoapPresenter extends ParamBasePresenter {
 
                     @Override
                     public void onNext(@NonNull DevVerRes devVerRes) {
+                        if (devVerRes.getResult().equalsIgnoreCase("SessionExpired")){
+                            reloginFlag = false;
+                            login();
+                            getVersionParam();
+                            return;
+                        }
                         mView.onVersionRes(devVerRes);
                     }
 
@@ -251,6 +327,12 @@ public class ParamSoapPresenter extends ParamBasePresenter {
 
                     @Override
                     public void onNext(@NonNull DeviceStatusRes deviceStatusRes) {
+                        if (deviceStatusRes.getResult().equalsIgnoreCase("SessionExpired")){
+                            reloginFlag = false;
+                            login();
+                            getPushParam();
+                            return;
+                        }
                         mView.onAndroidPushRes(deviceStatusRes);
                     }
 
@@ -287,6 +369,11 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                 .map(new Function<Result, Boolean>() {
                     @Override
                     public Boolean apply(@NonNull Result result) throws Exception {
+                        if (result.getResult().equalsIgnoreCase("SessionExpired")){
+                            reloginFlag = false;
+                            login();
+                            return false;
+                        }
                         return result.getResult().equalsIgnoreCase("ok");
                     }
                 })
@@ -331,6 +418,11 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                 .map(new Function<Result, Boolean>() {
                     @Override
                     public Boolean apply(@NonNull Result result) throws Exception {
+                        if (result.getResult().equalsIgnoreCase("SessionExpired")){
+                            reloginFlag = false;
+                            login();
+                            return false;
+                        }
                         return result.getResult().equalsIgnoreCase("ok");
                     }
                 })
@@ -373,6 +465,11 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                 .map(new Function<Result, Boolean>() {
                     @Override
                     public Boolean apply(@NonNull Result result) throws Exception {
+                        if (result.getResult().equalsIgnoreCase("SessionExpired")){
+                            reloginFlag = false;
+                            login();
+                            return false;
+                        }
                         return result.getResult().equalsIgnoreCase("ok");
                     }
                 })
@@ -420,6 +517,12 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                     @Override
                     public Boolean apply(@NonNull Result result) throws Exception {
                         Log.i("123","result = "+result.toString());
+                        if (result.getResult().equalsIgnoreCase("SessionExpired")){
+                            reloginFlag = false;
+                            login();
+                            return false;
+                        }
+
                         return result.getResult().equalsIgnoreCase("ok");
                     }
                 })
@@ -461,6 +564,11 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                 .map(new Function<Result, Boolean>() {
                     @Override
                     public Boolean apply(@NonNull Result result) throws Exception {
+                        if (result.getResult().equalsIgnoreCase("SessionExpired")){
+                            reloginFlag = false;
+                            login();
+                            return false;
+                        }
                         return result.getResult().equalsIgnoreCase("ok");
                     }
                 })
@@ -503,6 +611,11 @@ public class ParamSoapPresenter extends ParamBasePresenter {
                 .map(new Function<Result, Boolean>() {
                     @Override
                     public Boolean apply(@NonNull Result result) throws Exception {
+                        if (result.getResult().equalsIgnoreCase("SessionExpired")){
+                            reloginFlag = false;
+                            login();
+                            return false;
+                        }
                         return result.getResult().equalsIgnoreCase("ok");
                     }
                 })
@@ -550,6 +663,11 @@ public class ParamSoapPresenter extends ParamBasePresenter {
 
                     @Override
                     public void onNext(Result result) {
+                        if (result.getResult().equalsIgnoreCase("SessionExpired")){
+                            reloginFlag = false;
+                            login();
+                            updateCamera();
+                        }
                         Log.i("123","result"+result.getResult());
                     }
 

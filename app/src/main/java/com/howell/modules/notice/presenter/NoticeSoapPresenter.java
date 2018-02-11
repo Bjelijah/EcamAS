@@ -152,7 +152,7 @@ public class NoticeSoapPresenter extends NoticeBasePresenter {
     }
 
     @Override
-    public void setNoticeStatus(String id, boolean isRead) {
+    public void setNoticeStatus(final String id, final boolean isRead) {
 
         ApiManager.getInstance()
                 .getSoapService()
@@ -170,6 +170,12 @@ public class NoticeSoapPresenter extends NoticeBasePresenter {
 
                     @Override
                     public void onNext(@NonNull Result result) {
+                        if (result.getResult().equalsIgnoreCase("SessionExpired")){
+                            login();
+                            setNoticeStatus(id, isRead);
+                            return;
+                        }
+
                         if (!result.getResult().equalsIgnoreCase("ok")){
                             mView.onStatusError();
                         }
@@ -234,12 +240,21 @@ public class NoticeSoapPresenter extends NoticeBasePresenter {
                 .map(new Function<PictureRes, Bitmap >() {
                     @Override
                     public Bitmap apply(@NonNull PictureRes pictureRes) throws Exception {
-                        Log.i("123","downloadPic  res="+pictureRes.toString());
-                        byte [] data  = Base64.decode(pictureRes.getPicture());
-                        Bitmap bitmap = ScaleImageUtils.decodeByteArray(width,height,data);
-                        //save
-                        SDCardUtils.saveBmpToSd(bitmap,id);
-                        SDCardUtils.saveBmpToSd(BitmapFactory.decodeByteArray(data, 0, data.length),id+"HD");
+                        if (pictureRes.getResult().equalsIgnoreCase("SessionExpired")){
+                            login();
+                            downloadPic(hoder, id, width, height, index);
+                            return null;
+                        }
+                        Bitmap bitmap = null;
+                        if (pictureRes.getResult().equalsIgnoreCase("ok")) {
+
+                            Log.i("123", "downloadPic  res=" + pictureRes.toString());
+                            byte[] data = Base64.decode(pictureRes.getPicture());
+                            bitmap = ScaleImageUtils.decodeByteArray(width, height, data);
+                            //save
+                            SDCardUtils.saveBmpToSd(bitmap, id);
+                            SDCardUtils.saveBmpToSd(BitmapFactory.decodeByteArray(data, 0, data.length), id + "HD");
+                        }
                         return bitmap;
                     }
                 })

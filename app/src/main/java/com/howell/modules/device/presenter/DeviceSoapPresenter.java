@@ -292,10 +292,17 @@ public class DeviceSoapPresenter extends DeviceBasePresenter {
                 .map(new Function<DeviceMatchingCodeRes, String>() {
                     @Override
                     public String apply(@NonNull DeviceMatchingCodeRes deviceMatchingCodeRes) throws Exception {
+                        if (deviceMatchingCodeRes.getResult().equalsIgnoreCase("SessionExpired")){
+                            login();
+                            getDevicesMatchCode();
+                            return null;
+                        }
                         if (!deviceMatchingCodeRes.getResult().equalsIgnoreCase("ok")){
                             mView.onError();
                             return null;
                         }
+
+
                         return deviceMatchingCodeRes.getMatchCode();
                     }
                 })
@@ -323,7 +330,7 @@ public class DeviceSoapPresenter extends DeviceBasePresenter {
                 });
     }
 
-    private void changeDeviceName(String deviceId,String name){
+    private void changeDeviceName(final String deviceId, final String name){
         ApiManager.getInstance().getSoapService()
                 .updateChannelName(new UpdateChannelNameReq(
                         mAccount,
@@ -344,7 +351,10 @@ public class DeviceSoapPresenter extends DeviceBasePresenter {
                     public void onNext(@NonNull Result result) {
                         if (result.getResult().equalsIgnoreCase("ok")){
                             mView.onAddResult(true,PlayType.ECAM);
-                        }else{
+                        }else if(result.getResult().equalsIgnoreCase("SessionExpired")){
+                            login();
+                            changeDeviceName(deviceId, name);
+                        } else{
                             mView.onError();
                         }
                     }
@@ -363,16 +373,23 @@ public class DeviceSoapPresenter extends DeviceBasePresenter {
     }
 
     @Override
-    public void getDeviceMatchResult(String matchCode,@Nullable final String name) {
+    public void getDeviceMatchResult(final String matchCode, @Nullable final String name) {
         ApiManager.getInstance().getSoapService()
                 .getDeviceMatchingResult(new GetDeviceMatchingResultReq(mAccount,ApiManager.SoapHelp.getsSession(),matchCode))
                 .map(new Function<GetDeviceMatchingResultRes, String>() {
                     @Override
                     public String apply(@NonNull GetDeviceMatchingResultRes getDeviceMatchingResultRes) throws Exception {
+                        if (getDeviceMatchingResultRes.getResult().equalsIgnoreCase("SessionExpired")){
+                            login();
+                            getDeviceMatchResult(matchCode, name);
+                            return null;
+                        }
+
                         if (!getDeviceMatchingResultRes.getResult().equalsIgnoreCase("ok")){
                             mView.onError();
                             return null;
                         }
+
                         return getDeviceMatchingResultRes.getDevID();
                     }
                 })
