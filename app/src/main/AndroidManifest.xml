@@ -10,10 +10,10 @@
         <!--android:name="com.android.howell.com.android.howell.webcam.permission.JPUSH_MESSAGE"-->
         <!--android:protectionLevel="signature" />-->
 
-    <permission
-        android:name="com.android.howell.webcam.permission.JPUSH_MESSAGE"
-        android:protectionLevel="signature" />
-    <uses-permission android:name="com.android.howell.webcam.permission.JPUSH_MESSAGE" />
+    <!--<permission-->
+        <!--android:name="com.android.howell.webcam.permission.JPUSH_MESSAGE"-->
+        <!--android:protectionLevel="signature" />-->
+    <!--<uses-permission android:name="com.android.howell.webcam.permission.JPUSH_MESSAGE" />-->
 
 
     <!-- Required  一些系统要求的权限，如访问网络等 -->
@@ -63,7 +63,7 @@
     <!--tools:ignore="HardcodedDebugMode"-->
 
     <application
-        android:name="com.howell.App"
+        android:name="com.howell.DaggerApp"
         android:allowBackup="true"
         android:icon="@mipmap/ecam_logo"
         android:label="@string/app_name"

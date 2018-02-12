@@ -16,6 +16,7 @@ import android.util.Log;
 
 import com.android.howell.webcam.R;
 import com.howell.action.ConfigAction;
+import com.howell.di.ui.activity.LogoModule;
 import com.howell.jni.JniUtil;
 import com.howell.modules.login.ILoginContract;
 import com.howell.modules.login.bean.Type;
@@ -26,20 +27,36 @@ import com.howellsdk.utils.SDKDebugLog;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 
-public class LogoActivity extends Activity implements ILoginContract.IView{
+public class LogoActivity extends DaggerAppCompatActivity implements ILoginContract.IView{
 
 	private static final int MSG_START = 0x01;
-	private ILoginContract.IPresenter mPresenter;
+	@Inject
+	ILoginContract.IPresenter mPresenter;
+
+	@Inject
+	@Named(LogoModule.INTENT_NAVIGATION)
+	Intent mFirstIntent;
+
+	@Inject
+	@Named(LogoModule.INTENT_LOGIN)
+	Intent mLoginIntent;
+
+	@Inject
+	@Named(LogoModule.INTENT_HOME)
+	Intent mHomeIntent;
+
+
 	//与平台交互协议单例
 
 	//是否显示开场导航标志位，存于配置文件中
-	private boolean isFirstLogin;
 
-	private String account;
-	private String password;
 	private boolean mIsFromNotification;
 
 	private Handler mHandler = new Handler(){
@@ -115,21 +132,20 @@ public class LogoActivity extends Activity implements ILoginContract.IView{
 
 	@Override
 	public void bindPresenter() {
-		if (mPresenter==null){
-
-			switch (ConfigAction.getInstance(this).getMode()){
-				case 0:
-					mPresenter = new LoginSoapPresenter();//// FIXME: 2017/9/14 add  http
-					break;
-				case 1:
-					mPresenter = new LoginHttpPresenter();//// FIXME: 2017/10/17 add  http
-					break;
-				default:
-					mPresenter = new LoginSoapPresenter();//// FIXME: 2017/9/14 add  http
-					break;
-			}
-
-		}
+//		if (mPresenter==null){
+//
+//			switch (ConfigAction.getInstance(this).getMode()){
+//				case 0:
+//					mPresenter = new LoginSoapPresenter();//// FIXME: 2017/9/14 add  http
+//					break;
+//				case 1:
+//					mPresenter = new LoginHttpPresenter();//// FIXME: 2017/10/17 add  http
+//					break;
+//				default:
+//					mPresenter = new LoginSoapPresenter();//// FIXME: 2017/9/14 add  http
+//					break;
+//			}
+//		}
 		mPresenter.bindView(this);
 		mPresenter.init(this);
 	}
@@ -146,10 +162,10 @@ public class LogoActivity extends Activity implements ILoginContract.IView{
 		Log.e("123","logo on error type="+type);
 		switch (type){
 			case FIRST_LOGIN:
-				startActivity(new Intent(this,NavigationActivity.class));
+				startActivity(mFirstIntent);
 				break;
 			default:
-				startActivity(new Intent(this,LoginActivity.class));
+				startActivity(mLoginIntent);
 				break;
 		}
 		finish();
@@ -159,7 +175,7 @@ public class LogoActivity extends Activity implements ILoginContract.IView{
 
 	@Override
 	public void onLoginSuccess(String account,String email) {
-		startActivity(new Intent(LogoActivity.this, HomeExActivity.class)
+		startActivity(mHomeIntent
 				.putExtra("notification",mIsFromNotification)
 				.putExtra("account",account)
 				.putExtra("email",email)

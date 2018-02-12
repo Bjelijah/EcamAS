@@ -58,6 +58,10 @@ import com.howell.utils.Util;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerAppCompatActivity;
+
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
@@ -99,6 +103,7 @@ public class LoginActivity extends AppCompatActivity implements ILoginContract.I
 
     private boolean mIsGuest;
     private boolean mIsCustom = false;
+
 
     private ILoginContract.IPresenter mPresenter;
 

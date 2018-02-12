@@ -26,11 +26,15 @@ import com.howell.modules.regist.presenter.RegistPresenter;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerAppCompatActivity;
+
 /**
  * Created by howell on 2016/11/10.
  */
 
-public class RegisterActivity extends AppCompatActivity implements IRegistContract.IVew,View.OnClickListener{
+public class RegisterActivity extends DaggerAppCompatActivity implements IRegistContract.IVew,View.OnClickListener{
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -59,7 +63,10 @@ public class RegisterActivity extends AppCompatActivity implements IRegistContra
     private TextView mTitle;
 
     private boolean mIsBindFinger;
-    private IRegistContract.IPresenter mPresenter;
+
+    @Inject
+    IRegistContract.IPresenter mPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -203,6 +210,7 @@ public class RegisterActivity extends AppCompatActivity implements IRegistContra
             //register
             mProgressView.setVisibility(View.VISIBLE);
 //            RegisterAction.getInstance().registerCallback(this).register(username,password,email);
+
             mPresenter.register(username,password,email);
         }
     }
@@ -257,9 +265,9 @@ public class RegisterActivity extends AppCompatActivity implements IRegistContra
 
     @Override
     public void bindPresenter() {
-        if (mPresenter==null){
-            mPresenter = new RegistPresenter();
-        }
+//        if (mPresenter==null){
+//            mPresenter = new RegistPresenter();
+//        }
         mPresenter.bindView(this);
     }
 
