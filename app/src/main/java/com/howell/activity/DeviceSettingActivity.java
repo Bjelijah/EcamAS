@@ -43,11 +43,15 @@ import com.howellsdk.net.soap.bean.VideoParamRes;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerAppCompatActivity;
+
 /**
  * Created by howell on 2016/12/8.
  */
 
-public class DeviceSettingActivity extends AppCompatActivity implements IParamContract.IVew,CompoundButton.OnCheckedChangeListener,SeekBar.OnSeekBarChangeListener {
+public class DeviceSettingActivity extends DaggerAppCompatActivity implements IParamContract.IVew,CompoundButton.OnCheckedChangeListener,SeekBar.OnSeekBarChangeListener {
 
     public static final int MSG_SETTING_GAIN_ERROR          = 0x00;
     public static final int MSG_SETTING_WAIT_DISSHOW        = 0x01;
@@ -66,6 +70,8 @@ public class DeviceSettingActivity extends AppCompatActivity implements IParamCo
 
     boolean mIsSaved,mIsTurn,mIsLamp,mIsRec,mIsAlarm,mIsRename=false;
     int mResolution,mPicture;
+
+    @Inject
     IParamContract.IPresenter mPresenter;
     private boolean mIsGetCodefinish,mIsGetVmdFinish,mIsGetAuxFinish,mIsGetVideoFinish,mIsGetVerFinish,mIsGetPush;
 
@@ -555,9 +561,9 @@ public class DeviceSettingActivity extends AppCompatActivity implements IParamCo
 
     @Override
     public void bindPresenter() {
-        if(mPresenter == null){
-            mPresenter = new ParamSoapPresenter();
-        }
+//        if(mPresenter == null){
+//            mPresenter = new ParamSoapPresenter();
+//        }
         mPresenter.bindView(this);
         mPresenter.init(this,mBean);
     }
@@ -566,7 +572,7 @@ public class DeviceSettingActivity extends AppCompatActivity implements IParamCo
     public void unbindPresenter() {
         if (mPresenter!=null){
             mPresenter.unbindView();
-            mPresenter = null;
+//            mPresenter = null;
         }
     }
 

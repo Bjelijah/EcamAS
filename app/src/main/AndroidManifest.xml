@@ -75,22 +75,25 @@
         >
         <!--android:theme="@android:style/Theme.Black.NoTitleBar"-->
         <activity
-            android:name="com.howell.activity.SendWifi"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
+            android:name="com.howell.activity.SendWifi"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name="com.howell.activity.GetMatchResult"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity
             android:name="com.howell.activity.FlashLighting"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+
+
+            />
         <!--android:theme="@android:style/Theme.Black.NoTitleBar"-->
         <activity
             android:name="com.howell.activity.NavigationActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" />
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <!--android:name="com.howell.activity.LogoActivity"-->
         <!--@android:style/Theme.NoTitleBar-->
@@ -168,7 +171,7 @@
             android:theme="@style/MyAppThemeHome.BigImage"
             />
 
-        <activity android:name="com.howell.activity.AddNewCamera"
+        <activity android:name="com.howell.activity.AddNewCameraActivity"
             android:screenOrientation="portrait"
             android:theme="@style/MyAppThemeAdd"/>
 

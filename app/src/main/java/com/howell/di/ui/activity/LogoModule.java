@@ -14,6 +14,7 @@ import com.howell.modules.login.presenter.LoginHttpPresenter;
 import com.howell.modules.login.presenter.LoginSoapPresenter;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;

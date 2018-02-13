@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ import com.howell.adapter.VideoListRecyclerAdapter;
 import com.howell.bean.CameraItemBean;
 import com.android.howell.webcam.R;
 
+import com.howell.di.ActivityScope;
 import com.howell.modules.player.IPlayContract;
 import com.howell.modules.player.bean.VODRecord;
 import com.howell.modules.player.presenter.PlayApPresenter;
@@ -34,6 +36,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
+
+import dagger.android.support.DaggerFragment;
 import pullrefreshview.layout.BaseFooterView;
 import pullrefreshview.layout.BaseHeaderView;
 import pullrefreshview.support.view.LockFooterView;
@@ -42,7 +48,7 @@ import pullrefreshview.support.view.LockHeaderView;
 /**
  * Created by Administrator on 2017/1/6.
  */
-
+//@ActivityScope
 public class VodFragment extends Fragment implements IPlayContract.IVew,VideoListRecyclerAdapter.OnItemClick,LockHeaderView.OnRefreshListener,LockFooterView.OnLoadListener{
 
     public static final int MSG_VIDEO_LIST_DATA_UPDATE          = 0xfe00;
@@ -58,8 +64,19 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
     LockFooterView mlfv;
     ArrayList<VODRecord> mList = new ArrayList<>();
     CameraItemBean mBean;
-    IPlayContract.IPresent mPresent;
+
     String mBeg,mEnd;
+
+
+
+
+//    @Inject
+//    public VodFragment() {
+//    }
+
+
+    IPlayContract.IPresent mPresent;
+
 
     Handler mHandler = new Handler(){
         @Override
@@ -103,6 +120,7 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.i("123","oncreate view");
         mView = inflater.inflate(R.layout.fragment_vod_list,container,false);
 
         initView();
@@ -112,8 +130,11 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
 
     @Override
     public void onResume() {
+        Log.i("123","on resume  mPresent="+mPresent);
         super.onResume();
-        mPresent.resumeServer();
+        if (mPresent!=null) {
+            mPresent.resumeServer();
+        }
     }
 
     @Override
@@ -132,6 +153,7 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
     }
 
     private void initFun(){
+        Log.i("123","init fun");
         mAdapter = new VideoListRecyclerAdapter(this);
         mRv.setLayoutManager(new LinearLayoutManager(getContext()));
         mRv.setAdapter(mAdapter);
@@ -195,6 +217,7 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
 
     public void setBean(CameraItemBean b){
         mBean = b;
+        Log.i("123","~~~~~~~~setBean   mBean="+mBean);
         bindPresenter();
     }
 

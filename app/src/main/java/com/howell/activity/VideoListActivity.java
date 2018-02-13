@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -34,11 +35,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjector;
+import dagger.android.support.DaggerAppCompatActivity;
+
 /**
  * Created by Administrator on 2017/1/3.
  */
 
-public class VideoListActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener{
+public class VideoListActivity extends DaggerAppCompatActivity implements AppBarLayout.OnOffsetChangedListener{
     private static final int MSG_VIDEO_LIST_DATA_UPDATE    = 0x00;
 
 
@@ -52,9 +58,16 @@ public class VideoListActivity extends AppCompatActivity implements AppBarLayout
     private boolean mIsImageHidden;
     CameraItemBean mBean;
     int imageWidth,imageHeight;
+
+
     VodFragment mFragment;
 
-    private com.howell.datetime.WheelMain wheelMain;
+    @Inject
+    WheelMain wheelMain;
+
+    @Inject
+    View timepickerview;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,7 +139,8 @@ public class VideoListActivity extends AppCompatActivity implements AppBarLayout
     }
 
     private void wheelTimeFun(){
-        final View timepickerview= LayoutInflater.from(VideoListActivity.this).inflate(R.layout.timepicker, null);
+
+        /*  final View timepickerview= LayoutInflater.from(VideoListActivity.this).inflate(R.layout.timepicker, null);
         ScreenInfo screenInfo = new ScreenInfo(VideoListActivity.this);
         String country = getResources().getConfiguration().locale.getCountry();
         wheelMain = new WheelMain(timepickerview,country);
@@ -148,7 +162,8 @@ public class VideoListActivity extends AppCompatActivity implements AppBarLayout
         int  month = calendar.get(Calendar.MONTH) ;
         int day = calendar.get(Calendar.DAY_OF_MONTH);
         wheelMain.initDateTimePicker(year,month,day);
-
+*/
+        wheelMain.setScreenHeight(ScreenInfo.getHeight(this));
         new AlertDialog.Builder(VideoListActivity.this)
                 .setTitle(getResources().getString(R.string.select_date))
                 .setView(timepickerview)

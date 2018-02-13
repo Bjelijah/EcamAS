@@ -27,13 +27,16 @@ import com.howell.utils.CameraUtils;
 
 import java.util.List;
 
-public class FlashLighting extends Activity implements OnClickListener,IDeviceContract.IVew{
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerAppCompatActivity;
+
+public class FlashLighting extends DaggerAppCompatActivity implements OnClickListener,IDeviceContract.IVew{
 	private TextView /*tips,*/btnTips;
 	private ImageButton mBack,mFlashLight;
 	//private ImageView mBackground;
 	private LinearLayout mSucceedTips;
 	private Activities mActivities;
-	private HomeKeyEventBroadCastReceiver receiver;
 //	private CameraUtils c;
 	private FlashLightManager f;
 	private boolean isBtnClicked;
@@ -45,6 +48,11 @@ public class FlashLighting extends Activity implements OnClickListener,IDeviceCo
 	private static final int LIGHTOFF = 2;
 	private FlashThread thread;
 	private Handler mHandler = new Handler(){};
+
+	@Inject
+	HomeKeyEventBroadCastReceiver receiver;
+
+	@Inject
 	IDeviceContract.IPresenter mPresenter;
 	String mMatchCode;
 	@Override
@@ -57,7 +65,7 @@ public class FlashLighting extends Activity implements OnClickListener,IDeviceCo
 		isBtnClicked = false;
 		mActivities = Activities.getInstance();
         mActivities.addActivity("FlashLighting",FlashLighting.this);
-        receiver = new HomeKeyEventBroadCastReceiver();
+//        receiver = new HomeKeyEventBroadCastReceiver();
 		registerReceiver(receiver, new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
 		
 		Intent intent = getIntent();
@@ -200,9 +208,9 @@ public class FlashLighting extends Activity implements OnClickListener,IDeviceCo
 
 	@Override
 	public void bindPresenter() {
-		if(mPresenter==null){
-			mPresenter = new DeviceSoapPresenter();
-		}
+//		if(mPresenter==null){
+//			mPresenter = new DeviceSoapPresenter();
+//		}
 		mPresenter.init(this);
 		mPresenter.bindView(this);
 	}

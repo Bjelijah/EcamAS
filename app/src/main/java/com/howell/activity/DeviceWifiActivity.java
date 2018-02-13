@@ -34,11 +34,15 @@ import com.mikepenz.octicons_typeface_library.Octicons;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerAppCompatActivity;
+
 /**
  * Created by howell on 2016/12/2.
  */
 
-public class DeviceWifiActivity extends AppCompatActivity {
+public class DeviceWifiActivity extends DaggerAppCompatActivity {
     private static final int PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION= 0x1234;
     Toolbar mTb;
 //    ImageButton mBack;
@@ -52,6 +56,10 @@ public class DeviceWifiActivity extends AppCompatActivity {
     private NetWorkUtils mWifiAdmin;
     private String[] mWifiMember;
     private ArrayAdapter<String> myAdapter;
+
+    @Inject
+    Intent mIntent;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -203,11 +211,11 @@ public class DeviceWifiActivity extends AppCompatActivity {
             return;
         }
         //todo: click
-        Intent intent = new Intent(this,FlashLighting.class);
-        intent.putExtra("wifi_ssid", mSpinner.getSelectedItem().toString());
-        intent.putExtra("wifi_password", mWifiPwd.getText().toString());
-        intent.putExtra("device_name", mDeviceName.getText().toString());
-        startActivity(intent);
+//        Intent intent = new Intent(this,FlashLighting.class);
+        mIntent.putExtra("wifi_ssid", mSpinner.getSelectedItem().toString());
+        mIntent.putExtra("wifi_password", mWifiPwd.getText().toString());
+        mIntent.putExtra("device_name", mDeviceName.getText().toString());
+        startActivity(mIntent);
     }
 
 

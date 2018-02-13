@@ -42,6 +42,7 @@ import com.howell.activity.fragment.NoticeFragment;
 import com.howell.bean.UserLoginDBBean;
 import com.howell.db.UserLoginDao;
 import com.android.howell.webcam.R;
+import com.howell.di.ui.activity.HomeModule;
 import com.howell.modules.login.ILoginContract;
 import com.howell.modules.login.bean.Type;
 import com.howell.modules.login.presenter.LoginHttpPresenter;
@@ -80,13 +81,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * Created by howell on 2016/11/15.
  */
 
-public class HomeExActivity extends AppCompatActivity implements ILoginContract.IView,IConst, ViewPager.OnPageChangeListener {
+public class HomeExActivity extends DaggerAppCompatActivity implements ILoginContract.IView,IConst, ViewPager.OnPageChangeListener {
 
     private final static long ID_DRAWER_UID = 0x00;
     private final static long ID_DRAWER_HOME = 0x01;
@@ -117,7 +122,7 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
     private FloatingActionButton mAddbtn;
     private IProfile profile,profile2;
     private Toolbar toolbar;
-    private int [] mUserIcon = {R.drawable.profile2,R.drawable.profile3,R.drawable.profile4,R.drawable.profile5,R.drawable.profile6};
+
     private boolean mbGuest;
     private boolean mIsScope = false;
     private DrawerCheckedChangeListener onCheckedChangerListener = new DrawerCheckedChangeListener();
@@ -125,11 +130,25 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
     private DrawerItemClickListener onDrawerItemClickListener = new DrawerItemClickListener();
     public static Bitmap sBkBitmap;
     private String mUpdataUrl=null;
-    private List<HomeBaseFragment> mFragments;
-    private final CompositeDisposable mDisposables = new CompositeDisposable();
-    ILoginContract.IPresenter mPresenter;
 
+    private final CompositeDisposable mDisposables = new CompositeDisposable();
     private boolean bTypeTurn,bTypeCrypto,bSaveType=false;
+
+    @Inject ILoginContract.IPresenter mPresenter;
+
+    @Inject int [] mUserIcon;
+
+    @Inject List<HomeBaseFragment> mFragments;
+
+    @Inject @Named(HomeModule.INTENT_LOGIN) Intent mLoginIntent;
+
+    @Inject @Named(HomeModule.INTENT_CENTER) Intent mCenterIntent;
+
+    @Inject @Named(HomeModule.INTENT_PUSH_SET) Intent mPushSetIntent;
+
+    @Inject @Named(HomeModule.INTENT_SERVER_SET) Intent mServerSetIntent;
+
+    @Inject @Named(HomeModule.INTENT_ADD_CAM) Intent mAddCamIntent;
 
     Handler mHandler = new Handler(){
         @Override
@@ -200,8 +219,8 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
 //                task.execute();
                 sBkBitmap = getViewBitmap(rootView);
                 Log.i("123","add btn 2 click time="+System.currentTimeMillis());
-                Intent intent = new Intent(HomeExActivity.this,AddNewCamera.class);
-                HomeExActivity.this.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(HomeExActivity.this,mAddbtn,"mybtn").toBundle());
+//                Intent intent = new Intent(HomeExActivity.this,AddNewCameraActivity.class);
+                HomeExActivity.this.startActivity(mAddCamIntent, ActivityOptions.makeSceneTransitionAnimation(HomeExActivity.this,mAddbtn,"mybtn").toBundle());
 
             }
         });
@@ -356,49 +375,6 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
         return getDrawable(mUserIcon[id]);
     }
 
-    private List<IProfile> getProfile(){
-        List<IProfile> mList = new ArrayList<>();
-        HashSet<IProfile> mSet = new HashSet<>();
-        if (mbGuest){
-            Drawable guestIcon =  new IconicsDrawable(this, GoogleMaterial.Icon.gmd_account_circle).actionBar().color(Color.WHITE);
-            IProfile mine = new ProfileDrawerItem().withName(getString(R.string.home_guest)).withEmail(getString(R.string.home_guest_email)).withIcon(guestIcon);
-            mList.add(mine);
-            return mList;
-        }
-        String userName = getIntent().getStringExtra("account");
-        String usermail = getIntent().getStringExtra("email");
-        ConfigAction.getInstance(this).setEmail(usermail);
-//        String userName = LoginAction.getInstance().getmInfo().getAccount();
-//        String usermail = LoginAction.getInstance().getmInfo().getAr().getEmail();
-        IProfile mine = new ProfileDrawerItem().withName(userName).withEmail(usermail).withIcon(getRamdomUserIcon());
-
-        mList.add(mine);
-
-
-        UserLoginDao dao = new UserLoginDao(this, "user.db", 1);
-        List<UserLoginDBBean> list2 = dao.queryAll();
-        for(UserLoginDBBean b:list2){
-            Log.i("123","all b.name="+b.getUserName()+" email="+b.getUserEmail() +"  num="+b.getUserNum()+" ip="+b.getC().getCustomIP());
-        }
-        Log.i("123","~~~~~~~~");
-        List<UserLoginDBBean> list = dao.queryByNum(0);
-        for (UserLoginDBBean b:list){
-            Log.i("123","dao b.name="+b.getUserName()   +" email="+b.getUserEmail()      +"  num="+b.getUserNum()+"  ip="+b.getC().getCustomIP());
-            if (!b.getUserName().equals(userName)
-                    || !b.getUserEmail().equals(usermail)){
-                IProfile profile = new ProfileDrawerItem().
-                        withName(b.getUserName()).
-                        withEmail(b.getUserEmail()).
-                        withIcon(getRamdomUserIcon());
-                mList.add(profile);
-            }
-        }
-
-        dao.close();
-        return mList;
-    }
-
-
     private void buildHead(boolean compact, Bundle savedInstanceState){
         List<IProfile> profileList = getProfile();
 
@@ -442,6 +418,7 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
                 .build();
     }
 
+
     @SuppressLint("NewApi")
     private void buildDrawer(Bundle savedInstanceState){
         final boolean isTurn = bTypeTurn;//HomeAction.getInstance().isUseTurn();
@@ -483,6 +460,48 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
                 .build();
     }
 
+    private List<IProfile> getProfile(){
+        List<IProfile> mList = new ArrayList<>();
+        HashSet<IProfile> mSet = new HashSet<>();
+        if (mbGuest){
+            Drawable guestIcon =  new IconicsDrawable(this, GoogleMaterial.Icon.gmd_account_circle).actionBar().color(Color.WHITE);
+            IProfile mine = new ProfileDrawerItem().withName(getString(R.string.home_guest)).withEmail(getString(R.string.home_guest_email)).withIcon(guestIcon);
+            mList.add(mine);
+            return mList;
+        }
+        String userName = getIntent().getStringExtra("account");
+        String usermail = getIntent().getStringExtra("email");
+        ConfigAction.getInstance(this).setEmail(usermail);
+//        String userName = LoginAction.getInstance().getmInfo().getAccount();
+//        String usermail = LoginAction.getInstance().getmInfo().getAr().getEmail();
+        IProfile mine = new ProfileDrawerItem().withName(userName).withEmail(usermail).withIcon(getRamdomUserIcon());
+
+        mList.add(mine);
+
+
+        UserLoginDao dao = new UserLoginDao(this, "user.db", 1);
+        List<UserLoginDBBean> list2 = dao.queryAll();
+        for(UserLoginDBBean b:list2){
+            Log.i("123","all b.name="+b.getUserName()+" email="+b.getUserEmail() +"  num="+b.getUserNum()+" ip="+b.getC().getCustomIP());
+        }
+        Log.i("123","~~~~~~~~");
+        List<UserLoginDBBean> list = dao.queryByNum(0);
+        for (UserLoginDBBean b:list){
+            Log.i("123","dao b.name="+b.getUserName()   +" email="+b.getUserEmail()      +"  num="+b.getUserNum()+"  ip="+b.getC().getCustomIP());
+            if (!b.getUserName().equals(userName)
+                    || !b.getUserEmail().equals(usermail)){
+                IProfile profile = new ProfileDrawerItem().
+                        withName(b.getUserName()).
+                        withEmail(b.getUserEmail()).
+                        withIcon(getRamdomUserIcon());
+                mList.add(profile);
+            }
+        }
+
+        dao.close();
+        return mList;
+    }
+
 
     private void loadBackdrop() {
         final ImageView imageView = (ImageView) findViewById(R.id.backdrop);
@@ -519,10 +538,10 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
     }
 
     private void initFragment(){
-        mFragments = new ArrayList<>();
-        mFragments.add(new DeviceFragment());
-        mFragments.add(new MediaFragment());
-        mFragments.add(new NoticeFragment());
+//        mFragments = new ArrayList<>();
+//        mFragments.add(new DeviceFragment());
+//        mFragments.add(new MediaFragment());
+//        mFragments.add(new NoticeFragment());
         MyFragmentPagerAdatper myFragmentPagerAdatper = new MyFragmentPagerAdatper(getSupportFragmentManager(),mFragments);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mViewPager.setOffscreenPageLimit(3);
@@ -567,8 +586,8 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
 
 
     private void funExit(){
-        Intent intent = new Intent(HomeExActivity.this,LoginActivity.class);
-        HomeExActivity.this.startActivity(intent);
+//        Intent intent = new Intent(HomeExActivity.this,LoginActivity.class);
+        HomeExActivity.this.startActivity(mLoginIntent);
         finish();
     }
     private void funHome(){
@@ -576,13 +595,13 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
     }
 
     private void funCenter(){
-        Intent intent = new Intent(HomeExActivity.this,CenterActivity.class);
-        HomeExActivity.this.startActivity(intent);
+//        Intent intent = new Intent(HomeExActivity.this,CenterActivity.class);
+        HomeExActivity.this.startActivity(mCenterIntent);
     }
 
     private void funIP(){
-        Intent intent = new Intent(this,ServerSetActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this,ServerSetActivity.class);
+        startActivity(mServerSetIntent);
     }
 
     private void funTurn(){
@@ -590,8 +609,8 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
     }
 
     private void funPush(){
-        Intent intent = new Intent(this,PushSettingActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this,PushSettingActivity.class);
+        startActivity(mPushSetIntent);
     }
 
     private void funBind(){
@@ -661,17 +680,17 @@ public class HomeExActivity extends AppCompatActivity implements ILoginContract.
 
     @Override
     public void bindPresenter() {
-        if (mPresenter==null){
-            switch (ConfigAction.getInstance(this).getMode()){
-                case 0:
-                    mPresenter = new LoginSoapPresenter();
-                    break;
-                case 1:
-                    mPresenter = new LoginHttpPresenter();
-                    break;
-            }
-
-        }
+//        if (mPresenter==null){
+//            switch (ConfigAction.getInstance(this).getMode()){
+//                case 0:
+//                    mPresenter = new LoginSoapPresenter();
+//                    break;
+//                case 1:
+//                    mPresenter = new LoginHttpPresenter();
+//                    break;
+//            }
+//
+//        }
         mPresenter.bindView(this);
         mPresenter.init(this);
     }

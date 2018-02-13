@@ -21,11 +21,15 @@ import com.howell.utils.Util;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerAppCompatActivity;
+
 /**
  * Created by howell on 2016/12/2.
  */
 
-public class ApActivity extends AppCompatActivity implements IDeviceContract.IVew {
+public class ApActivity extends DaggerAppCompatActivity implements IDeviceContract.IVew {
 
 //    ImageButton mBack;
     Toolbar mTb;
@@ -33,6 +37,8 @@ public class ApActivity extends AppCompatActivity implements IDeviceContract.IVe
     Button mBtn;
     MyPostListener mMyPostListener = new MyPostListener();
     boolean mSuccess = false;
+
+    @Inject
     IDeviceContract.IPresenter mPresenter;
 
     @Override
@@ -136,9 +142,9 @@ public class ApActivity extends AppCompatActivity implements IDeviceContract.IVe
 
     @Override
     public void bindPresenter() {
-        if (mPresenter==null){
-            mPresenter = new DeviceSoapPresenter();
-        }
+//        if (mPresenter==null){
+//            mPresenter = new DeviceSoapPresenter();
+//        }
         mPresenter.bindView(this);
         mPresenter.init(this);
     }

@@ -21,9 +21,14 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.android.howell.webcam.R;
+import com.howell.di.ui.activity.AddNewCameraModule;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.octicons_typeface_library.Octicons;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -37,7 +42,18 @@ import io.reactivex.schedulers.Schedulers;
  * Created by howell on 2016/11/21.
  */
 
-public class AddNewCamera extends AppCompatActivity implements View.OnClickListener {
+public class AddNewCameraActivity extends DaggerAppCompatActivity implements View.OnClickListener {
+
+    @Inject @Named(AddNewCameraModule.INTENT_AP)
+    Intent mAPIntent;
+
+    @Inject @Named(AddNewCameraModule.INTENT_QR)
+    Intent mQrIntent;
+
+    @Inject @Named(AddNewCameraModule.INTENT_WIFI)
+    Intent mWifiIntent;
+
+
 
     RelativeLayout mrl;
     @Override
@@ -119,18 +135,18 @@ public class AddNewCamera extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.add_camera_fab_ap://添加ap
             case R.id.add_camera_btn_ap:
-                Intent apIntent = new Intent(this,ApActivity.class);
-                startActivity(apIntent);
+//                Intent apIntent = new Intent(this,ApActivity.class);
+                startActivity(mAPIntent);
                 break;
             case R.id.add_camera_fab_flash://添加扫一扫
             case R.id.add_camera_btn_flash:
-                Intent captureIntent = new Intent(this,SimpleCaptureActivity.class);
-                startActivity(captureIntent);
+//                Intent captureIntent = new Intent(this,SimpleCaptureActivity.class);
+                startActivity(mQrIntent);
                 break;
             case R.id.add_camera_fab_listen://添加听一听
             case R.id.add_camera_btn_listen:
-                Intent intent = new Intent(this,DeviceWifiActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(this,DeviceWifiActivity.class);
+                startActivity(mWifiIntent);
                 break;
             default:
                 break;

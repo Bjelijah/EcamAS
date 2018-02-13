@@ -22,11 +22,15 @@ import com.howell.modules.device.presenter.DeviceSoapPresenter;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerAppCompatActivity;
+
 /**
  * Created by Administrator on 2017/6/5.
  */
 
-public class AddNormalCameraActivity extends AppCompatActivity implements IDeviceContract.IVew {
+public class AddNormalCameraActivity extends DaggerAppCompatActivity implements IDeviceContract.IVew {
     private static final int MSG_OK = 0xa0;
     private static final int MSG_FAIL = 0xa1;
     String mDevId,mDevKey,mSerial;
@@ -34,6 +38,8 @@ public class AddNormalCameraActivity extends AppCompatActivity implements IDevic
     Toolbar mTb;
     AutoCompleteTextView mName;
     Button mBtn;
+
+    @Inject
     IDeviceContract.IPresenter mPresenter;
 
     Handler mHandler = new Handler(){
@@ -121,9 +127,9 @@ public class AddNormalCameraActivity extends AppCompatActivity implements IDevic
 
     @Override
     public void bindPresenter() {
-        if (mPresenter==null){
-            mPresenter = new DeviceSoapPresenter();
-        }
+//        if (mPresenter==null){
+//            mPresenter = new DeviceSoapPresenter();
+//        }
         mPresenter.bindView(this);
         mPresenter.init(this);
     }
@@ -132,7 +138,7 @@ public class AddNormalCameraActivity extends AppCompatActivity implements IDevic
     public void unbindPresenter() {
         if (mPresenter!=null){
             mPresenter.unbindView();
-            mPresenter = null;
+
         }
     }
 

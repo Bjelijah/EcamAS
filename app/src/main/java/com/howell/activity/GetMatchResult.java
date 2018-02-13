@@ -30,8 +30,12 @@ import com.howell.modules.device.presenter.DeviceSoapPresenter;
 
 import java.util.List;
 
+import javax.inject.Inject;
 
-public class GetMatchResult extends Activity implements OnClickListener,IDeviceContract.IVew{
+import dagger.android.support.DaggerAppCompatActivity;
+
+
+public class GetMatchResult extends DaggerAppCompatActivity implements OnClickListener,IDeviceContract.IVew{
 	private ProgressBar mSeekBar;
 
 	private TimerTask task;
@@ -40,10 +44,16 @@ public class GetMatchResult extends Activity implements OnClickListener,IDeviceC
 	
 	private String device_name,mMatchCode;
 	private boolean isTimerTaskStop;
-	
-	private Activities mActivities;
-	private HomeKeyEventBroadCastReceiver receiver;
+
+	@Inject
+	Activities mActivities;
+
+	@Inject
+	HomeKeyEventBroadCastReceiver receiver;
+
+	@Inject
 	IDeviceContract.IPresenter mPresenter;
+
 	private static final int PROGRESSBAR_CHANGE = 1;
 	
 	@Override
@@ -60,9 +70,9 @@ public class GetMatchResult extends Activity implements OnClickListener,IDeviceC
 		if(device_name.equals("")){
 			device_name = "我的e看";
 		}
-		mActivities = Activities.getInstance();
+//		mActivities = Activities.getInstance();
         mActivities.addActivity("GetMatchResult",GetMatchResult.this);
-        receiver = new HomeKeyEventBroadCastReceiver();
+//        receiver = new HomeKeyEventBroadCastReceiver();
 		registerReceiver(receiver, new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
 		
 		isTimerTaskStop = false;
@@ -97,9 +107,9 @@ public class GetMatchResult extends Activity implements OnClickListener,IDeviceC
 
 	@Override
 	public void bindPresenter() {
-		if (mPresenter==null){
-			mPresenter = new DeviceSoapPresenter();
-		}
+//		if (mPresenter==null){
+//			mPresenter = new DeviceSoapPresenter();
+//		}
 		mPresenter.bindView(this);
 		mPresenter.init(this);
 	}

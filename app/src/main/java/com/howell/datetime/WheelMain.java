@@ -52,6 +52,53 @@ public class WheelMain {
 		END_YEAR = eND_YEAR;
 	}
 
+	public WheelMain setScreenHeight(int screenHeight){
+		this.screenheight = screenHeight;
+		int textSize = 0;
+		textSize = (screenheight / 100) * 4;
+		wv_day.TEXT_SIZE = textSize;
+		wv_month.TEXT_SIZE = textSize;
+		wv_year.TEXT_SIZE = textSize;
+		return this;
+	}
+	public static Builder builder(){
+		return new Builder();
+	}
+
+	public static class Builder{
+
+		private int screenheight=0;
+		private int year;
+		private int month;
+		private int day;
+		private View view;
+		private String country;
+		public Builder setScreenHeight(int screenHeight){
+			this.screenheight = screenHeight;
+			return this;
+		}
+		public Builder setDate(int year,int month,int day){
+			this.year = year;
+			this.month = month;
+			this.day = day;
+			return this;
+		}
+		public Builder setView(View v){
+			this.view  =v;
+			return this;
+		}
+		public Builder setCountry(String country){
+			this.country = country;
+			return this;
+		}
+
+		public WheelMain build(){
+			return new WheelMain(view,country).initDateTimePicker(year,month,day).setScreenHeight(screenheight);
+		}
+	}
+
+
+
 	public WheelMain(View view,String country) {
 		super();
 		this.country = country;
@@ -62,7 +109,7 @@ public class WheelMain {
 	/**
 	 * @Description: TODO 弹出日期时间选择�?
 	 */
-	public void initDateTimePicker(int year ,int month ,int day) {
+	public WheelMain initDateTimePicker(int year ,int month ,int day) {
 //		int year = calendar.get(Calendar.YEAR);
 //		int month = calendar.get(Calendar.MONTH);
 //		int day = calendar.get(Calendar.DATE);
@@ -158,7 +205,7 @@ public class WheelMain {
 		wv_day.TEXT_SIZE = textSize;
 		wv_month.TEXT_SIZE = textSize;
 		wv_year.TEXT_SIZE = textSize;
-
+		return this;
 	}
 	
 	public String getEndTime() {

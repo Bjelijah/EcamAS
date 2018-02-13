@@ -24,11 +24,15 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerAppCompatActivity;
+
 /**
  * Created by Administrator on 2017/1/25.
  */
 
-public class CenterActivity extends AppCompatActivity {
+public class CenterActivity extends DaggerAppCompatActivity {
 
     private static long ID_DRAWER_HOME = 0x00;
     private static long ID_DRAWER_CENTER = 0x01;
@@ -41,6 +45,9 @@ public class CenterActivity extends AppCompatActivity {
     private WebFragment mWebFragment;
     private AppBarLayout mAppBar;
     private Drawer mDrawer = null;
+
+
+
     private DrawerItemClickListener onDrawerItemClickListener = new DrawerItemClickListener();
 
     private Handler mHandler = new Handler(){
@@ -146,6 +153,11 @@ public class CenterActivity extends AppCompatActivity {
                         new PrimaryDrawerItem().withName(R.string.home_drawer_item_center).withIcon(FontAwesome.Icon.faw_cloud).withIdentifier(ID_DRAWER_CENTER)
                 )
                 .withOnDrawerItemClickListener(onDrawerItemClickListener).build();
+
+
+
+
+
 
     }
 

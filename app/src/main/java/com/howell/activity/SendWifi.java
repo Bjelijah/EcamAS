@@ -21,28 +21,39 @@ import com.android.howell.webcam.R;
 import com.xququ.OfflineSDK.XQuquerService;
 import com.xququ.OfflineSDK.XQuquerService.XQuquerListener;
 
-public class SendWifi extends Activity implements OnClickListener , XQuquerListener{
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerAppCompatActivity;
+
+public class SendWifi extends DaggerAppCompatActivity implements OnClickListener , XQuquerListener{
 	
 	private XQuquerService xququerService;
 	public  AudioManager audiomanage;  
-	
-	private Activities mActivities;
-	private HomeKeyEventBroadCastReceiver receiver;
+
+
+
 	private String wifi_ssid,wifi_password,device_name,mMatchCode;
 	
 	private ImageButton mBack,mBtnSend,mBtnFinish;
 	private LinearLayout mSend,mFinish;
 	private TextView tips,btnTips;
 	private LinearLayout mSucceedTips;
-	
+
+
+	@Inject
+	Activities mActivities;
+
+	@Inject
+	HomeKeyEventBroadCastReceiver receiver;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.send_wifi_config);
-		mActivities = Activities.getInstance();
+//		mActivities = Activities.getInstance();
         mActivities.addActivity("SendWifi",SendWifi.this);
-        receiver = new HomeKeyEventBroadCastReceiver();
+//        receiver = new HomeKeyEventBroadCastReceiver();
 		registerReceiver(receiver, new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
 		audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE); 
 	    int maxVolume = audiomanage.getStreamMaxVolume(AudioManager.STREAM_MUSIC);  

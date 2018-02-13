@@ -1,25 +1,26 @@
 package com.howell.datetime;
 
 import android.app.Activity;
+import android.app.Application;
 import android.util.DisplayMetrics;
 
 /**
  *
- * @author 
+ * @author
  * @email chenshi011@163.com
  *
  */
 public class ScreenInfo {
-	 private Activity activity;
+	private Activity activity;
 
-	 private int width;
+	private int width;
 
-	 private int height;
+	private int height;
 
-	 private float density;
+	private float density;
 
-	 private int densityDpi;
-	 public Activity getActivity() {
+	private int densityDpi;
+	public Activity getActivity() {
 		return activity;
 	}
 
@@ -60,18 +61,41 @@ public class ScreenInfo {
 	}
 
 	public ScreenInfo(Activity activity){
-		 this.activity = activity;
-		 ini();
-	 }
-	 
-	 private void ini(){
-		 DisplayMetrics metric = new DisplayMetrics();
-		 activity.getWindowManager().getDefaultDisplay().getMetrics(metric);
-	     width = metric.widthPixels;  
-	     height = metric.heightPixels; 
-	     density = metric.density;  
-	     densityDpi = metric.densityDpi;  
-	 }
-	 
-	
+		this.activity = activity;
+		ini();
+	}
+
+	private void ini(){
+		DisplayMetrics metric = new DisplayMetrics();
+		activity.getWindowManager().getDefaultDisplay().getMetrics(metric);
+		width = metric.widthPixels;
+		height = metric.heightPixels;
+		density = metric.density;
+		densityDpi = metric.densityDpi;
+	}
+
+	public static int getHeight(Activity a){
+		DisplayMetrics metric = new DisplayMetrics();
+		a.getWindowManager().getDefaultDisplay().getMetrics(metric);
+		return metric.heightPixels;
+	}
+
+	public static int getWidth(Activity a){
+		DisplayMetrics metric = new DisplayMetrics();
+		a.getWindowManager().getDefaultDisplay().getMetrics(metric);
+		return metric.widthPixels;
+	}
+
+	public static float getDensity(Activity a){
+		DisplayMetrics metric = new DisplayMetrics();
+		a.getWindowManager().getDefaultDisplay().getMetrics(metric);
+		return metric.density;
+	}
+
+	public static int getDensityDpi(Activity a){
+		DisplayMetrics metric = new DisplayMetrics();
+		a.getWindowManager().getDefaultDisplay().getMetrics(metric);
+		return metric.densityDpi;
+	}
+
 }
