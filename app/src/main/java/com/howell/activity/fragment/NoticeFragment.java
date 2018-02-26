@@ -40,6 +40,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import pullrefreshview.layout.BaseFooterView;
 import pullrefreshview.layout.BaseHeaderView;
 
@@ -58,7 +60,17 @@ public class NoticeFragment extends HomeBaseFragment implements INoticeContract.
     NoticeRecyclerViewAdapter mAdapter;
     RecyclerView mRv;
 
+    @Inject
     INoticeContract.IPresenter mPresenter;
+
+    @Inject
+    Intent mPicIntent;
+
+    @Inject
+    View mTimepickerview;
+
+    @Inject
+    WheelMain mWheelMain;
 
     Boolean mIsRead = null;
     String mTime = null;
@@ -157,13 +169,14 @@ public class NoticeFragment extends HomeBaseFragment implements INoticeContract.
             Log.i("123","_picPath="+_picPath.get(i));
         }
 
-        Intent intent = new Intent(getContext(), BigImagesActivity.class);
-        intent.putExtra("position", index);
-        intent.putStringArrayListExtra("arrayList", _picPath);
+//        Intent intent = new Intent(getContext(), BigImagesActivity.class);
+//        intent.putExtra("position", index);
+//        intent.putStringArrayListExtra("arrayList", _picPath);
 
         getActivity().overridePendingTransition(R.anim.zoomin, R.anim.zoomout);
 
-        startActivity(intent);
+        startActivity(mPicIntent.putExtra("position", index)
+        .putStringArrayListExtra("arrayList", _picPath));
 
 //        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(getActivity(),view,"myImage").toBundle());
     }
@@ -247,38 +260,18 @@ public class NoticeFragment extends HomeBaseFragment implements INoticeContract.
 
 
     private void wheelTimeFun(){
-        final View timepickerview= LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.timepicker, null);
-        ScreenInfo screenInfo = new ScreenInfo(getActivity());
-        String country = getResources().getConfiguration().locale.getCountry();
-        final WheelMain wheelMain = new WheelMain(timepickerview,country);
-        wheelMain.screenheight = screenInfo.getHeight();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Calendar calendar = Calendar.getInstance();
-        String time = (calendar.get(Calendar.YEAR) + "-" +
-                (calendar.get(Calendar.MONTH) + 1 )+ "-" +
-                calendar.get(Calendar.DAY_OF_MONTH) + "");
-        if(JudgeDate.isDate(time, "yyyy-MM-dd")){
-            try {
-                calendar.setTime(dateFormat.parse(time));
-            } catch (ParseException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        int year = calendar.get(Calendar.YEAR);
-        int  month = calendar.get(Calendar.MONTH) ;
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        wheelMain.initDateTimePicker(year,month,day);
+
+        mWheelMain.setScreenHeight(ScreenInfo.getHeight(getActivity()));
 
         new AlertDialog.Builder(getContext())
                 .setTitle(getResources().getString(R.string.select_date))
-                .setView(timepickerview)
+                .setView(mTimepickerview)
                 .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 //						now.setText(wheelMain.getTime());
                         //"yyyy-MM-dd'T'HH:mm:ss"
-                        Date date = wheelMain.getTime();
+                        Date date = mWheelMain.getTime();
                         mTime = Util.Date2ISODate(date);
                         Log.i("123","time ="+mTime);
                         mlist.clear();
@@ -302,19 +295,19 @@ public class NoticeFragment extends HomeBaseFragment implements INoticeContract.
 
     @Override
     public void bindPresenter() {
-        if (mPresenter==null){
-            switch (ConfigAction.getInstance(getContext()).getMode()){
-                case 0:
-                    mPresenter = new NoticeSoapPresenter();
-                    break;
-                case 1:
-                    mPresenter = new NoticeHttpPresenter();
-                    break;
-            }
-
-
-
-        }
+//        if (mPresenter==null){
+//            switch (ConfigAction.getInstance(getContext()).getMode()){
+//                case 0:
+//                    mPresenter = new NoticeSoapPresenter();
+//                    break;
+//                case 1:
+//                    mPresenter = new NoticeHttpPresenter();
+//                    break;
+//            }
+//
+//
+//
+//        }
         Log.e("123","notice fragment bindview");
         mPresenter.bindView(this);
         Log.e("123","notice framge bindView finish");
@@ -326,7 +319,7 @@ public class NoticeFragment extends HomeBaseFragment implements INoticeContract.
         if (mPresenter!=null) {
             mPresenter.unbindView();
         }
-        mPresenter = null;
+//        mPresenter = null;
     }
 
     @Override

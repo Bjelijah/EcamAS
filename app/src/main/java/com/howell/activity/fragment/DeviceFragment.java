@@ -36,9 +36,16 @@ import com.zys.brokenview.BrokenView;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import pullrefreshview.layout.BaseFooterView;
 import pullrefreshview.layout.BaseHeaderView;
 import pullrefreshview.layout.PullRefreshLayout;
+
+import static com.howell.di.ui.fragment.DeviceModule.INTENT_DEVICE;
+import static com.howell.di.ui.fragment.DeviceModule.INTENT_LIST;
+import static com.howell.di.ui.fragment.DeviceModule.INTENT_PLAY;
 
 /**
  * Created by howell on 2016/11/11.
@@ -63,7 +70,28 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
     BrokenView mBrokenView;
     MyBrokenCallback mBrokenCallback = new MyBrokenCallback();
     private BrokenTouchListener mColorfulListener;
-    private IDeviceContract.IPresenter mPresenter;
+
+//    public DeviceFragment(){
+//        DaggerDeviceComponent.create().inject(this);
+//
+//    }
+
+
+    @Inject
+    IDeviceContract.IPresenter mPresenter;
+
+    @Inject
+    @Named(INTENT_PLAY)
+    Intent mPlayIntent;
+
+    @Inject
+    @Named(INTENT_DEVICE)
+    Intent mDeviceIntent;
+
+    @Inject
+    @Named(INTENT_LIST)
+    Intent mListIntent;
+
 
     Handler mHandler = new Handler(){
         @Override
@@ -193,7 +221,7 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
                     getResources().getString(R.string.not_online_message),null);
             return;
         }
-        getContext().startActivity(new Intent(getContext(),PlayViewActivity.class).putExtra("CameraItem",bean));
+        getContext().startActivity(mPlayIntent.putExtra("CameraItem",bean));
     }
 
 
@@ -209,7 +237,7 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
 //        }
 
 
-        this.getContext().startActivity(new Intent(this.getContext(), VideoListActivity.class).putExtra("bean",bean));
+        this.getContext().startActivity(mListIntent.putExtra("bean",bean));
 
 
         //fixme  test vod
@@ -234,7 +262,7 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
     public void onItemSettingClickListener(View v, int pos) {
         //TODO: camera setting
         CameraItemBean bean = mList.get(pos);
-        startActivity(new Intent(getContext(),DeviceSettingActivity.class).putExtra("bean",bean));
+        startActivity(mDeviceIntent.putExtra("bean",bean));
     }
 
     @Override
@@ -265,17 +293,17 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
 
     @Override
     public void bindPresenter() {
-        if (mPresenter==null){
-            switch (ConfigAction.getInstance(getContext()).getMode()){
-                case 0:
-                    mPresenter = new DeviceSoapPresenter();
-                    break;
-                case 1:
-                    mPresenter = new DeviceHttpPresenter();
-                    break;
-            }
-
-        }
+//        if (mPresenter==null){
+//            switch (ConfigAction.getInstance(getContext()).getMode()){
+//                case 0:
+//                    mPresenter = new DeviceSoapPresenter();
+//                    break;
+//                case 1:
+//                    mPresenter = new DeviceHttpPresenter();
+//                    break;
+//            }
+//
+//        }
         mPresenter.bindView(this);
         mPresenter.init(getContext());
     }
@@ -284,7 +312,7 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
     public void unbindPresenter() {
         if (mPresenter!=null) {
             mPresenter.unbindView();
-            mPresenter = null;
+//            mPresenter = null;
         }
     }
 
@@ -424,8 +452,8 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
         CameraItemBean bean = getUpdataBean(pos);
         Log.i("123","do play Type="+bean.getType());
 //        PlayAction.getInstance().setPlayBean(bean);
-        Intent intent = new Intent(getContext(), PlayViewActivity.class);
-        getContext().startActivity(intent);
+//        Intent intent = new Intent(getContext(), PlayViewActivity.class);
+        startActivity(mPlayIntent);
     }
 
 

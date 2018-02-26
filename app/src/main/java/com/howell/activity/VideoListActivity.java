@@ -46,9 +46,8 @@ import dagger.android.support.DaggerAppCompatActivity;
 
 public class VideoListActivity extends DaggerAppCompatActivity implements AppBarLayout.OnOffsetChangedListener{
     private static final int MSG_VIDEO_LIST_DATA_UPDATE    = 0x00;
-
-
     private static final int PERCENTAGE_TO_SHOW_IMAGE = 20;
+
     FloatingActionButton mFab;
     Toolbar mTb;
     AppBarLayout mAppbar;
@@ -140,29 +139,7 @@ public class VideoListActivity extends DaggerAppCompatActivity implements AppBar
 
     private void wheelTimeFun(){
 
-        /*  final View timepickerview= LayoutInflater.from(VideoListActivity.this).inflate(R.layout.timepicker, null);
-        ScreenInfo screenInfo = new ScreenInfo(VideoListActivity.this);
-        String country = getResources().getConfiguration().locale.getCountry();
-        wheelMain = new WheelMain(timepickerview,country);
-        wheelMain.screenheight = screenInfo.getHeight();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Calendar calendar = Calendar.getInstance();
-        String time = (calendar.get(Calendar.YEAR) + "-" +
-                (calendar.get(Calendar.MONTH) + 1 )+ "-" +
-                calendar.get(Calendar.DAY_OF_MONTH) + "");
-        if(JudgeDate.isDate(time, "yyyy-MM-dd")){
-            try {
-                calendar.setTime(dateFormat.parse(time));
-            } catch (ParseException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        int year = calendar.get(Calendar.YEAR);
-        int  month = calendar.get(Calendar.MONTH) ;
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        wheelMain.initDateTimePicker(year,month,day);
-*/
+
         wheelMain.setScreenHeight(ScreenInfo.getHeight(this));
         new AlertDialog.Builder(VideoListActivity.this)
                 .setTitle(getResources().getString(R.string.select_date))

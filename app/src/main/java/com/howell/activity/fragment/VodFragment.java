@@ -49,7 +49,7 @@ import pullrefreshview.support.view.LockHeaderView;
  * Created by Administrator on 2017/1/6.
  */
 //@ActivityScope
-public class VodFragment extends Fragment implements IPlayContract.IVew,VideoListRecyclerAdapter.OnItemClick,LockHeaderView.OnRefreshListener,LockFooterView.OnLoadListener{
+public class VodFragment extends DaggerFragment implements IPlayContract.IVew,VideoListRecyclerAdapter.OnItemClick,LockHeaderView.OnRefreshListener,LockFooterView.OnLoadListener{
 
     public static final int MSG_VIDEO_LIST_DATA_UPDATE          = 0xfe00;
     public static final int MSG_VIDEO_LIST_DATA_UPDATE_ERROR    = 0xfe01;
@@ -74,6 +74,8 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
 //    public VodFragment() {
 //    }
 
+    @Inject
+    Intent mPlaybackIntent;
 
     IPlayContract.IPresent mPresent;
 
@@ -122,7 +124,6 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.i("123","oncreate view");
         mView = inflater.inflate(R.layout.fragment_vod_list,container,false);
-
         initView();
         initFun();
         return mView;
@@ -251,13 +252,15 @@ public class VodFragment extends Fragment implements IPlayContract.IVew,VideoLis
         Log.i("123","startTime="+startTime+"  zoneTime="+record.getTimeZoneStartTime());
 //        PlayAction.getInstance().setPlayBean(mBean);
 
-        Intent intent = new Intent(getContext(), PlayBackActivity.class);
-        Log.e("123","mBean="+mBean.toString());
-        intent.putExtra("CameraItem",mBean);
-        intent.putExtra("startTime",startTime);
-        intent.putExtra("endTime",endTime);
+//        Intent intent = new Intent(getContext(), PlayBackActivity.class);
+//        Log.e("123","mBean="+mBean.toString());
+//        intent.putExtra("CameraItem",mBean);
+//        intent.putExtra("startTime",startTime);
+//        intent.putExtra("endTime",endTime);
 
-        getContext().startActivity(intent);
+        startActivity(mPlaybackIntent.putExtra("CameraItem",mBean)
+        .putExtra("startTime",startTime)
+        .putExtra("endTime",endTime));
 
     }
 
