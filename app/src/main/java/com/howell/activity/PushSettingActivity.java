@@ -17,6 +17,10 @@ import com.howell.pushlibrary.DaemonEnv;
 import com.howell.pushlibrary.IntentWrapper;
 import com.howell.service.MyService;
 import com.howell.utils.ServerConfigSp;
+
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerAppCompatActivity;
 //import com.xdandroid.hellodaemon.IntentWrapper;
 
 
@@ -24,11 +28,15 @@ import com.howell.utils.ServerConfigSp;
  * Created by Administrator on 2017/6/8.
  */
 
-public class PushSettingActivity extends AppCompatActivity {
+public class PushSettingActivity extends DaggerAppCompatActivity {
     TextView mTv;
     Switch mSwith;
     Toolbar mTb;
     boolean mIsPush;
+
+    @Inject
+    Intent mIntent;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,10 +92,10 @@ public class PushSettingActivity extends AppCompatActivity {
         ServerConfigSp.savePushOnOff(this,mIsPush);
         if (mIsPush){
 
-            startService(new Intent(this, MyService.class));
+            startService(mIntent);
         }else {
             MyService.stopService();
-            stopService(new Intent(this,MyService.class));
+            stopService(mIntent);
             MyService.isWorking = false;
         }
 

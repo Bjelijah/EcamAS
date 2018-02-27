@@ -144,6 +144,9 @@ public class ShareAddFragment extends ShareBaseFragment {
 //            for (int i=0;i<mL.size();i++){
 //                mSpinnerName[i] = mL.get(i).getName();
 //            }
+
+
+
             ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_item,mSpinnerName);
             myAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
             mSp.setAdapter(myAdapter);

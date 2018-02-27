@@ -23,6 +23,8 @@ import com.howell.modules.login.bean.Type;
 import com.howell.modules.login.presenter.LoginHttpPresenter;
 import com.howell.modules.login.presenter.LoginSoapPresenter;
 
+import com.howell.service.MyService;
+import com.howell.utils.ServerConfigSp;
 import com.howellsdk.utils.SDKDebugLog;
 
 import java.util.concurrent.TimeUnit;
@@ -52,6 +54,9 @@ public class LogoActivity extends DaggerAppCompatActivity implements ILoginContr
 	@Named(LogoModule.INTENT_HOME)
 	Intent mHomeIntent;
 
+	@Inject
+	@Named(LogoModule.INTENT_SERVER)
+	Intent mServerIntent;
 
 	//与平台交互协议单例
 
@@ -112,6 +117,12 @@ public class LogoActivity extends DaggerAppCompatActivity implements ILoginContr
 		SDKDebugLog.LogEnable(true);
 		mIsFromNotification = getIntent().getBooleanExtra("notification",false);
 		ConfigAction.getInstance(this);
+
+		//
+		if(ServerConfigSp.loadPushOnOff(this)){
+			startService(mServerIntent);
+		}
+
 	}
 
 

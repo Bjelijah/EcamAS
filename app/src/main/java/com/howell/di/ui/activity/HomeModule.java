@@ -7,9 +7,12 @@ import com.android.howell.webcam.R;
 import com.howell.action.ConfigAction;
 import com.howell.activity.AddNewCameraActivity;
 import com.howell.activity.CenterActivity;
+import com.howell.activity.DeviceShareActivity;
+import com.howell.activity.LineChartActivity;
 import com.howell.activity.LoginActivity;
 import com.howell.activity.PushSettingActivity;
 import com.howell.activity.ServerSetActivity;
+import com.howell.activity.TestActivity;
 import com.howell.activity.fragment.DeviceFragment;
 import com.howell.activity.fragment.HomeBaseFragment;
 import com.howell.activity.fragment.MediaFragment;
@@ -37,6 +40,9 @@ public class HomeModule {
     public static final String INTENT_SERVER_SET = "server_set_intent";
     public static final String INTENT_PUSH_SET = "push_set_intent";
     public static final String INTENT_ADD_CAM = "add_cam_intent";
+    public static final String INTENT_SHARE = "share_intent";
+    public static final String INTENT_TEST = "test_intent";
+    public static final String INTENT_CHART = "chart_intent";
 
     @Provides
     ILoginContract.IPresenter provideLoginPresenter(Context c){
@@ -93,4 +99,23 @@ public class HomeModule {
     Intent provideAddCamIntent(Context c){
         return new Intent(c,AddNewCameraActivity.class);
     }
+
+    @Provides
+    @Named(INTENT_SHARE)
+    Intent provideShareIntent(Context c){
+        return new  Intent(c,DeviceShareActivity.class);
+    }
+
+    @Provides
+    @Named(INTENT_TEST)
+    Intent provideTestIntent(Context c){
+        return new Intent(c,TestActivity.class);
+    }
+
+    @Provides
+    @Named(INTENT_CHART)
+    Intent provideChartIntent(Context c){
+        return new Intent(c,LineChartActivity.class);
+    }
+
 }

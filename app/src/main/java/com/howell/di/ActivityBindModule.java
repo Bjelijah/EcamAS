@@ -9,6 +9,7 @@ import com.howell.activity.FlashLighting;
 import com.howell.activity.GetMatchResult;
 import com.howell.activity.HomeExActivity;
 import com.howell.activity.LogoActivity;
+import com.howell.activity.PushSettingActivity;
 import com.howell.activity.RegisterActivity;
 import com.howell.activity.SendWifi;
 import com.howell.activity.VideoListActivity;
@@ -20,6 +21,7 @@ import com.howell.di.ui.activity.FlashLightModule;
 import com.howell.di.ui.activity.HomeModule;
 import com.howell.di.ui.activity.LogoModule;
 import com.howell.di.ui.activity.MatchResultModule;
+import com.howell.di.ui.activity.PushSettingModule;
 import com.howell.di.ui.activity.RegistModule;
 import com.howell.di.ui.activity.SendWifiModule;
 import com.howell.di.ui.activity.VideoListModule;
@@ -80,4 +82,9 @@ public abstract class ActivityBindModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = VideoListModule.class)
     abstract VideoListActivity videoListActivity();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = PushSettingModule.class)
+    abstract PushSettingActivity pushSettingActivity();
+
 }

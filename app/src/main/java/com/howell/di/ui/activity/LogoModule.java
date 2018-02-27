@@ -12,6 +12,7 @@ import com.howell.activity.NavigationActivity;
 import com.howell.modules.login.ILoginContract;
 import com.howell.modules.login.presenter.LoginHttpPresenter;
 import com.howell.modules.login.presenter.LoginSoapPresenter;
+import com.howell.service.MyService;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -28,6 +29,8 @@ public class LogoModule {
     public static final String INTENT_NAVIGATION = "Navigation_intent";
     public static final String INTENT_LOGIN = "login_intent";
     public static final String INTENT_HOME = "home_intent";
+    public static final String INTENT_SERVER = "server_intent";
+
 
     @Provides
     ILoginContract.IPresenter providePresenter(Context c){
@@ -60,6 +63,8 @@ public class LogoModule {
         return new Intent(c, HomeExActivity.class);
     }
 
-
+    @Provides
+    @Named(INTENT_SERVER)
+    Intent provideServerIntent(Context c){return new Intent(c, MyService.class);}
 
 }

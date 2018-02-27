@@ -20,7 +20,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
@@ -33,11 +32,8 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.howell.action.ConfigAction;
 import com.howell.action.FingerprintUiHelper;
-import com.howell.action.HomeAction;
-import com.howell.activity.fragment.DeviceFragment;
 import com.howell.activity.fragment.FingerPrintSaveFragment;
 import com.howell.activity.fragment.HomeBaseFragment;
-import com.howell.activity.fragment.MediaFragment;
 import com.howell.activity.fragment.NoticeFragment;
 import com.howell.bean.UserLoginDBBean;
 import com.howell.db.UserLoginDao;
@@ -45,8 +41,6 @@ import com.android.howell.webcam.R;
 import com.howell.di.ui.activity.HomeModule;
 import com.howell.modules.login.ILoginContract;
 import com.howell.modules.login.bean.Type;
-import com.howell.modules.login.presenter.LoginHttpPresenter;
-import com.howell.modules.login.presenter.LoginSoapPresenter;
 
 import com.howell.rxbus.RxBus;
 import com.howell.rxbus.RxConstants;
@@ -56,7 +50,6 @@ import com.howell.utils.IConst;
 import com.howell.utils.PhoneConfig;
 import com.howell.utils.SDCardUtils;
 import com.howell.utils.ServerConfigSp;
-import com.howell.utils.ThreadUtil;
 import com.howell.utils.UserConfigSp;
 import com.howell.utils.Util;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
@@ -149,6 +142,14 @@ public class HomeExActivity extends DaggerAppCompatActivity implements ILoginCon
     @Inject @Named(HomeModule.INTENT_SERVER_SET) Intent mServerSetIntent;
 
     @Inject @Named(HomeModule.INTENT_ADD_CAM) Intent mAddCamIntent;
+
+    @Inject @Named(HomeModule.INTENT_SHARE) Intent mShareIntent;
+
+    @Inject @Named(HomeModule.INTENT_TEST) Intent mTestIntent;
+
+    @Inject @Named(HomeModule.INTENT_CHART) Intent mChartIntent;
+
+
 
     Handler mHandler = new Handler(){
         @Override
@@ -331,13 +332,13 @@ public class HomeExActivity extends DaggerAppCompatActivity implements ILoginCon
 
                 break;
             case R.id.menu_home_share:
-                startActivity(new Intent(this,DeviceShareActivity.class));
+                startActivity(mShareIntent);
                 break;
             case R.id.menu_home_help:
-                startActivity(new Intent(this,TestActivity.class));
+                startActivity(mTestIntent);
                 break;
             case R.id.menu_home_chart:
-                startActivity(new Intent(this,LineChartActivity.class));
+                startActivity(mChartIntent);
                 break;
             case R.id.menu_home_notice_search:
                 ((NoticeFragment)mFragments.get(2)).doSearchByTime();

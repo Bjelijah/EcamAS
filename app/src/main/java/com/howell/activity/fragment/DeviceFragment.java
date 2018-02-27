@@ -15,18 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.howell.action.ConfigAction;
-import com.howell.action.HomeAction;
-import com.howell.activity.DeviceSettingActivity;
-import com.howell.activity.PlayViewActivity;
-import com.howell.activity.VideoListActivity;
 import com.howell.adapter.DeviceRecyclerViewAdapter;
 import com.howell.bean.CameraItemBean;
 import com.howell.bean.PlayType;
 import com.android.howell.webcam.R;
 import com.howell.modules.device.IDeviceContract;
-import com.howell.modules.device.presenter.DeviceHttpPresenter;
-import com.howell.modules.device.presenter.DeviceSoapPresenter;
 import com.howell.utils.AlerDialogUtils;
 import com.howell.utils.IConst;
 import com.zys.brokenview.BrokenCallback;
@@ -449,8 +442,8 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
 
 
     private void doPlay(int pos){
-        CameraItemBean bean = getUpdataBean(pos);
-        Log.i("123","do play Type="+bean.getType());
+//        CameraItemBean bean = getUpdataBean(pos);
+//        Log.i("123","do play Type="+bean.getType());
 //        PlayAction.getInstance().setPlayBean(bean);
 //        Intent intent = new Intent(getContext(), PlayViewActivity.class);
         startActivity(mPlayIntent);
@@ -463,7 +456,7 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
     private CameraItemBean getUpdataBean(int pos){
         CameraItemBean b = mList.get(pos);
         if (b.getType()==PlayType.ECAM || b.getType() == PlayType.TURN){
-            b.setType(HomeAction.getInstance().isUseTurn()?PlayType.TURN:PlayType.ECAM);
+//            b.setType(HomeAction.getInstance().isUseTurn()?PlayType.TURN:PlayType.ECAM);
             mList.set(pos,b);
         }
         return b;
@@ -476,7 +469,7 @@ public class DeviceFragment extends HomeBaseFragment implements IDeviceContract.
         Log.i("123","updata All bean type");
         for (CameraItemBean b:mList){
             if (b.getType()==PlayType.ECAM||b.getType()==PlayType.TURN){
-                b.setType(HomeAction.getInstance().isUseTurn()?PlayType.TURN:PlayType.ECAM);
+//                b.setType(HomeAction.getInstance().isUseTurn()?PlayType.TURN:PlayType.ECAM);
             }
         }
     }
