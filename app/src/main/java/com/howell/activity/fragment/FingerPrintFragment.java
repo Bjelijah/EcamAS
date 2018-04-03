@@ -1,5 +1,6 @@
 package com.howell.activity.fragment;
 
+import android.annotation.TargetApi;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.hardware.fingerprint.FingerprintManager;
@@ -96,6 +97,7 @@ public class FingerPrintFragment extends DialogFragment implements FingerprintUi
 		setRetainInstance(true);
 		setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_Light_Dialog);
 	}
+
 
 	@RequiresApi(api = Build.VERSION_CODES.M)
 	@Override
