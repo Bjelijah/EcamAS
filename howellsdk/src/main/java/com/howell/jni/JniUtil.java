@@ -8,6 +8,7 @@ import com.howellsdk.player.ecam.bean.StreamReqContext;
 public class JniUtil {
 	static{
 //		System.loadLibrary("jpush");
+		System.loadLibrary("hwwavesndsdk");
 		System.loadLibrary("hwtrans");
 		System.loadLibrary("hwplay");
 		System.loadLibrary("player_jni");
@@ -112,5 +113,8 @@ public class JniUtil {
 	public static native long []ecamGetSdpTime();//return long[0]:begtime ,long[1]:endTime;
 	public static native int ecamSendAudioData(byte [] bytes,int len);
 	public static native int ecamGetStreamLenSomeTime();
+
+	//sound send
+	public static native byte[] sendNativeVoice(String msg);
 
 }

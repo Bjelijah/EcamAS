@@ -386,6 +386,7 @@ public class DeviceSoapPresenter extends DeviceBasePresenter {
                         }
 
                         if (!getDeviceMatchingResultRes.getResult().equalsIgnoreCase("ok")){
+                            Log.e("123","getDevicematchingResultRes="+getDeviceMatchingResultRes.getResult());
                             mView.onError();
                             return null;
                         }
@@ -402,7 +403,7 @@ public class DeviceSoapPresenter extends DeviceBasePresenter {
                     }
 
                     @Override
-                    public void onNext(@NonNull String s) {
+                    public void onNext(@Nullable String s) {
                         if (name!=null){
                             changeDeviceName(s,name);
                         }

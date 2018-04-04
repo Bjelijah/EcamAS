@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.media.AudioTrack;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +19,8 @@ import android.widget.TextView;
 
 import com.howell.broadcastreceiver.HomeKeyEventBroadCastReceiver;
 import com.android.howell.webcam.R;
+import com.howell.jni.JniUtil;
+import com.howellsdk.utils.ThreadUtil;
 import com.xququ.OfflineSDK.XQuquerService;
 import com.xququ.OfflineSDK.XQuquerService.XQuquerListener;
 
@@ -27,7 +30,7 @@ import dagger.android.support.DaggerAppCompatActivity;
 
 public class SendWifi extends DaggerAppCompatActivity implements OnClickListener , XQuquerListener{
 	
-	private XQuquerService xququerService;
+//	private XQuquerService xququerService;
 	public  AudioManager audiomanage;  
 
 
@@ -38,7 +41,9 @@ public class SendWifi extends DaggerAppCompatActivity implements OnClickListener
 	private LinearLayout mSend,mFinish;
 	private TextView tips,btnTips;
 	private LinearLayout mSucceedTips;
-
+	private boolean mIsAudioPlay;
+	@Inject
+	AudioTrack mAudio;
 
 	@Inject
 	Activities mActivities;
@@ -59,7 +64,7 @@ public class SendWifi extends DaggerAppCompatActivity implements OnClickListener
 	    int maxVolume = audiomanage.getStreamMaxVolume(AudioManager.STREAM_MUSIC);  
 	    audiomanage.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume - 1 , 0);
 	    
-		xququerService = XQuquerService.getInstance();
+//		xququerService = XQuquerService.getInstance();
 		
 		Intent intent = getIntent();
 		wifi_ssid = intent.getStringExtra("wifi_ssid");
@@ -89,6 +94,7 @@ public class SendWifi extends DaggerAppCompatActivity implements OnClickListener
     	super.onDestroy();
     	mActivities.removeActivity("SendWifi");
     	unregisterReceiver(receiver);
+		releaseAudio();
     }
     
 	@Override
@@ -96,14 +102,15 @@ public class SendWifi extends DaggerAppCompatActivity implements OnClickListener
 	{
 		Log.i("", "onStart");
 		super.onStart();
-		xququerService.start(this);		
+//		xququerService.start(this);
 	}
 	
 	@Override
 	protected void onStop()
 	{
 		super.onStop();
-		xququerService.stop();		
+//		xququerService.stop();
+		stopAudio();
 		Log.i("", "onStop");
 	}
 
@@ -154,7 +161,8 @@ public class SendWifi extends DaggerAppCompatActivity implements OnClickListener
 				alertDialog.show(); 
 				return;
 			}
-			send();
+//			send();
+			sendNoise();
 			tips.setText(getResources().getString(R.string.send_wifi_config_activity_tip_sending));
 			break;
 		case R.id.ib_send_wifi_back:
@@ -177,6 +185,46 @@ public class SendWifi extends DaggerAppCompatActivity implements OnClickListener
 		String wifiMeesage = "Wo:"+wifi_ssid+"|"+wifi_password+"|"+mMatchCode;
 		System.out.println(wifiMeesage);
 		byte[] data = wifiMeesage.getBytes();
-		if(data.length>0) xququerService.sendData(data, 0.5f);  //0.0 ~ 1.0
+//		if(data.length>0) xququerService.sendData(data, 0.5f);  //0.0 ~ 1.0
+	}
+
+	private void sendNoise(){
+		final String wifiMeesage = "Wo:"+wifi_ssid+"|"+wifi_password+"|"+mMatchCode;
+		Log.e("123","send wifimessage="+wifiMeesage);
+		ThreadUtil.cachedThreadStart(new Runnable() {
+			final byte [] b= JniUtil.sendNativeVoice(wifiMeesage);
+
+			@Override
+			public void run() {
+				playAudio();
+				while (mIsAudioPlay){
+					writeAudio(b,b.length);
+				}
+			}
+		});
+		onSend();
+	}
+
+	private void playAudio(){
+		mIsAudioPlay = true;
+		if(mAudio.getPlayState()!=AudioTrack.PLAYSTATE_PLAYING){
+			mAudio.play();
+		}
+	}
+	private void stopAudio(){
+		mIsAudioPlay = false;
+		if (mAudio!=null){
+			mAudio.stop();
+		}
+	}
+
+	private void writeAudio(byte [] b,int len){
+		mAudio.write(b,0,len);
+	}
+	private void releaseAudio(){
+		if(mAudio.getPlayState()==AudioTrack.PLAYSTATE_PLAYING){
+			mAudio.stop();
+		}
+		mAudio.release();
 	}
 }

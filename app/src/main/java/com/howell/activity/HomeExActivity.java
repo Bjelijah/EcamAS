@@ -275,8 +275,8 @@ public class HomeExActivity extends DaggerAppCompatActivity implements ILoginCon
             case 0:
                 menu.findItem(R.id.menu_home_help).setVisible(true);
                 menu.findItem(R.id.menu_home_like).setVisible(true);
-                menu.findItem(R.id.menu_home_share).setVisible(true);
-                menu.findItem(R.id.menu_home_chart).setVisible(true);
+                menu.findItem(R.id.menu_home_share).setVisible(false);
+                menu.findItem(R.id.menu_home_chart).setVisible(false);
                 if(UserConfigSp.loadLike(this)) {menu.findItem(R.id.menu_home_like).setIcon(getDrawable(R.mipmap.ic_favorite_white_24dp));}else{
                     menu.findItem(R.id.menu_home_like).setIcon(getDrawable(R.mipmap.ic_favorite_border_white_24dp));}
                 menu.findItem(R.id.menu_home_notice_search).setVisible(false);
@@ -291,7 +291,7 @@ public class HomeExActivity extends DaggerAppCompatActivity implements ILoginCon
                 menu.findItem(R.id.menu_home_share).setVisible(false);
                 menu.findItem(R.id.menu_home_like).setVisible(false);
                 menu.findItem(R.id.menu_home_help).setVisible(false);
-                menu.findItem(R.id.menu_home_chart).setVisible(true);
+                menu.findItem(R.id.menu_home_chart).setVisible(false);
                 menu.findItem(R.id.menu_home_notice_search).setVisible(false);
                 menu.findItem(R.id.menu_home_scope).setVisible(true);
                 menu.findItem(R.id.menu_home_setting).setVisible(false);
@@ -303,7 +303,7 @@ public class HomeExActivity extends DaggerAppCompatActivity implements ILoginCon
                 menu.findItem(R.id.menu_home_share).setVisible(false);
                 menu.findItem(R.id.menu_home_like).setVisible(false);
                 menu.findItem(R.id.menu_home_help).setVisible(false);
-                menu.findItem(R.id.menu_home_chart).setVisible(true);
+                menu.findItem(R.id.menu_home_chart).setVisible(false);
                 menu.findItem(R.id.menu_home_notice_search).setVisible(true);
                 menu.findItem(R.id.menu_home_scope).setVisible(false);
                 menu.findItem(R.id.menu_home_setting).setVisible(false);
@@ -332,13 +332,13 @@ public class HomeExActivity extends DaggerAppCompatActivity implements ILoginCon
 
                 break;
             case R.id.menu_home_share:
-                startActivity(mShareIntent);
+//                startActivity(mShareIntent);
                 break;
             case R.id.menu_home_help:
-                startActivity(mTestIntent);
+//                startActivity(mTestIntent);
                 break;
             case R.id.menu_home_chart:
-                startActivity(mChartIntent);
+//                startActivity(mChartIntent);
                 break;
             case R.id.menu_home_notice_search:
                 ((NoticeFragment)mFragments.get(2)).doSearchByTime();
@@ -431,18 +431,20 @@ public class HomeExActivity extends DaggerAppCompatActivity implements ILoginCon
                 .withFullscreen(true)
                 .addDrawerItems(
                         new PrimaryDrawerItem().withName(R.string.home_drawer_item_home).withIcon(FontAwesome.Icon.faw_home).withIdentifier(ID_DRAWER_HOME),
-                        new PrimaryDrawerItem().withName(R.string.home_drawer_item_center).withIcon(FontAwesome.Icon.faw_cloud).withIdentifier(ID_DRAWER_CENTER),
+//fixme 中心
+//                        new PrimaryDrawerItem().withName(R.string.home_drawer_item_center).withIcon(FontAwesome.Icon.faw_cloud).withIdentifier(ID_DRAWER_CENTER),
 //                        new PrimaryDrawerItem().withName(R.string.drawer_item_free_play).withIcon(FontAwesome.Icon.faw_gamepad),
 //                        new PrimaryDrawerItem().withName(R.string.drawer_item_custom).withIcon(FontAwesome.Icon.faw_eye),
                         new SectionDrawerItem().withName(R.string.home_drawer_second_head),
                         new SecondaryDrawerItem().withName(R.string.home_drawer_server_address).withIcon(Octicons.Icon.oct_server).withIdentifier(ID_DRAWER_SERVER_ADDRESS),
 //fixme          //              new SecondaryDrawerItem().withName(R.string.home_drawer_turn_address).withIcon(Octicons.Icon.oct_server).withIdentifier(ID_DRAWER_TURN_ADDRESS),
                         new SecondaryDrawerItem().withName(R.string.home_drawer_push_service).withIcon(Octicons.Icon.oct_alert).withIdentifier(ID_DRAWER_PUSH),
-                        new ExpandableDrawerItem().withName(R.string.home_drawer_connect).withIcon(FontAwesome.Icon.faw_connectdevelop).withSelectable(false)
-                                .withSubItems(
-                                        new SwitchDrawerItem().withName(R.string.home_drawer_turn_server).withLevel(2).withIcon(Octicons.Icon.oct_tools).withChecked(isTurn).withOnCheckedChangeListener(onCheckedChangerListener).withSelectable(false).withIdentifier(ID_DRAWER_SERVER_TURN),
-                                        new SwitchDrawerItem().withName(R.string.home_drawer_encrypt).withLevel(2).withIcon(Octicons.Icon.oct_tools).withChecked(isCrypto).withOnCheckedChangeListener(onCheckedChangerListener).withSelectable(false).withIdentifier(ID_DRAWER_SERVER_ENCRYPT)
-                                ),
+//fixme 通讯方式
+//                        new ExpandableDrawerItem().withName(R.string.home_drawer_connect).withIcon(FontAwesome.Icon.faw_connectdevelop).withSelectable(false)
+//                                .withSubItems(
+//                                        new SwitchDrawerItem().withName(R.string.home_drawer_turn_server).withLevel(2).withIcon(Octicons.Icon.oct_tools).withChecked(isTurn).withOnCheckedChangeListener(onCheckedChangerListener).withSelectable(false).withIdentifier(ID_DRAWER_SERVER_TURN),
+//                                        new SwitchDrawerItem().withName(R.string.home_drawer_encrypt).withLevel(2).withIcon(Octicons.Icon.oct_tools).withChecked(isCrypto).withOnCheckedChangeListener(onCheckedChangerListener).withSelectable(false).withIdentifier(ID_DRAWER_SERVER_ENCRYPT)
+//                                ),
                         new SecondaryDrawerItem().withName(R.string.home_drawer_server_bind).withIcon(GoogleMaterial.Icon.gmd_8tracks).withIdentifier(ID_DRAWER_SERVER_BIND),
 //                        new SecondaryDrawerItem().withName(R.string.drawer_item_settings).withIcon(FontAwesome.Icon.faw_cog),
                         new SecondaryDrawerItem().withName(R.string.drawer_item_help).withIcon(FontAwesome.Icon.faw_question).withEnabled(false).withIdentifier(ID_DRAWER_HELP)

@@ -22,6 +22,7 @@
 #include <stream_type.h>
 #include <hw_config.h>
 #include <string.h>
+#include <XHWWaveSndSDK.h>
 
 
 #define LOGI(...) (g_debug_enable?(void)__android_log_print(ANDROID_LOG_INFO, "JNI", __VA_ARGS__):(void)NULL)
@@ -2445,7 +2446,26 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamGetStreamLenSomeTime
     return len;
 }
 
+JNIEXPORT jbyteArray JNICALL Java_com_howell_jni_JniUtil_sendNativeVoice
+        (JNIEnv *env , jclass, jstring sendMsg){
+    const char *str = env->GetStringUTFChars(sendMsg, 0);
+    int n = 1024;
+    char a[1024]="";
+    char *b = NULL;
+    int len = strlen(str);
+    //todo
+    LOGI("len=%d  str=%s\n",len,str);
 
+    XHWWaveSndSDK_start();
+    XHWWaveSndSDK_GenWave(str,len,&b,&n);
+    XHWWaveSndSDK_stop();
+    LOGE("after wave   len=%d     ",n);
+    jbyteArray arr = env->NewByteArray(n);
+    env->SetByteArrayRegion(arr,0,n,(jbyte*)b);
+    env->ReleaseStringUTFChars(sendMsg,str);
+    free(b);
+    return arr;
+}
 
 
 

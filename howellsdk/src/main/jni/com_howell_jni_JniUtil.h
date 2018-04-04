@@ -639,6 +639,14 @@ JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamSendAudioData
 JNIEXPORT jint JNICALL Java_com_howell_jni_JniUtil_ecamGetStreamLenSomeTime
   (JNIEnv *, jclass);
 
+/*
+ * Class:     com_howell_jni_JniUtil
+ * Method:    sendNativeVoice
+ * Signature: (Ljava/lang/String;)[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_com_howell_jni_JniUtil_sendNativeVoice
+  (JNIEnv *, jclass, jstring);
+
 #ifdef __cplusplus
 }
 #endif
