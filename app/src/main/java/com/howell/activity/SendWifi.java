@@ -24,9 +24,16 @@ import com.howellsdk.utils.ThreadUtil;
 import com.xququ.OfflineSDK.XQuquerService;
 import com.xququ.OfflineSDK.XQuquerService.XQuquerListener;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import dagger.android.support.DaggerAppCompatActivity;
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class SendWifi extends DaggerAppCompatActivity implements OnClickListener , XQuquerListener{
 	
@@ -203,6 +210,23 @@ public class SendWifi extends DaggerAppCompatActivity implements OnClickListener
 			}
 		});
 		onSend();
+
+		//延迟一分钟停
+		Observable.timer(1, TimeUnit.MINUTES)
+				.subscribeOn(Schedulers.io())
+				.observeOn(AndroidSchedulers.mainThread())
+				.subscribe(new Consumer<Long>() {
+					@Override
+					public void accept(Long aLong) throws Exception {
+						stopAudio();
+					}
+				}, new Consumer<Throwable>() {
+					@Override
+					public void accept(Throwable throwable) throws Exception {
+						throwable.printStackTrace();
+					}
+				});
+
 	}
 
 	private void playAudio(){

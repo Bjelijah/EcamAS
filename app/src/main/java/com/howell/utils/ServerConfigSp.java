@@ -26,7 +26,6 @@ public class ServerConfigSp implements IConst{
         editor.putInt("server_mode",serverMode);
         editor.putBoolean("server_ssl",isSSL);
         editor.commit();
-
     }
 
     public static String loadServerURL(Context context){
