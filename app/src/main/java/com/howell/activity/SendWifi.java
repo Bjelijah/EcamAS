@@ -180,6 +180,7 @@ public class SendWifi extends DaggerAppCompatActivity implements OnClickListener
 			intent.putExtra("device_name", device_name);
 			intent.putExtra("match_code",mMatchCode);
         	startActivity(intent);
+
 		default:
 			break;
 		}

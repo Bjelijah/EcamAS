@@ -72,6 +72,7 @@ public class DeviceWifiActivity extends DaggerAppCompatActivity {
         initView();
         initToobar();
         initFun();
+        Activities.getInstance().addActivity(this.getLocalClassName(),this);
     }
 
     @Override
@@ -91,6 +92,7 @@ public class DeviceWifiActivity extends DaggerAppCompatActivity {
     @Override
     protected void onDestroy() {
         unregisterReceiver(mReceive);
+        Activities.getInstance().removeActivity(this.getLocalClassName());
         super.onDestroy();
     }
 

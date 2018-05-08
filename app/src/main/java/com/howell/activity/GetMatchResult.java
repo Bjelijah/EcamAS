@@ -40,7 +40,7 @@ public class GetMatchResult extends DaggerAppCompatActivity implements OnClickLi
 
 	private TimerTask task;
 	private TextView mTips;
-	private ImageButton mBack;
+	private ImageButton mBack,mBtnGetYes;
 	
 	private String device_name,mMatchCode;
 	private boolean isTimerTaskStop;
@@ -83,7 +83,8 @@ public class GetMatchResult extends DaggerAppCompatActivity implements OnClickLi
 		
 		mBack = (ImageButton)findViewById(R.id.ib_get_match_result_back);
 		mBack.setOnClickListener(this);
-		
+		mBtnGetYes = findViewById(R.id.ib_get_match_result_yes);
+		mBtnGetYes.setOnClickListener(this);
 		mTips = (TextView)findViewById(R.id.tv_get_match_result_tip);
 
 //		getResultTask = new GetResultTask(progress);
@@ -270,8 +271,13 @@ public class GetMatchResult extends DaggerAppCompatActivity implements OnClickLi
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
+						startActivity(new Intent(GetMatchResult.this,HomeExActivity.class));
+
+						/*
 						finish();
+						mActivities.toString();
 						if(mActivities.getmActivityList().containsKey("SendWifi")){
+							Log.e("123","get send wifi finish");
 							mActivities.getmActivityList().get("SendWifi").finish();
 						}
 						if(mActivities.getmActivityList().containsKey("FlashLighting")){
@@ -283,6 +289,14 @@ public class GetMatchResult extends DaggerAppCompatActivity implements OnClickLi
 						if(mActivities.getmActivityList().containsKey("CamTabActivity")){
 							mActivities.getmActivityList().get("CamTabActivity").finish();
 						}
+						if(mActivities.getmActivityList().containsKey("DeviceWifiActivity")){
+							Log.e("123","get deviceWiifActivity");
+							mActivities.getmActivityList().get("DeviceWifiActivity").finish();
+						}
+						if (mActivities.getmActivityList().containsKey("AddNewCameraActivity")){
+							mActivities.getmActivityList().get("AddNewCameraActivity").finish();
+						}
+						*/
 //		                	Intent intent = new Intent(GetMatchResult.this,CamTabActivity.class);//FIXME  back to home
 //		                	startActivity(intent);
 					}
@@ -321,7 +335,10 @@ public class GetMatchResult extends DaggerAppCompatActivity implements OnClickLi
 			}
 			finish();
 			break;
-
+			case R.id.ib_get_match_result_yes:
+				isTimerTaskStop = true;
+				showDialog();
+				break;
 		default:
 			break;
 		}

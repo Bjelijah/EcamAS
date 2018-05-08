@@ -165,7 +165,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/add_listen_device_margin_vertcail_ctrl">
+                android:layout_marginTop="@dimen/add_listen_device_margin_vertcail_ctrl"
+                android:visibility="invisible">
 
                 <TextView
                     android:id="@+id/server_setting_service_type_tv"

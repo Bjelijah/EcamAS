@@ -59,7 +59,7 @@
                 android:visibility="invisible" >
 
                 <ImageButton
-                    
+                    android:id="@+id/ib_get_match_result_yes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@mipmap/send_wifi_info_button_done_default"

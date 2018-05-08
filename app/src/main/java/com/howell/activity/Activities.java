@@ -1,6 +1,7 @@
 package com.howell.activity;
 
 import android.app.Activity;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +34,23 @@ public class Activities {
 		mActivityList.remove(name);
 	}
 
-//	@Override
+	public void destoryAllActivity(){
+    	for (Activity a:mActivityList.values()){
+    		a.finish();
+		}
+		clearActivities();
+	}
+
+	@Override
+	public String toString() {
+		for (String keyName:mActivityList.keySet()){
+			Log.i("123","activity:    "+keyName);
+		}
+		return null;
+	}
+
+
+	//	@Override
 //	public String toString() {
 //		for(Activity a:mActivityList){
 //			System.out.println(a.getLocalClassName());

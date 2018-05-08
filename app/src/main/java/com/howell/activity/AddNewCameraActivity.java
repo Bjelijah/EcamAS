@@ -62,6 +62,13 @@ public class AddNewCameraActivity extends DaggerAppCompatActivity implements Vie
         setContentView(R.layout.activity_add);
         init();
         initBk();
+        Activities.getInstance().addActivity(this.getLocalClassName(),this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        Activities.getInstance().removeActivity(this.getLocalClassName());
+        super.onDestroy();
     }
 
     @Override

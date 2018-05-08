@@ -879,7 +879,7 @@ public class SoapFactory {
 
         @Override
         public Observable<Result> createAccount(CreateAccountReq req) {
-            final SoapObject rpc = new SoapObject(mNameSpace,"vodSearchReq")
+            final SoapObject rpc = new SoapObject(mNameSpace,"createAccountReq")
                     .addProperty("Account", req.getAccount())
                     .addProperty("Username", req.getUsername())
                     .addProperty("Password", req.getPassword())
@@ -896,6 +896,7 @@ public class SoapFactory {
                 public void subscribe(@NonNull ObservableEmitter<Result> e) throws Exception {
                     try{
                         SoapObject obj = initEnvelopAndTransport(rpc,"http://www.haoweis.com/HomeServices/MCU/createAccount");
+                        Log.e("123","obj="+obj.toString());
                         e.onNext(new Result(obj.getProperty("result").toString()));
                     }catch (Exception ex){
                         e.onError(ex);
