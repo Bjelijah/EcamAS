@@ -115,9 +115,13 @@ public class PlayViewActivity extends BasePlayActivity implements GestureDetecto
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
 
-//        if (!PlayAction.getInstance().getPlayBean().isPtz()){
-//           // return false;
-//        }
+
+        if (!mCam.isPtz()){
+            return false;
+        }
+
+
+
 
         final int hMax = PhoneConfig.getPhoneHeight(this);
         final int wMax = PhoneConfig.getPhoneWidth(this);

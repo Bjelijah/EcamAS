@@ -407,4 +407,6 @@
     <string name="share_menu_del_add">删除分享记录</string>
     <string name="share_menu_del_app">删除申请记录</string>
     <string name="share_menu_mode">模式</string>
+	<string name="play_teacher">横屏模式下:\n上下划动显示ptz按钮</string>
+	<string name="play_teacher_btn">知道了</string>
 </resources>

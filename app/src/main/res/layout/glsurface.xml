@@ -196,19 +196,19 @@
                 android:visibility="gone"/>
         </FrameLayout>
 
-      
 
-       <com.howell.activity.PlayFunViewPage
-        android:id="@+id/play_fun"
-        android:layout_width="200dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:visibility="gone"
-         /> 
-        
-        
-        
+
+        <com.howell.activity.PlayFunViewPage
+            android:id="@+id/play_fun"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:visibility="gone"
+            />
+
+
+
         <!-- 左侧 ptz 按钮 -->
 
         <RelativeLayout
@@ -297,5 +297,92 @@
             </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/play_teacher"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/play_teacher"
+        android:visibility="gone"
+        >
+
+        <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginLeft="50dp">
+
+            <android.support.v4.widget.Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_upward_white_48dp"
+                android:layout_weight="1"
+                />
+
+            <android.support.v4.widget.Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_downward_black_48dp"
+                android:layout_weight="1"/>
+
+            <android.support.v4.widget.Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_centerInParent="true">
+
+            <TextView
+                android:id="@+id/play_teacher_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/play_teacher"
+
+
+                />
+
+            <Button
+                android:id="@+id/play_teacher_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/play_teacher_btn"
+                android:layout_below="@id/play_teacher_tv"
+                android:layout_alignLeft="@id/play_teacher_tv"
+                android:layout_gravity="center_horizontal"
+                style="?android:textAppearanceSmall"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:background="@drawable/teacher_ll"
+                android:layout_marginTop="20dp"
+                android:padding="10dp"
+                />
+
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
 
 </FrameLayout>

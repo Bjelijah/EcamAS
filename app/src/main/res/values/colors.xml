@@ -106,4 +106,7 @@
     <color name="item_video_list_bk">#3E50B4</color>
     <color name="login_fingerprint">#6c8794</color>
     <color name="push_setting_card">#88424242</color>
+
+    <color name="play_teacher">#aa000000</color>
+
 </resources>

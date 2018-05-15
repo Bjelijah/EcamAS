@@ -462,4 +462,7 @@
     <string name="share_menu_del_add">delete history</string>
     <string name="share_menu_del_app">delete history</string>
     <string name="share_menu_mode">mode</string>
+    <string name="play_teacher">draw up down show ptz button</string>
+    <string name="play_teacher_btn">ok</string>
+    
 </resources>

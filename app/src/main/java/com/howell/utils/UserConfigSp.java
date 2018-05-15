@@ -13,6 +13,7 @@ public class UserConfigSp {
     private static final String SET_SP_NAME = "set";
     private static final String USER_LIKE_SP = "like_set";
     private static final String SHARE_SP = "share_set";
+    private static final String TEACH_SP = "ptz_teach";
     public static void saveUserInfo(Context context,String name,String pwd,boolean isCustom){
         SharedPreferences sp = context.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
@@ -93,4 +94,15 @@ public class UserConfigSp {
         return sp.getInt("mode",0);
     }
 
+    public static void saveUserPtzTeach(Context context,boolean b){
+        SharedPreferences sp = context.getSharedPreferences(TEACH_SP,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean("teach",b);
+        editor.commit();
+    }
+
+    public static boolean loadUserPtzTeach(Context context){
+        SharedPreferences sp = context.getSharedPreferences(TEACH_SP,Context.MODE_PRIVATE);
+        return sp.getBoolean("teach",false);
+    }
 }

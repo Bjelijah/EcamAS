@@ -1,6 +1,7 @@
 package com.howell.activity;
 
 import android.content.res.Configuration;
+import android.graphics.SurfaceTexture;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -18,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,14 +40,20 @@ import com.howell.utils.PhoneConfig;
 import com.howell.utils.UserConfigSp;
 import com.howellsdk.api.player.GLESTextureView;
 import com.howellsdk.utils.RxUtil;
+import com.howellsdk.utils.ThreadUtil;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by Administrator on 2016/12/16.
  */
 
-public abstract class BasePlayActivity extends FragmentActivity implements IPlayContract.IVew,SurfaceHolder.Callback,View.OnTouchListener{
+public abstract class BasePlayActivity extends FragmentActivity implements IPlayContract.IVew,SurfaceHolder.Callback,View.OnTouchListener {
 
     public static final int MSG_PTZ_SHAKE               = 0xff00;
     public final static int MSG_PLAY_SOUND_MUTE         = 0xff01;
@@ -67,12 +76,13 @@ public abstract class BasePlayActivity extends FragmentActivity implements IPlay
     //控件
 //    protected GLSurfaceView mGlView;
     protected GLESTextureView mGlView;
-    protected Button mBtTalk;
+    protected Button mBtTalk,mTeachBtn;
     protected ImageButton mVodList,mCatchPicture,mSound,mPause,mBack;
     protected FrameLayout mTitle;
     protected TextView mStreamChange;
     protected MySeekBar mReplaySeekBar;
     protected LinearLayout mSurfaceIcon,mHD,mSD;
+    protected RelativeLayout mTeachll;
     protected ProgressBar mWaitProgressBar;
 
     protected PopupWindow mPopupWindow;
@@ -169,7 +179,6 @@ public abstract class BasePlayActivity extends FragmentActivity implements IPlay
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.glsurface);
-
         initView();
         initViewFun();
         initPlayer();
@@ -190,6 +199,8 @@ public abstract class BasePlayActivity extends FragmentActivity implements IPlay
         mStreamChange = (TextView)findViewById(R.id.player_change_stream);
         mPause = (ImageButton) findViewById(R.id.ib_pause);
         mBack = (ImageButton) findViewById(R.id.player_imagebutton_back);
+        mTeachBtn = (Button)findViewById(R.id.play_teacher_btn);
+        mTeachll = findViewById(R.id.play_teacher);
         mReplaySeekBar = (MySeekBar) findViewById(R.id.replaySeekBar);
         mSurfaceIcon = (LinearLayout) findViewById(R.id.surface_icons);
         mWaitProgressBar = (ProgressBar) findViewById(R.id.waitProgressBar);
@@ -205,6 +216,30 @@ public abstract class BasePlayActivity extends FragmentActivity implements IPlay
 //        mGlView.setRenderer(new YV12Renderer(this,mGlView,mHandler));
 //        mGlView.getHolder().addCallback(this);
 //        mGlView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+        mTeachBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Observable.timer(500, TimeUnit.MILLISECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Consumer<Long>() {
+                            @Override
+                            public void accept(Long aLong) throws Exception {
+                                mTeachll.setVisibility(View.GONE);
+                                UserConfigSp.saveUserPtzTeach(BasePlayActivity.this,true);
+                            }
+                        });
+
+            }
+        });
+        mTeachll.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+
+
         mGlView.setOnTouchListener(this);
         mGlView.setFocusable(true);
         mGlView.setClickable(true);
@@ -215,6 +250,9 @@ public abstract class BasePlayActivity extends FragmentActivity implements IPlay
         }
         mIsAudioOpen = UserConfigSp.loadSoundState(this);
         updateSoundView(!mIsAudioOpen);
+
+
+
     }
 
     protected void updateSoundView(boolean isMute){
@@ -251,6 +289,10 @@ public abstract class BasePlayActivity extends FragmentActivity implements IPlay
         Log.i("123","base play activity mCam = "+mCam.toString());
 
 
+
+        if (!UserConfigSp.loadUserPtzTeach(this) && mCam.isPtz() ) {
+            mTeachll.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -333,14 +375,15 @@ public abstract class BasePlayActivity extends FragmentActivity implements IPlay
 
 //        mPlayMgr.unregistStreamLenCallback();
 
-//        ThreadUtil.cachedThreadStart(new Runnable() {
-//            @Override
-//            public void run() {
+        ThreadUtil.cachedThreadStart(new Runnable() {
+            @Override
+            public void run() {
+        Log.i("123","cam stop");
                 camStop();//ecam stop play stop
                 camDisconnect(); // release play
-//            }
-//        });
-        
+            }
+        });
+        Log.i("123","cam stop finish");
         mGlView.onDestroy();
         isDestory = true;
         unbindPresenter();
@@ -457,4 +500,6 @@ public abstract class BasePlayActivity extends FragmentActivity implements IPlay
     public void onPlaybackStartEndTime(long beg, long end) {
         Log.i("123","base play  onPlaybackStartEndTime");
     }
+
+
 }
