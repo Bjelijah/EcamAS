@@ -1082,7 +1082,8 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
 
     PLAY_HANDLE  ph = hwplay_open_stream((char*)&media_head,sizeof(media_head),1024*1024,isPlayBack,area);
     hwplay_open_sound(ph);
-    hwplay_register_source_data_callback(ph,on_source_callback,1);//user data==0
+    hwplay_register_source_data_callback(ph,on_source_audio_callback,1);//user data==0
+    hwplay_register_yuv_callback_ex(ph,on_yuv_callback_ex,0);
     res->play_handle = ph;
     LOGI("ready finish  play_handle=%d",ph);
     return res->play_handle>=0?true:false;
