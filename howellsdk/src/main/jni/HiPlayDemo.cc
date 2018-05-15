@@ -735,6 +735,38 @@ void on_file_stream_fun(FILE_STREAM_HANDLE handle,const char *buf,int len,long u
 //    LOGI("on_file_stream_fun input data ret=%d",ret);
 }
 
+static void on_source_audio_callback(PLAY_HANDLE handle, int type, const char* buf, int len, unsigned long timestamp, long sys_tm, int w, int h, int framerate, int au_sample, int au_channel, int au_bits, long user) {
+    if (res!=NULL){
+        if (res->is_exit){
+            LOGE("on source callback is  exit return");
+            return;
+        }
+    }
+
+    if (res!=NULL){
+        if (res->isFirstTime){
+            res->isFirstTime = 0;
+            res->firstTimestamp = timestamp;
+        }
+        res->timestamp = timestamp;
+    }
+    if(type==0){
+        audio_play(buf, len);//add cbj
+    }
+}
+
+static void on_yuv_callback_ex(PLAY_HANDLE handle,
+                               const unsigned char* y,
+                               const unsigned char* u,
+                               const unsigned char* v,
+                               int y_stride,
+                               int uv_stride,
+                               int w,
+                               int h,
+                               unsigned long long timestamp,
+                               long user){
+    yv12gl_display(y,u,v,w,h,timestamp);
+}
 
 
 static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, int len, unsigned long timestamp, long sys_tm, int w, int h, int framerate, int au_sample, int au_channel, int au_bits, long user){
@@ -960,14 +992,15 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlayTurnLive
     hwplay_open_sound(ph);
     //  LOGI("ph=%d",ph);
 
-    hwplay_set_max_framenum_in_buf(ph,isPlayback?5:5);
+    hwplay_set_max_framenum_in_buf(ph,isPlayback?15:15);
     int remain = 0;
     int stream_buf_len = 0;
     hwplay_get_stream_buf_len(res->play_handle,&stream_buf_len);
     hwplay_get_stream_buf_remain(res->play_handle,&remain);
 
     LOGI("remain=%d      stream_buf_len=%d    play_handle=%d\n",remain,stream_buf_len, res->play_handle);
-    int b = hwplay_register_source_data_callback(ph,on_source_callback,0);
+    int b = hwplay_register_source_data_callback(ph,on_source_audio_callback,0);
+    hwplay_register_yuv_callback_ex(ph,on_yuv_callback_ex,0);
     return res->play_handle>=0?true:false;
 }
 
