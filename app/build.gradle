@@ -61,6 +61,11 @@ android {
 //        exclude 'META-INF/license.txt'
 //        exclude 'META-INF/dependencies.txt'
 //        exclude 'META-INF/LGPL2.1'
+        pickFirst 'lib/armeabi-v7a/libplayer_jni.so'
+        pickFirst 'lib/armeabi-v7a/libhwtrans.so'
+        pickFirst 'lib/armeabi-v7a/libjpush.so'
+        pickFirst 'lib/armeabi-v7a/libplay_jni.so'
+        pickFirst 'lib/armeabi-v7a/libhwplay.so'
     }
 
 }

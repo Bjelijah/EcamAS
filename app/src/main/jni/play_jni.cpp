@@ -429,6 +429,20 @@ void on_file_stream_fun(FILE_STREAM_HANDLE handle,const char *buf,int len,long u
     int ret = hwplay_input_data(res->play_handle, buf ,len);
 }
 
+static void on_yuv_callback_ex(PLAY_HANDLE handle,
+                                           const unsigned char* y,
+                                           const unsigned char* u,
+                                           const unsigned char* v,
+                                           int y_stride,
+                                           int uv_stride,
+                                           int width,
+                                           int height,
+                                           unsigned long long time,
+                                           long user){
+    yv12gl_display(y,u,v,width,height,time);
+}
+
+
 
 static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, int len, unsigned long timestamp, long sys_tm, int w, int h, int framerate, int au_sample, int au_channel, int au_bits, long user){
 
@@ -445,10 +459,10 @@ static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, in
         //		audio_play(buf,len,au_sample,au_channel,au_bits);
         audio_play(buf, len);//add cbj
     }else if(type == 1){//视频
-        unsigned char* y = (unsigned char *)buf;
-        unsigned char* u = y+w*h;
-        unsigned char* v = u+w*h/4;
-        yv12gl_display(y,u,v,w,h,timestamp);
+//        unsigned char* y = (unsigned char *)buf;
+//        unsigned char* u = y+w*h;
+//        unsigned char* v = u+w*h/4;
+//        yv12gl_display(y,u,v,w,h,timestamp);
     }
 }
 
@@ -592,6 +606,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_netReadyPlay
     PLAY_HANDLE  ph = hwplay_open_stream((char*)&media_head,sizeof(media_head),1024*1024,isPlayBack,area);
     hwplay_open_sound(ph);
     hwplay_register_source_data_callback(ph,on_source_callback,0);
+    hwplay_register_yuv_callback_ex(ph,on_yuv_callback_ex,0);
     res->play_handle = ph;
     return res->play_handle>=0?true:false;
 }
@@ -682,6 +697,8 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_readyPlay
     //hwplay_set_max_framenum_in_buf(ph,is_playback?25:5);
     LOGI("ph=%d",ph);
     int b = hwplay_register_source_data_callback(ph,on_source_callback,0);
+    //regist yuv
+    hwplay_register_yuv_callback_ex(ph,on_yuv_callback_ex,0);
     LOGI("~~~~~~~~~~~~~~~~~callback bool = %d   play_handle=%d ",b,res->play_handle);
     return res->play_handle>=0?true:false;
 }
